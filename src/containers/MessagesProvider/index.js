@@ -12,7 +12,6 @@ export const MessagesProviderComponent = props => {
     } = props
 
     const onClickCloseMessage = messageID => {
-        console.log('did call onlcick')
         props.deleteMessage(messageID)
     }
 
@@ -60,6 +59,7 @@ const Root = styled.div`
     pointer-events: none;
     padding-bottom: 100px;
     box-sizing: border-box;
+    z-index: 30;
 
     .regular-message,
     .error-message {
@@ -67,7 +67,7 @@ const Root = styled.div`
         margin-top: 10px;
         border: 2px solid;
         border-radius: var(--br-container);
-        width: 350px;
+        width: min(90vw, 350px);
         box-sizing: border-box;
         background-color: ${p => p.theme.bgcLight};
     }

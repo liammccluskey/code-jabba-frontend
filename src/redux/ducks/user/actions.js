@@ -6,7 +6,7 @@ export const setMongoUser = mongoUser => ({
 })
 
 export const updateMongoUser = partialUser => ({
-    type: Types.UPDATE_USER,
+    type: Types.UPDATE_MONGO_USER,
     value: partialUser
 })
 
@@ -21,5 +21,10 @@ export const setLoadingMongoUser = loading => ({
 
 export const setLoadingProfileUpdate = loading => ({
     type: Types.SET_LOADING_PROFILE_UPDATE,
+    value: loading
+})
+
+export const setLoadingLogout = loading => ({
+    type: Types.SET_LOADING_LOGOUT,
     value: loading
 })

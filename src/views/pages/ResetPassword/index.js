@@ -6,7 +6,7 @@ import { bindActionCreators } from '@reduxjs/toolkit'
 import { connect } from 'react-redux'
 
 import * as Constants from '../Login/constants'
-import {auth, getFirebaseAuthErrorMessage} from '../../../networking'
+import {auth, getFirebaseErrorMessage} from '../../../networking'
 import { addMessage } from '../../../redux/ducks/communication'
 import { setThemeColor, setTintColor } from '../../../redux/ducks/theme'
 import { BodyContainer } from '../../components/common/BodyContainer'
@@ -32,7 +32,7 @@ export const ResetPasswordComponent = props => {
             await sendPasswordResetEmail(auth, email)
             props.addMessage('Check your email for a link to reset your password.')
         } catch (error) {
-            const errorMessage = getFirebaseAuthErrorMessage(error)
+            const errorMessage = getFirebaseErrorMessage(error)
             props.addMessage(errorMessage, true)
         }
     }
@@ -66,10 +66,11 @@ export const ResetPasswordComponent = props => {
                         />
                         <br /><br />
                         <Button
-                            type='s'
+                            type='solid'
                             priority={2}
                             onClick={onClickSubmit}
                             title='Submit'
+                            isSubmitButton={true}
                         />
                     </form>
                 </LoginCard>

@@ -1,1 +1,1 @@
-import { UserActionTypes as Types } from "./types"
+import { ActionTypes as Types } from "./types"

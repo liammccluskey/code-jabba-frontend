@@ -36,7 +36,7 @@ export const LandingHeader = props => {
             {showButtons ?
                 <div className='d-flex jc-flex-end ai-center'>
                     <Button
-                        type='c'
+                        type='clear'
                         priority={1}
                         onClick={onClickLogIn}
                         title='Log In'
@@ -44,7 +44,7 @@ export const LandingHeader = props => {
                         className='fw-m'
                     />
                     <Button
-                        type='s'
+                        type='solid'
                         priority={1}
                         onClick={onClickSignUp}
                         title='Sign Up'
@@ -60,9 +60,12 @@ export const LandingHeader = props => {
 
 const Root = styled.div`
     background-color: ${props => props.theme.bgcNav};
-    height: var(--h-mainheader);
+    min-height: var(--h-mainheader);
     padding: 0px var(--ps-mainheader);
-    box-shadow: ${p => p.theme.boxShadow}
+    box-shadow: ${p => p.theme.boxShadow};
+    box-shadow: 0px 1px 4px 0px rgba(0,0,0,0.2);
+    width: 100%;
+    box-sizing: border-box;
 `
 
 const LogoIcon = styled.img`

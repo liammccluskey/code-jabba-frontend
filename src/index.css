@@ -74,22 +74,22 @@ html {
 :root {
   /* dynamic */
   --ps-mainheader: 3%;
-  --ps-subheader: 13%;
+  --ps-subheader: 12%;
   --ps-body: 12%;
 
   /* constants */
   --h-mainheader: 70px;
-  --br-container: 5px;
-  --width-mobile: 500px;
+  --br-container: 10px;
+  --width-mobile: 601px;
 }
 
-@media only screen and (max-width: 950px) {
+@media only screen and (max-width: 800px) {
   :root {
     /* dynamic */
 
     --ps-mainheader: 3%;
-    --ps-subheader: 3%;
-    --ps-body: 3%;
+    --ps-subheader: 5%;
+    --ps-body: 5%;
   }
 }
 
@@ -120,7 +120,7 @@ html {
 }
 
 .jc-space-between {
-  justify-content: space-between;
+  justify-content: space-between !important;
 }
 
 .jc-flex-start {
@@ -191,4 +191,14 @@ html {
   padding-right: var(--ps-body);
   padding-left: var(--ps-body);
   color: var(--color);
+}
+
+.no-select {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
+.clickable {
+  cursor: pointer;
 }

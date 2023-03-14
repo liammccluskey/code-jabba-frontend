@@ -1,9 +1,9 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 
-import { fetchThisMongoUser, logout } from '../../redux/ducks/user'
+import { fetchThisMongoUser, getLoadingLogout, getFirebaseUser, getIsLoggedIn } from '../../redux/ducks/user'
 import {auth} from '../../networking'
 import { addMessage } from '../../redux/ducks/communication'
 
@@ -12,31 +12,45 @@ export const AuthContainerComponent = props => {
     const {
         children
     } = props
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        onAuthStateChanged(auth, firebaseUser => {
+        const unsub = onAuthStateChanged(auth, firebaseUser => {
             if (firebaseUser) {
-                props.addMessage('is logged in')
                 props.fetchThisMongoUser(
                     firebaseUser,
-                    () => window.location = '/dashboard'
+                    () => {
+                        const currentPath = window.location.pathname
+                        if (currentPath.includes('login') || currentPath.includes('register')) {
+                            window.location = '/dashboard'
+                        }
+                        setLoading(false)
+                    },
+                    () => setLoading(false)
                 )
             } else {
-                console.log('is not logged in')
+                setLoading(false)
             }
         })
+        return unsub
     }, [])
 
     return (
         <div>
-            {children}
+            {!loading && !props.loadingLogout && children}
         </div>
     )
 }
+
+const mapStateToProps = state => ({
+    loadingLogout: getLoadingLogout(state),
+    firebaseUser: getFirebaseUser(),
+    isLoggedIn: getIsLoggedIn(state)
+})
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     addMessage,
     fetchThisMongoUser
 }, dispatch)
 
-export const AuthContainer = connect(null, mapDispatchToProps)(AuthContainerComponent)
+export const AuthContainer = connect(mapStateToProps, mapDispatchToProps)(AuthContainerComponent)

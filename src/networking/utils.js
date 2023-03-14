@@ -1,4 +1,4 @@
-import { FirebaseAuthErrors } from "./constants"
+import { FirebaseErrors } from "./constants"
 
 export const stringifyQuery = (queryParams) => {
     return Object
@@ -7,7 +7,9 @@ export const stringifyQuery = (queryParams) => {
         .join('&')
 }
 
-export const getFirebaseAuthErrorMessage = error => {
-    const errorCode = error.code.replace('auth/', '')
-    return FirebaseAuthErrors[errorCode] || errorCode
+export const getFirebaseErrorMessage = error => {
+    const [type, code] = error.code.split('/')
+    return FirebaseErrors[type] && FirebaseErrors[type][code] ?
+        FirebaseErrors[type][code]
+        : code
 }

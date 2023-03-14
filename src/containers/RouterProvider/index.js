@@ -1,67 +1,56 @@
 import React from 'react'
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
-import { RouterProvider as _RouterProvider, redirect, createBrowserRouter } from 'react-router-dom'
-
+import { RouterProvider as _RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { getIsLoggedIn } from '../../redux/ducks/user'
+import { PrivateRoute } from '../PrivateRoute'
+import { SignedOutRoute } from '../SignedOutRoute'
 import {Landing} from '../../views/pages/Landing'
 import {Login} from '../../views/pages/Login'
 import {Register} from '../../views/pages/Register'
 import {ResetPassword} from '../../views/pages/ResetPassword'
 import { Dashboard } from '../../views/pages/Dashboard'
-import { Settings } from '../../views/pages/Settings'
+import { GeneralSettings } from '../../views/pages/settings/GeneralSettings'
+import { AdvancedSettings } from '../../views/pages/settings/AdvancedSettings'
 
 
-const loggedInRouter = createBrowserRouter([
+const router = createBrowserRouter([
     {
       path: '/',
-      //loader: () => redirect('/dashboard')
-      element: <Dashboard />
-    },
-    {
-      path: '/dashboard',
-      element: <Dashboard />
-    },
-    {
-      path: '/settings',
-      element: <Settings />
-    },
-  ])
-  
-  const loggedOutRouter = createBrowserRouter([
-    {
-      path: '/',
-      element: <Landing />
+      element: <SignedOutRoute element={<Landing />} />,
     },
     {
       path: '/login',
-      element: <Login />
+      element: <SignedOutRoute element={<Login />} />,
     },
     {
       path: '/register',
-      element: <Register />
+      element: <SignedOutRoute element={<Register />} />,
     },
     {
       path: '/reset',
-      element: <ResetPassword />
-    }
-  ])
+      element: <SignedOutRoute element={<ResetPassword />} />,
+    },
 
-export const RouterProviderComponent = props => {
-  console.log({isLoggedIn: props.isLoggedIn})
+    // dashboard
+    {
+      path: '/dashboard',
+      element: <PrivateRoute element={<Dashboard />} />
+    },
+    
+    // settings
+    {
+      path: '/settings',
+      element: <PrivateRoute element={<GeneralSettings />} />
+    },
+    {
+      path: '/settings/advanced',
+      element: <PrivateRoute element={<AdvancedSettings />} />
+    }
+])
+
+export const RouterProvider = props => {
   return (
       <_RouterProvider
-          router={props.isLoggedIn ? loggedOutRouter : loggedOutRouter}
+          router={router}
       />
   )
 }
-
-const mapStateToProps = state => ({
-    isLoggedIn: getIsLoggedIn(state)
-})
-
-const mapDispatchToProps = dispatch => bindActionCreators({
-    
-}, dispatch)
-
-export const RouterProvider = connect(mapStateToProps, mapDispatchToProps)(RouterProviderComponent)

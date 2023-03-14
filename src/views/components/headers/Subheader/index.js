@@ -19,14 +19,16 @@ export const Subheader = props => {
         <Root className='d-flex jc-space-between ai-center'>
             <div className='d-flex fd-column jc-flex-start ai-flex-start'>
                 <Title>{title}</Title>
-                {links.map( ({name, url, id}) => (
-                    <PageLink
-                        to={getLinkPath(url)}
-                        className={getLinkClassName(id)}
-                    >
-                        {name}
-                    </PageLink>
-                ))}
+                <div className='d-flex jc-flex-start ai-center'>
+                    {links.map( ({name, url, id}) => (
+                        <PageLink
+                            to={getLinkPath(url)}
+                            className={getLinkClassName(id)}
+                        >
+                            {name}
+                        </PageLink>
+                    ))}
+                </div>
             </div>
             <div className='d-flex fd-column jc-flex-start ai-flex-end'>
                 {children}
@@ -43,12 +45,15 @@ const Root = styled.div`
     padding-top: 13px;
     padding-right: var(--ps-subheader);
     padding-left: var(--ps-subheader);
-    border-bottom: ${p => `1px solid ${p.theme.borderColor}`};
+    border-bottom: ${p => `1px solid ${p.theme.bc}`};
     z-index: 1;
+    width: 100%;
+    box-sizing: border-box;
 `
 
 const Title = styled.h2`
     color: ${p => p.theme.textPrimary};
+    margin-bottom: 13px;
 `
 
 const PageLink = styled(Link)`
@@ -57,13 +62,14 @@ const PageLink = styled(Link)`
     font-size: 15px;
     text-decoration: none;
     margin-right: 25px;
+    border-bottom: 2px solid ${p => p.theme.bgcNav};
+    padding-bottom: 11px;
 
-    & :hover,
-    & .active {
-        background-color: ${p => p.theme.tint};
+    &:hover {
+        color: ${p => p.theme.tint};
     }
 
-    & .active {
+    &.active {
         border-bottom: 2px solid ${p => p.theme.tint};
     }
 `

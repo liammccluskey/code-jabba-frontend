@@ -1,16 +1,28 @@
 import React, {useEffect, useState} from 'react'
 import styled from 'styled-components'
 import {useNavigate, Link} from 'react-router-dom'
+import { connect } from 'react-redux'
 
-const PageLinks = {
-    dashboard: {
+import { MainMenu } from '../MainMenu'
+import { LinksMenu } from '../LinksMenu'
+import { getIsMobile } from '../../../../redux/ducks/theme'
+
+export const PageLinks = [
+    {
         name: 'Dashboard',
         url: '/dashboard',
-        id: 'dashboard'
+        id: 'dashboard',
+        icon: 'bi-house'
     },
-}
+    {
+        name: 'Settings',
+        url: '/settings',
+        id: 'settings',
+        icon: 'bi-gear'
+    }
+]
 
-export const MainHeader = () => {
+export const MainHeaderComponent = props => {
     const navigate = useNavigate()
     const activeLinkID = window.location.pathname.split('/')[1]
 
@@ -19,7 +31,7 @@ export const MainHeader = () => {
     return (
         <Root className='d-flex jc-space-between ai-center'>
             <div
-                className='d-flex jc-flex-start ai-center'
+                className='d-flex jc-flex-start ai-center clickable'
                 onClick={onClickLogo}
             >
                 <LogoIcon
@@ -32,14 +44,19 @@ export const MainHeader = () => {
                 </LogoText>
             </div>
             <div className='d-flex jc-flex-end ai-center'>
-                {PageLinks.map( ({name, url, id}) => (
-                    <PageLink
-                        to={url}
-                        className={id === activeLinkID ? 'active': ''}
-                    >
-                        {name}
-                    </PageLink>
-                ))}
+                {props.isMobile ?
+                    <LinksMenu style={{marginRight: 15}}/>
+                    : PageLinks.map( ({name, url, id}) => (
+                        <PageLink
+                            key={id}
+                            to={url}
+                            className={id === activeLinkID ? 'active': ''}
+                        >
+                            {name}
+                        </PageLink>
+                    ))
+                }
+                <MainMenu />
             </div>
         </Root>
     )
@@ -47,8 +64,10 @@ export const MainHeader = () => {
 
 const Root = styled.div`
     background-color: ${props => props.theme.bgcNav};
-    height: var(--h-mainheader);
+    min-height: var(--h-mainheader);
     padding: 0px var(--ps-mainheader);
+    width: 100%;
+    box-sizing: border-box;
 `
 
 const LogoIcon = styled.img`
@@ -71,8 +90,14 @@ const PageLink = styled(Link)`
     text-decoration: none;
     margin-right: 25px;
 
-    & :hover,
-    & .active {
-        background-color: ${p => p.theme.tint}
+    &:hover,
+    &.active {
+        color: ${p => p.theme.tint} !important;
     }
 `
+
+const mapStateToProps = state => ({
+    isMobile: getIsMobile(state)
+})
+
+export const MainHeader = connect(mapStateToProps)(MainHeaderComponent)

@@ -15,7 +15,7 @@ export const LoginCard = styled.div`
     margin: 0 auto;
     border: 1px solid ${p => p.theme.bc};
 
-    @media only screen and (max-width: 500px) {
+    @media only screen and (max-width: 601px) {
         & {
             width: 100%;
         }

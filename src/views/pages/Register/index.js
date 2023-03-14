@@ -3,10 +3,15 @@ import styled from 'styled-components'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import { useNavigate } from 'react-router-dom'
-import { signInWithRedirect, createUserWithEmailAndPassword, GoogleAuthProvider } from 'firebase/auth'
+import {
+    signInWithRedirect,
+    createUserWithEmailAndPassword,
+    GoogleAuthProvider,
+    updateProfile
+} from 'firebase/auth'
 
 import * as Constants from '../Login/constants'
-import {auth, getFirebaseAuthErrorMessage} from '../../../networking'
+import {auth, getFirebaseErrorMessage} from '../../../networking'
 import { setThemeColor, setTintColor } from '../../../redux/ducks/theme'
 import { addMessage } from '../../../redux/ducks/communication'
 import { BodyContainer } from '../../components/common/BodyContainer'
@@ -31,9 +36,11 @@ export const RegisterComponent = props => {
         e.preventDefault()
         try {
             await createUserWithEmailAndPassword(auth, email, password)
-            props.addMessage(`Welcome to ${process.env.SITE_NAME}`)
+                .then(userCred => {
+                    updateProfile(userCred.user, {displayName: name})
+                })
         } catch (error) {
-            const errorMessage = getFirebaseAuthErrorMessage(error)
+            const errorMessage = getFirebaseErrorMessage(error)
             props.addMessage(errorMessage, true)
         }
     }
@@ -91,17 +98,18 @@ export const RegisterComponent = props => {
                         />
                         <br /><br />
                         <Button
-                            type='s'
+                            type='solid'
                             priority={2}
                             onClick={onClickSubmit}
                             title='Submit'
+                            isSubmitButton={true}
                         />
                     </form>
                     <br />
                     <h4 className='as-center'>or</h4>
                     <br />
                     <Button
-                        type='c'
+                        type='clear'
                         priority={2}
                         onClick={onClickContinueWithGoogle}
                         imageURL={Constants.GOOGLE_ICON_URL}

@@ -23,27 +23,7 @@ export const Colors = {
     facebookBlue: '#4267B2',
 }
 
-const DarkTheme = {
-    name: 'Dark',
-    bgc: 'black',
-    bgcLight: 'rgb(21,24,28)',
-    bgcSemilight: 'rgb(15,17,19)',
-    bgcHover: 'rgba(249, 252, 255, 0.08)',
-    bgcNav: 'rgb(21, 24, 28)',
-    bgcSettings: 'rgb(21, 24, 28)',
-    bgcInput: 'rgb(38, 41, 45)',
-    bc: 'rgb(48, 54, 58)',
-    textMain: 'rgb(205,205,205)',
-    textPrimary: 'rgb(235, 235, 235)',
-    textSecondary: 'rgb(147, 151, 156)',
-    textTertiary: 'rgb(121, 124, 125)',
-    textYellow: Colors.yellow,
-    boxShadow: 'none',
-    floatBorder: '1px solid rgb(48, 54, 58)'
-}
-
 const LightTheme = {
-    name: 'Light',
     bgc: 'rgb(244, 246, 248)',
     bgcLight: 'white',
     bgcSemilight: 'rgb(248, 250, 252)',
@@ -58,11 +38,30 @@ const LightTheme = {
     textTertiary: 'rgb(102, 102, 102)',
     textYellow: '#85681d',
     boxShadow: '0 0 20px rgba(0, 0, 0, 0.05)',
-    floatBorder: 'none'
+    floatBorder: 'none',
+    boxShadowDark: '0 3px 20px rgb(89 105 129 / 30%), 0 1px 2px rgb(0 0 0 / 5%), 0 0 0 1px rgb(89 105 129 / 10%)',
+}
+
+const DarkTheme = {
+    bgc: 'black',
+    bgcLight: 'rgb(21,24,28)',
+    bgcSemilight: 'rgb(15,17,19)',
+    bgcHover: 'rgba(249, 252, 255, 0.08)',
+    bgcNav: 'rgb(21, 24, 28)',
+    bgcSettings: 'rgb(21, 24, 28)',
+    bgcInput: 'rgb(38, 41, 45)',
+    bc: 'rgb(48, 54, 58)',
+    textMain: 'rgb(205,205,205)',
+    textPrimary: 'rgb(235, 235, 235)',
+    textSecondary: 'rgb(147, 151, 156)',
+    textTertiary: 'rgb(121, 124, 125)',
+    textYellow: Colors.yellow,
+    boxShadow: 'none',
+    floatBorder: '1px solid rgb(48, 54, 58)',
+    boxShadowDark: 'none'
 }
 
 const BlueTheme = {
-    name: 'Blue',
     bgc: '#0e2439',
     bgcLight: '#1f364d',
     bgcSemilight: '#182e43',
@@ -77,32 +76,52 @@ const BlueTheme = {
     textTertiary: '#63809c',
     textYellow: Colors.yellow,
     boxShadow: 'none',
-    floatBorder: 'none'
+    floatBorder: 'none',
+    boxShadowDark: 'none',
 }
 
 export const Themes = {
-    0: LightTheme,
-    1: DarkTheme,
-    2: BlueTheme
+    0: {
+        ...LightTheme,
+        value: 0,
+        name: 'Light',
+        icon: 'sun',
+    },
+    1: {
+        ...DarkTheme,
+        value: 1,
+        name: 'Dark',
+        icon: 'moon'
+    },
+    2: {
+        ...BlueTheme,
+        value: 2,
+        name: 'Blue',
+        icon: 'water'
+    }
 }
 
 export const Tints = {
     0: {
+        value: 0,
         name: 'Purple',
         tint: Colors.purple,
         tintTranslucent: Colors.purpleTranslucent
     },
     1: {
+        value: 1,
         name: 'Blue',
         tint: Colors.blue,
         tintTranslucent: Colors.blueTranslucent
     },
     2: {
+        value: 2,
         name: 'Mint',
         tint: Colors.mint,
         tintTranslucent: Colors.mintTranslucent
     },
     3: {
+        value: 3,
         name: 'Green',
         tint: Colors.green,
         tintTranslucent: Colors.greenTranslucent

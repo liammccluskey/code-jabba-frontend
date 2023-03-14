@@ -6,7 +6,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 
 import * as Constants from './constants'
-import {auth, getFirebaseAuthErrorMessage} from '../../../networking'
+import {auth, getFirebaseErrorMessage} from '../../../networking'
 import { addMessage } from '../../../redux/ducks/communication'
 import { setThemeColor, setTintColor } from '../../../redux/ducks/theme'
 import { BodyContainer } from '../../components/common/BodyContainer'
@@ -31,7 +31,7 @@ export const LoginComponent = props => {
         try {
             await signInWithEmailAndPassword(auth, email, password)
         } catch (error) {
-            const errorMessage = getFirebaseAuthErrorMessage(error)
+            const errorMessage = getFirebaseErrorMessage(error)
             props.addMessage(errorMessage, true)
         }
     }
@@ -84,17 +84,18 @@ export const LoginComponent = props => {
                         </ActionLink>
                         <br /><br />
                         <Button
-                            type='s'
+                            type='solid'
                             priority={2}
                             onClick={onClickSubmit}
                             title='Submit'
+                            isSubmitButton={true}
                         />
                     </form>
                     <br />
                     <h4 className='as-center'>or</h4>
                     <br />
                     <Button
-                        type='c'
+                        type='clear'
                         priority={2}
                         onClick={onClickContinueWithGoogle}
                         imageURL={Constants.GOOGLE_ICON_URL}

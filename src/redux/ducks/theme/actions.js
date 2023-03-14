@@ -9,3 +9,8 @@ export const setTintColor = tintColor => ({
     type: Types.SET_TINT_COLOR,
     value: tintColor
 })
+
+export const calculateIsMobile = windowWidth => ({
+    type: Types.CALCUALTE_IS_MOBILE,
+    windowWidth
+})

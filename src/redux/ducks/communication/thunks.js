@@ -18,7 +18,7 @@ export const addMessage = (title, isError=false) => (dispatch, getState) => {
         dispatch(CommunicationActions.setMessages(newMessages))
         setTimeout(() => {
             dispatch(CommunicationActions.deleteMessage(message.id))
-        }, 6*1000);
+        }, 6*1000)
     }
 }
 

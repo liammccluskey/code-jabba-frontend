@@ -1,60 +1,27 @@
 import React from 'react'
 import styled from 'styled-components'
-import {connect} from 'react-redux'
 
-import {getTheme} from '../../../../redux/ducks/theme'
-
-const getStyles = (priority, type, theme, propStyle) => ({
-    Root: {
-        backgroundColor: {
-            s: theme.tint,
-            c: 'clear',
-            t: 'clear'
-        }[type],
-        color: {
-            s: theme.bgcLight,
-            c: theme.tint,
-            t: theme.tint,
-        }[type],
-        borderColor: {
-            s: theme.tint,
-            c: theme.bc,
-            t: 'clear',
-        }[type],
-        padding: {
-            1: '10px 25px',
-            2: '7px 20px'
-        }[priority],
-        fontSize: {
-            1: '17px',
-            2: '14px'
-        }[priority],
-        ...propStyle
-    },
-
-})
-
-export const ButtonComponent = props => {
+export const Button = props => {
     const {
-        priority, // 0 : big , 1 : medium
-        type, // s : solid, c : clear, t : tint
+        priority, // 0 : big | 1 : medium
+        type, // 'solid' | 'clear' | 'tint' | 'error' | 'danger'
         title,
-        style,
         className='',
         imageURL=null,
         imageSize=18,
         iconClassName=null,
         iconSize=18,
+        isSubmitButton=false,
     
-        onClick
+        onClick,
+
+        ...rest
     } = props
-    
-    const styles = getStyles(priority, type, props.theme, style)
-    const rootClassName = `${type}-${priority} ${className}`
+    const rootClassName = `t${type} p${priority} ${className} fw-m`
 
     return (
         <Root
-            style={styles.Root}
+            {...rest}
             className={rootClassName}
             onClick={onClick}
         >
@@ -74,42 +41,95 @@ export const ButtonComponent = props => {
                 : null
             }
             {title}
+            {isSubmitButton ?
+                <button type='submit' style={{display: 'none'}} />
+                : null
+            }
         </Root>
     )
 }
-
-const mapStateToProps = state => ({
-    theme: getTheme(state)
-})
 
 const Root = styled.div`
     cursor: pointer;
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    font-size: 17px;
     border-radius: 5px;
-    border: 1px solid;
+
+    &.p1 {
+        padding: 10px 25px;
+        font-size: 17px;
+    }
+    &.p2 {
+        padding: 7px 20px;
+        font-size: 14px;
+    }
+
+    @media only screen and (max-width: 601px) {
+        &.p1 {
+            font-size: 15px;
+            padding: 8px 17px;
+        }
+        &.p2 {
+            padding: 7px 14px;
+            font-size: 14px;
+        }
+    }
+
+    &.tsolid {
+        background-color: ${p => p.theme.tint};
+        color: ${p => p.theme.bgcLight};
+        border: 1px solid ${p => p.theme.tint};
+    }
+    &&.tclear {
+        background-color: ${p => p.theme.bgcLight};
+        color: ${p => p.theme.tint};
+        border: 1px solid ${p => p.theme.bc};
+    }
+    &.ttint {
+        background-color: clear;
+        color: ${p => p.theme.tint};
+        border: 1px solid clear;
+    }
+    &.terror {
+        background-color: clear;
+        color: ${p => p.theme.error};
+        border: 1px solid clear;
+    }
+    &.tdanger {
+        background-color: clear;
+        color: ${p => p.theme.error};
+        border: 1px solid ${p => p.theme.bc};
+    }
 
     &:hover {
         transition: 0.3s
     }
 
-    &.s-1:hover,
-    &.s-2:hover {
+    &.tsolid:hover {
         filter: brightness(80%);
     }
 
-    &.c-1:hover,
-    &.c-2:hover,
-    &.t-1:hover,
-    &.t-2:hover {
+    &.ttint:hover {
+        border-color: ${p => p.theme.tintTranslucent};
+    }
+
+    &.tclear:hover,
+    &.ttint:hover {
         background-color: ${p => p.theme.tintTranslucent};
     }
 
-    i, img {
+    &.terror:hover {
+        background-color: ${p => p.theme.errorTranslucent};
+        border-color: ${p => p.theme.error};
+    }
+
+    &.tdanger:hover {
+        background-color: ${p => p.theme.error};
+        color: ${p => p.theme.bgcLight};
+    }
+
+    & i, & img {
         margin-right: 10px;
     }
 `
-
-export const Button = connect(mapStateToProps)(ButtonComponent)
