@@ -8,7 +8,7 @@ export const SettingsRow = props => {
         title,
         isEditable,
         inputType=null, // 'text' | 'image' | 'select'
-        initialValue,
+        initialValue=null,
         selectValues=[], // [{value, name}]
         autoSave=false,
         middleChild=null,
@@ -17,6 +17,7 @@ export const SettingsRow = props => {
 
         onSubmit,   // (val, onSuccess) => void
 
+        ...rest
     } = props
     const [isEditing, setIsEditing] = useState(false)
     const [imageFile, setImageFile] = useState(null)
@@ -87,15 +88,20 @@ export const SettingsRow = props => {
 
     return !isEditing ?
         <RowContainer
+            {...rest}
             style={isLastRow ? {marginBottom: 50} : {}}
             className={isEditable ? 'oh-dark' : ''}
             onClick={onClickRowContainer}
         >
             <p className='row-title'>{title}</p>
-            {middleChild}
-            {rightChild}
+            <div className='middle-child-container'>
+                {middleChild}
+            </div>
+            <div className='right-child-container'>
+                {rightChild}
+            </div>
         </RowContainer>
-        : <EditForm onSubmit={onClickSubmit}>
+        : <EditForm {...rest} onSubmit={onClickSubmit}>
             <div
                 className='header clickable'
                 onClick={onClickClose}
@@ -162,12 +168,30 @@ const RowContainer = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    min-height: 50px;
+    min-height: 40px;
     border-top: 1px solid ${p => p.theme.bc};
     padding: 0px 15px;
+    position: relative;
 
     & .row-title {
         color: ${p => p.theme.textSecondary};
+        position: absolute;
+    }
+
+    & .middle-child-container {
+        position: aboslute;
+        margin: 0 auto;
+        display: inline-flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    & .right-child-container {
+        position: absolute;
+        right: 15px;
+        display: inline-flex;
+        justify-content: space-around;
+        align-items: center;
     }
 
 `
@@ -177,12 +201,13 @@ const EditForm = styled.form`
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
-    border: 1px solid ${p => p.theme.bc};
+    border: ${p => p.theme.floatBorder};
     border-radius: var(--br-container);
     padding: 0px 14px;
     margin-bottom: 15px;
     padding-bottom: 15px;
     box-shadow: ${p => p.theme.boxShadowDark};
+    background-color: ${p => p.theme.bgcLight};
 
     & .header {
         display: flex;

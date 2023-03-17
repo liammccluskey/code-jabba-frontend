@@ -14,24 +14,32 @@ export const ConfirmComponent = props => {
         confirmButtonTitle='Yes',
         isDanger=false,
 
-        onConfirm,
+        onConfirm, // onSuccess => void
         onCancel = () => {},
 
         ...rest
     } = props
 
-    const onClickConfirm = onConfirm
+    // Utils
+
+    const removeModal = () => props.removeModal(modalID)
+
+    // Direct
+
+    const onClickConfirm = () => {
+       onConfirm(removeModal)
+    }
 
     const onClickCancel = () => {
-        props.removeModal(modalID)
-        props.onCancel()
+        removeModal()
+        onCancel()
     }
 
     return (
-        <Root>
+        <Root className='animation-slide-up'>
             <div className='header section'>
                 <i className='bi-check-circle' />
-                <h4 className='header-title'>{title}</h4>
+                <h3 className='header-title'>{title}</h3>
             </div>
             <div className='body section'>
                 <h4 className='body-message'>{message}</h4>
@@ -72,6 +80,7 @@ const Root = styled.div`
         justify-content: flex-start;
         align-items: center;
         background-color: ${p => p.theme.tintTranslucent};
+        padding: 15px 20px !important;
     }
     & .header i {
         margin-right: 10px;
@@ -80,7 +89,6 @@ const Root = styled.div`
     }
     & .header-title {
         color: ${p => p.theme.tint};
-        text-transform: uppercase;
         letter-spacing: 1px;
     }
 
@@ -92,7 +100,7 @@ const Root = styled.div`
     }
 
     & .section {
-        padding: 20px 30px;
+        padding: 20px 20px;
         border-left: 3px solid ${p => p.theme.tint};
         text-align: left;
         border-radius: 0px;

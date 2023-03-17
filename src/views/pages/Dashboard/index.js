@@ -28,16 +28,6 @@ export const DashboardComponent = props => {
     return (
         <PageContainer>
             <MainHeader />
-            <Subheader
-                title='Dashboard'
-                path='/dashboard'
-                activeLinkID='feed'
-                links={[
-                    {name: 'Feed', id: 'feed', url: '/feed'},
-                    {name: 'Overview', id: 'overview', url: '/overview'},
-                    {name: 'Account', id: 'account', url: '/account'},
-                ]}
-            />
             <BodyContainer>
             </BodyContainer>
         </PageContainer>

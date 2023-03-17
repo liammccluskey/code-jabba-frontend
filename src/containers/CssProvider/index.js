@@ -51,10 +51,11 @@ const Root = styled.div`
     select:active, select:focus {
         border-color: ${p => p.theme.tint};
         background-color: transparent;
-        transition: 0.2s;
+        transition: var(--duration-animation);
     }
 
-    /* classes */
+    /* Properties */
+
     .c-t {
         color: ${p => p.theme.tint};
     }
@@ -78,7 +79,184 @@ const Root = styled.div`
         background-color: ${p => p.theme.bgcNav};
     }
 
-    /* components */
+    .bgc-bgc-settings {
+        background-color: ${p => p.theme.bgcSettings};
+    }
+
+    /* Animations */
+
+    @keyframes pop-in {
+        0% {
+            opacity: 0;
+            transform: scale(0.75);
+            //transform: translateY(-25px);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @-moz-keyframes pop-in {
+        0% {
+            opacity: 0;
+            transform: scale(0.75);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @-webkit-keyframes pop-in {
+        0% {
+            opacity: 0;
+            transform: scale(0.75);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @-o-keyframes pop-in {
+        0% {
+            opacity: 0;
+            transform: scale(0.75);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @-ms-keyframes pop-in {
+        0% {
+            opacity: 0;
+            transform: scale(0.75);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .animation-pop-in {
+        animation: pop-in var(--duration-animation);
+        -webkit-animation: pop-in var(--duration-animation);
+        -moz-animation: pop-in var(--duration-animation);
+        -ms-animation: pop-in var(--duration-animation);
+        -o-animation: pop-in var(--duration-animation);
+    }
+
+    @keyframes slide-up {
+        0% {
+            transform: translateY(50px);
+        }
+        100% {
+            transform: translateY(0px);
+        }
+    }
+
+    @-moz-keyframes slide-up {
+        0% {
+            transform: translateY(50px);
+        }
+        100% {
+            transform: translateY(0px);
+        }
+    }
+
+    @-webkit-keyframes slide-up {
+        0% {
+            transform: translateY(50px);
+        }
+        100% {
+            transform: translateY(0px);
+        }
+    }
+
+    @-o-keyframes slide-up {
+        0% {
+            transform: translateY(50px);
+        }
+        100% {
+            transform: translateY(0px);
+        }
+    }
+
+    @-ms-keyframes slide-up {
+        0% {
+            transform: translateY(50px);
+        }
+        100% {
+            transform: translateY(0px);
+        }
+    }
+
+    .animation-slide-up {
+        animation: slide-up var(--duration-animation);
+        -webkit-animation: slide-up var(--duration-animation);
+        -moz-animation: slide-up var(--duration-animation);
+        -ms-animation: slide-up var(--duration-animation);
+        -o-animation: slide-up var(--duration-animation);
+    }
+
+    @keyframes fade-in {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @-moz-keyframes fade-in {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @-webkit-keyframes fade-in {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @-o-keyframes fade-in {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @-ms-keyframes fade-in {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    .animation-fade-in {
+        animation: fade-in var(--duration-animation);
+        -webkit-animation: fade-in var(--duration-animation);
+        -moz-animation: fade-in var(--duration-animation);
+        -ms-animation: fade-in var(--duration-animation);
+        -o-animation: fade-in var(--duration-animation);
+    }
+
+    /* Compound Properties */
+
     .float-container {
         border-radius: var(--br-container);
         border: ${p => p.theme.floatBorder};
@@ -87,5 +265,18 @@ const Root = styled.div`
         background-color: ${p => p.theme.bgcLight};
         box-shadow: ${p => p.theme.boxShadow};
     }
+
+    /* mixins */
+
+    .line-clamp-2 {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+        /* autoprefixer: off */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        max-height: 2 * 1.5 + unquote('em');
+      }
 
 `

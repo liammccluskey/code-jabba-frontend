@@ -48,7 +48,8 @@ const DarkTheme = {
     bgcSemilight: 'rgb(15,17,19)',
     bgcHover: 'rgba(249, 252, 255, 0.08)',
     bgcNav: 'rgb(21, 24, 28)',
-    bgcSettings: 'rgb(21, 24, 28)',
+    bgcNav: 'rgb(14, 17, 21)',
+    bgcSettings: 'black',
     bgcInput: 'rgb(38, 41, 45)',
     bc: 'rgb(48, 54, 58)',
     textMain: 'rgb(205,205,205)',
@@ -58,6 +59,7 @@ const DarkTheme = {
     textYellow: Colors.yellow,
     boxShadow: 'none',
     floatBorder: '1px solid rgb(48, 54, 58)',
+    floatBorder: 'none',
     boxShadowDark: 'none'
 }
 

@@ -27,7 +27,7 @@ export const ModalProviderComponent = props => {
             {children}
             {props.modalStack.map( ({type, props, id}, i) => (
                 <div
-                    className='fullscreen-blur'
+                    className='fullscreen-blur animation-fade-in'
                     style={{zIndex: 20 + i}}
                     key={id}
                 >
@@ -48,7 +48,8 @@ const Root = styled.div`
         display: flex;
         justify-content: space-around;
         align-items: center;
-        backdrop-filter: blur(3px) brightness(85%);
+        //backdrop-filter: blur(3px) brightness(50%);
+        backdrop-filter: brightness(50%);
     }
 `
 const mapStateToProps = state => ({

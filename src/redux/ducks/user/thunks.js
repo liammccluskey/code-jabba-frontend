@@ -1,4 +1,4 @@
-import {updateProfile, updateEmail, signOut} from 'firebase/auth'
+import {updateProfile, updateEmail, signOut, deleteUser as deleteFirebaseUser} from 'firebase/auth'
 import {ref, uploadBytes, getDownloadURL} from 'firebase/storage'
 
 import * as UserActions from './actions'
@@ -29,8 +29,8 @@ export const fetchThisMongoUser = (
             throw Error('There is no user with that uid.')
         }
         dispatch(UserActions.setMongoUser(getRes.data))
-        dispatch(ThemeActions.setThemeColor(getRes.data.themeColor))
-        dispatch(ThemeActions.setTintColor(getRes.data.tintColor))
+        dispatch(ThemeActions.setThemeColor(getRes.data.settings.theme.themeColor))
+        dispatch(ThemeActions.setTintColor(getRes.data.settings.theme.tintColor))
         dispatch(UserActions.setLoadingMongoUser(false))
         onSuccess()
     } catch (error) {
@@ -42,26 +42,41 @@ export const fetchThisMongoUser = (
     }
 }
 
-export const patchUser = (partialUser, onSuccess = () => {}) => async (dispatch, getState) => {
-    dispatch(UserActions.setLoadingProfileUpdate(true))
+// TODO : unused, consider deleting
+export const patchUser = (
+    partialUser,
+    onSuccess = () => {},
+    onFailure = () => {}
+) => async (dispatch, getState) => {
     const state = getState()
     const {_id} = getMongoUser(state)
+    const firebaseUser = getFirebaseUser()
 
     try {
         const res = await UserUtils.__patchMongoUser(partialUser, _id)
-        dispatch(UserActions.updateMongoUser(partialUser))
-        dispatch(addMessage(res.data.message))
-        onSuccess()
+        dispatch(fetchThisMongoUser(
+            firebaseUser,
+            () => {
+                dispatch(addMessage(res.data.message))
+                onSuccess()
+            },
+            onFailure
+        ))
     } catch (error) {
-        console.log(error)
-        dispatch(addMessage(error.response.data.message, true))
+        const errorMessage = error.response ?
+            error.response.data.message
+            : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        onFailure()
     }
-
-    dispatch(UserActions.setLoadingProfileUpdate(false))
 }
 
-export const patchUserDisplayName = (displayName, onSuccess = () => {}) => async (dispatch, getState) => {
-    dispatch(UserActions.setLoadingProfileUpdate(true))
+export const patchUserDisplayName = (
+    displayName,
+    onSuccess = () => {},
+    onFailure = () => {}
+) => async (dispatch, getState) => {
     const state = getState()
     const {_id} = getMongoUser(state)
     const firebaseUser = getFirebaseUser()
@@ -74,22 +89,29 @@ export const patchUserDisplayName = (displayName, onSuccess = () => {}) => async
             throw Error(errorMessage)
         }
         const res = await UserUtils.__patchMongoUser({displayName}, _id)
-        dispatch(UserActions.updateMongoUser({displayName}))
-        dispatch(addMessage(res.data.message))
-        onSuccess()
+        dispatch(fetchThisMongoUser(
+            firebaseUser,
+            () => {
+                dispatch(addMessage(res.data.message))
+                onSuccess()
+            },
+            onFailure
+        ))
     } catch (error) {
         const errorMessage = error.response ?
             error.response.data.message
             : error.message
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
+        onFailure()
     }
-    
-    dispatch(UserActions.setLoadingProfileUpdate(false))
 }
 
-export const patchUserEmail = (email, onSuccess = () => {}) => async (dispatch, getState) => {
-    dispatch(UserActions.setLoadingProfileUpdate(true))
+export const patchUserEmail = (
+    email,
+    onSuccess = () => {},
+    onFailure = () => {}
+) => async (dispatch, getState) => {
     const state = getState()
     const {_id} = getMongoUser(state)
     const firebaseUser = getFirebaseUser()
@@ -102,22 +124,29 @@ export const patchUserEmail = (email, onSuccess = () => {}) => async (dispatch, 
             throw Error(errorMessage)
         }
         const res = await UserUtils.__patchMongoUser({email}, _id)
-        dispatch(UserActions.updateMongoUser({email}))
-        dispatch(addMessage(res.data.message))
-        onSuccess()
+        dispatch(fetchThisMongoUser(
+            firebaseUser,
+            () => {
+                dispatch(addMessage(res.data.message))
+                onSuccess()
+            },
+            onFailure
+        ))
     } catch (error) {
         const errorMessage = error.response ?
             error.response.data.message
             : error.message
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
+        onFailure()
     }
-    
-    dispatch(UserActions.setLoadingProfileUpdate(false))
 }
 
-export const patchUserPhoto = (photoFile, onSuccess = () => {}) => async (dispatch, getState) => {
-    dispatch(UserActions.setLoadingProfileUpdate(true))
+export const patchUserPhoto = (
+    photoFile,
+    onSuccess = () => {},
+    onFailure = () => {}
+) => async (dispatch, getState) => {
     const state = getState()
     const {_id} = getMongoUser(state)
     const firebaseUser = getFirebaseUser()
@@ -134,56 +163,62 @@ export const patchUserPhoto = (photoFile, onSuccess = () => {}) => async (dispat
         }
 
         const res = await UserUtils.__patchMongoUser({photoURL}, _id)
-        dispatch(UserActions.updateMongoUser({photoURL}))
-        dispatch(addMessage(res.data.message))
-        onSuccess()
+        dispatch(fetchThisMongoUser(
+            firebaseUser,
+            () => {
+                dispatch(addMessage(res.data.message))
+                onSuccess()
+            },
+            onFailure
+        ))
     } catch (error) {
         const errorMessage = error.response ?
             error.response.data.message
             : error.message
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
+        onFailure()
     }
+}
 
-    dispatch(UserActions.setLoadingProfileUpdate(false))
+export const patchUserSettings = (
+    settingPath,
+    settingValue,
+    onSuccess = () => {},
+    onFailure = () => {}
+) => async (dispatch, getState) => {
+    const state = getState()
+    const {_id} = getMongoUser(state)
+    const firebaseUser = getFirebaseUser()
+
+    try {
+        const res = await UserUtils.__patchMongoUserSettings(settingPath, settingValue, _id)
+        dispatch(fetchThisMongoUser(
+            firebaseUser,
+            () => {
+                dispatch(addMessage(res.data.message))
+                onSuccess()
+            },
+            onFailure
+        ))
+    } catch (error) {
+        const errorMessage = error.response ?
+            error.response.data.message
+            : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        onFailure()
+    }
 }
 
 export const patchUserThemeColor = (themeColor, onSuccess = () => {}) => async (dispatch, getState) => {
-    dispatch(UserActions.setLoadingProfileUpdate(true))
     dispatch(ThemeActions.setThemeColor(themeColor))
-    const state = getState()
-    const {_id} = getMongoUser(state)
-
-    try {
-        const res = await UserUtils.__patchMongoUser({themeColor}, _id)
-        dispatch(UserActions.updateMongoUser({themeColor}))
-        dispatch(addMessage(res.data.message))
-        onSuccess()
-    } catch (error) {
-        console.log(error)
-        dispatch(addMessage(error.response.data.message, true))
-    }
-
-    dispatch(UserActions.setLoadingProfileUpdate(false))
+    dispatch(patchUserSettings('theme.themeColor', themeColor, onSuccess))
 }
 
 export const patchUserTintColor = (tintColor, onSuccess = () => {}) => async (dispatch, getState) => {
-    dispatch(UserActions.setLoadingProfileUpdate(true))
     dispatch(ThemeActions.setTintColor(tintColor))
-    const state = getState()
-    const {_id} = getMongoUser(state)
-
-    try {
-        const res = await UserUtils.__patchMongoUser({tintColor}, _id)
-        dispatch(UserActions.updateMongoUser({tintColor}))
-        dispatch(addMessage(res.data.message))
-        onSuccess()
-    } catch (error) {
-        console.log(error)
-        dispatch(addMessage(error.response.data.message, true))
-    }
-
-    dispatch(UserActions.setLoadingProfileUpdate(false))
+    dispatch(patchUserSettings('theme.tintColor', tintColor, onSuccess))
 }
 
 export const signOutUser = onSuccess => async (dispatch, getState) => {
@@ -199,5 +234,29 @@ export const signOutUser = onSuccess => async (dispatch, getState) => {
         const errorMessage = getFirebaseErrorMessage(error)
         dispatch(addMessage(errorMessage, true))
         console.log(errorMessage)
+    }
+}
+
+export const deleteUser = onSuccess => async (dispatch, getState) => {
+    const state = getState()
+    const {_id} = getMongoUser(state)
+    const firebaseUser = getFirebaseUser()
+
+    try {
+        try {
+            await deleteFirebaseUser(firebaseUser)
+        } catch (error) {
+            const errorMessage = getFirebaseErrorMessage(error)
+            throw Error(errorMessage)
+        }
+        const res = await UserUtils.__deleteMongoUser(firebaseUser.uid, _id)
+        dispatch(addMessage(res.data.message))
+        dispatch(signOutUser(onSuccess))
+    } catch (error) {
+        const errorMessage = error.response ?
+            error.response.data.message
+            : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
     }
 }

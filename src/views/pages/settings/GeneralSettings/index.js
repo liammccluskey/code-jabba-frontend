@@ -4,6 +4,7 @@ import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 import moment from 'moment'
 import { sendPasswordResetEmail } from 'firebase/auth'
+import { useNavigate } from 'react-router-dom'
 
 import { auth, getFirebaseErrorMessage } from '../../../../networking'
 import { PageContainer } from '../../../components/common/PageContainer'
@@ -16,7 +17,8 @@ import {
     patchUserEmail,
     patchUserPhoto,
     patchUserThemeColor,
-    patchUserTintColor
+    patchUserTintColor,
+    deleteUser
 } from '../../../../redux/ducks/user'
 import { addModal, ModalTypes } from '../../../../redux/ducks/modal'
 import {
@@ -34,6 +36,7 @@ export const GeneralSettingsComponent = props => {
     const {
         
     } = props
+    const navigate = useNavigate()
 
     const formInitialValues = {
         membership: {
@@ -75,7 +78,12 @@ export const GeneralSettingsComponent = props => {
     const onClickDeleteAccount = async () => {
         props.addModal(ModalTypes.CONFIRM, {
             message: 'Are you sure you want to delete your account?',
-            onConfirm: () => console.log('account deleted'),
+            onConfirm: onSuccess => {
+                props.deleteUser(() => {
+                    navigate('/')
+                    onSuccess()
+                })
+            },
             isDanger: true
         })
     }
@@ -106,7 +114,7 @@ export const GeneralSettingsComponent = props => {
 
 
     return (
-        <PageContainer className='bgc-bgc-nav'>
+        <PageContainer className='bgc-bgc-settings'>
             <MainHeader />
             <SettingsHeader activeLinkID='general' />
             <BodyContainer style={{maxWidth: 1000}} className='as-center'>
@@ -245,6 +253,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     patchUserThemeColor,
     patchUserTintColor,
     patchUserPhoto,
+    deleteUser,
     addMessage,
     addModal,
 }, dispatch)

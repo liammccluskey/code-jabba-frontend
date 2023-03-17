@@ -19,13 +19,17 @@ import { PageLinks } from '../MainHeader'
 
 export const MainMenuComponent = props => {
     const {
-        
+        menuHidden,
+
+        setMenuHidden,
+
+        ...rest
     } = props
     const navigate = useNavigate()
-    const [menuHidden, setMenuHidden] = useState(true)
 
     const onClickProfileContainer = () => {
-
+        navigate('/settings')
+        setMenuHidden(true)
     }
 
     const onClickPageLink = url => {
@@ -47,8 +51,9 @@ export const MainMenuComponent = props => {
 
     return (
         <DropdownMenu
+            {...rest}
             menuHidden={menuHidden}
-            onMenuHiddenChange={setMenuHidden}
+            setMenuHidden={setMenuHidden}
             triggerElement={
                 // <UserIconContainer className='d-flex jc-flex-start ai-center'>
                 //     <i className='bi-chevron-down' />
@@ -59,12 +64,15 @@ export const MainMenuComponent = props => {
             triggerHeight={35}
             menuElement={
                 <MenuContainer className='d-flex fd-column jc-flex-start ai-stretch'>
-                    <div className='d-flex fd-column jc-flex-start ai-center profile-container oh-dark'>
+                    <div
+                        className='d-flex fd-column jc-flex-start ai-center profile-container oh-dark'
+                        onClick={onClickProfileContainer}
+                    >
                         <UserIcon
                             size='l'
                             style={{marginBottom: 10}}
                         />
-                        <p style={{marginBottom: 5}}>
+                        <p style={{marginBottom: 5}} className='fw-m'>
                             {props.user.displayName}
                         </p>
                         <h5 className='c-ts'>{props.user.email}</h5>
@@ -74,6 +82,7 @@ export const MainMenuComponent = props => {
                             <div
                                 className='row-container oh-dark oh-c-t'
                                 onClick={() => onClickPageLink(url)}
+                                key={name}
                             >
                                 <i className={icon} />
                                 <p>{name}</p>
@@ -91,7 +100,7 @@ export const MainMenuComponent = props => {
                                     const isLast = i === Object.values(Themes).length - 1
                                     const marginRight = isLast ? 0 : 7
                                     return (
-                                        <Tooltip title={name} style={{marginRight}}> 
+                                        <Tooltip title={name} style={{marginRight}} key={value}> 
                                             <i
                                                 className={`bi-${icon} oh-c-t`}
                                                 onClick={() => onClickThemeColor(value)}
@@ -112,7 +121,7 @@ export const MainMenuComponent = props => {
                                     const isLast = i === Object.values(Tints).length - 1
                                     const marginRight = isLast ? 0 : 7
                                     return (
-                                        <Tooltip title={name} style={{marginRight}}> 
+                                        <Tooltip title={name} style={{marginRight}} key={value}> 
                                             <i
                                                 style={{
                                                     height: 17, width: 17,
@@ -171,7 +180,7 @@ const MenuContainer = styled.div`
     }
 
     & .row-container {
-        padding: 15px 15px;
+        padding: 12px 15px;
         display: flex;
         justify-content: flex-start;
         align-items: center;

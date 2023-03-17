@@ -13,6 +13,7 @@
   padding: 0px 0px;
   
   font-family: 'Nunito Sans', sans-serif;
+  /* font-family: 'Mulish'; */
 }
 
 body {
@@ -56,21 +57,6 @@ th {
   opacity: 1; /* Firefox */
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
-* ::-webkit-scrollbar {
-  display: none;
-}
-
-/* Hide scrollbar for IE, Edge and Firefox */
-* {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
 :root {
   /* dynamic */
   --ps-mainheader: 3%;
@@ -79,8 +65,9 @@ html {
 
   /* constants */
   --h-mainheader: 70px;
-  --br-container: 10px;
+  --br-container: 5px;
   --width-mobile: 601px;
+  --duration-animation: 0.2s;
 }
 
 @media only screen and (max-width: 800px) {

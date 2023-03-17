@@ -6,40 +6,30 @@ import { getIsMobile } from '../../../../redux/ducks/theme'
 
 export const DropdownMenuComponent = props => {
     const {
-        //menuHidden,
+        menuHidden,
         triggerElement,
         menuElement,
         triggerHeight,
 
-        onMenuHiddenChange,
+        setMenuHidden,
 
         ...rest
     } = props
-    const [menuHidden, setMenuHidden] = useState(props.menuHidden)
     const menuRef = useRef()
     const triggerRef = useRef()
 
     useEffect(() => {
-        onMenuHiddenChange(menuHidden)
-    }, [menuHidden])
-
-    useEffect(() => {
-        setMenuHidden(props.menuHidden)
-    }, [props.menuHidden])
-
-    useEffect(() => {
-        const handleClick =  e => {
+        const handleClick = e => {
             if (menuRef.current && menuRef.current.contains(e.target)) return
             if (triggerRef.current && triggerRef.current.contains(e.target)) return
-            else hideMenu()
+            else setMenuHidden(true)
         }
         
         document.body.addEventListener('click', handleClick)
-        return () => document.body.removeEventListener('click', handleClick)
+        return () => {
+            document.body.removeEventListener('click', handleClick)
+        }
     })
-
-    const hideMenu = () => setMenuHidden(true)
-    const showMenu = () => setMenuHidden(false)
 
     const onClickTriggerContainer = () => {
         setMenuHidden(curr => !curr)
@@ -58,10 +48,10 @@ export const DropdownMenuComponent = props => {
             </div>
             {menuHidden ? null :
                 <div
-                style={{marginTop: triggerHeight + 15}}
+                    style={{marginTop: triggerHeight + 15}}
                     className={`
-                        menu-container d-flex fd-column jc-flex-start ai-stretch no-select
-                        ${menuHidden ? '' : 'menu-container-active'}
+                        menu-container animation-pop-in no-select
+                        d-flex fd-column jc-flex-start ai-stretch
                     `}
                     ref={menuRef}
                 >
@@ -82,18 +72,9 @@ const Root = styled.div`
         border: 1px solid ${p => p.theme.bc};
         border-radius: var(--br-container);
         background-color: ${p => p.theme.bgcLight};
-        width: 275px;
+        width: 320px;
         box-shadow: ${p => p.theme.boxShadowDark};
         overflow: hidden;
-
-        transition: 0.3s;
-        opacity: 0;
-        pointer-events: none;
-    }
-
-    & .menu-container-active {
-        opacity: 1;
-        pointer-events: auto;
         z-index: 10;
     }
 

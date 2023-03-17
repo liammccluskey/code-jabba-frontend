@@ -7,6 +7,8 @@ export const TabOptions = props => {
         activeTabID,
 
         onClickTab, // (id) => void
+
+        ...rest
     } = props
 
     const onClickTabOption = tabID => {
@@ -14,7 +16,7 @@ export const TabOptions = props => {
     }
 
     return (
-        <Root className='d-flex jc-flex-start ai-center'>
+        <Root {...rest}>
             {options.map( ({name, id}) => (
                 <h5 
                     className={`
@@ -31,6 +33,10 @@ export const TabOptions = props => {
 }
 
 const Root = styled.div`
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
     & .tab-option {
         border-bottom: 2px solid;
         border-color: transparent;

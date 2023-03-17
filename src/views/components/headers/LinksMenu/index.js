@@ -8,10 +8,13 @@ import { PageLinks } from '../MainHeader'
 
 export const LinksMenu = props => {
     const {
+        menuHidden,
+
+        setMenuHidden,
+
         ...rest
     } = props
     const navigate = useNavigate()
-    const [menuHidden, setMenuHidden] = useState(true)
 
     const onClickLink = url => {
         navigate(url)
@@ -22,9 +25,9 @@ export const LinksMenu = props => {
         <DropdownMenu
             {...rest}
             menuHidden={menuHidden}
-            onMenuHiddenChange={setMenuHidden}
+            setMenuHidden={setMenuHidden}
             triggerElement={
-                <LinksIcon className='bi-grid oh-c-t' />
+                <LinksIcon className={`bi-grid oh-c-t ${!menuHidden && 'active'}`} />
             }
             triggerHeight={35}
             menuElement={
@@ -33,6 +36,7 @@ export const LinksMenu = props => {
                         <div
                             className='row-container oh-dark'
                             onClick={() => onClickLink(url)}
+                            key={name}
                         >
                             <i className={icon} />
                             <p>{name}</p>
@@ -45,13 +49,18 @@ export const LinksMenu = props => {
 }
 
 const LinksIcon = styled.i`
-    font-size: 27px;
+    font-size: 25px;
     color: ${p => p.theme.textMain};
+
+    &:hover,
+    &.active {
+        color: ${p => p.theme.tint};
+    }
 `
 
 const Menu = styled.div`
     & .row-container {
-        padding: 15px 15px;
+        padding: 12px 15px;
         display: flex;
         justify-content: flex-start;
         align-items: center;

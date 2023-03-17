@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 
 import { MainMenu } from '../MainMenu'
 import { LinksMenu } from '../LinksMenu'
+import { NotificationsMenu } from '../NotificationsMenu'
 import { getIsMobile } from '../../../../redux/ducks/theme'
 
 export const PageLinks = [
@@ -23,7 +24,11 @@ export const PageLinks = [
 ]
 
 export const MainHeaderComponent = props => {
+    const [linksMenuHidden, setLinksMenuHidden] = useState(true)
+    const [notificationsMenuHidden, setNotificationsMenuHidden] = useState(true)
+    const [mainMenuHidden, setMainMenuHidden] = useState(true)
     const navigate = useNavigate()
+
     const activeLinkID = window.location.pathname.split('/')[1]
 
     const onClickLogo = () => navigate('/')
@@ -39,13 +44,19 @@ export const MainHeaderComponent = props => {
                     height={35}
                     width={35}
                 />
-                <LogoText>
-                    {process.env.REACT_APP_SITE_NAME}
-                </LogoText>
+                {props.isMobile ? null :
+                    <LogoText>
+                        {process.env.REACT_APP_SITE_NAME}
+                    </LogoText>
+                }
             </div>
             <div className='d-flex jc-flex-end ai-center'>
                 {props.isMobile ?
-                    <LinksMenu style={{marginRight: 15}}/>
+                    <LinksMenu
+                        style={{marginRight: 15}}
+                        menuHidden={linksMenuHidden}
+                        setMenuHidden={setLinksMenuHidden}
+                    />
                     : PageLinks.map( ({name, url, id}) => (
                         <PageLink
                             key={id}
@@ -56,7 +67,15 @@ export const MainHeaderComponent = props => {
                         </PageLink>
                     ))
                 }
-                <MainMenu />
+                <NotificationsMenu
+                    style={{marginRight: 15}}
+                    menuHidden={notificationsMenuHidden}
+                    setMenuHidden={setNotificationsMenuHidden}
+                />
+                <MainMenu
+                    menuHidden={mainMenuHidden}
+                    setMenuHidden={setMainMenuHidden}
+                />
             </div>
         </Root>
     )

@@ -23,6 +23,7 @@ export const MessagesProviderComponent = props => {
                     <div
                         className={`d-flex jc-flex-start ai-center
                             ${isError ? 'error-message' : 'regular-message'}
+                            animation-slide-up
                         `}
                         key={id}
                     >

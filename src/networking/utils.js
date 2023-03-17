@@ -1,9 +1,9 @@
 import { FirebaseErrors } from "./constants"
 
-export const stringifyQuery = (queryParams) => {
-    return Object
+export const stringifyQuery = queryParams => {
+    return '?' + Object
         .entries(queryParams)
-        .map( (key, value) => `${key}=${value}`)
+        .map( ([key, value]) => `${key}=${value}`)
         .join('&')
 }
 

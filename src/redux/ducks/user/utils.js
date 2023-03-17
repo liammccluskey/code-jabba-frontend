@@ -1,4 +1,4 @@
-import {api} from '../../../networking'
+import {api, stringifyQuery} from '../../../networking'
 
 export const __fetchMongoUserByuid = async uid => {
     try {
@@ -42,6 +42,33 @@ export const __postMongoUser = async firebaseUser => {
 export const __patchMongoUser = async (partialUser, _id) => {
     try {
         const res = await api.patch(`/users/${_id}`, partialUser)
+        return res
+    } catch (error) {
+        throw(error)
+    }
+}
+
+export const __patchMongoUserSettings = async (settingPath, settingValue, userID) => {
+    try {
+        const res = await api.patch(`/users/settings/${userID}`, {
+            path: settingPath,
+            value: settingValue
+        })
+        return res
+    } catch (error) {
+        throw(error)
+    }
+}
+
+export const __deleteMongoUser = async (uid, _id) => {
+    const query = {
+        uid,
+        userID: _id
+    }
+    const queryString = stringifyQuery(query)
+
+    try {
+        const res = await api.delete(`/users${queryString}`)
         return res
     } catch (error) {
         throw(error)

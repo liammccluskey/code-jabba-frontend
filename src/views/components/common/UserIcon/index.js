@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
@@ -12,11 +12,15 @@ export const UserIconComponent = props => {
         ...rest
     } = props
     const hasPhoto = !!props.user.photoURL
+    const [failedLoadImage, setFailedLoadImage] = useState(false)
 
-    return hasPhoto ?
+    const onErrorLoadingImage = () => setFailedLoadImage(true)
+
+    return hasPhoto && !failedLoadImage ?
         <Image
             src={props.user.photoURL}
             className={size}
+            onError={onErrorLoadingImage}
             {...rest}
         />
         : <Icon

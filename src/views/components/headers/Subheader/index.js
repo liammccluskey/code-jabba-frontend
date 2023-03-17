@@ -24,6 +24,7 @@ export const Subheader = props => {
                         <PageLink
                             to={getLinkPath(url)}
                             className={getLinkClassName(id)}
+                            key={id}
                         >
                             {name}
                         </PageLink>
@@ -61,7 +62,7 @@ const PageLink = styled(Link)`
     font-weight: 400;
     font-size: 15px;
     text-decoration: none;
-    margin-right: 25px;
+    margin-right: 20px;
     border-bottom: 2px solid ${p => p.theme.bgcNav};
     padding-bottom: 11px;
 
