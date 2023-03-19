@@ -40,8 +40,6 @@ export const Subheader = props => {
 
 const Root = styled.div`
     background-color: ${p => p.theme.bgcNav};
-    position: sticky;
-    top: 0px;
     text-align: left;
     padding-top: 13px;
     padding-right: var(--ps-subheader);
@@ -50,6 +48,8 @@ const Root = styled.div`
     z-index: 1;
     width: 100%;
     box-sizing: border-box;
+    position: sticky;
+    top: 0px;
 `
 
 const Title = styled.h2`

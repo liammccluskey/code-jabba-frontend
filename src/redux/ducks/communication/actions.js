@@ -10,14 +10,14 @@ export const setMessages = messages => ({
     value: messages
 })
 
-export const setNotificationsData = notifications => ({
+export const setNotificationsData = data => ({
     type: Types.SET_NOTIFICATIONS_DATA,
-    value: notifications
+    value: data
 })
 
-export const addNotificationsData = notifications => ({
+export const addNotificationsData = data => ({
     type: Types.ADD_NOTIFICATIONS_DATA,
-    value: notifications
+    value: data
 })
 
 export const __markNotificationAsRead = notificationID => ({
@@ -32,5 +32,25 @@ export const setLoadingNotifications = loading => ({
 
 export const setLoadingNotificationsFirstPage = loading => ({
     type: Types.SET_LOADING_NOTIFICATIONS_FIRST_PAGE,
+    value: loading
+})
+
+export const setChannelNotificationsData = data => ({
+    type: Types.SET_CHANNEL_NOTIFICATIONS_DATA,
+    value: data
+})
+
+export const addChannelNotificationsData = data => ({
+    type: Types.ADD_CHANNEL_NOTIFICATIONS_DATA,
+    value: data
+})
+
+export const setLoadingChannelNotifications = loading => ({
+    type: Types.SET_LOADING_CHANNEL_NOTIFICATIONS,
+    value: loading
+})
+
+export const setLoadingChannelNotificationsFirstPage = loading => ({
+    type: Types.SET_LOADING_CHANNEL_NOTIFICATIONS_FIRST_PAGE,
     value: loading
 })

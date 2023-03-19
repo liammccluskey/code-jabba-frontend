@@ -1,9 +1,12 @@
 import {ThemeActionTypes as Types} from './types'
+import { Themes, Tints } from './constants'
+import { calculateIsMobile, calculateIsSemiMobile } from './actions'
 
 const ThemeState = {
     tintColor: 0,
     themeColor: 0,
     isMobile: false,
+    isSemiMobile: false,
 
     // calculated
     theme: null
@@ -12,6 +15,7 @@ const ThemeState = {
 export const themeReducer = (state = ThemeState, action) => {
     switch (action.type) {
         case Types.SET_THEME_COLOR:
+            document.documentElement.style.setProperty('--bgc', Themes[action.value].bgc)
             return {
                 ...state,
                 themeColor: action.value
@@ -21,10 +25,15 @@ export const themeReducer = (state = ThemeState, action) => {
                 ...state,
                 tintColor: action.value
             }
-        case Types.CALCUALTE_IS_MOBILE:
+        case Types.SET_IS_MOBILE:
             return {
                 ...state,
-                isMobile: action.windowWidth < 601
+                isMobile: action.value
+            }
+        case Types.SET_IS_SEMI_MOBILE:
+            return {
+                ...state,
+                isSemiMobile: action.value
             }
         default:
             return state

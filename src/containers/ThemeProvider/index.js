@@ -4,7 +4,15 @@ import {connect} from 'react-redux'
 import { bindActionCreators } from '@reduxjs/toolkit'
 import styled from 'styled-components'
 
-import {getTheme, getIsMobile, calculateIsMobile} from '../../redux/ducks/theme'
+import {
+    getTheme,
+    getIsMobile,
+    getIsSemiMobile,
+    setIsMobile,
+    setIsSemiMobile,
+    calculateIsMobile,
+    calculateIsSemiMobile
+} from '../../redux/ducks/theme'
 
 export const ThemeProviderComponent = props => {
     const {
@@ -14,16 +22,22 @@ export const ThemeProviderComponent = props => {
     useEffect(() => {
         const handleResize = e => {
             const width = window.innerWidth
-            const isMobile = width < 601
-            if (isMobile !== props.isMobile) {
-                props.calculateIsMobile(width)
+            const isMobile = calculateIsMobile(width)
+            const isSemiMobile = calculateIsSemiMobile(width)
+
+            if (isMobile != props.isMobile) {
+                props.setIsMobile(isMobile)
+            }
+            if (isSemiMobile != props.isSemiMobile) {
+                props.setIsSemiMobile(isSemiMobile)
             }
         }
-        props.calculateIsMobile(window.innerWidth)
+        props.setIsMobile(calculateIsMobile(window.innerWidth))
+        props.setIsSemiMobile(calculateIsSemiMobile(window.innerWidth))
 
         window.addEventListener('resize', handleResize)
         return () => window.removeEventListener('resize', handleResize)
-    }, [props.isMobile])
+    }, [props.isMobile, props.isSemiMobile])
 
     return (
         <div>
@@ -36,11 +50,13 @@ export const ThemeProviderComponent = props => {
 
 const mapStateToProps = state => ({
     theme: getTheme(state),
-    isMobile: getIsMobile(state)
+    isMobile: getIsMobile(state),
+    isSemiMobile: getIsSemiMobile(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    calculateIsMobile
+    setIsMobile,
+    setIsSemiMobile
 }, dispatch)
 
 export const ThemeProvider = connect(mapStateToProps, mapDispatchToProps)(ThemeProviderComponent)

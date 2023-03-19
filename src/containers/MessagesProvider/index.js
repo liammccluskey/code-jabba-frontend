@@ -62,8 +62,8 @@ const Root = styled.div`
     box-sizing: border-box;
     z-index: 30;
 
-    .regular-message,
-    .error-message {
+    & .regular-message,
+    & .error-message {
         overflow: hidden;
         margin-top: 10px;
         border: 2px solid;
@@ -73,50 +73,50 @@ const Root = styled.div`
         background-color: ${p => p.theme.bgcLight};
     }
 
-    .regular-message {
+    & .regular-message {
         border-color: ${p => p.theme.tint};
     }
-    .error-message {
+    & .error-message {
         border-color: ${p => p.theme.error};
     }
 
-    .x-button {
+    & .x-button {
         align-self: stretch;
         cursor: pointer;
         pointer-events: auto;
     }
-    .x-button:hover {
+    & .x-button:hover {
         filter: brightness(70%);
     }
-    .regular-message .x-button {
+    & .regular-message .x-button {
         background-color: ${p => p.theme.tint};
     }
-    .error-message .x-button {
+    & .error-message .x-button {
         background-color: ${p => p.theme.error};
     }
 
-    .x-icon {
+    & .x-icon {
         font-size: 30px;
         color: white;
     }
 
-    .content-container {
+    & .content-container {
         padding: 10px 10px;
     }
 
-    .info-label {
+    & .info-label {
         margin-bottom: 5px;
     }
-    .info-label i,
-    .info-label h4 {
+    & .info-label i,
+    & .info-label h4 {
         color: ${p => p.theme.error} !important;
         margin-right: 5px;
     }
-    .info-label i {
+    & .info-label i {
         font-size: 15px;
     }
 
-    .message-text {
+    & .message-text {
         color: ${p => p.theme.textPrimary};
     }
 `

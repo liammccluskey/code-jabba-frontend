@@ -7,3 +7,11 @@ export const generateTheme = (themeColor, tintColor) => {
         ...Tints[tintColor],
     }
 }
+
+export const calculateIsMobile = windowWidth => {
+    return windowWidth < 601
+}
+
+export const calculateIsSemiMobile = windowWidth => {
+    return windowWidth < 801
+}

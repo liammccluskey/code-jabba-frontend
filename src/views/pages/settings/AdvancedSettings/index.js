@@ -67,7 +67,7 @@ export const AdvancedSettingsComponent = props => {
 
     return (
         <PageContainer className='bgc-bgc-settings'>
-            <MainHeader />
+            <MainHeader showBorder={false} />
             <SettingsHeader activeLinkID='advanced' />
             <BodyContainer style={{maxWidth: 1000}} className='as-center'>
                 <Container>
@@ -80,15 +80,17 @@ export const AdvancedSettingsComponent = props => {
                                 key={name}
                                 title={name}
                                 isEditable={false}
-                                middleChild={locked ?
-                                    <i className='bi-lock lock-icon' />
-                                    : null
-                                }
                                 rightChild={
-                                    <Switch
-                                        enabled={enabled}
-                                        onClick={() => !locked && onClickSwitch(path, !enabled)}
-                                    />
+                                    <div className='d-inline-flex jc-flex-start ai-center'>
+                                        {locked ?
+                                            <i className='bi-lock lock-icon' />
+                                            : null
+                                        }
+                                        <Switch
+                                            enabled={enabled}
+                                            onClick={() => !locked && onClickSwitch(path, !enabled)}
+                                        />
+                                    </div>
                                 }
                                 isLastRow={i === formInitialValues.appNotifications.length - 1}
                             />
@@ -129,7 +131,7 @@ const Container = styled.div`
     & .lock-icon {
         font-size: 17px;
         color: ${p => p.theme.textSecondary};
-        margin-right: 30px;
+        margin-right: 8px;
     }
 `
 

@@ -25,9 +25,10 @@ export const addMessage = (title, isError=false) => (dispatch, getState) => {
 }
 
 export const fetchNotifications = page => async (dispatch, getState) => {
-    dispatch(CommunicationActions.setLoadingNotifications(true))
     if (page === 1) {
         dispatch(CommunicationActions.setLoadingNotificationsFirstPage(true))
+    } else {
+        dispatch(CommunicationActions.setLoadingNotifications(true))
     }
     const state = getState()
     const {_id} = getMongoUser(state)
@@ -44,9 +45,10 @@ export const fetchNotifications = page => async (dispatch, getState) => {
         dispatch(addMessage(errorMessage, true))
     }
 
-    dispatch(CommunicationActions.setLoadingNotifications(false))
     if (page === 1) {
         dispatch(CommunicationActions.setLoadingNotificationsFirstPage(false))
+    } else {
+        dispatch(CommunicationActions.setLoadingNotifications(false))
     }
 }
 
@@ -62,6 +64,34 @@ export const markNotificationsAsRead = notificationIDs => async (dispatch, getSt
     } catch (error) {
         const errorMessage = error.response.data.message
         console.log(errorMessage)
+    }
+}
+
+export const fetchChannelNotifications = (channelID, page) => async (dispatch, getState) => {
+    if (page === 1) {
+        dispatch(CommunicationActions.setLoadingChannelNotificationsFirstPage(true))
+    } else {
+        dispatch(CommunicationActions.setLoadingChannelNotifications(true))
+    }
+    const state = getState()
+    const {_id} = getMongoUser(state)
+
+    try {
+        const queryString = stringifyQuery({page})
+        const res = await api.get(`/notifications/user/${_id}/channel/${channelID}${queryString}`)
+
+        if (page === 1) dispatch(CommunicationActions.setChannelNotificationsData(res.data))
+        else dispatch(CommunicationActions.addChannelNotificationsData(res.data))
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+    }
+
+    if (page === 1) {
+        dispatch(CommunicationActions.setLoadingChannelNotificationsFirstPage(false))
+    } else {
+        dispatch(CommunicationActions.setLoadingChannelNotifications(false))
     }
 }
 

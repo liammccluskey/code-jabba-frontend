@@ -24,6 +24,9 @@ export const PageLinks = [
 ]
 
 export const MainHeaderComponent = props => {
+    const {
+        showBorder=true,
+    } = props
     const [linksMenuHidden, setLinksMenuHidden] = useState(true)
     const [notificationsMenuHidden, setNotificationsMenuHidden] = useState(true)
     const [mainMenuHidden, setMainMenuHidden] = useState(true)
@@ -34,7 +37,7 @@ export const MainHeaderComponent = props => {
     const onClickLogo = () => navigate('/')
 
     return (
-        <Root className='d-flex jc-space-between ai-center'>
+        <Root className={`d-flex jc-space-between ai-center ${!showBorder && 'no-border'}`}>
             <div
                 className='d-flex jc-flex-start ai-center clickable'
                 onClick={onClickLogo}
@@ -87,6 +90,11 @@ const Root = styled.div`
     padding: 0px var(--ps-mainheader);
     width: 100%;
     box-sizing: border-box;
+    border-bottom: ${p => p.theme.navBorder};
+    
+    &.no-border {
+        border-bottom: none;
+    }
 `
 
 const LogoIcon = styled.img`

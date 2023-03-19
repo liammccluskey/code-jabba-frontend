@@ -9,7 +9,6 @@ export const LoginCard = styled.div`
     box-sizing: border-box;
     width: 450px;
     max-width: 450px;
-    flex: 1;
     padding: 40px 40px;
     text-align: left;
     margin: 0 auto;

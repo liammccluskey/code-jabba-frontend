@@ -8,7 +8,8 @@ import {
     getNotifications,
     getLoadingNotificationsFirstPage,
     fetchNotifications,
-    markNotificationsAsRead
+    markNotificationsAsRead,
+    NotificationChannels
 } from '../../../../redux/ducks/communication'
 import { DropdownMenu } from '../DropdownMenu'
 import { Button } from '../../common/Button'
@@ -83,12 +84,13 @@ export const NotificationsMenuComponent = props => {
                         </div>
                     : notifications.length ?
                         <div className='notifications-container'>
-                            {notifications.map( (notification, i) => (
+                            {notifications.map( notification => (
                                 <NotificationCard
                                     notification={notification}
+                                    channel={NotificationChannels[notification.channelID]}
                                     onClick={() => onClickNotification(notification)}
                                     timeFormat='fromNow'
-                                    key={notification._id + i}
+                                    key={notification._id}
                                 />
                             ))}
                         </div>

@@ -17,6 +17,9 @@ const Root = styled.div`
     display: flex;
     justify-content: space-around;
     align-items: center;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
 
     .lds-ellipsis {
         display: inline-flex;

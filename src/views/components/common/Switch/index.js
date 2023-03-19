@@ -13,7 +13,10 @@ export const Switch = props => {
 
     return (
         <Root {...rest}>
-            <h5 className='label-text'>{title}</h5>
+            {title ?
+                <h5 className='label-text'>{title}</h5>
+                : null
+            }
             <div
                 className={`switch ${enabled ? 'enabled' : 'disabled'}`}
                 onClick={onClick}

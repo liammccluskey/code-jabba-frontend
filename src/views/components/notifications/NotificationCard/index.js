@@ -6,7 +6,8 @@ const DefaultPhotoURL = '/images/logo.png'
 
 export const NotificationCard = props => {
     const {
-        notification, // {channel: {id, title}, message, ?photoURL, isRead, createdAt}
+        notification, // {channelID, message, isRead, createdAt}
+        channel, // {title, photoURL}
         isActive = false,
         timeFormat, // 'fromNow' | 'date'
 
@@ -16,9 +17,7 @@ export const NotificationCard = props => {
     } = props
 
     const {
-        channel,
         message,
-        photoURL,
         isRead,
         createdAt
     } = notification
@@ -37,13 +36,13 @@ export const NotificationCard = props => {
                 <div className='read-mark' />
                 : <div className='unread-mark' />
             }
-            <img className='notification-photo' src={photoURL || '/images/logo.png'} />
+            <img className='notification-photo' src={channel.photoURL || '/images/logo.png'} />
             <div className='notification-body'>
                 <div className='notification-title-container'>
-                    <h5 className='fw-m'>{channel.title}</h5>
+                    <h5 className='fw-m line-clamp-1'>{channel.title}</h5>
                     <h6>{timeText}</h6>
                 </div>
-                <p className={`notification-message line-clamp-2 ${!isRead && 'fw-m'}`}>
+                <p className={`notification-message line-clamp-2 ${!isRead && 'fw-m c-tp'}`}>
                     {message}
                 </p>
             </div>
@@ -55,7 +54,7 @@ const Root = styled.div`
     &.notification-container {
         width: 100%;
         box-sizing: border-box;
-        padding: 10px 10px;
+        padding: 12px 10px;
         display: flex;
         justify-content: flex-start;
         align-items: center;
@@ -99,12 +98,11 @@ const Root = styled.div`
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 5px;
+        margin-bottom: 8px;
     } 
 
     & .notification-message {
         text-overflow: ellipsis;
-        font-size: 15px;
         color: ${p => p.theme.textMain};
     }
 `

@@ -10,7 +10,12 @@ export const setTintColor = tintColor => ({
     value: tintColor
 })
 
-export const calculateIsMobile = windowWidth => ({
-    type: Types.CALCUALTE_IS_MOBILE,
-    windowWidth
+export const setIsMobile = isMobile => ({
+    type: Types.SET_IS_MOBILE,
+    value: isMobile
+})
+
+export const setIsSemiMobile = isSemiMobile => ({
+    type: Types.SET_IS_SEMI_MOBILE,
+    value: isSemiMobile
 })

@@ -25,20 +25,24 @@ export const Colors = {
 
 const LightTheme = {
     bgc: 'rgb(244, 246, 248)',
+    //bgc: 'white',
     bgcLight: 'white',
     bgcSemilight: 'rgb(248, 250, 252)',
     bgcHover: 'rgb(245, 247, 249)',
     bgcNav: 'white',
     bgcSettings: 'white',
     bgcInput: 'rgb(235, 238, 240)',
-    bc: 'rgb(215, 222, 226)',
+    bc: 'rgb(218,220,224)',
     textMain: 'rgb(60,64,67)',
     textPrimary: 'rgb(10, 12, 14)',
     textSecondary: 'rgb(135, 138, 140)',
     textTertiary: 'rgb(102, 102, 102)',
     textYellow: '#85681d',
     boxShadow: '0 0 20px rgba(0, 0, 0, 0.05)',
+    //boxShadow: 'none',
     floatBorder: 'none',
+    //floatBorder: '1px solid rgb(215, 222, 226)',
+    navBorder: '1px solid rgb(215, 222, 226)',
     boxShadowDark: '0 3px 20px rgb(89 105 129 / 30%), 0 1px 2px rgb(0 0 0 / 5%), 0 0 0 1px rgb(89 105 129 / 10%)',
 }
 
@@ -47,7 +51,6 @@ const DarkTheme = {
     bgcLight: 'rgb(21,24,28)',
     bgcSemilight: 'rgb(15,17,19)',
     bgcHover: 'rgba(249, 252, 255, 0.08)',
-    bgcNav: 'rgb(21, 24, 28)',
     bgcNav: 'rgb(14, 17, 21)',
     bgcSettings: 'black',
     bgcInput: 'rgb(38, 41, 45)',
@@ -60,6 +63,7 @@ const DarkTheme = {
     boxShadow: 'none',
     floatBorder: '1px solid rgb(48, 54, 58)',
     floatBorder: 'none',
+    navBorder: 'none',
     boxShadowDark: 'none'
 }
 
@@ -79,6 +83,7 @@ const BlueTheme = {
     textYellow: Colors.yellow,
     boxShadow: 'none',
     floatBorder: 'none',
+    navBorder: 'none',
     boxShadowDark: 'none',
 }
 

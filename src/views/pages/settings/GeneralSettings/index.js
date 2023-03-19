@@ -115,7 +115,7 @@ export const GeneralSettingsComponent = props => {
 
     return (
         <PageContainer className='bgc-bgc-settings'>
-            <MainHeader />
+            <MainHeader showBorder={false} />
             <SettingsHeader activeLinkID='general' />
             <BodyContainer style={{maxWidth: 1000}} className='as-center'>
                 <Container>

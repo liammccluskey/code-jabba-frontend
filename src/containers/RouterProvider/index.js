@@ -52,7 +52,7 @@ const router = createBrowserRouter([
       element: <PrivateRoute element={<Notifications />} />
     },
     {
-      path: '/notifications/:notificationID',
+      path: '/notifications/:activeNotificationID',
       element: <PrivateRoute element={<Notifications />} />
     },
 ])

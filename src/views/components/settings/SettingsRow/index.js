@@ -25,10 +25,8 @@ export const SettingsRow = props => {
     const [selectValue, setSelectValue] = useState(initialValue)
 
     useEffect(() => {
-        if (initialValue) {
-            setInputText(initialValue)
-            setSelectValue(initialValue)
-        }
+        setInputText(initialValue)
+        setSelectValue(initialValue)
     }, [initialValue])
 
     // Utils

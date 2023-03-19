@@ -18,6 +18,7 @@
 
 body {
   margin: 0px 0px;
+  background-color: var(--bgc);
 }
 
 button {
@@ -49,6 +50,7 @@ h6 {
 p, td, th {
   font-weight: 400;
   font-size: 14px;
+  line-height: 1.5;
 }
 th {
   font-size: 14px;
@@ -62,6 +64,7 @@ th {
   --ps-mainheader: 3%;
   --ps-subheader: 12%;
   --ps-body: 12%;
+  --bgc: white;
 
   /* constants */
   --h-mainheader: 70px;
@@ -171,14 +174,6 @@ th {
 }
 
 /* classes */
-
-.body-container {
-  text-align: left;
-  margin: 0px auto;
-  padding-right: var(--ps-body);
-  padding-left: var(--ps-body);
-  color: var(--color);
-}
 
 .no-select {
   -webkit-user-select: none; /* Safari */
