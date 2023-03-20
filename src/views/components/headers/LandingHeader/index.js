@@ -40,7 +40,7 @@ export const LandingHeader = props => {
                         priority={1}
                         onClick={onClickLogIn}
                         title='Log In'
-                        style={{marginRight: 20}}
+                        style={{marginRight: 15}}
                         className='fw-m'
                     />
                     <Button

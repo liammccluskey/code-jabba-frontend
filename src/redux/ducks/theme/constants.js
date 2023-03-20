@@ -111,15 +111,15 @@ export const Themes = {
 export const Tints = {
     0: {
         value: 0,
-        name: 'Purple',
-        tint: Colors.purple,
-        tintTranslucent: Colors.purpleTranslucent
-    },
-    1: {
-        value: 1,
         name: 'Blue',
         tint: Colors.blue,
         tintTranslucent: Colors.blueTranslucent
+    },
+    1: {
+        value: 1,
+        name: 'Purple',
+        tint: Colors.purple,
+        tintTranslucent: Colors.purpleTranslucent
     },
     2: {
         value: 2,

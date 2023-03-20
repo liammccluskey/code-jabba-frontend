@@ -258,6 +258,59 @@ const Root = styled.div`
         -o-animation: fade-in var(--duration-animation);
     }
 
+    @keyframes animation-border-tint {
+        0% {
+            border-color: ${p => p.theme.tint};
+        }
+        100% {
+            border-color: ${p => p.theme.bgcLight};
+        }
+    }
+
+    @-moz-keyframes animation-border-tint {
+        0% {
+            border-color: ${p => p.theme.tint};
+        }
+        100% {
+            border-color: ${p => p.theme.bgcLight};
+        }
+    }
+
+    @-webkit-keyframes animation-border-tint {
+        0% {
+            border-color: ${p => p.theme.tint};
+        }
+        100% {
+            border-color: ${p => p.theme.bgcLight};
+        }
+    }
+
+    @-o-keyframes animation-border-tint {
+        0% {
+            border-color: ${p => p.theme.tint};
+        }
+        100% {
+            border-color: ${p => p.theme.bgcLight};
+        }
+    }
+
+    @-ms-keyframes animation-border-tint {
+        0% {
+            border-color: ${p => p.theme.tint};
+        }
+        100% {
+            border-color: ${p => p.theme.bgcLight};
+        }
+    }
+
+    .animation-border-tint {
+        animation: animation-border-tint var(--duration-animation-long);
+        -webkit-animation: animation-border-tint var(--duration-animation-long);
+        -moz-animation: animation-border-tint var(--duration-animation-long);
+        -ms-animation: animation-border-tint var(--duration-animation-long);
+        -o-animation: animation-border-tint var(--duration-animation-long);
+    }
+
     /* Compound Properties */
 
     .float-container {

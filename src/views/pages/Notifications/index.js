@@ -37,19 +37,16 @@ export const NotificationsComponent = props => {
     const [activeChannelID, setActiveChannelID] = useState(null)
     const [notificationsPage, setNotificationsPage] = useState(1)
     const [channelNotificationsPage, setChannelNotificationsPage] = useState(1)
-    const [activeMessageOffsetTop, setActiveMessageOffsetTop] = useState(0)
-    const [hasRenderedActiveMessage, setHasRenderedActiveMessage] = useState(false)
+    const [scrollAnchorMessageNotificationID, setScrollAnchorMessageNotificationID] = useState(null)
+    const [scrollAnchorMessageOffsetTop, setScrollAnchorMessageOffsetTop] = useState(0)
+    const [hasRenderedScrollAnchorMessage, setHasRenderedScrollAnchorMessage] = useState(false)
 
     const activeChannel = NotificationChannels[activeChannelID]
 
     useEffect(() => {
-        props.fetchNotifications(1)
-        setNotificationsPage(1)
-    }, [])
-
-    useEffect(() => {
-        setHasRenderedActiveMessage(false)
-        setActiveMessageOffsetTop(0)
+        setScrollAnchorMessageOffsetTop(0)
+        setHasRenderedScrollAnchorMessage(false)
+        setScrollAnchorMessageNotificationID(activeNotificationID)
     }, [activeNotificationID])
 
     useEffect(() => {
@@ -93,17 +90,14 @@ export const NotificationsComponent = props => {
     }, [activeNotificationID, props.isSemiMobile])
 
     useEffect(() => {
-        const containsMessage = !!props.channelNotifications.find(n => n._id === activeNotificationID)
-
-        if (hasRenderedActiveMessage && containsMessage) {
-            console.log('did call scroll to channel message')
-            scrollToChannelMessage(activeMessageOffsetTop)
-            console.log(JSON.stringify({
-                activeMessageOffsetTop,
-                containsMessage
-            }, null, 4))
+        if (hasRenderedScrollAnchorMessage) {
+            scrollToChannelMessage(scrollAnchorMessageOffsetTop)
         }
-    }, [activeNotificationID, props.channelNotifications, activeMessageOffsetTop, hasRenderedActiveMessage])
+    }, [
+        scrollAnchorMessageNotificationID,
+        scrollAnchorMessageOffsetTop,
+        hasRenderedScrollAnchorMessage,
+    ])
 
     // Utils
 
@@ -129,9 +123,22 @@ export const NotificationsComponent = props => {
         navigate('/notifications')
     }
 
-    const onLayoutActiveNotificationMessage = messageOffsetTop => {
-        setActiveMessageOffsetTop(messageOffsetTop)
-        setHasRenderedActiveMessage(true)
+    const onLayoutScrollAnchorMessage = (messageOffsetTop) => {
+        setScrollAnchorMessageOffsetTop(messageOffsetTop)
+        setHasRenderedScrollAnchorMessage(true)
+    }
+
+    const onScrollChannelMessages = e => {
+        if (
+            e.target.scrollTop == 0 &&
+            props.canLoadMoreChannelNotifications &&
+            hasRenderedScrollAnchorMessage &&
+            !props.loadingChannelNotifications
+        ) {
+            props.fetchChannelNotifications(activeChannelID, channelNotificationsPage + 1)
+            setChannelNotificationsPage(curr => curr + 1)
+            setScrollAnchorMessageNotificationID(props.channelNotifications[props.channelNotifications.length - 1]._id)
+        }
     }
 
     return (
@@ -139,10 +146,10 @@ export const NotificationsComponent = props => {
             <MainHeader showBorder={false} />
             <Subheader title='Notifications' />
             <FixedBodyContainer
-                className='no-subheader-links' 
+                className='subheader-without-links' 
                 style={{paddingTop: 30, paddingBottom: 30}}
             >
-                {props.loadingNotificationsFirstPage ?
+                {props.loadingChannelNotificationsFirstPage ?
                     <Loading />
                     : <Container className={props.isSemiMobile ? 'semi-mobile' : ''}>
                         {props.isSemiMobile && activeChannel ? null
@@ -154,6 +161,7 @@ export const NotificationsComponent = props => {
                                         isActive={notification._id == activeNotificationID}
                                         timeFormat='fromNow'
                                         onClick={() => onClickNotification(notification._id)}
+                                        key={notification._id}
                                     />
                                 ))}
                                 {props.canLoadMoreNotifications ?
@@ -162,14 +170,15 @@ export const NotificationsComponent = props => {
                                         priority={1}
                                         type='tint'
                                         onClick={onClickLoadMore}
+                                        style={{margin: 15}}
                                     />
                                     : null
                                 }
                             </div>
                         }
                         
-                        {activeChannelID ?
-                            props.loadingChannelNotifications ?
+                        {activeChannel ?
+                            props.loadingChannelNotificationsFirstPage ?
                                 <Loading />
                                 : <div className='channel-container'>
                                     <div className='channel-header'>
@@ -179,14 +188,27 @@ export const NotificationsComponent = props => {
                                         }
                                         <h3 className='channel-title'>{activeChannel.title}</h3>
                                     </div>
-                                    <div className='channel-messages-container' id='channel-messages-container'>
+                                    <div
+                                        className='channel-messages-container'
+                                        id='channel-messages-container'
+                                        onScroll={onScrollChannelMessages}
+                                    >
+                                        {props.loadingChannelNotifications ?
+                                            <Loading useActualHeight={true} style={{marginTop: 15}} />
+                                            : null
+                                        }
                                         {[...props.channelNotifications].reverse().map( notification => (
                                             <NotificationMessage
                                                 notification={notification}
                                                 channel={activeChannel}
-                                                id={`channel-mesage-${notification._id}`}
-                                                onLayout={notification._id === activeNotificationID ?
-                                                    onLayoutActiveNotificationMessage
+                                                onLayout={
+                                                    notification._id === scrollAnchorMessageNotificationID ?
+                                                        onLayoutScrollAnchorMessage
+                                                        : undefined
+                                                }
+                                                key={`${channelNotificationsPage}-${notification._id}`}
+                                                messageContainerClassName={notification._id === activeNotificationID ?
+                                                    'animation-border-tint'
                                                     : undefined
                                                 }
                                             />
@@ -255,6 +277,10 @@ const Container = styled.div`
         border-bottom: 1px solid ${p => p.theme.bc};
         overflow: scroll;
         position: relative;
+    }
+
+    & .bi-arrow-left {
+        position: absolute;
     }
 `
 

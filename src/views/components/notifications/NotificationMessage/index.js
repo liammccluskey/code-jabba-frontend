@@ -6,7 +6,7 @@ export const NotificationMessage = props => {
     const {
         notification, // {channelID, message, isRead, createdAt}
         channel, // {title, photoURL}
-        rootRef,
+        messageContainerClassName=undefined,
 
         onLayout = () => {},
 
@@ -16,9 +16,6 @@ export const NotificationMessage = props => {
         if (node) {
             const offsetTop = node.offsetTop
             onLayout(offsetTop)
-            // console.log(JSON.stringify({
-            //     offsetTop
-            // }, null, 4))
         }
     })
 
@@ -27,13 +24,22 @@ export const NotificationMessage = props => {
         + moment(notification.createdAt).format('h:mm a')
 
     return (
-        <Root {...rest} ref={messageRef}>
+        <Root {...rest} ref={messageRef} className=''>
             <h5 className='timestamp-text'>
                 {timestampText}
             </h5>
             <div className='content-container'>
-                <img className='channel-photo' src={channel.photoURL} />
-                <div className='message-container float-container'>
+                {channel.photoURL ?
+                    <img className='channel-photo' src={channel.photoURL} />
+                    : null      
+                }
+                {channel.icon ?
+                    <div className='channel-icon-container'>
+                        <i className={`channel-icon ${channel.icon}`} />
+                    </div>
+                    : null
+                }
+                <div className={`message-container ${messageContainerClassName}`}>
                     <p>{notification.message}</p>
                 </div>
             </div>
@@ -71,8 +77,36 @@ const Root = styled.div`
         margin-right: 10px;
     }
 
+    & .channel-photo,
+    & .channel-icon-container {
+        flex: 0;
+        height: 35px;
+        width: 35px;
+        min-height: 35px;
+        min-width: 35px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    & .channel-icon-container {
+        display: inline-flex;
+        justify-content: space-around;
+        align-items: center;
+        background-color: ${p => p.theme.tintTranslucent};
+    }
+
+    & .channel-icon {
+        font-size: 20px;
+        color: ${p => p.theme.tint};
+    }
+
     & .message-container {
         text-overflow: ellipsis;
         padding: 15px;
+        border: 1px solid ${p => p.theme.bgcLight};
+        border-radius: var(--br-container);
+        overflow: hidden;
+        background-color: ${p => p.theme.bgcLight};
+        box-shadow: ${p => p.theme.boxShadow};
     }
 `

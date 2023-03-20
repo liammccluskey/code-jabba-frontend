@@ -81,7 +81,11 @@ export const fetchChannelNotifications = (channelID, page) => async (dispatch, g
         const res = await api.get(`/notifications/user/${_id}/channel/${channelID}${queryString}`)
 
         if (page === 1) dispatch(CommunicationActions.setChannelNotificationsData(res.data))
-        else dispatch(CommunicationActions.addChannelNotificationsData(res.data))
+        else {
+            setTimeout(() => {
+                dispatch(CommunicationActions.addChannelNotificationsData(res.data))
+            }, 1*1000)
+        }
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
@@ -91,7 +95,9 @@ export const fetchChannelNotifications = (channelID, page) => async (dispatch, g
     if (page === 1) {
         dispatch(CommunicationActions.setLoadingChannelNotificationsFirstPage(false))
     } else {
-        dispatch(CommunicationActions.setLoadingChannelNotifications(false))
+        setTimeout(() => {
+            dispatch(CommunicationActions.setLoadingChannelNotifications(false))
+        }, 1*1000)
     }
 }
 

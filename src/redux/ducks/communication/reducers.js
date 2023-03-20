@@ -121,6 +121,22 @@ export const communicationReducer = (state = CommunicationState, action) => {
                     }
                 }
             }
+        case Types.SET_LOADING_CHANNEL_NOTIFICATIONS:
+            return {
+                ...state,
+                channelNotifications: {
+                    ...state.channelNotifications,
+                    loading: action.value
+                }
+            }
+        case Types.SET_LOADING_CHANNEL_NOTIFICATIONS_FIRST_PAGE:
+            return {
+                ...state,
+                channelNotifications: {
+                    ...state.channelNotifications,
+                    loadingFirstPage: action.value
+                }
+            }
         default:
             return state
     }

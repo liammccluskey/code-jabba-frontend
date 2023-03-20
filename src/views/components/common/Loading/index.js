@@ -3,11 +3,12 @@ import styled from 'styled-components'
 
 export const Loading = props => {
     const {
+        useActualHeight=false,
         ...rest
     } = props
 
     return (
-        <Root {...rest}>
+        <Root {...rest} className={useActualHeight ? 'actual-height' : ''}>
             <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         </Root>
     )
@@ -20,6 +21,10 @@ const Root = styled.div`
     height: 100%;
     width: 100%;
     box-sizing: border-box;
+
+    &.actual-height {
+        height: 13px;
+    }
 
     .lds-ellipsis {
         display: inline-flex;

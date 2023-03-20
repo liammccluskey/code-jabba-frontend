@@ -12,10 +12,14 @@ export const FixedBodyContainer = styled.div`
     box-sizing: border-box;
 
     &.no-subheader {
-        height: calc(100% - var(--h-mainheader) - 60px); // TODO : fix last val
+        height: calc(100% - var(--h-mainheader)); // TODO : fix last val
     }
 
-    &.no-subheader-links {
-        height: calc(100% - var(--h-mainheader) - 60px);
+    &.subheader-without-links {
+        height: calc(100% - var(--h-mainheader) - var(--h-subheader));
+    }
+
+    &.subheader-with-links {
+        height: calc(100% - var(--h-mainheader) - var(--h-subheader-with-links));
     }
 `

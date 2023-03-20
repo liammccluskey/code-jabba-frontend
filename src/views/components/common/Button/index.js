@@ -1,7 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
+import { bindActionCreators } from '@reduxjs/toolkit'
+import { connect } from 'react-redux'
 
-export const Button = props => {
+import { getIsMobile } from '../../../../redux/ducks/theme'
+
+export const ButtonComponent = props => {
     const {
         priority, // 0 : big | 1 : medium
         type, // 'solid' | 'clear' | 'tint' | 'error' | 'danger'
@@ -22,7 +26,7 @@ export const Button = props => {
     return (
         <Root
             {...rest}
-            className={rootClassName}
+            className={`t${type} p${priority} ${className} ${props.isMobile && 'mobile'} fw-m`}
             onClick={onClick}
         >
             {imageURL ?
@@ -49,6 +53,12 @@ export const Button = props => {
     )
 }
 
+const mapStateToProps = state => ({
+    isMobile: getIsMobile(state)
+})
+
+export const Button = connect(mapStateToProps)(ButtonComponent)
+
 const Root = styled.div`
     cursor: pointer;
     display: inline-flex;
@@ -59,22 +69,24 @@ const Root = styled.div`
     &.p1 {
         padding: 10px 25px;
         font-size: 17px;
+        border-radius: 24px;
     }
     &.p2 {
         padding: 7px 20px;
         font-size: 14px;
+        border-radius: 20px;
     }
 
-    @media only screen and (max-width: 601px) {
-        &.p1 {
-            font-size: 15px;
-            padding: 8px 17px;
-        }
-        &.p2 {
-            padding: 7px 14px;
-            font-size: 14px;
-        }
+    &.mobile.p1 {
+        font-size: 15px;
+        padding: 8px 17px;
     }
+    &.mobile.p2 {
+        padding: 7px 14px;
+        font-size: 14px;
+    }
+
+
 
     &.tsolid {
         background-color: ${p => p.theme.tint};

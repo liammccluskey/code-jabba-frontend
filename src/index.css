@@ -68,9 +68,11 @@ th {
 
   /* constants */
   --h-mainheader: 70px;
-  --br-container: 5px;
-  --width-mobile: 601px;
+  --h-subheader: 60px;
+  --h-subheader-with-links: 93px;
+  --br-container: 10px;
   --duration-animation: 0.2s;
+  --duration-animation-long: 2s;
 }
 
 @media only screen and (max-width: 800px) {

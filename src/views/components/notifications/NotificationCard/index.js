@@ -7,7 +7,7 @@ const DefaultPhotoURL = '/images/logo.png'
 export const NotificationCard = props => {
     const {
         notification, // {channelID, message, isRead, createdAt}
-        channel, // {title, photoURL}
+        channel, // {title, ?photoURL, ?icon}
         isActive = false,
         timeFormat, // 'fromNow' | 'date'
 
@@ -36,8 +36,17 @@ export const NotificationCard = props => {
                 <div className='read-mark' />
                 : <div className='unread-mark' />
             }
-            <img className='notification-photo' src={channel.photoURL || '/images/logo.png'} />
-            <div className='notification-body'>
+            {channel.photoURL ?
+                <img className='notification-photo' src={channel.photoURL || '/images/logo.png'} />
+                : null      
+            }
+            {channel.icon ?
+                <div className='notification-icon-container'>
+                    <i className={`notification-icon ${channel.icon}`} />
+                </div>
+                : null
+            }
+            <div className={`notification-body`}>
                 <div className='notification-title-container'>
                     <h5 className='fw-m line-clamp-1'>{channel.title}</h5>
                     <h6>{timeText}</h6>
@@ -54,7 +63,10 @@ const Root = styled.div`
     &.notification-container {
         width: 100%;
         box-sizing: border-box;
-        padding: 12px 10px;
+        padding-top: 12px;
+        padding-bottom: 12px;
+        padding-right: 10px;
+        padding-left: 5px;
         display: flex;
         justify-content: flex-start;
         align-items: center;
@@ -64,7 +76,7 @@ const Root = styled.div`
         border-left: 3px solid ${p => p.theme.tint};
     }
     &:last-child {
-        border-bottom: none;
+        // border-bottom: none;
     }
 
     & .unread-mark,
@@ -73,7 +85,7 @@ const Root = styled.div`
         min-width: 10px;
         box-sizing: border-box;
         border-radius: 50%;
-        margin-right: 10px;
+        margin-right: 5px;
     }
     & .unread-mark {
         background-color: ${p => p.theme.tint};
@@ -82,12 +94,27 @@ const Root = styled.div`
         background-color: clear;
     }
 
-    & .notification-photo {
+    & .notification-photo,
+    & .notification-icon-container {
         flex: 0;
         height: 35px;
         width: 35px;
+        min-height: 35px;
+        min-width: 35px;
         border-radius: 50%;
         margin-right: 10px;
+    }
+
+    & .notification-icon-container {
+        display: inline-flex;
+        justify-content: space-around;
+        align-items: center;
+        background-color: ${p => p.theme.tintTranslucent};
+    }
+
+    & .notification-icon {
+        font-size: 20px;
+        color: ${p => p.theme.tint};
     }
 
     & .notification-body {

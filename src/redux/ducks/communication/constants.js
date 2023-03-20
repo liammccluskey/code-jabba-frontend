@@ -1,5 +1,5 @@
 export const NotificationChannels = {
-    // channelID : {title, photoURL}
+    // channelID : {title, ?photoURL, ?icon}
     main: {
         id: 'main',
         title: process.env.REACT_APP_SITE_NAME,
@@ -8,11 +8,11 @@ export const NotificationChannels = {
     announcements: {
         id: 'announcements',
         title: 'Announcements',
-        photoURL: 'https://lh3.googleusercontent.com/a/AGNmyxa3SUoNp3u6-ULZieQ8kCwUNcRdZxycQW-9FWq0=s96-c'
+        icon: 'bi-megaphone'
     },
     social: {
         id: 'social',
         title: 'Social',
-        photoURL: 'https://lh3.googleusercontent.com/a/AGNmyxa3SUoNp3u6-ULZieQ8kCwUNcRdZxycQW-9FWq0=s96-c'
+        icon: 'bi-people'
     }
 }
