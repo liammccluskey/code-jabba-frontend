@@ -20,6 +20,7 @@ import { PageLinks } from '../MainHeader'
 export const MainMenuComponent = props => {
     const {
         menuHidden,
+        pageLinks,
 
         setMenuHidden,
 
@@ -55,11 +56,7 @@ export const MainMenuComponent = props => {
             menuHidden={menuHidden}
             setMenuHidden={setMenuHidden}
             triggerElement={
-                // <UserIconContainer className='d-flex jc-flex-start ai-center'>
-                //     <i className='bi-chevron-down' />
-                //    <UserIcon size='m' />
-                // </UserIconContainer>
-                <UserIcon size='m' />
+                <UserIcon size='m' user={props.user}/>
             }
             triggerHeight={35}
             menuElement={
@@ -71,6 +68,7 @@ export const MainMenuComponent = props => {
                         <UserIcon
                             size='l'
                             style={{marginBottom: 10}}
+                            user={props.user}
                         />
                         <p style={{marginBottom: 5}} className='fw-m'>
                             {props.user.displayName}
@@ -78,7 +76,7 @@ export const MainMenuComponent = props => {
                         <h5 className='c-ts'>{props.user.email}</h5>
                     </div>
                     <div className='links-container'>
-                        {PageLinks.map( ({name, url, icon}) => (
+                        {props.pageLinks.map( ({name, url, icon}) => (
                             <div
                                 className='row-container oh-dark oh-c-t'
                                 onClick={() => onClickPageLink(url)}
@@ -149,13 +147,6 @@ export const MainMenuComponent = props => {
         />
     )
 }
-
-const UserIconContainer = styled.div`
-    & i.bi-chevron-down {
-        margin-right: 5px;
-        color: ${p => p.theme.textSecondary};
-    }
-`
 
 const MenuContainer = styled.div`
     overflow: hidden;

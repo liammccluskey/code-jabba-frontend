@@ -4,11 +4,10 @@ import { useNavigate } from 'react-router-dom'
 
 import { DropdownMenu } from '../DropdownMenu'
 
-import { PageLinks } from '../MainHeader'
-
 export const LinksMenu = props => {
     const {
         menuHidden,
+        pageLinks,
 
         setMenuHidden,
 
@@ -27,12 +26,12 @@ export const LinksMenu = props => {
             menuHidden={menuHidden}
             setMenuHidden={setMenuHidden}
             triggerElement={
-                <LinksIcon className={`bi-grid oh-c-t ${!menuHidden && 'active'}`} />
+                <LinksIcon className={`bi-grid ${!menuHidden && 'active'}`} />
             }
             triggerHeight={35}
             menuElement={
                 <Menu className='d-flex jc-flex-start ai-stretch fd-column'>
-                    {Object.values(PageLinks).map(({name, url, icon}) => (
+                    {props.pageLinks.map(({name, url, icon}) => (
                         <div
                             className='row-container oh-dark'
                             onClick={() => onClickLink(url)}

@@ -41,7 +41,6 @@ export const Subheader = props => {
 const Root = styled.div`
     background-color: ${p => p.theme.bgcNav};
     text-align: left;
-    padding-top: 13px;
     padding-right: var(--ps-subheader);
     padding-left: var(--ps-subheader);
     border-bottom: ${p => `1px solid ${p.theme.bc}`};
@@ -54,7 +53,7 @@ const Root = styled.div`
 
 const Title = styled.h2`
     color: ${p => p.theme.textPrimary};
-    margin-bottom: 13px;
+    margin: 10px 0px;
 `
 
 const PageLink = styled(Link)`

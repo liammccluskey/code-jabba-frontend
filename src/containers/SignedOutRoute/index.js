@@ -14,7 +14,7 @@ export const SignedOutRouteComponent = props => {
 
     useEffect(() => {
         props.isLoggedIn && navigate('/dashboard')
-    }, [])
+    }, [props.isLoggedIn])
 
     return !props.isLoggedIn ?
         element

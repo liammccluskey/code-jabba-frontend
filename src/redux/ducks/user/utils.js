@@ -1,5 +1,7 @@
 import {api, stringifyQuery} from '../../../networking'
 
+// Networking
+
 export const __fetchMongoUserByuid = async uid => {
     try {
         const res = await api.get(`/users/uid/${uid}`)
@@ -73,4 +75,16 @@ export const __deleteMongoUser = async (uid, _id) => {
     } catch (error) {
         throw(error)
     }
+}
+
+// Misc
+
+export const isSuperAdmin = user => {
+    const {isSuperAdmin, superAdminKey} = user
+    return isSuperAdmin && superAdminKey === process.env.REACT_APP_SUPER_ADMIN_KEY
+}
+
+export const isAdmin = user => {
+    const {adminKey} = user
+    return user.isAdmin && adminKey === process.env.REACT_APP_ADMIN_KEY
 }

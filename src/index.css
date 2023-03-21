@@ -78,7 +78,6 @@ th {
 @media only screen and (max-width: 800px) {
   :root {
     /* dynamic */
-
     --ps-mainheader: 3%;
     --ps-subheader: 5%;
     --ps-body: 5%;

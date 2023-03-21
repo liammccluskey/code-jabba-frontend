@@ -74,48 +74,50 @@ export const AdvancedSettingsComponent = props => {
                     <h3 className='settings-title'>
                         App Notifications
                     </h3>
-                    {formInitialValues.appNotifications
-                        .map( ({path, name, enabled, locked}, i) => (
-                            <SettingsRow
-                                key={name}
-                                title={name}
-                                isEditable={false}
-                                rightChild={
-                                    <div className='d-inline-flex jc-flex-start ai-center'>
-                                        {locked ?
-                                            <i className='bi-lock lock-icon' />
-                                            : null
-                                        }
-                                        <Switch
-                                            enabled={enabled}
-                                            onClick={() => !locked && onClickSwitch(path, !enabled)}
-                                        />
-                                    </div>
-                                }
-                                isLastRow={i === formInitialValues.appNotifications.length - 1}
-                            />
-                        )
-                    )}
+                    <div className='settings-rows-container'>
+                        {formInitialValues.appNotifications
+                            .map( ({path, name, enabled, locked}, i) => (
+                                <SettingsRow
+                                    key={name}
+                                    title={name}
+                                    isEditable={false}
+                                    rightChild={
+                                        <div className='d-inline-flex jc-flex-start ai-center'>
+                                            {locked ?
+                                                <i className='bi-lock lock-icon' />
+                                                : null
+                                            }
+                                            <Switch
+                                                enabled={enabled}
+                                                onClick={() => !locked && onClickSwitch(path, !enabled)}
+                                            />
+                                        </div>
+                                    }
+                                />
+                            )
+                        )}
+                    </div>
 
                     <h3 className='settings-title'>
                         Email Notifications
                     </h3>
-                    {formInitialValues.emailNotifications
-                        .map( ({path, name, enabled}, i) => (
-                            <SettingsRow
-                                key={name}
-                                title={name}
-                                isEditable={false}
-                                rightChild={
-                                    <Switch
-                                        enabled={enabled}
-                                        onClick={() => onClickSwitch(path, !enabled)}
-                                    />
-                                }
-                                isLastRow={i === formInitialValues.emailNotifications.length - 1}
-                            />
-                        )
-                    )}
+                    <div className='settings-rows-container'>
+                        {formInitialValues.emailNotifications
+                            .map( ({path, name, enabled}, i) => (
+                                <SettingsRow
+                                    key={name}
+                                    title={name}
+                                    isEditable={false}
+                                    rightChild={
+                                        <Switch
+                                            enabled={enabled}
+                                            onClick={() => onClickSwitch(path, !enabled)}
+                                        />
+                                    }
+                                />
+                            )
+                        )}
+                    </div> 
                 </Container>
 
             </BodyContainer>

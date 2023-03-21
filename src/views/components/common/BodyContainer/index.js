@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 export const BodyContainer = styled.div`
     background-color: clear;
-    padding: 50px var(--ps-body);
+    padding: 40px var(--ps-body);
     display: flex;
     flex-direction: column;
     justify-content: flex-start;

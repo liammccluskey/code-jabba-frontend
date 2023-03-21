@@ -1,8 +1,9 @@
-import React from 'react'
-import { RouterProvider as _RouterProvider, createBrowserRouter } from 'react-router-dom'
+import React, {useEffect, useState} from 'react'
+import { RouterProvider as __RouterProvider, createBrowserRouter } from 'react-router-dom'
 
 import { PrivateRoute } from '../PrivateRoute'
 import { SignedOutRoute } from '../SignedOutRoute'
+import { AdminRoute } from '../AdminRoute'
 import {Landing} from '../../views/pages/Landing'
 import {Login} from '../../views/pages/Login'
 import {Register} from '../../views/pages/Register'
@@ -11,6 +12,7 @@ import { Dashboard } from '../../views/pages/Dashboard'
 import { GeneralSettings } from '../../views/pages/settings/GeneralSettings'
 import { AdvancedSettings } from '../../views/pages/settings/AdvancedSettings'
 import { Notifications } from '../../views/pages/Notifications'
+import { AdminGeneral } from '../../views/pages/admin/AdminGeneral'
 
 const router = createBrowserRouter([
     {
@@ -55,11 +57,17 @@ const router = createBrowserRouter([
       path: '/notifications/:activeNotificationID',
       element: <PrivateRoute element={<Notifications />} />
     },
+
+    // admin
+    {
+      path: '/admin',
+      element: <AdminRoute element={<AdminGeneral />} />
+    }
 ])
 
 export const RouterProvider = props => {
   return (
-      <_RouterProvider
+      <__RouterProvider
           router={router}
       />
   )

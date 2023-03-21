@@ -122,112 +122,116 @@ export const GeneralSettingsComponent = props => {
                     <h3 className='settings-title'>
                         Membership
                     </h3>
-                    <SettingsRow
-                        title='Member Since'
-                        isEditable={false}
-                        isLastRow={true}
-                        rightChild={
-                            <p>{formInitialValues.membership.memberSince}</p>
-                        }
-                    />
+                    <div className='settings-rows-container'>
+                        <SettingsRow
+                            title='Member Since'
+                            isEditable={false}
+                            rightChild={
+                                <p>{formInitialValues.membership.memberSince}</p>
+                            }
+                        />
+                    </div>
 
                     <h3 className='settings-title'>
                         Account
                     </h3>
-                    <SettingsRow
-                        title='Email'
-                        inputType='text'
-                        initialValue={formInitialValues.account.email}
-                        isEditable={true}
-                        rightChild={
-                            <p>{formInitialValues.account.email}</p>
-                        }
-                        onSubmit={submitEmail}
-                    />
-                    <SettingsRow
-                        title='Password'
-                        isEditable={false}
-                        rightChild={
-                            <Button
-                                title='Reset Password'
-                                priority={2}
-                                type='tint'
-                                onClick={onClickResetPassword}
-                            />
-                        }
-                    />
-                    <SettingsRow
-                        title=''
-                        isEditable={false}
-                        isLastRow={true}
-                        rightChild={
-                            <Button
-                                title='Delete your account'
-                                priority={2}
-                                type='error'
-                                onClick={onClickDeleteAccount}
-                            />
-                        }
-                    />
+                    <div className='settings-rows-container'>
+                        <SettingsRow
+                            title='Email'
+                            inputType='text'
+                            initialValue={formInitialValues.account.email}
+                            isEditable={true}
+                            rightChild={
+                                <p>{formInitialValues.account.email}</p>
+                            }
+                            onSubmit={submitEmail}
+                        />
+                        <SettingsRow
+                            title='Password'
+                            isEditable={false}
+                            rightChild={
+                                <Button
+                                    title='Reset Password'
+                                    priority={2}
+                                    type='tint'
+                                    onClick={onClickResetPassword}
+                                />
+                            }
+                        />
+                        <SettingsRow
+                            title=''
+                            isEditable={false}
+                            rightChild={
+                                <Button
+                                    title='Delete your account'
+                                    priority={2}
+                                    type='error'
+                                    onClick={onClickDeleteAccount}
+                                />
+                            }
+                        />
+                    </div>
 
                     <h3 className='settings-title'>
                         Profile
                     </h3>
-                    <SettingsRow
-                        title='Display Name'
-                        isEditable={true}
-                        inputType='text'
-                        initialValue={formInitialValues.profile.displayName}
-                        rightChild={
-                            <p>{formInitialValues.profile.displayName}</p>
-                        }
-                        onSubmit={submitDisplayName}
-                    />
-                    <SettingsRow
-                        title='Profile Photo'
-                        isEditable={true}
-                        inputType='image'
-                        rightChild={
-                            <UserIcon size='m' />
-                        }
-                        onSubmit={submitProfilePhoto}
-                        isLastRow={true}
-                    />
+                    <div className='settings-rows-container'>
+                        <SettingsRow
+                            title='Display Name'
+                            isEditable={true}
+                            inputType='text'
+                            initialValue={formInitialValues.profile.displayName}
+                            rightChild={
+                                <p>{formInitialValues.profile.displayName}</p>
+                            }
+                            onSubmit={submitDisplayName}
+                        />
+                        <SettingsRow
+                            title='Profile Photo'
+                            isEditable={true}
+                            inputType='image'
+                            rightChild={
+                                <UserIcon size='m' user={props.user} />
+                            }
+                            onSubmit={submitProfilePhoto}
+                        />
+                    </div>
 
                     <h3 className='settings-title'>
                         Appearance
                     </h3>
-                    <SettingsRow
-                        title='Theme'
-                        isEditable={true}
-                        inputType='select'
-                        autoSave={true}
-                        initialValue={formInitialValues.appearance.themeColor.value}
-                        selectValues={formInitialValues.appearance.themeColor.selectValues}
-                        rightChild={
-                            <div className='d-flex jc-flex-end ai-center'>
-                                <p>{formInitialValues.appearance.themeColor.name}</p>
-                            </div>
-                        }
-                        onSubmit={submitThemeColor}
-                    />
-                    <SettingsRow
-                        title='Tint Color'
-                        isEditable={true}
-                        inputType='select'
-                        autoSave={true}
-                        initialValue={formInitialValues.appearance.tintColor.value}
-                        selectValues={formInitialValues.appearance.tintColor.selectValues}
-                        rightChild={
-                            <div className='d-flex jc-flex-end ai-center'>
-                                <p style={{color: formInitialValues.appearance.tintColor.color}}>
-                                    {formInitialValues.appearance.tintColor.name}
-                                </p>
-                            </div>
-                        }
-                        onSubmit={submitTintColor}
-                        isLastRow={true}
-                    />
+                    <div className='settings-rows-container'>
+                        <SettingsRow
+                            title='Theme'
+                            isEditable={true}
+                            inputType='select'
+                            autoSave={true}
+                            initialValue={formInitialValues.appearance.themeColor.value}
+                            selectValues={formInitialValues.appearance.themeColor.selectValues}
+                            rightChild={
+                                <div className='d-flex jc-flex-end ai-center'>
+                                    <p>{formInitialValues.appearance.themeColor.name}</p>
+                                </div>
+                            }
+                            onSubmit={submitThemeColor}
+                        />
+                        <SettingsRow
+                            title='Tint Color'
+                            isEditable={true}
+                            inputType='select'
+                            autoSave={true}
+                            initialValue={formInitialValues.appearance.tintColor.value}
+                            selectValues={formInitialValues.appearance.tintColor.selectValues}
+                            rightChild={
+                                <div className='d-flex jc-flex-end ai-center'>
+                                    <p style={{color: formInitialValues.appearance.tintColor.color}}>
+                                        {formInitialValues.appearance.tintColor.name}
+                                    </p>
+                                </div>
+                            }
+                            onSubmit={submitTintColor}
+                            />
+                        </div>
                 </Container>
 
             </BodyContainer>

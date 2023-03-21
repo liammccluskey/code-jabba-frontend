@@ -9,7 +9,9 @@ const UserState = {
     // calculated,
     firebaseUser: null,
     user: null,
-    isLoggedIn: false
+    isLoggedIn: false,
+    hasAdminPrivileges: false,
+    hasSuperAdminPrivileges: false,
 }
 
 export const userReducer = (state = UserState, action) => {

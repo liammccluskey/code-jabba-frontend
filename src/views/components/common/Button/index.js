@@ -13,7 +13,7 @@ export const ButtonComponent = props => {
         className='',
         imageURL=null,
         imageSize=18,
-        iconClassName=null,
+        icon=null,
         iconSize=18,
         isSubmitButton=false,
     
@@ -21,7 +21,6 @@ export const ButtonComponent = props => {
 
         ...rest
     } = props
-    const rootClassName = `t${type} p${priority} ${className} fw-m`
 
     return (
         <Root
@@ -37,11 +36,8 @@ export const ButtonComponent = props => {
                 />
                 : null
             }
-            {iconClassName ?
-                <i
-                    className={iconClassName}
-                    style={{fontSize: iconSize}}
-                />
+            {icon ?
+                <i className={icon} style={{fontSize: iconSize}} />
                 : null
             }
             {title}
@@ -75,6 +71,11 @@ const Root = styled.div`
         padding: 7px 20px;
         font-size: 14px;
         border-radius: 20px;
+    }
+    &.p3 {
+        padding: 5px 10px;
+        font-size: 13px;
+        border-radius: 16px;
     }
 
     &.mobile.p1 {

@@ -3,38 +3,60 @@ import styled from 'styled-components'
 import {useNavigate, Link} from 'react-router-dom'
 import { connect } from 'react-redux'
 
+import { getIsMobile } from '../../../../redux/ducks/theme'
+import { getHasAdminPrivileges } from '../../../../redux/ducks/user'
 import { MainMenu } from '../MainMenu'
 import { LinksMenu } from '../LinksMenu'
 import { NotificationsMenu } from '../NotificationsMenu'
-import { getIsMobile } from '../../../../redux/ducks/theme'
 
-export const PageLinks = [
+export const getMainPageLinks = hasAdminPrivileges => [
     {
         name: 'Dashboard',
         url: '/dashboard',
         id: 'dashboard',
         icon: 'bi-house'
     },
+    ...( hasAdminPrivileges ?
+        [
+            {
+                name: 'Admin',
+                url: '/admin',
+                id: 'admin',
+                icon: 'bi-person-circle'
+            }
+        ]
+        : []
+    )
+]
+
+export const getMainMenuPageLinks = () => [
     {
         name: 'Settings',
         url: '/settings',
         id: 'settings',
         icon: 'bi-gear'
-    }
+    },
 ]
 
 export const MainHeaderComponent = props => {
     const {
         showBorder=true,
     } = props
+    const navigate = useNavigate()
     const [linksMenuHidden, setLinksMenuHidden] = useState(true)
     const [notificationsMenuHidden, setNotificationsMenuHidden] = useState(true)
     const [mainMenuHidden, setMainMenuHidden] = useState(true)
-    const navigate = useNavigate()
+    const [mainPageLinks, setMainPageLinks] = useState([])
+    const [mainMenuPageLinks, setMainMenuPageLinks] = useState([])
 
     const activeLinkID = window.location.pathname.split('/')[1]
 
     const onClickLogo = () => navigate('/')
+
+    useEffect(() => {
+        setMainPageLinks(getMainPageLinks(props.hasAdminPrivileges))
+        setMainMenuPageLinks(getMainMenuPageLinks())
+    }, [props.hasAdminPrivileges])
 
     return (
         <Root className={`d-flex jc-space-between ai-center ${!showBorder && 'no-border'}`}>
@@ -59,8 +81,9 @@ export const MainHeaderComponent = props => {
                         style={{marginRight: 15}}
                         menuHidden={linksMenuHidden}
                         setMenuHidden={setLinksMenuHidden}
+                        pageLinks={mainPageLinks}
                     />
-                    : PageLinks.map( ({name, url, id}) => (
+                    : mainPageLinks.map( ({name, url, id}) => (
                         <PageLink
                             key={id}
                             to={url}
@@ -78,11 +101,17 @@ export const MainHeaderComponent = props => {
                 <MainMenu
                     menuHidden={mainMenuHidden}
                     setMenuHidden={setMainMenuHidden}
+                    pageLinks={mainMenuPageLinks}
                 />
             </div>
         </Root>
     )
 }
+
+const mapStateToProps = state => ({
+    isMobile: getIsMobile(state),
+    hasAdminPrivileges: getHasAdminPrivileges(state)
+})
 
 const Root = styled.div`
     background-color: ${props => props.theme.bgcNav};
@@ -122,9 +151,5 @@ const PageLink = styled(Link)`
         color: ${p => p.theme.tint} !important;
     }
 `
-
-const mapStateToProps = state => ({
-    isMobile: getIsMobile(state)
-})
 
 export const MainHeader = connect(mapStateToProps)(MainHeaderComponent)

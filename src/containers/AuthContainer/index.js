@@ -19,13 +19,7 @@ export const AuthContainerComponent = props => {
             if (firebaseUser) {
                 props.fetchThisMongoUser(
                     firebaseUser,
-                    () => {
-                        const currentPath = window.location.pathname
-                        if (currentPath.includes('login') || currentPath.includes('register')) {
-                            window.location = '/dashboard'
-                        }
-                        setLoading(false)
-                    },
+                    () => setLoading(false),
                     () => setLoading(false)
                 )
             } else {

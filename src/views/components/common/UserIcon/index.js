@@ -1,13 +1,10 @@
 import React, {useState} from 'react'
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 
-import { getUser } from '../../../../redux/ducks/user'
-
-export const UserIconComponent = props => {
+export const UserIcon = props => {
     const {
         size, // 's' | 'm' | 'l'
+        user,
 
         ...rest
     } = props
@@ -80,12 +77,3 @@ const Icon = styled.div`
         font-size: 25px;
     }
 `
-const mapStateToProps = state => ({
-    user: getUser(state)
-})
-
-const mapDispatchToProps = dispatch => bindActionCreators({
-    
-}, dispatch)
-
-export const UserIcon = connect(mapStateToProps, mapDispatchToProps)(UserIconComponent)

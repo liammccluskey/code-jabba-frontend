@@ -3,11 +3,9 @@ import {initializeApp} from "firebase/app"
 import {getAuth} from "firebase/auth"
 import {getStorage} from 'firebase/storage'
 
+axios.defaults.headers.common['heroku_api_key'] = process.env.REACT_APP_HEROKU_API_KEY
 export const api = axios.create({
     baseURL: process.env.REACT_APP_HEROKU_API_BASE_URL,
-    headers: {
-        'heroku-api-key': process.env.REACT_APP_HEROKU_API_KEY
-    }
 })
 
 export const app = initializeApp({

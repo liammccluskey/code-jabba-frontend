@@ -13,7 +13,7 @@ export const SettingsRow = props => {
         autoSave=false,
         middleChild=null,
         rightChild=null,
-        isLastRow=false,
+        // isLastRow=false,
 
         onSubmit,   // (val, onSuccess) => void
 
@@ -87,7 +87,6 @@ export const SettingsRow = props => {
     return !isEditing ?
         <RowContainer
             {...rest}
-            style={isLastRow ? {marginBottom: 50} : {}}
             className={isEditable ? 'oh-dark' : ''}
             onClick={onClickRowContainer}
         >
@@ -170,6 +169,10 @@ const RowContainer = styled.div`
     border-top: 1px solid ${p => p.theme.bc};
     padding: 0px 15px;
     position: relative;
+
+    &:last-child {
+        margin-bottom: 50px;
+    }
 
     & .row-title {
         color: ${p => p.theme.textSecondary};
