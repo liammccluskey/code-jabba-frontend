@@ -4,6 +4,7 @@ import {api} from '../../../networking'
 import * as AdminUtils from './utils'
 import { addMessage } from '../communication'
 import { getMongoUser } from '../user'
+import { fetchNotifications } from '../communication'
 
 export const fetchAdminUsers = () => async (dispatch, getState) => {
     dispatch(AdminActions.setLoadingAdminUsers(true))
@@ -59,6 +60,52 @@ export const makeUserSuperAdmin = (adminUserID, onSuccess) => async (dispatch, g
         )
         dispatch(addMessage(res.data.message))
         dispatch(fetchAdminUsers())
+        onSuccess()
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+    }
+}
+
+export const postAppAnnouncementToAllUsers = (announcementData, onSuccess) => async (dispatch, getState) => {
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        const res = await api.post(
+            '/admin/notifications/appannouncement',
+            {
+                ...announcementData,
+                creatorName: mongoUser.displayName
+            },
+            AdminUtils.getAdminRequestConfig(mongoUser)
+        )
+        dispatch(addMessage(res.data.message))
+        dispatch(fetchNotifications(1))
+        onSuccess()
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+    }
+}
+
+export const postEmailAnnouncementToAllUsers = (announcementData, onSuccess) => async (dispatch, getState) => {
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        const res = await api.post(
+            '/admin/notifications/emailannouncement',
+            {
+                ...announcementData,
+                creatorName: mongoUser.displayName
+            },
+            AdminUtils.getAdminRequestConfig(mongoUser)
+        )
+        dispatch(addMessage(res.data.message))
+        dispatch(fetchNotifications(1))
         onSuccess()
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message

@@ -10,7 +10,6 @@ export const ButtonComponent = props => {
         priority, // 0 : big | 1 : medium
         type, // 'solid' | 'clear' | 'tint' | 'error' | 'danger'
         title,
-        className='',
         imageURL=null,
         imageSize=18,
         icon=null,
@@ -25,7 +24,7 @@ export const ButtonComponent = props => {
     return (
         <Root
             {...rest}
-            className={`t${type} p${priority} ${className} ${props.isMobile && 'mobile'} fw-m`}
+            className={`t${type} p${priority} ${props.isMobile && 'mobile'} ${props.className} fw-m`}
             onClick={onClick}
         >
             {imageURL ?
@@ -143,6 +142,6 @@ const Root = styled.div`
     }
 
     & i, & img {
-        margin-right: 10px;
+        margin-right: 5px;
     }
 `

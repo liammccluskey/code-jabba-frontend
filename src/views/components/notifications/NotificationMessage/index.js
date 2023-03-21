@@ -40,7 +40,7 @@ export const NotificationMessage = props => {
                     : null
                 }
                 <div className={`message-container ${messageContainerClassName}`}>
-                    <p>{notification.message}</p>
+                    <p className='message'>{notification.message}</p>
                 </div>
             </div>
         </Root>
@@ -108,5 +108,9 @@ const Root = styled.div`
         overflow: hidden;
         background-color: ${p => p.theme.bgcLight};
         box-shadow: ${p => p.theme.boxShadow};
+    }
+
+    & .message {
+        white-space: pre-line;
     }
 `

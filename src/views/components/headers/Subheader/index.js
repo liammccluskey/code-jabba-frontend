@@ -64,6 +64,7 @@ const PageLink = styled(Link)`
     margin-right: 20px;
     border-bottom: 2px solid ${p => p.theme.bgcNav};
     padding-bottom: 11px;
+    color: ${p => p.theme.textSecondary};
 
     &:hover {
         color: ${p => p.theme.tint};
@@ -71,5 +72,6 @@ const PageLink = styled(Link)`
 
     &.active {
         border-bottom: 2px solid ${p => p.theme.tint};
+        color: ${p => p.theme.textPrimary};
     }
 `

@@ -33,7 +33,7 @@ export const AdminUserRow = props => {
                         type='error'
                         priority={3}
                         onClick={() => onClickRemoveAdmin(adminUser)}
-                        style={{marginRight: 10, marginBottom: isMobile ? 5 : 0}}
+                        style={{marginRight: isMobile ? 0 : 10, marginBottom: isMobile ? 5 : 0}}
                     />
                     <Button
                         title='Make super admin'
@@ -52,7 +52,7 @@ const Root = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 10px;
+    padding: 10px 15px;
     border-bottom: 1px solid ${p => p.theme.bc};
 
     &:last-child {

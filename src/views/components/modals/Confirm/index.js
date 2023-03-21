@@ -1,10 +1,12 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 
 import { removeModal } from '../../../../redux/ducks/modal'
+import { getIsMobile } from '../../../../redux/ducks/theme'
 import { Button } from '../../common/Button'
+import { PendingMessage } from '../../common/PendingMessage'
 
 export const ConfirmComponent = props => {
     const {
@@ -12,6 +14,8 @@ export const ConfirmComponent = props => {
         message,
         confirmButtonTitle='Yes',
         isDanger=false,
+        children=[],
+        pendingMessage='Operation in progress',
 
         onConfirm, // onSuccess => void
         onCancel = () => {},
@@ -20,6 +24,7 @@ export const ConfirmComponent = props => {
 
         ...rest
     } = props
+    const [loading, setLoading] = useState(false)
 
     // Utils
 
@@ -28,7 +33,11 @@ export const ConfirmComponent = props => {
     // Direct
 
     const onClickConfirm = () => {
-       onConfirm(removeModal)
+        setLoading(true)
+        onConfirm(() => {
+            setLoading(false)
+            removeModal()
+        })
     }
 
     const onClickCancel = () => {
@@ -37,27 +46,39 @@ export const ConfirmComponent = props => {
     }
 
     return (
-        <Root className='animation-slide-up'>
+        <Root className={`animation-slide-up ${props.isMobile && 'mobile'}`}>
             <div className='header section'>
                 <i className='bi-check-circle' />
                 <h3 className='header-title'>{title}</h3>
             </div>
             <div className='body section'>
                 <h4 className='body-message'>{message}</h4>
-                <div className='d-flex jc-flex-end ai-center'>
-                    <Button
-                        type='tint'
-                        priority={2}
-                        title='Cancel'
-                        onClick={onClickCancel}
-                        style={{marginRight: 15}}
-                    />
-                    <Button
-                        type={isDanger ? 'danger' : 'solid'}
-                        priority={2}
-                        title={confirmButtonTitle}
-                        onClick={onClickConfirm}
-                    />
+                {children.length ?
+                    <div className='children-container'>
+                        {children}
+                    </div>
+                    : null
+                }
+                <div className='d-flex jc-space-between ai-flex-end'>
+                    {loading ?
+                        <PendingMessage message={pendingMessage} style={{marginRight: 10, flex: 1}} />
+                        : <div />
+                    }
+                    <div className='d-flex jc-flex-end ai-center'>
+                        <Button
+                            type='tint'
+                            priority={2}
+                            title='Cancel'
+                            onClick={onClickCancel}
+                            style={{marginRight: 15}}
+                        />
+                        <Button
+                            type={isDanger ? 'danger' : 'solid'}
+                            priority={2}
+                            title={confirmButtonTitle}
+                            onClick={onClickConfirm}
+                        />
+                    </div>
                 </div>
             </div>
         </Root>
@@ -70,10 +91,18 @@ const Root = styled.div`
     justify-content: flex-start;
     align-items: stretch;
     width: min(500px, 75vw);
+    max-height: 90vh;
+    overflow: scroll !important;
     background-color: ${p => p.theme.bgcLight};
     border: 1px solid ${p => p.theme.bc};
     border-radius: var(--br-container);
     overflow: hidden;
+    box-sizing: border-box;
+
+    &.mobile {
+        width: 100%;
+        margin: 0px var(--ps-body);
+    }
 
     & .header {
         display: flex;
@@ -106,9 +135,17 @@ const Root = styled.div`
     & .body-message {
         margin-bottom: 15px;
     }
+
+    & .children-container {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        margin-bottom: 15px;
+        height: 100%;
+    }
 `
 const mapStateToProps = state => ({
-    
+    isMobile: getIsMobile(state)
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

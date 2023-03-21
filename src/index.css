@@ -72,6 +72,7 @@ th {
   --h-subheader-with-links: 93px;
   --br-container: 10px;
   --duration-animation: 0.2s;
+  --duration-animation-medium: 0.5s;
   --duration-animation-long: 2s;
 }
 

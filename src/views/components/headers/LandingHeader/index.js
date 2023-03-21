@@ -24,14 +24,14 @@ export const LandingHeader = props => {
                 onClick={onClickLogo}
                 style={{cursor: 'pointer'}}
             >
-                <LogoIcon
+                <img className='logo-icon'
                     src='/images/logo.png'
                     height={35}
                     width={35}
                 />
-                <LogoText>
+                <h3 className='logo-text'>
                     {process.env.REACT_APP_SITE_NAME}
-                </LogoText>
+                </h3>
             </div>
             {showButtons ?
                 <div className='d-flex jc-flex-end ai-center'>
@@ -66,19 +66,16 @@ const Root = styled.div`
     box-shadow: 0px 1px 4px 0px rgba(0,0,0,0.2);
     width: 100%;
     box-sizing: border-box;
-`
 
-const LogoIcon = styled.img`
-    border-radius: 50%;
-    margin-right: 10px;
-`
+    & .logo-icon {
+        border-radius: 50%;
+        margin-right: 10px;
+    }
 
-const LogoText = styled.h3`
-    text-transform: capitalize;
-    font-weight: 400;
-    letter-spacing: 1px;
-    color: ${p => p.theme.textPrimary};
-    cursor: pointer;
+    & .logo-text {
+        font-weight: 600;
+        cursor: pointer;
+    }
 `
 
 const PageLink = styled(Link)`

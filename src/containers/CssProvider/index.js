@@ -145,11 +145,11 @@ const Root = styled.div`
     }
 
     .animation-pop-in {
-        animation: pop-in var(--duration-animation);
         -webkit-animation: pop-in var(--duration-animation);
         -moz-animation: pop-in var(--duration-animation);
         -ms-animation: pop-in var(--duration-animation);
         -o-animation: pop-in var(--duration-animation);
+        animation: pop-in var(--duration-animation);
     }
 
     @keyframes slide-up {
@@ -198,11 +198,11 @@ const Root = styled.div`
     }
 
     .animation-slide-up {
-        animation: slide-up var(--duration-animation);
         -webkit-animation: slide-up var(--duration-animation);
         -moz-animation: slide-up var(--duration-animation);
         -ms-animation: slide-up var(--duration-animation);
         -o-animation: slide-up var(--duration-animation);
+        animation: slide-up var(--duration-animation);
     }
 
     @keyframes fade-in {
@@ -251,11 +251,11 @@ const Root = styled.div`
     }
 
     .animation-fade-in {
-        animation: fade-in var(--duration-animation);
         -webkit-animation: fade-in var(--duration-animation);
         -moz-animation: fade-in var(--duration-animation);
         -ms-animation: fade-in var(--duration-animation);
         -o-animation: fade-in var(--duration-animation);
+        animation: fade-in var(--duration-animation);
     }
 
     @keyframes animation-border-tint {
@@ -304,11 +304,11 @@ const Root = styled.div`
     }
 
     .animation-border-tint {
-        animation: animation-border-tint var(--duration-animation-long);
         -webkit-animation: animation-border-tint var(--duration-animation-long);
         -moz-animation: animation-border-tint var(--duration-animation-long);
         -ms-animation: animation-border-tint var(--duration-animation-long);
         -o-animation: animation-border-tint var(--duration-animation-long);
+        animation: animation-border-tint var(--duration-animation-long);
     }
 
     /* Compound Properties */

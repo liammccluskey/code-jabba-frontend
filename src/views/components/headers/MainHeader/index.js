@@ -64,15 +64,15 @@ export const MainHeaderComponent = props => {
                 className='d-flex jc-flex-start ai-center clickable'
                 onClick={onClickLogo}
             >
-                <LogoIcon
+                <img className='logo-icon'
                     src='/images/logo.png'
                     height={35}
                     width={35}
                 />
                 {props.isMobile ? null :
-                    <LogoText>
+                    <h3 className='logo-text'>
                         {process.env.REACT_APP_SITE_NAME}
-                    </LogoText>
+                    </h3>
                 }
             </div>
             <div className='d-flex jc-flex-end ai-center'>
@@ -124,19 +124,16 @@ const Root = styled.div`
     &.no-border {
         border-bottom: none;
     }
-`
 
-const LogoIcon = styled.img`
-    border-radius: 50%;
-    margin-right: 10px;
-`
+    & .logo-icon {
+        border-radius: 50%;
+        margin-right: 10px;
+    }
 
-const LogoText = styled.h3`
-    text-transform: capitalize;
-    font-weight: 400;
-    letter-spacing: 1px;
-    color: ${p => p.theme.textPrimary};
-    cursor: pointer;
+    & .logo-text {
+        font-weight: 600;
+        color: ${p => p.theme.textPrimary};
+    }
 `
 
 const PageLink = styled(Link)`

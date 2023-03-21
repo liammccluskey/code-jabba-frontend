@@ -107,7 +107,7 @@ export const NotificationsComponent = props => {
 
     const scrollToChannelMessage = messageOffsetTop => {
         const channelMessagesContainer = document.getElementById('channel-messages-container')
-        channelMessagesContainer.scrollTop = messageOffsetTop
+        if (channelMessagesContainer) channelMessagesContainer.scrollTop = messageOffsetTop
     }
 
     // Direct
