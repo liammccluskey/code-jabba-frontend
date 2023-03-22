@@ -19,7 +19,7 @@ export const AdminUserRow = props => {
     return (
         <Root {...rest} className={isMobile ? 'mobile' : ''}>
             <div className='d-inline-flex jc-flex-start ai-center'>
-                <UserIcon size='s' user={adminUser} style={{marginRight: 10}} />
+                <UserIcon size='m' user={adminUser} style={{marginRight: 10}} />
                 <p>{adminUser.displayName}</p>
             </div>
             {adminUser.isSuperAdmin ?
@@ -54,6 +54,10 @@ const Root = styled.div`
     align-items: center;
     padding: 10px 15px;
     border-bottom: 1px solid ${p => p.theme.bc};
+
+    &:hover {
+        background-color: ${p => p.theme.bgcHover};
+    }
 
     &:last-child {
         border-bottom: none;

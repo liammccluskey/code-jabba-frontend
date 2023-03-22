@@ -127,7 +127,7 @@ const Root = styled.div`
 
     & .logo-icon {
         border-radius: 50%;
-        margin-right: 10px;
+        margin-right: 15px;
     }
 
     & .logo-text {

@@ -2,7 +2,9 @@ import {AdminActionTypes as Types} from './types'
 
 const AdminState = {
     adminUsers: [],
-    loadingAdminUsers: false
+    loadingAdminUsers: false,
+    usersSearchResults: [],
+    loadingUsersSearchResults: false
 }
 
 export const adminReducer = (state = AdminState, action) => {
@@ -16,6 +18,21 @@ export const adminReducer = (state = AdminState, action) => {
             return {
                 ...state,
                 loadingAdminUsers: action.value
+            }
+        case Types.SET_USERS_SEARCH_RESULTS:
+            return {
+                ...state,
+                usersSearchResults: action.value
+            }
+        case Types.CLEAR_USERS_SEARCH_RESUTLS:
+            return {
+                ...state,
+                usersSearchResults: []
+            }
+        case Types.SET_LOADING_USERS_SEARCH_RESULTS:
+            return {
+                ...state,
+                loadingUsersSearchResults: action.value
             }
         default:
             return state

@@ -6,6 +6,7 @@ import { Button } from '../../common/Button'
 export const CreateAppAnnouncemnentForm = props => {
     const {
         onSubmit, // formData => void
+        onClickCancel,
 
         isMobile,
         
@@ -23,18 +24,30 @@ export const CreateAppAnnouncemnentForm = props => {
     }
 
     return (
-        <Root {...rest} className={`float-container ${isMobile && 'mobile'}`} onSubmit={onClickSubmit}>
+        <Root
+            {...rest}
+            className={`float-container ${isMobile && 'mobile'} ${props.className}`}
+            onSubmit={onClickSubmit}
+        >
             <h3 className='form-title'>Create App Announcement</h3>
             <label>Announcement Message</label>
             <textarea value={message} onChange={onChangeMessage} />
-            <Button
-                title='Submit'
-                type='solid'
-                priority={2}
-                onClick={onClickSubmit}
-                isSubmitButton={true}
-                className='as-flex-end'
-            />
+            <div className='d-flex jc-flex-end ai-center'>
+                <Button
+                    title='Cancel'
+                    type='tint'
+                    priority={2}
+                    onClick={onClickCancel}
+                    style={{marginRight: 15}}
+                />
+                <Button
+                    title='Submit'
+                    type='solid'
+                    priority={2}
+                    onClick={onClickSubmit}
+                    isSubmitButton={true}
+                />
+            </div>
         </Root>
     )
 }
@@ -46,8 +59,6 @@ const Root = styled.form`
     align-items: stretch;
     padding: 30px;
     box-sizing: border-box;
-    background-color: ${p => p.theme.bgcSettings} !important;
-    border: 1px solid ${p => p.theme.bc} !important;
 
     &.mobile {
         padding: 20px;
@@ -61,7 +72,7 @@ const Root = styled.form`
         width: 100% !important;
         box-sizing: border-box;
         margin-bottom: 20px;
-        height: 100px;
+        height: 150px;
     }
 
     & @keyframes expand-height {

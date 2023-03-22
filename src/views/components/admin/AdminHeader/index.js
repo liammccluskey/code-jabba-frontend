@@ -8,6 +8,16 @@ const PageLinks = [
         url: '',
         id: 'general'
     },
+    {
+        name: 'Bug Reports',
+        url: '/bugreports',
+        id: 'bug-reports'
+    },
+    {
+        name: 'Tools',
+        url: '/tools',
+        id: 'tools'
+    }
 ]
 
 export const AdminHeader = props => {

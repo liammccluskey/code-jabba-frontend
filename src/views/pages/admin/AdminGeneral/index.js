@@ -16,7 +16,8 @@ import {
     postEmailAnnouncementToAllUsers
 } from '../../../../redux/ducks/admin'
 import { getIsMobile } from '../../../../redux/ducks/theme'
-import { addModal, ModalTypes } from '../../../../redux/ducks/modal'
+import { addModal } from '../../../../redux/ducks/modal'
+import { ModalTypes } from '../../../../containers/ModalProvider'
 import { addMessage } from '../../../../redux/ducks/communication'
 import { PageContainer } from '../../../components/common/PageContainer'
 import { BodyContainer } from '../../../components/common/BodyContainer'
@@ -25,7 +26,8 @@ import { AdminHeader } from '../../../components/admin/AdminHeader'
 import { AdminUserRow } from '../../../components/admin/AdminUserRow'
 import { Button } from '../../../components/common/Button'
 import { CreateAppAnnouncemnentForm } from '../../../components/admin/CreateAppAnnouncementForm'
-import { CreateEamilAnnouncemnentForm } from '../../../components/admin/CreateEmailAnnouncementForm'
+import { CreateEmailAnnouncemnentForm } from '../../../components/admin/CreateEmailAnnouncementForm'
+import { ClickableContainer } from '../../../components/common/ClickableContainer'
 
 export const AdminGeneralComponent = props => {
     const {
@@ -57,7 +59,7 @@ export const AdminGeneralComponent = props => {
             title: 'Add Super Admin',
             message: "Are you sure you want to give this user super admin privileges?",
             confirmButtonTitle: 'Add',
-            onConfirm: onSuccess => props.makeUserSuperAdmin(adminUserID, onSuccess)
+            onConfirm: (onSuccess, onFailure) => props.makeUserSuperAdmin(adminUserID, onSuccess, onFailure)
         })
     }
 
@@ -66,13 +68,13 @@ export const AdminGeneralComponent = props => {
             title: 'Remove Admin',
             message: "Are you sure you want to remove this user's admin privilges?",
             confirmButtonTitle: 'Remove',
-            onConfirm: onSuccess => props.removeAdminUser(adminUserID, onSuccess),
+            onConfirm: (onSuccess, onFailure) => props.removeAdminUser(adminUserID, onSuccess, onFailure),
             isDanger: true
         })
     }
 
     const onClickCreateAdmin = () => {
-
+        props.addModal(ModalTypes.CREATE_NEW_ADMIN)
     }
 
     const onClickQuickAction = quickActionID => {
@@ -96,7 +98,7 @@ export const AdminGeneralComponent = props => {
                 ],
                 confirmButtonTitle: 'Send',
                 pendingMessage: "This operation might take a while. You can safely exit this page and we'll notify you once the operation is complete",
-                onConfirm: onSuccess => props.postAppAnnouncementToAllUsers(formData, onSuccess)
+                onConfirm: (onSuccess, onFailure) => props.postAppAnnouncementToAllUsers(formData, onSuccess, onFailure)
             })
         }
     }
@@ -121,7 +123,7 @@ export const AdminGeneralComponent = props => {
                 ],
                 confirmButtonTitle: 'Send',
                 pendingMessage: "This operation might take a while. You can safely exit this page and we'll notify you once the operation is complete",
-                onConfirm: onSuccess => props.postEmailAnnouncementToAllUsers(formData, onSuccess)
+                onConfirm: (onSuccess, onFailure) => props.postEmailAnnouncementToAllUsers(formData, onSuccess, onFailure)
             })
         }
     }
@@ -159,20 +161,28 @@ export const AdminGeneralComponent = props => {
                     </div>
                     <div className='quick-actions-container'>
                         {quickActions.map( ({title, icon, id}) => (
-                            <div
+                            <ClickableContainer
                                 className={`quick-action-container ${id === activeQuickActionID && 'active'}`}
                                 onClick={() => onClickQuickAction(id)}
                                 key={id}
                             >
                                 <i className={icon} />
                                 <h4>{title}</h4>
-                            </div>
+                            </ClickableContainer>
                         ))}
                     </div>
                     {activeQuickActionID === 'create-app-announcement' ? 
-                        <CreateAppAnnouncemnentForm onSubmit={onSubmitAppAnnouncementForm} isMobile={props.isMobile} />
+                        <CreateAppAnnouncemnentForm
+                            onSubmit={onSubmitAppAnnouncementForm}
+                            onClickCancel={() => setActiveQuickActionID(null)}
+                            isMobile={props.isMobile}
+                        />
                     : activeQuickActionID === 'create-email-announcement' ?
-                        <CreateEamilAnnouncemnentForm onSubmit={onSubmitEmailAnnouncementForm} isMobile={props.isMobile} />
+                        <CreateEmailAnnouncemnentForm
+                            onSubmit={onSubmitEmailAnnouncementForm}
+                            onClickCancel={() => setActiveQuickActionID(null)}
+                            isMobile={props.isMobile}
+                        />
                     : null
                     }
                 </Container>
@@ -209,24 +219,10 @@ const Container = styled.div`
         margin-bottom: 30px;
     }
 
-    & .quick-action-container {
-        display: flex;
-        flex: 1;
-        flex-direction: column;
-        align-items: flex-start;
-        border: 1px solid ${p => p.theme.bc};
-        border-radius: var(--br-container);
-        background-color: ${p => p.theme.bgcLight};
-        margin-right: 30px;
-        padding: 20px;
-        cursor: pointer;
-    }
-    & .quick-action-container:last-child,
-    &.mobile .quick-action-container:last-child {
+    & .quick-action-container:last-child {
         margin-right: 0px;
     }
     &.mobile .quick-action-container {
-        padding: 15px;
         margin-right: 15px;
     }
 
@@ -235,8 +231,8 @@ const Container = styled.div`
         color: ${p => p.theme.tint};
     }
 
-    & .quick-actions-container i {
-        font-size: 40px;
+    & .quick-action-container i {
+        font-size: 35px;
         color: ${p => p.theme.textMain};
         margin-bottom: 10px;
     }
@@ -264,7 +260,7 @@ const ModalEmailAnnouncementContainer = styled.div`
     }
 
     & .message {
-        padding: 15px;
+        padding: 15px 10px;
     }
 `
 

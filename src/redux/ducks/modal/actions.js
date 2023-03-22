@@ -7,5 +7,5 @@ export const __addModal = modal => ({
 
 export const removeModal = modalID => ({
     type: Types.REMOVE_MODAL,
-    modalID
+    modalID: modalID || 'null'
 })

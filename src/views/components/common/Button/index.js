@@ -15,6 +15,7 @@ export const ButtonComponent = props => {
         icon=null,
         iconSize=18,
         isSubmitButton=false,
+        disabled=false,
     
         onClick,
 
@@ -24,8 +25,8 @@ export const ButtonComponent = props => {
     return (
         <Root
             {...rest}
-            className={`t${type} p${priority} ${props.isMobile && 'mobile'} ${props.className} fw-m`}
-            onClick={onClick}
+            className={`t${type} p${priority} ${props.isMobile && 'mobile'} ${props.className} ${disabled && 'disabled'} fw-m`}
+            onClick={disabled ? undefined : onClick}
         >
             {imageURL ?
                 <img
@@ -60,6 +61,11 @@ const Root = styled.div`
     justify-content: center;
     align-items: center;
     border-radius: 5px;
+    box-sizing: border-box;
+
+    &.disabled {
+        cursor: not-allowed;
+    }
 
     &.p1 {
         padding: 10px 25px;
@@ -75,6 +81,7 @@ const Root = styled.div`
         padding: 5px 10px;
         font-size: 13px;
         border-radius: 16px;
+        height: 30px;
     }
 
     &.mobile.p1 {

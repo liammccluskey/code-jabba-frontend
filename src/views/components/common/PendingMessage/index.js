@@ -9,7 +9,7 @@ export const PendingMessage = props => {
     } = props
 
     return (
-        <Root>
+        <Root {...rest}>
             <div style={props.style} className="lds-ring"><div></div><div></div><div></div><div></div></div>
             <p>{message}</p>
         </Root>

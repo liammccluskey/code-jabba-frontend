@@ -2,8 +2,6 @@ import React from 'react'
 import styled from 'styled-components'
 import moment from 'moment'
 
-const DefaultPhotoURL = '/images/logo.png'
-
 export const NotificationCard = props => {
     const {
         notification, // {channelID, message, isRead, createdAt}
@@ -15,6 +13,8 @@ export const NotificationCard = props => {
 
         ...rest
     } = props
+
+    console.log(notification)
 
     const {
         message,
@@ -102,7 +102,7 @@ const Root = styled.div`
         min-height: 35px;
         min-width: 35px;
         border-radius: 50%;
-        margin-right: 10px;
+        margin-right: 15px;
     }
 
     & .notification-icon-container {

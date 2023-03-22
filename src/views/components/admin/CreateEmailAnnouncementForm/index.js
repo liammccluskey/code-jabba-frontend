@@ -3,9 +3,10 @@ import styled from 'styled-components'
 
 import { Button } from '../../common/Button'
 
-export const CreateEamilAnnouncemnentForm = props => {
+export const CreateEmailAnnouncemnentForm = props => {
     const {
         onSubmit, // (subject, message) => void
+        onClickCancel,
 
         isMobile,
         
@@ -28,20 +29,32 @@ export const CreateEamilAnnouncemnentForm = props => {
     }
 
     return (
-        <Root {...rest} className={`float-container ${isMobile && 'mobile'}`} onSubmit={onClickSubmit}>
-            <h3 className='form-title'>Create App Announcement</h3>
+        <Root
+            {...rest}
+            className={`float-container ${isMobile && 'mobile'} ${props.className}`}
+            onSubmit={onClickSubmit}
+        >
+            <h3 className='form-title'>Create Email Announcement</h3>
             <label>Email Subject</label>
             <input value={subject} onChange={onChangeSubject} />
             <label>Email Message</label>
             <textarea value={message} onChange={onChangeMessage} />
-            <Button
-                title='Submit'
-                type='solid'
-                priority={2}
-                onClick={onClickSubmit}
-                isSubmitButton={true}
-                className='as-flex-end'
-            />
+            <div className='d-flex jc-flex-end ai-center'>
+                <Button
+                    title='Cancel'
+                    type='tint'
+                    priority={2}
+                    onClick={onClickCancel}
+                    style={{marginRight: 15}}
+                />
+                <Button
+                    title='Submit'
+                    type='solid'
+                    priority={2}
+                    onClick={onClickSubmit}
+                    isSubmitButton={true}
+                />
+            </div>
         </Root>
     )
 }
@@ -53,8 +66,6 @@ const Root = styled.form`
     align-items: stretch;
     padding: 30px;
     box-sizing: border-box;
-    background-color: ${p => p.theme.bgcSettings} !important;
-    border: 1px solid ${p => p.theme.bc} !important;
 
     &.mobile {
         padding: 20px;

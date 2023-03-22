@@ -40,7 +40,7 @@ export const fetchNotifications = page => async (dispatch, getState) => {
         if (page === 1) dispatch(CommunicationActions.setNotificationsData(res.data))
         else dispatch(CommunicationActions.addNotificationsData(res.data))
     } catch (error) {
-        const errorMessage = error.response.data.message
+        const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
     }
@@ -62,8 +62,9 @@ export const markNotificationsAsRead = notificationIDs => async (dispatch, getSt
             notificationIDs
         })
     } catch (error) {
-        const errorMessage = error.response.data.message
+        const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
     }
 }
 

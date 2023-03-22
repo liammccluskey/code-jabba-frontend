@@ -1,9 +1,9 @@
 export const NotificationChannels = {
     // channelID : {title, ?photoURL, ?icon}
-    main: {
-        id: 'main',
+    general: {
+        id: 'general',
         title: process.env.REACT_APP_SITE_NAME,
-        photoURL: 'https://lh3.googleusercontent.com/a/AGNmyxa3SUoNp3u6-ULZieQ8kCwUNcRdZxycQW-9FWq0=s96-c'
+        photoURL: '/images/logo.png'
     },
     announcements: {
         id: 'announcements',

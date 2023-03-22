@@ -20,7 +20,8 @@ import {
     patchUserTintColor,
     deleteUser
 } from '../../../../redux/ducks/user'
-import { addModal, ModalTypes } from '../../../../redux/ducks/modal'
+import { addModal } from '../../../../redux/ducks/modal'
+import { ModalTypes } from '../../../../containers/ModalProvider'
 import {
     getTintColor,
     getThemeColor,

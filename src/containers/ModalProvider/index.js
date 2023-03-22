@@ -3,8 +3,14 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 
-import { getModalStack, ModalTypes } from '../../redux/ducks/modal'
+import { getModalStack } from '../../redux/ducks/modal'
 import { Confirm } from '../../views/components/modals/Confirm'
+import { CreateNewAdminModal } from '../../views/components/admin/modals/CreateNewAdminModal'
+
+export const ModalTypes = {
+    CONFIRM: 'confirm',
+    CREATE_NEW_ADMIN: 'create-new-admin',
+}
 
 export const ModalProviderComponent = props => {
     const {
@@ -13,10 +19,12 @@ export const ModalProviderComponent = props => {
 
     // Utils
 
-    const renderModal = (modalType, modalProps) => {
+    const renderModal = (modalType, modalProps, modalID) => {
         switch (modalType) {
             case ModalTypes.CONFIRM:
-                return <Confirm {...modalProps} />
+                return <Confirm {...modalProps} key={modalID}/>
+            case ModalTypes.CREATE_NEW_ADMIN:
+                return <CreateNewAdminModal {...modalProps} key={modalID} />
             default:
                 return null
         }
@@ -29,9 +37,9 @@ export const ModalProviderComponent = props => {
                 <div
                     className='fullscreen-blur animation-fade-in'
                     style={{zIndex: 20 + i}}
-                    key={id}
+                    key={`container-${id}`}
                 >
-                    {renderModal(type, props)}
+                    {renderModal(type, props, id)}
                 </div>
             ))}
         </Root>

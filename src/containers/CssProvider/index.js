@@ -1,17 +1,26 @@
 import React from 'react'
 import styled from 'styled-components'
+import { connect } from 'react-redux'
 
-export const CssProvider = props => {
+import { getIsMobile } from '../../redux/ducks/theme'
+
+export const CssProviderComponent = props => {
     const {
         children
     } = props
 
     return (
-        <Root>
+        <Root className={`css-provider ${props.isMobile && 'mobile'}`}>
             {children}
         </Root>
     )
 }
+
+const mapStateToProps = state => ({
+    isMobile: getIsMobile(state)
+})
+
+export const CssProvider = connect(mapStateToProps)(CssProviderComponent)
 
 const Root = styled.div`
     h1, h2, h3,
@@ -262,6 +271,12 @@ const Root = styled.div`
         0% {
             border-color: ${p => p.theme.tint};
         }
+        25 % {
+            border-color: ${p => p.theme.tintTranslucent};
+        }
+        75% {
+            border-color: ${p => p.theme.bgcInput};
+        }
         100% {
             border-color: ${p => p.theme.bgcLight};
         }
@@ -270,6 +285,12 @@ const Root = styled.div`
     @-moz-keyframes animation-border-tint {
         0% {
             border-color: ${p => p.theme.tint};
+        }
+        25 % {
+            border-color: ${p => p.theme.tintTranslucent};
+        }
+        75% {
+            border-color: ${p => p.theme.bgcInput};
         }
         100% {
             border-color: ${p => p.theme.bgcLight};
@@ -280,6 +301,12 @@ const Root = styled.div`
         0% {
             border-color: ${p => p.theme.tint};
         }
+        25 % {
+            border-color: ${p => p.theme.tintTranslucent};
+        }
+        75% {
+            border-color: ${p => p.theme.bgcInput};
+        }
         100% {
             border-color: ${p => p.theme.bgcLight};
         }
@@ -289,6 +316,12 @@ const Root = styled.div`
         0% {
             border-color: ${p => p.theme.tint};
         }
+        25 % {
+            border-color: ${p => p.theme.tintTranslucent};
+        }
+        75% {
+            border-color: ${p => p.theme.bgcInput};
+        }
         100% {
             border-color: ${p => p.theme.bgcLight};
         }
@@ -297,6 +330,12 @@ const Root = styled.div`
     @-ms-keyframes animation-border-tint {
         0% {
             border-color: ${p => p.theme.tint};
+        }
+        25 % {
+            border-color: ${p => p.theme.tintTranslucent};
+        }
+        75% {
+            border-color: ${p => p.theme.bgcInput};
         }
         100% {
             border-color: ${p => p.theme.bgcLight};
@@ -320,6 +359,38 @@ const Root = styled.div`
         overflow: hidden;
         background-color: ${p => p.theme.bgcLight};
         box-shadow: ${p => p.theme.boxShadow};
+    }
+
+    .modal-container-small,
+    .modal-container-large {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        width: min(500px, 75vw);
+        max-height: 90vh;
+        overflow: scroll !important;
+        background-color: ${p => p.theme.bgcLight};
+        border: 1px solid ${p => p.theme.bc};
+        border-radius: var(--br-container);
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+
+    .modal-container-small {
+        width: min(500px, 75vw);
+        max-height: 90vh;
+    }
+
+    .modal-container-large {
+        width: min(800px, 80vw);
+        max-height: 90vh;
+    }
+
+    &.mobile .modal-container-small,
+    &.mobile .modal-container-large {
+        width: 100%;
+        margin: 0px var(--ps-body);
     }
 
     .line-clamp-1 {

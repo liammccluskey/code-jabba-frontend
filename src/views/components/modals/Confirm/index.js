@@ -13,11 +13,12 @@ export const ConfirmComponent = props => {
         title='Confirm',
         message,
         confirmButtonTitle='Yes',
+        confirmButtonDisabled=false,
         isDanger=false,
         children=[],
         pendingMessage='Operation in progress',
 
-        onConfirm, // onSuccess => void
+        onConfirm, // (onSuccess, onFailure) => void
         onCancel = () => {},
 
         modalID, // automatically provided
@@ -34,10 +35,13 @@ export const ConfirmComponent = props => {
 
     const onClickConfirm = () => {
         setLoading(true)
-        onConfirm(() => {
-            setLoading(false)
-            removeModal()
-        })
+        onConfirm(
+            () => {
+                setLoading(false)
+                removeModal()
+            },
+            () => setLoading(false)
+        )
     }
 
     const onClickCancel = () => {
@@ -46,14 +50,14 @@ export const ConfirmComponent = props => {
     }
 
     return (
-        <Root className={`animation-slide-up ${props.isMobile && 'mobile'}`}>
+        <Root className={`modal-container-small animation-slide-up ${props.isMobile && 'mobile'}`}>
             <div className='header section'>
                 <i className='bi-check-circle' />
                 <h3 className='header-title'>{title}</h3>
             </div>
             <div className='body section'>
                 <h4 className='body-message'>{message}</h4>
-                {children.length ?
+                {children ?
                     <div className='children-container'>
                         {children}
                     </div>
@@ -61,7 +65,7 @@ export const ConfirmComponent = props => {
                 }
                 <div className='d-flex jc-space-between ai-flex-end'>
                     {loading ?
-                        <PendingMessage message={pendingMessage} style={{marginRight: 10, flex: 1}} />
+                        <PendingMessage message={pendingMessage} style={{marginRight: 10}} />
                         : <div />
                     }
                     <div className='d-flex jc-flex-end ai-center'>
@@ -77,33 +81,19 @@ export const ConfirmComponent = props => {
                             priority={2}
                             title={confirmButtonTitle}
                             onClick={onClickConfirm}
+                            disabled={confirmButtonDisabled}
                         />
                     </div>
                 </div>
             </div>
+        <div style={{width: 'min(500px, 90vw)', border: '1px solid black'}}>
+            
+        </div>
         </Root>
     )
 }
 
 const Root = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: stretch;
-    width: min(500px, 75vw);
-    max-height: 90vh;
-    overflow: scroll !important;
-    background-color: ${p => p.theme.bgcLight};
-    border: 1px solid ${p => p.theme.bc};
-    border-radius: var(--br-container);
-    overflow: hidden;
-    box-sizing: border-box;
-
-    &.mobile {
-        width: 100%;
-        margin: 0px var(--ps-body);
-    }
-
     & .header {
         display: flex;
         justify-content: flex-start;

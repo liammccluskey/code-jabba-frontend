@@ -1,5 +1,5 @@
 import * as AdminActions from './actions'
-import {api} from '../../../networking'
+import {api, stringifyQuery} from '../../../networking'
 
 import * as AdminUtils from './utils'
 import { addMessage } from '../communication'
@@ -24,7 +24,7 @@ export const fetchAdminUsers = () => async (dispatch, getState) => {
     dispatch(AdminActions.setLoadingAdminUsers(false))
 }
 
-export const removeAdminUser = (adminUserID, onSuccess) => async (dispatch, getState) => {
+export const removeAdminUser = (adminUserID, onSuccess, onFailure) => async (dispatch, getState) => {
     const state = getState()
     const mongoUser = getMongoUser(state)
 
@@ -43,10 +43,11 @@ export const removeAdminUser = (adminUserID, onSuccess) => async (dispatch, getS
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
+        onFailure()
     }
 }
 
-export const makeUserSuperAdmin = (adminUserID, onSuccess) => async (dispatch, getState) => {
+export const makeUserSuperAdmin = (adminUserID, onSuccess, onFailure) => async (dispatch, getState) => {
     const state = getState()
     const mongoUser = getMongoUser(state)
 
@@ -65,10 +66,11 @@ export const makeUserSuperAdmin = (adminUserID, onSuccess) => async (dispatch, g
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
+        onFailure()
     }
 }
 
-export const postAppAnnouncementToAllUsers = (announcementData, onSuccess) => async (dispatch, getState) => {
+export const postAppAnnouncementToAllUsers = (announcementData, onSuccess, onFailure) => async (dispatch, getState) => {
     const state = getState()
     const mongoUser = getMongoUser(state)
 
@@ -88,10 +90,11 @@ export const postAppAnnouncementToAllUsers = (announcementData, onSuccess) => as
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
+        onFailure()
     }
 }
 
-export const postEmailAnnouncementToAllUsers = (announcementData, onSuccess) => async (dispatch, getState) => {
+export const postEmailAnnouncementToAllUsers = (announcementData, onSuccess, onFailure) => async (dispatch, getState) => {
     const state = getState()
     const mongoUser = getMongoUser(state)
 
@@ -111,5 +114,49 @@ export const postEmailAnnouncementToAllUsers = (announcementData, onSuccess) => 
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
+        onFailure()
     }
+}
+
+export const createNewAdminUser = (userID, onSuccess, onFailure) => async (dispatch, getState) => {
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        const res = await api.patch(
+            '/admin/users/makeadmin',
+            {userID},
+            AdminUtils.getAdminRequestConfig(mongoUser)
+        )
+        dispatch(addMessage(res.data.message))
+        dispatch(fetchAdminUsers())
+        onSuccess()
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        onFailure()
+    }
+}
+
+export const fetchUsersSearchResults = (searchText) => async (dispatch, getState) => {
+    dispatch(AdminActions.setLoadingUsersSearchResults(true))
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    const queryString = stringifyQuery({searchText})
+
+    try {
+        const res = await api.get(
+            `/admin/users/searchnonadmin${queryString}`,
+            AdminUtils.getAdminRequestConfig(mongoUser)
+        )
+        dispatch(AdminActions.setUsersSearchResults(res.data))
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+    }
+
+    dispatch(AdminActions.setLoadingUsersSearchResults(false))
 }

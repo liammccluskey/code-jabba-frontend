@@ -8,7 +8,6 @@ import {
     getNotifications,
     getLoadingNotificationsFirstPage,
     fetchNotifications,
-    markNotificationsAsRead,
     NotificationChannels
 } from '../../../../redux/ducks/communication'
 import { DropdownMenu } from '../DropdownMenu'
@@ -32,14 +31,6 @@ export const NotificationsMenuComponent = props => {
     useEffect(() => {
         props.fetchNotifications(1)
     }, [])
-
-    useEffect(() => {
-        if (hasUnreadNotifications && !menuHidden) {
-            const unreadNotificationIDs = notifications.filter(n => !n.isRead)
-                .map( n => n._id )
-            props.markNotificationsAsRead(unreadNotificationIDs)
-        }
-    }, [menuHidden, hasUnreadNotifications])
 
     const onClickViewAll = () => {
         navigate('/notifications')
@@ -173,7 +164,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     fetchNotifications,
-    markNotificationsAsRead
 }, dispatch)
 
 export const NotificationsMenu = connect(mapStateToProps, mapDispatchToProps)(NotificationsMenuComponent)

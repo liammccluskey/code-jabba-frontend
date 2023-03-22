@@ -45,6 +45,7 @@ const Root = styled.div`
         cursor: pointer;
         font-weight: 600;
         color: ${p => p.theme.textSecondary} !important;
+        margin-right: 15px;
     }
     & .tab-option:hover {
         color: ${p => p.theme.tint} !important;
