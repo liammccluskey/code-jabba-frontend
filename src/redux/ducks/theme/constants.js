@@ -21,6 +21,9 @@ export const Colors = {
     mintTranslucent: 'rgba(24, 158, 138, 0.2)',
     gray: '#6f787d',
     facebookBlue: '#4267B2',
+
+    error: 'rgb(211,47,48)',
+    errorTranslucent: 'rgba(211,47,48,0.2)'
 }
 
 const LightTheme = {

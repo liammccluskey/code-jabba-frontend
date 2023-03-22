@@ -1,7 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
+import { connect } from 'react-redux'
+import { bindActionCreators } from '@reduxjs/toolkit'
 
-export const ValueDeltaSpread = props => {
+import { getIsMobile } from '../../../../redux/ducks/theme'
+
+export const ValueDeltaSpreadComponent = props => {
     const {
         values, // [{title, value, percentDelta}]
         timePeriod,
@@ -31,6 +35,12 @@ export const ValueDeltaSpread = props => {
         </Root>
     )
 }
+
+const mapStateToProps = state => ({
+    isMobile: getIsMobile(state)
+})
+
+export const ValueDeltaSpread = connect(mapStateToProps)(ValueDeltaSpreadComponent)
 
 const Root = styled.div`
     display: flex;

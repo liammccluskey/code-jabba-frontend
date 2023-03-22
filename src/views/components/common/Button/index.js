@@ -145,7 +145,7 @@ const Root = styled.div`
 
     &.tdanger:hover {
         background-color: ${p => p.theme.error};
-        color: ${p => p.theme.bgcLight};
+        color: #fdf1f0;
     }
 
     & i, & img {

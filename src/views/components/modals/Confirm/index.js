@@ -86,9 +86,6 @@ export const ConfirmComponent = props => {
                     </div>
                 </div>
             </div>
-        <div style={{width: 'min(500px, 90vw)', border: '1px solid black'}}>
-            
-        </div>
         </Root>
     )
 }

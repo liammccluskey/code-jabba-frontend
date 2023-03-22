@@ -132,7 +132,7 @@ export const AdminGeneralComponent = props => {
         <PageContainer>
             <MainHeader showBorder={false}/>
             <AdminHeader activeLinkID='general' />
-            <BodyContainer className='body-container'>
+            <BodyContainer>
                 <Container className={props.isMobile ? 'mobile' : ''}>
                     <div className='section-header-container'>
                         <h3>Admins</h3>
@@ -217,6 +217,10 @@ const Container = styled.div`
         justify-content: flex-start;
         align-items: center;
         margin-bottom: 30px;
+    }
+
+    & .quick-action-container {
+        margin-right: 20px;
     }
 
     & .quick-action-container:last-child {
