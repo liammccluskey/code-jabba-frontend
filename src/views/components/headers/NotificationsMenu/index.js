@@ -9,7 +9,7 @@ import {
     getLoadingNotificationsFirstPage,
     fetchNotifications,
     NotificationChannels
-} from '../../../../redux/ducks/communication'
+} from '../../../../redux/communication'
 import { DropdownMenu } from '../DropdownMenu'
 import { Button } from '../../common/Button'
 import { NotificationCard } from '../../notifications/NotificationCard'

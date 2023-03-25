@@ -4,7 +4,9 @@ import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
-import { getIsLoggedIn } from '../../../redux/ducks/user'
+import { addModal } from '../../../redux/modal'
+import { ModalTypes } from '../../../containers/ModalProvider'
+import { getIsLoggedIn } from '../../../redux/user'
 import { PageContainer } from '../../components/common/PageContainer'
 import { BodyContainer } from '../../components/common/BodyContainer'
 import { MainHeader } from '../../components/headers/MainHeader'
@@ -21,7 +23,9 @@ export const ErrorElementComponent = props => {
 
     const onClickGoToLanding = () => navigate('/')
 
-    const onClickReportBug = () => navigate('/admin/bugreports')
+    const onClickReportBug = () => {
+        props.addModal(ModalTypes.CREATE_BUG_REPORT)
+    }
 
     return (
         <PageContainer>
@@ -80,7 +84,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    
+    addModal
 }, dispatch)
 
 export const ErrorElement = connect(mapStateToProps, mapDispatchToProps)(ErrorElementComponent)

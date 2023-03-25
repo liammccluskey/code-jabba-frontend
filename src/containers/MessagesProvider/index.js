@@ -3,8 +3,8 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 
-import { getMessages } from '../../redux/ducks/communication'
-import { deleteMessage } from '../../redux/ducks/communication'
+import { getMessages } from '../../redux/communication'
+import { deleteMessage } from '../../redux/communication'
 
 export const MessagesProviderComponent = props => {
     const {

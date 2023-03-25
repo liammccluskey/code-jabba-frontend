@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import {
     getUser,
     patchUserSettings
-} from '../../../../redux/ducks/user'
+} from '../../../../redux/user'
 import { PageContainer } from '../../../components/common/PageContainer'
 import { BodyContainer } from '../../../components/common/BodyContainer'
 import { MainHeader } from '../../../components/headers/MainHeader'

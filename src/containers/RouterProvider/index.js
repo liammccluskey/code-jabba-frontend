@@ -15,6 +15,7 @@ import { Notifications } from '../../views/pages/Notifications'
 import { AdminGeneral } from '../../views/pages/admin/AdminGeneral'
 import { BugReports } from '../../views/pages/admin/BugReports'
 import { AdminTools } from '../../views/pages/admin/Tools'
+import { BugReport } from '../../views/pages/BugReport'
 import { ErrorElement } from '../../views/pages/ErrorElement'
 
 const router = createBrowserRouter([
@@ -84,6 +85,11 @@ const router = createBrowserRouter([
     {
       path: '/admin/tools',
       element: <AdminRoute element={<AdminTools />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: 'admin/bugreports/:bugReportID',
+      element: <AdminRoute element={<BugReport />} />,
       errorElement: <ErrorElement />
     }
 ])

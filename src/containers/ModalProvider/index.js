@@ -3,13 +3,15 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 
-import { getModalStack } from '../../redux/ducks/modal'
+import { getModalStack } from '../../redux/modal'
 import { Confirm } from '../../views/components/modals/Confirm'
 import { CreateNewAdminModal } from '../../views/components/admin/modals/CreateNewAdminModal'
+import { CreateBugReportModal } from '../../views/components/admin/modals/CreateBugReportModal'
 
 export const ModalTypes = {
     CONFIRM: 'confirm',
     CREATE_NEW_ADMIN: 'create-new-admin',
+    CREATE_BUG_REPORT: 'create-bug-report',
 }
 
 export const ModalProviderComponent = props => {
@@ -25,6 +27,8 @@ export const ModalProviderComponent = props => {
                 return <Confirm {...modalProps} key={modalID}/>
             case ModalTypes.CREATE_NEW_ADMIN:
                 return <CreateNewAdminModal {...modalProps} key={modalID} />
+            case ModalTypes.CREATE_BUG_REPORT:
+                return <CreateBugReportModal {...modalProps} key={modalID} />
             default:
                 return null
         }

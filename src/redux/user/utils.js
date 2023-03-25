@@ -1,4 +1,4 @@
-import {api, stringifyQuery} from '../../../networking'
+import {api, stringifyQuery} from '../../networking'
 
 // Networking
 

@@ -3,9 +3,9 @@ import { onAuthStateChanged } from 'firebase/auth'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 
-import { fetchThisMongoUser, getLoadingLogout, getFirebaseUser, getIsLoggedIn } from '../../redux/ducks/user'
+import { fetchThisMongoUser, getLoadingLogout, getFirebaseUser, getIsLoggedIn } from '../../redux/user'
 import {auth} from '../../networking'
-import { addMessage } from '../../redux/ducks/communication'
+import { addMessage } from '../../redux/communication'
 
 
 export const AuthContainerComponent = props => {

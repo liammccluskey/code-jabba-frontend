@@ -2,7 +2,7 @@ import React, {useEffect} from 'react'
 import styled from 'styled-components'
 import { useDispatch } from 'react-redux'
 
-import { setThemeColor, setTintColor } from '../../../redux/ducks/theme'
+import { setThemeColor, setTintColor } from '../../../redux/theme'
 import { BodyContainer } from '../../components/common/BodyContainer'
 import { PageContainer } from '../../components/common/PageContainer'
 import { LandingHeader } from '../../components/headers/LandingHeader'

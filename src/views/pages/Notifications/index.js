@@ -17,8 +17,8 @@ import {
     fetchNotifications,
     fetchChannelNotifications,
     NotificationChannels
-} from '../../../redux/ducks/communication'
-import { getIsSemiMobile } from '../../../redux/ducks/theme'
+} from '../../../redux/communication'
+import { getIsSemiMobile } from '../../../redux/theme'
 import { PageContainer } from '../../components/common/PageContainer'
 import { FixedBodyContainer } from '../../components/common/FixedBodyContainer'
 import { MainHeader } from '../../components/headers/MainHeader'

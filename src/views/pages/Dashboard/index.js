@@ -9,7 +9,7 @@ import { BodyContainer } from '../../components/common/BodyContainer'
 import { MainHeader } from '../../components/headers/MainHeader'
 import { Button } from '../../components/common/Button'
 
-import {signOutUser} from '../../../redux/ducks/user'
+import {signOutUser} from '../../../redux/user'
 import { Subheader } from '../../components/headers/Subheader'
 import { Tooltip } from '../../components/common/Tooltip'
 

@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 
-import { getIsMobile } from '../../../../redux/ducks/theme'
+import { getIsMobile } from '../../../../redux/theme'
 
 export const ClickableContainerComponent = props => {
     const {

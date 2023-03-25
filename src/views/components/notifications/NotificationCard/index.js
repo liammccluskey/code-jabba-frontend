@@ -14,8 +14,6 @@ export const NotificationCard = props => {
         ...rest
     } = props
 
-    console.log(notification)
-
     const {
         message,
         isRead,

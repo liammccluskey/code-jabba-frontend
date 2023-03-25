@@ -1,5 +1,5 @@
 import {createSelector} from '@reduxjs/toolkit'
-import {auth} from '../../../networking'
+import {auth} from '../../networking'
 import { isAdmin, isSuperAdmin } from './utils'
 
 export const getMongoUser = state => state.user.mongoUser

@@ -9,7 +9,7 @@ import {
     clearUsersSearchResults,
     fetchUsersSearchResults,
     createNewAdminUser
-} from '../../../../../redux/ducks/admin'
+} from '../../../../../redux/admin'
 import { Confirm } from '../../../modals/Confirm'
 import { SearchBar } from '../../../common/SearchBar'
 import { UserIcon } from '../../../common/UserIcon'
@@ -18,6 +18,8 @@ import { Loading } from '../../../common/Loading'
 export const CreateNewAdminModalComponent = props => {
     const {
         modalID, // automatically provided
+
+        ...rest
     } = props
     const [searchText, setSearchText] = useState('')
     const [selectedUserID, setSelectedUserID] = useState(null)
@@ -50,6 +52,7 @@ export const CreateNewAdminModalComponent = props => {
 
     return (
         <Confirm
+            {...rest}
             title='Create New Admin'
             message='Search for a user to make an admin.'
             confirmButtonTitle='Make admin'

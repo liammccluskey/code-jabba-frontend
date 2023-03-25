@@ -5,7 +5,7 @@ import styled from 'styled-components'
 
 import {
     getHasSuperAdminPrivileges,
-} from '../../../../redux/ducks/user'
+} from '../../../../redux/user'
 import {
     getAdminUsers,
     getLoadingAdminUsers,
@@ -14,11 +14,11 @@ import {
     removeAdminUser,
     postAppAnnouncementToAllUsers,
     postEmailAnnouncementToAllUsers
-} from '../../../../redux/ducks/admin'
-import { getIsMobile } from '../../../../redux/ducks/theme'
-import { addModal } from '../../../../redux/ducks/modal'
+} from '../../../../redux/admin'
+import { getIsMobile } from '../../../../redux/theme'
+import { addModal } from '../../../../redux/modal'
 import { ModalTypes } from '../../../../containers/ModalProvider'
-import { addMessage } from '../../../../redux/ducks/communication'
+import { addMessage } from '../../../../redux/communication'
 import { PageContainer } from '../../../components/common/PageContainer'
 import { BodyContainer } from '../../../components/common/BodyContainer'
 import { MainHeader } from '../../../components/headers/MainHeader'

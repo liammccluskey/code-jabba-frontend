@@ -19,16 +19,16 @@ import {
     patchUserThemeColor,
     patchUserTintColor,
     deleteUser
-} from '../../../../redux/ducks/user'
-import { addModal } from '../../../../redux/ducks/modal'
+} from '../../../../redux/user'
+import { addModal } from '../../../../redux/modal'
 import { ModalTypes } from '../../../../containers/ModalProvider'
 import {
     getTintColor,
     getThemeColor,
     Tints,
     Themes,
-} from '../../../../redux/ducks/theme'
-import { addMessage } from '../../../../redux/ducks/communication'
+} from '../../../../redux/theme'
+import { addMessage } from '../../../../redux/communication'
 import { SettingsRow } from '../../../components/settings/SettingsRow'
 import { Button } from '../../../components/common/Button'
 import { UserIcon } from '../../../components/common/UserIcon'

@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
-import { getIsLoggedIn, getHasAdminPrivileges } from '../../redux/ducks/user'
+import { getIsLoggedIn, getHasAdminPrivileges } from '../../redux/user'
 
 export const AdminRouteComponent = props => {
     const {

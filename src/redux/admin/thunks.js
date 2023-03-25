@@ -1,5 +1,5 @@
 import * as AdminActions from './actions'
-import {api, stringifyQuery} from '../../../networking'
+import {api, stringifyQuery} from '../../networking'
 
 import * as AdminUtils from './utils'
 import { addMessage } from '../communication'
@@ -159,4 +159,110 @@ export const fetchUsersSearchResults = (searchText) => async (dispatch, getState
     }
 
     dispatch(AdminActions.setLoadingUsersSearchResults(false))
+}
+
+export const fetchBugReports = (filters, searchText, page) => async (dispatch, getState) => {
+    if (page == 1) {
+        dispatch(AdminActions.setLoadingBugReportsFirstPage(true))
+    } else {
+        dispatch(AdminActions.setLoadingBugReports(true))
+    }
+
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    const queryString = stringifyQuery({
+        ...filters,
+        title: searchText,
+        page
+    })
+
+    try {
+        const res = await api.get(
+            `/admin/bugreports/search${queryString}`,
+            AdminUtils.getAdminRequestConfig(mongoUser)
+        )
+
+        if (page == 1) {
+            dispatch(AdminActions.setBugReportsData(res.data))
+        } else {
+            dispatch(AdminActions.addBugReportsData(res.data))
+        }
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+    }
+
+    if (page == 1) {
+        dispatch(AdminActions.setLoadingBugReportsFirstPage(false))
+    } else {
+        dispatch(AdminActions.setLoadingBugReports(false))
+    }
+}
+
+export const postBugReport = (bugReportData, onSuccess) => async (dispatch, getState) => {
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        const res = await api.post(`/bugreports`, {
+            ...bugReportData,
+            reporter: mongoUser._id
+        })
+
+        dispatch(addMessage(res.data.message))
+        onSuccess()
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+    }
+}
+
+export const patchBugReports = (bugReportIDs, updatedFields, onSuccess, onFailure) => async (dispatch, getState) => {
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        const res = await api.patch(
+            '/admin/bugreports',
+            {bugReportIDs, updatedFields},
+            AdminUtils.getAdminRequestConfig(mongoUser)
+        )
+        
+        dispatch(AdminActions.updateBugReports(bugReportIDs, updatedFields))
+        dispatch(addMessage(res.data.message))
+        onSuccess()
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        onFailure()
+    }
+}
+
+export const deleteBugReports = (bugReportIDs, onSuccess, onFailure) => async (dispatch, getState) => {
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    const queryString = stringifyQuery({
+        bugReportIDs: bugReportIDs.join('-')
+    })
+
+    try {
+        const res = await api.delete(
+            `/admin/bugreports${queryString}`,
+            AdminUtils.getAdminRequestConfig(mongoUser)
+        )
+        
+        dispatch(AdminActions.__deleteBugReports(bugReportIDs))
+        dispatch(addMessage(res.data.message))
+        onSuccess()
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        onFailure()
+    }
 }

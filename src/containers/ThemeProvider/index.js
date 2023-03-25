@@ -12,7 +12,7 @@ import {
     setIsSemiMobile,
     calculateIsMobile,
     calculateIsSemiMobile
-} from '../../redux/ducks/theme'
+} from '../../redux/theme'
 
 export const ThemeProviderComponent = props => {
     const {

@@ -3,7 +3,7 @@ import moment from 'moment'
 import * as CommunicationActions from './actions'
 import { getMessages } from './selectors'
 import { getMongoUser } from '../user'
-import { api, stringifyQuery } from '../../../networking'
+import { api, stringifyQuery } from '../../networking'
 
 export const addMessage = (title, isError=false) => (dispatch, getState) => {
     const message = {

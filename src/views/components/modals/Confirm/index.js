@@ -3,8 +3,8 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 
-import { removeModal } from '../../../../redux/ducks/modal'
-import { getIsMobile } from '../../../../redux/ducks/theme'
+import { removeModal } from '../../../../redux/modal'
+import { getIsMobile } from '../../../../redux/theme'
 import { Button } from '../../common/Button'
 import { PendingMessage } from '../../common/PendingMessage'
 

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { bindActionCreators } from '@reduxjs/toolkit'
 import { connect } from 'react-redux'
 
-import { getIsMobile } from '../../../../redux/ducks/theme'
+import { getIsMobile } from '../../../../redux/theme'
 
 export const ButtonComponent = props => {
     const {
@@ -62,6 +62,7 @@ const Root = styled.div`
     align-items: center;
     border-radius: 5px;
     box-sizing: border-box;
+    white-space: nowrap;
 
     &.disabled {
         cursor: not-allowed;
@@ -117,7 +118,7 @@ const Root = styled.div`
     }
     &.tdanger {
         background-color: clear;
-        color: ${p => p.theme.error};
+        color: ${p => p.theme.brightRed};
         border: 1px solid ${p => p.theme.bc};
     }
 
@@ -145,6 +146,7 @@ const Root = styled.div`
 
     &.tdanger:hover {
         background-color: ${p => p.theme.error};
+        border-color: ${p => p.theme.error};
         color: #fdf1f0;
     }
 

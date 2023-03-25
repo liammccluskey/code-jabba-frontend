@@ -1,9 +1,9 @@
 import {combineReducers} from 'redux'
-import {themeReducer} from './ducks/theme'
-import {userReducer} from './ducks/user'
-import {communicationReducer} from './ducks/communication'
-import { modalReducer } from './ducks/modal/reducers'
-import { adminReducer } from './ducks/admin/reducers'
+import {themeReducer} from './theme'
+import {userReducer} from './user'
+import {communicationReducer} from './communication'
+import { modalReducer } from './modal/reducers'
+import { adminReducer } from './admin/reducers'
 
 export const rootReducer = combineReducers({
     theme: themeReducer,

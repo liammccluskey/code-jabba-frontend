@@ -12,8 +12,8 @@ import {
 
 import * as Constants from '../Login/constants'
 import {auth, getFirebaseErrorMessage} from '../../../networking'
-import { setThemeColor, setTintColor } from '../../../redux/ducks/theme'
-import { addMessage } from '../../../redux/ducks/communication'
+import { setThemeColor, setTintColor } from '../../../redux/theme'
+import { addMessage } from '../../../redux/communication'
 import { BodyContainer } from '../../components/common/BodyContainer'
 import { PageContainer } from '../../components/common/PageContainer'
 import { LandingHeader } from '../../components/headers/LandingHeader'

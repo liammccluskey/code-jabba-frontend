@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { bindActionCreators } from '@reduxjs/toolkit'
 
-import { getIsMobile } from '../../../../redux/ducks/theme'
+import { getIsMobile } from '../../../../redux/theme'
 
 export const ValueDeltaSpreadComponent = props => {
     const {

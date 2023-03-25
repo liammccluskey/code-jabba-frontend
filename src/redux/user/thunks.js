@@ -5,7 +5,7 @@ import * as UserActions from './actions'
 import * as ThemeActions from '../theme'
 import * as UserUtils from './utils'
 import { getFirebaseUser, getIsLoggedIn, getMongoUser } from './selectors'
-import {api, auth, storage, getFirebaseErrorMessage} from '../../../networking'
+import {api, auth, storage, getFirebaseErrorMessage} from '../../networking'
 import { addMessage } from '../communication'
 
 export const fetchThisMongoUser = (

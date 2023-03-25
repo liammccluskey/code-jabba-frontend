@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 
-import { getIsMobile } from '../../redux/ducks/theme'
+import { getIsMobile } from '../../redux/theme'
 
 export const CssProviderComponent = props => {
     const {

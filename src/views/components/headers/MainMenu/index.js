@@ -9,10 +9,10 @@ import {
     patchUserTintColor,
     patchUserThemeColor,
     signOutUser
-} from '../../../../redux/ducks/user'
+} from '../../../../redux/user'
 import { DropdownMenu } from '../DropdownMenu'
 import { UserIcon } from '../../common/UserIcon'
-import { Themes, Tints } from '../../../../redux/ducks/theme'
+import { Themes, Tints } from '../../../../redux/theme'
 import { Tooltip } from '../../common/Tooltip'
 
 import { PageLinks } from '../MainHeader'
