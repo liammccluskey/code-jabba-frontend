@@ -11,8 +11,10 @@ import { addMessage } from '../communication'
 export const fetchThisMongoUser = (
     firebaseUser,
     onSuccess = () => {},
-    onFailure = () => {}
+    onFailure = () => {},
+    isInitialFetch=false
 ) => async (dispatch) => {
+    isInitialFetch && dispatch(UserActions.setLoadingSignIn(true))
     dispatch(UserActions.setLoadingMongoUser(true))
     const {uid} = firebaseUser
 
@@ -31,15 +33,16 @@ export const fetchThisMongoUser = (
         dispatch(UserActions.setMongoUser(getRes.data))
         dispatch(ThemeActions.setThemeColor(getRes.data.settings.theme.themeColor))
         dispatch(ThemeActions.setTintColor(getRes.data.settings.theme.tintColor))
-        dispatch(UserActions.setLoadingMongoUser(false))
         onSuccess()
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
-        dispatch(UserActions.setLoadingMongoUser(false))
         onFailure()
     }
+
+    dispatch(UserActions.setLoadingMongoUser(false))
+    isInitialFetch && dispatch(UserActions.setLoadingSignIn(false))
 }
 
 // TODO : unused, consider deleting
@@ -185,7 +188,8 @@ export const patchUserSettings = (
     settingPath,
     settingValue,
     onSuccess = () => {},
-    onFailure = () => {}
+    onFailure = () => {},
+    suppressMessageFeedback=false
 ) => async (dispatch, getState) => {
     const state = getState()
     const {_id} = getMongoUser(state)
@@ -196,7 +200,7 @@ export const patchUserSettings = (
         dispatch(fetchThisMongoUser(
             firebaseUser,
             () => {
-                dispatch(addMessage(res.data.message))
+                !suppressMessageFeedback && dispatch(addMessage(res.data.message))
                 onSuccess()
             },
             onFailure
@@ -213,12 +217,12 @@ export const patchUserSettings = (
 
 export const patchUserThemeColor = (themeColor, onSuccess = () => {}) => async (dispatch, getState) => {
     dispatch(ThemeActions.setThemeColor(themeColor))
-    dispatch(patchUserSettings('theme.themeColor', themeColor, onSuccess))
+    dispatch(patchUserSettings('theme.themeColor', themeColor, onSuccess, undefined, true))
 }
 
 export const patchUserTintColor = (tintColor, onSuccess = () => {}) => async (dispatch, getState) => {
     dispatch(ThemeActions.setTintColor(tintColor))
-    dispatch(patchUserSettings('theme.tintColor', tintColor, onSuccess))
+    dispatch(patchUserSettings('theme.tintColor', tintColor, onSuccess, undefined, true))
 }
 
 export const signOutUser = onSuccess => async (dispatch, getState) => {

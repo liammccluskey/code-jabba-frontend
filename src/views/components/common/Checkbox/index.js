@@ -29,6 +29,11 @@ const Root = styled.div`
     width: 18px;
     border-radius: 3px;
     border: 1px solid ${p => p.theme.textTertiary};
+    cursor: pointer;
+
+    &:hover {
+        background-color: ${p => p.theme.tintTranslucent};
+    }
 
     &.active {
         border-color: ${p => p.theme.tint};

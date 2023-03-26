@@ -1,10 +1,11 @@
 import * as AdminActions from './actions'
-import {api, stringifyQuery} from '../../networking'
+import {api, stringifyQuery, PageSizes} from '../../networking'
 
 import * as AdminUtils from './utils'
 import { addMessage } from '../communication'
 import { getMongoUser } from '../user'
 import { fetchNotifications } from '../communication'
+import { getBugReports } from './selectors'
 
 export const fetchAdminUsers = () => async (dispatch, getState) => {
     dispatch(AdminActions.setLoadingAdminUsers(true))
@@ -161,14 +162,39 @@ export const fetchUsersSearchResults = (searchText) => async (dispatch, getState
     dispatch(AdminActions.setLoadingUsersSearchResults(false))
 }
 
+export const fetchBugReport = bugReportID => async (dispatch, getState) => {
+    dispatch(AdminActions.setLoadingBugReport(true))
+
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        const res = await api.get(
+            `admin/bugreports/${bugReportID}`,
+            AdminUtils.getAdminRequestConfig(mongoUser)
+        )
+
+        dispatch(AdminActions.setBugReport(res.data))
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+    }
+
+    dispatch(AdminActions.setLoadingBugReport(false))
+}
+
 export const fetchBugReports = (filters, searchText, page) => async (dispatch, getState) => {
+    const state = getState()
+    const bugReports = getBugReports(state)
+    if (page != 1 && bugReports.length > (page - 1)*PageSizes.bugReports) return
+
     if (page == 1) {
         dispatch(AdminActions.setLoadingBugReportsFirstPage(true))
     } else {
         dispatch(AdminActions.setLoadingBugReports(true))
     }
 
-    const state = getState()
     const mongoUser = getMongoUser(state)
 
     const queryString = stringifyQuery({
@@ -220,7 +246,13 @@ export const postBugReport = (bugReportData, onSuccess) => async (dispatch, getS
     }
 }
 
-export const patchBugReports = (bugReportIDs, updatedFields, onSuccess, onFailure) => async (dispatch, getState) => {
+export const patchBugReports = (
+    bugReportIDs,
+    updatedFields,
+    onSuccess,
+    onFailure,
+    updateLocally=true
+) => async (dispatch, getState) => {
     const state = getState()
     const mongoUser = getMongoUser(state)
 
@@ -231,7 +263,7 @@ export const patchBugReports = (bugReportIDs, updatedFields, onSuccess, onFailur
             AdminUtils.getAdminRequestConfig(mongoUser)
         )
         
-        dispatch(AdminActions.updateBugReports(bugReportIDs, updatedFields))
+        updateLocally && dispatch(AdminActions.updateBugReports(bugReportIDs, updatedFields))
         dispatch(addMessage(res.data.message))
         onSuccess()
     } catch (error) {
@@ -242,7 +274,12 @@ export const patchBugReports = (bugReportIDs, updatedFields, onSuccess, onFailur
     }
 }
 
-export const deleteBugReports = (bugReportIDs, onSuccess, onFailure) => async (dispatch, getState) => {
+export const deleteBugReports = (
+    bugReportIDs,
+    onSuccess,
+    onFailure,
+    updateLocally=true
+) => async (dispatch, getState) => {
     const state = getState()
     const mongoUser = getMongoUser(state)
 
@@ -256,7 +293,7 @@ export const deleteBugReports = (bugReportIDs, onSuccess, onFailure) => async (d
             AdminUtils.getAdminRequestConfig(mongoUser)
         )
         
-        dispatch(AdminActions.__deleteBugReports(bugReportIDs))
+        updateLocally && dispatch(AdminActions.__deleteBugReports(bugReportIDs))
         dispatch(addMessage(res.data.message))
         onSuccess()
     } catch (error) {

@@ -5,6 +5,7 @@ import {bindActionCreators} from 'redux'
 import { useNavigate } from 'react-router-dom'
 import {
     signInWithRedirect,
+    signInWithPopup,
     createUserWithEmailAndPassword,
     GoogleAuthProvider,
     updateProfile
@@ -35,19 +36,25 @@ export const RegisterComponent = props => {
     const onClickSubmit = async e => {
         e.preventDefault()
         try {
-            await createUserWithEmailAndPassword(auth, email, password)
-                .then(userCred => {
-                    updateProfile(userCred.user, {displayName: name})
-                })
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+            if (userCredential) {
+                const {user} = userCredential
+                props.fetchThisMongoUser(user, undefined, undefined, true)
+            }
         } catch (error) {
             const errorMessage = getFirebaseErrorMessage(error)
             props.addMessage(errorMessage, true)
         }
     }
 
-    const onClickContinueWithGoogle = () => {
+    const onClickContinueWithGoogle = async () => {
         try {
-            signInWithRedirect(auth, new GoogleAuthProvider())
+            // signInWithRedirect(auth, new GoogleAuthProvider())
+            const result = await signInWithPopup(auth, new GoogleAuthProvider())
+            if (result) {
+                const {user} = result
+                props.fetchThisMongoUser(user, undefined, undefined, true)
+            }
         } catch (error) {
             const errorMessage = getFirebaseErrorMessage(error)
             props.addMessage(errorMessage, true)

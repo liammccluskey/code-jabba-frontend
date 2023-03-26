@@ -25,6 +25,10 @@ const Root = styled.div`
     border: 1px solid ${p => p.theme.tint};
     padding: 10px;
 
+    & p {
+        color: ${p => p.theme.textMain};
+    }
+
     .lds-ring {
         display: inline-flex;
         position: relative;

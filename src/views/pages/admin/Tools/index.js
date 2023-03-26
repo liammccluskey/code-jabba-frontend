@@ -32,7 +32,7 @@ export const AdminToolsComponent = props => {
 
     return (
         <PageContainer>
-            <MainHeader showBorder={false} />
+            <MainHeader  />
             <AdminHeader activeLinkID='tools' />
             <BodyContainer>
                 <Container>

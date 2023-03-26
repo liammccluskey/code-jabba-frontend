@@ -34,12 +34,13 @@ const Root = styled.div`
 
     label {
         color: ${p => p.theme.textMain};
-        font-weight: 400;
-        font-size: 14px;
+        font-weight: 500;
+        font-size: 15px;
     }
 
-    ::placeholder {
-        color: ${p => p.theme.textSecondary};
+    input::placeholder {
+        color: ${p => p.theme.textTertiary};
+        opacity: 1;
     }
 
     input, input:active, input:focus,

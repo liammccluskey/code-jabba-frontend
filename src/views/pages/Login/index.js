@@ -1,10 +1,16 @@
 import React, {useEffect, useState} from 'react'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
-import { signInWithRedirect, signInWithEmailAndPassword, GoogleAuthProvider } from 'firebase/auth'
+import {
+    signInWithRedirect,
+    signInWithEmailAndPassword,
+    GoogleAuthProvider,
+    signInWithPopup
+} from 'firebase/auth'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 
+import { fetchThisMongoUser } from '../../../redux/user'
 import * as Constants from './constants'
 import {auth, getFirebaseErrorMessage} from '../../../networking'
 import { addMessage } from '../../../redux/communication'
@@ -29,16 +35,25 @@ export const LoginComponent = props => {
     const onClickSubmit = async e => {
         e.preventDefault()
         try {
-            await signInWithEmailAndPassword(auth, email, password)
+            const userCredential = await signInWithEmailAndPassword(auth, email, password)
+            if (userCredential) {
+                const {user} = userCredential
+                props.fetchThisMongoUser(user, undefined, undefined, true)
+            }
         } catch (error) {
             const errorMessage = getFirebaseErrorMessage(error)
             props.addMessage(errorMessage, true)
         }
     }
 
-    const onClickContinueWithGoogle = () => {
+    const onClickContinueWithGoogle = async () => {
         try {
-            signInWithRedirect(auth, new GoogleAuthProvider())
+            //signInWithRedirect(auth, new GoogleAuthProvider())
+            const result = await signInWithPopup(auth, new GoogleAuthProvider())
+            if (result) {
+                const {user} = result
+                props.fetchThisMongoUser(user, undefined, undefined, true)
+            }
         } catch (error) {
             const errorMessage = getFirebaseErrorMessage(error)
             props.addMessage(errorMessage, true)
@@ -124,7 +139,8 @@ export const LoginComponent = props => {
 const mapDispatchToProps = dispatch => bindActionCreators({
     addMessage,
     setTintColor,
-    setThemeColor
+    setThemeColor,
+    fetchThisMongoUser
 }, dispatch)
 
 export const Login = connect(null, mapDispatchToProps)(LoginComponent)

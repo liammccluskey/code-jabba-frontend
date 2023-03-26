@@ -130,7 +130,7 @@ export const AdminGeneralComponent = props => {
 
     return (
         <PageContainer>
-            <MainHeader showBorder={false}/>
+            <MainHeader />
             <AdminHeader activeLinkID='general' />
             <BodyContainer>
                 <Container className={props.isMobile ? 'mobile' : ''}>

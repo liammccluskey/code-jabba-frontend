@@ -5,6 +5,7 @@ const UserState = {
     loadingMongoUser: false,
     loadingProfileUpdate: false,
     loadingLogout: false,
+    loadingSignIn: false,
 
     // calculated,
     firebaseUser: null,
@@ -48,6 +49,11 @@ export const userReducer = (state = UserState, action) => {
             return {
                 ...state,
                 loadingLogut: action.value
+            }
+        case Types.SET_LOADING_SIGN_IN:
+            return {
+                ...state,
+                loadingSignIn: action.value
             }
         default:
             return state

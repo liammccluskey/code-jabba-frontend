@@ -17,7 +17,7 @@ export const ValueDeltaSpreadComponent = props => {
     return (
         <Root {...rest} className={`${isMobile && 'mobile'} ${props.className}`}>
             {values.map(({title, value, percentDelta}) => (
-                <div className={`value-container`}>
+                <div className={`value-container`} key={title}>
                     <h2 className='value-text'>{value}</h2>
                     <p className='title-text'>{title}</p>
                     <div className='d-flex jc-center ai-center'>

@@ -13,3 +13,7 @@ export const getFirebaseErrorMessage = error => {
         FirebaseErrors[type][code]
         : code
 }
+
+export const getPaginatedDataForCurrentPage = (data, page, pageSize) => {
+    return data.slice((page - 1)*pageSize, page*pageSize)
+}

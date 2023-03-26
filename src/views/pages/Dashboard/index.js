@@ -27,7 +27,7 @@ export const DashboardComponent = props => {
 
     return (
         <PageContainer>
-            <MainHeader />
+            <MainHeader hasSubheaderBelow={false}/>
             <BodyContainer>
             </BodyContainer>
         </PageContainer>

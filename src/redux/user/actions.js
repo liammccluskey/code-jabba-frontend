@@ -23,3 +23,8 @@ export const setLoadingLogout = loading => ({
     type: Types.SET_LOADING_LOGOUT,
     value: loading
 })
+
+export const setLoadingSignIn = loading => ({
+    type: Types.SET_LOADING_SIGN_IN,
+    value: loading
+})

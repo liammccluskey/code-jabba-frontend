@@ -3,6 +3,8 @@ import {initializeApp} from "firebase/app"
 import {getAuth} from "firebase/auth"
 import {getStorage} from 'firebase/storage'
 
+// APIs
+
 axios.defaults.headers.common['heroku_api_key'] = process.env.REACT_APP_HEROKU_API_KEY
 export const api = axios.create({
     baseURL: process.env.REACT_APP_HEROKU_API_BASE_URL,
@@ -21,7 +23,16 @@ export const app = initializeApp({
 export const auth = getAuth(app)
 export const storage = getStorage(app)
 
-/* Errors */
+// Constants
+
+export const PageSizes = {
+    notifications: 10,
+    channelNotifications: 20,
+    userSearch: 10,
+    bugReports: 10,
+}
+
+// Errors
 
 export const FirebaseErrors = {
     auth: {

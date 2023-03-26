@@ -17,6 +17,7 @@ import {
 import { getIsMobile } from '../../../../redux/theme'
 import { addModal } from '../../../../redux/modal'
 import { ModalTypes } from '../../../../containers/ModalProvider'
+import { PageSizes, getPaginatedDataForCurrentPage } from '../../../../networking'
 import { PageContainer } from '../../../components/common/PageContainer'
 import { BodyContainer } from '../../../components/common/BodyContainer'
 import { MainHeader } from '../../../components/headers/MainHeader'
@@ -27,11 +28,12 @@ import { Pill } from '../../../components/common/Pill'
 import { Button } from '../../../components/common/Button'
 import { SearchBar } from '../../../components/common/SearchBar'
 import { Loading } from '../../../components/common/Loading'
+import { Paginator } from '../../../components/common/Paginator'
 
 const TimePeriods = ['Week', 'Month', 'Year']
 const BugReportSortFilters = [
-    {id: 'most-recent', title: 'Most Recent'},
-    {id: 'least-recent', title: 'Least Recent'}
+    {id: 'most-recent', title: 'Most Recent', filter: '-createdAt'},
+    {id: 'least-recent', title: 'Least Recent', filter: '+createdAt'}
 ]
 
 export const BugReportsComponent = props => {
@@ -41,11 +43,12 @@ export const BugReportsComponent = props => {
     const navigate = useNavigate()
     const [bugReportsPage, setBugReportsPage] = useState(1)
     const [selectedTimePeriod, setSelectedTimePeriod] = useState(TimePeriods[0])
+    const [unresolvedPillActive, setUnresolvedPillActive] = useState(false)
     const [resolvedPillActive, setResolvedPillActive] = useState(false)
     const [highPriorityPillActive, setHighPriorityPillActive] = useState(false)
     const [archivedPillActive, setArchivedPillActive] = useState(false)
     const [searchText, setSearchText] = useState('')
-    const [bugReportsSortFilter, setBugReportsSortFilter] = useState('most-recent')
+    const [bugReportsSortFilterID, setBugReportsSortFilterID] = useState(BugReportSortFilters[0].id)
     const [clearSelectedRows, setClearSelectedRows] = useState(false)
 
     const metrics = [
@@ -55,15 +58,20 @@ export const BugReportsComponent = props => {
     ]
 
     const pills = [
+        {title: 'Unresolved', id: 'unresolved', active: unresolvedPillActive},
         {title: 'Resolved', id: 'resolved', active: resolvedPillActive},
         {title: 'High Priority', id: 'highPriority', active: highPriorityPillActive},
         {title: 'Archived', id: 'archived', active: archivedPillActive}
     ]
 
+    const bugReportsForCurrentPage = getPaginatedDataForCurrentPage(
+        props.bugReports,
+        bugReportsPage,
+        PageSizes.bugReports
+    )
     const tableHeaders = props.isMobile ?
         ['Title', 'Status', 'Priority']
         : ['Title', 'Status', 'Priority', 'Date Created']
-    const bugReportsForCurrentPage = props.bugReports
     const tableRows = bugReportsForCurrentPage.map(({title, resolved, highPriority, createdAt, _id}) => ({
         id: _id,
         cells: [
@@ -77,7 +85,7 @@ export const BugReportsComponent = props => {
     useEffect(() => {
         fetchBugReportsFirstPage()
         setClearSelectedRows(curr => !curr)
-    }, [resolvedPillActive, highPriorityPillActive, archivedPillActive])
+    }, [unresolvedPillActive, resolvedPillActive, highPriorityPillActive, archivedPillActive, bugReportsSortFilterID])
 
     useEffect(() => {
         // TODO
@@ -85,16 +93,18 @@ export const BugReportsComponent = props => {
 
     // Utils
 
+    const getBugReportFilters = () => {
+        return {
+            ...(unresolvedPillActive ? {resolved: false} : {}),
+            ...(resolvedPillActive ? {resolved: true} : {}),
+            ...(highPriorityPillActive ? {highPriority: true} : {}),
+            ...(archivedPillActive ? {archived: true} : {}),
+            sortby: BugReportSortFilters.find( ({id}) => id === bugReportsSortFilterID).filter
+        }
+    }
+
     const fetchBugReportsFirstPage = () => {
-        props.fetchBugReports(
-            {
-                ...(resolvedPillActive ? {resolved: true} : {}),
-                ...(highPriorityPillActive ? {highPriority: true} : {}),
-                ...(archivedPillActive ? {archived: true} : {}),
-            },
-            searchText,
-            1
-        )
+        props.fetchBugReports(getBugReportFilters(), searchText, 1)
         setBugReportsPage(1)
     }
 
@@ -117,6 +127,9 @@ export const BugReportsComponent = props => {
 
     const onClickPill = pillID => {
         switch (pillID) {
+            case 'unresolved':
+                setUnresolvedPillActive(curr => !curr)
+                break
             case 'resolved':
                 setResolvedPillActive(curr => !curr)
                 break
@@ -130,11 +143,17 @@ export const BugReportsComponent = props => {
     }
 
     const onChangeBugReportsSortFilter = e => {
-        setBugReportsSortFilter(e.target.value)
+        setBugReportsSortFilterID(e.target.value)
     }
 
     const onClickBugReportRow = rowID => {
         navigate(`/admin/bugreports/${rowID}`)
+    }
+
+    const onClickUnresolve = (selectedRowIDs) => {
+        props.patchBugReports(selectedRowIDs, {
+            resolved: false
+        }, () => setClearSelectedRows(curr => !curr))
     }
 
     const onClickResolve = (selectedRowIDs) => {
@@ -164,7 +183,7 @@ export const BugReportsComponent = props => {
             onConfirm: (onSuccess, onFailure) => props.deleteBugReports(
                 selectedRowIDs,
                 () => {
-                    clearSelectedRows(curr => !curr)
+                    setClearSelectedRows(curr => !curr)
                     onSuccess()
                 },
                 onFailure
@@ -172,9 +191,25 @@ export const BugReportsComponent = props => {
         })
     }
 
+    const onClickDecrementPage = () => {
+        if (bugReportsPage == 1) return
+        else {
+            
+            setBugReportsPage(curr => curr - 1)
+        }
+    }
+
+    const onClickIncrementPage = () => {
+        if (bugReportsPage == props.bugReportsPagesCount) return
+        else {
+            props.fetchBugReports(getBugReportFilters(), searchText, bugReportsPage + 1)
+            setBugReportsPage(curr => curr + 1)
+        }   
+    }
+
     return (
         <PageContainer>
-            <MainHeader showBorder={false}/>
+            <MainHeader />
             <AdminHeader activeLinkID='bug-reports' />
             <BodyContainer>
                 <Container className={`${props.isMobile && 'mobile'}`}>
@@ -217,10 +252,11 @@ export const BugReportsComponent = props => {
                                     id={id}
                                     active={active}
                                     onClick={() => onClickPill(id)}
+                                    key={id}
                                 />
                             ))}
                         </div>
-                        <select value={bugReportsSortFilter} onChange={onChangeBugReportsSortFilter}>
+                        <select value={bugReportsSortFilterID} onChange={onChangeBugReportsSortFilter}>
                             {BugReportSortFilters.map(({id, title}) => (
                                 <option value={id} key={id}>{title}</option>
                             ))}
@@ -228,19 +264,29 @@ export const BugReportsComponent = props => {
                     </div>
                     {props.loadingBugReports ?
                         <Loading style={{height: 'auto', marginTop: 20}}/>
-                        : <Table
-                            headers={tableHeaders}
-                            rows={tableRows}
-                            onClickRow={onClickBugReportRow}
-                            selectActions={[
-                                {title: 'Resolve', action: onClickResolve},
-                                {title: 'Make High Priority', action: onClickMakeHighPriority},
-                                {title: 'Archive', action: onClickArchive},
-                                {title: 'Delete', action: onClickDelete, isDanger: true}
-                            ]}
-                            clearSelectedRows={clearSelectedRows}
-                            className='float-container'
-                        />
+                        : <div className='d-flex fd-column ai-stretch'>
+                            <Table
+                                headers={tableHeaders}
+                                rows={tableRows}
+                                onClickRow={onClickBugReportRow}
+                                selectActions={[
+                                    {title: 'Unresolve', action: onClickUnresolve},
+                                    {title: 'Resolve', action: onClickResolve},
+                                    {title: 'Make High Priority', action: onClickMakeHighPriority},
+                                    {title: 'Archive', action: onClickArchive},
+                                    {title: 'Delete', action: onClickDelete, isDanger: true}
+                                ]}
+                                clearSelectedRows={clearSelectedRows}
+                                className='float-container'
+                            />
+                            <Paginator
+                                page={bugReportsPage}
+                                pagesCount={props.bugReportsPagesCount}
+                                onClickDecrementPage={onClickDecrementPage}
+                                onClickIncrementPage={onClickIncrementPage}
+                                className='paginator'
+                            />
+                        </div>
                     }
 
                 </Container>
@@ -253,6 +299,7 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: stretch;
+    padding-bottom: 50px;
 
     & select {
         padding-top: 5px !important;
@@ -304,6 +351,11 @@ const Container = styled.div`
     }
     & .pills-container div:last-child {
         margin-right: none;
+    }
+
+    & .paginator {
+        align-self: center;
+        margin-top: 25px;
     }
 `
 const mapStateToProps = state => ({

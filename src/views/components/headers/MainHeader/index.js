@@ -40,7 +40,7 @@ export const getMainMenuPageLinks = () => [
 
 export const MainHeaderComponent = props => {
     const {
-        showBorder=true,
+        hasSubheaderBelow=true,
     } = props
     const navigate = useNavigate()
     const [linksMenuHidden, setLinksMenuHidden] = useState(true)
@@ -59,7 +59,7 @@ export const MainHeaderComponent = props => {
     }, [props.hasAdminPrivileges])
 
     return (
-        <Root className={`d-flex jc-space-between ai-center ${!showBorder && 'no-border'}`}>
+        <Root className={`d-flex jc-space-between ai-center ${!hasSubheaderBelow && 'no-subheader'}`}>
             <div
                 className='d-flex jc-flex-start ai-center clickable'
                 onClick={onClickLogo}
@@ -119,10 +119,11 @@ const Root = styled.div`
     padding: 0px var(--ps-mainheader);
     width: 100%;
     box-sizing: border-box;
-    border-bottom: ${p => p.theme.navBorder};
     
-    &.no-border {
-        border-bottom: none;
+    &.no-subheader {
+        border-bottom: ${p => p.theme.navBorder};
+        position: sticky;
+        top: 0px;
     }
 
     & .logo-icon {

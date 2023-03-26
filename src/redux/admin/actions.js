@@ -54,3 +54,13 @@ export const updateBugReports = (bugReportIDs, updatedFields) => ({
     bugReportIDsToUpdate: bugReportIDs,
     updatedFields
 })
+
+export const setBugReport = bugReport => ({
+    type: Types.SET_BUG_REPORT,
+    value: bugReport
+})
+
+export const setLoadingBugReport = loading => ({
+    type: Types.SET_LOADING_BUG_REPORT,
+    value: loading
+})

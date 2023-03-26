@@ -25,7 +25,7 @@ const Root = styled.div`
     
 `
 const mapStateToProps = state => ({
-    isLoggedIn: getIsLoggedIn(state)
+    isLoggedIn: getIsLoggedIn(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

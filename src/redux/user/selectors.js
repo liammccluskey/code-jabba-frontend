@@ -7,6 +7,7 @@ export const getFirebaseUser = () => auth.currentUser
 export const getLoadingMongoUser = state => state.user.loadingMongoUser
 export const getLoadingProfileUpdate = state => state.user.loadingProfileUpdate
 export const getLoadingLogout = state => state.user.loadingLogout
+export const getLoadingSignIn = state => state.user.loadingSignIn
 
 export const getHasAdminPrivileges = createSelector(
     [

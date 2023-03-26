@@ -67,7 +67,7 @@ export const AdvancedSettingsComponent = props => {
 
     return (
         <PageContainer className='bgc-bgc-settings'>
-            <MainHeader showBorder={false} />
+            <MainHeader  />
             <SettingsHeader activeLinkID='advanced' />
             <BodyContainer style={{maxWidth: 1000}} className='as-center'>
                 <Container>

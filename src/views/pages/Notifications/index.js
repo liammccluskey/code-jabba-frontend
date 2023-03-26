@@ -143,7 +143,7 @@ export const NotificationsComponent = props => {
 
     return (
         <PageContainer>
-            <MainHeader showBorder={false} />
+            <MainHeader  />
             <Subheader title='Notifications' />
             <FixedBodyContainer
                 className='subheader-without-links' 
