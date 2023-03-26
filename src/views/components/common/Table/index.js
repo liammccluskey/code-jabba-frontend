@@ -71,7 +71,7 @@ export const Table = props => {
                         {selectActions.map( ({title, action, isDanger}) => (
                             <Button
                                 title={title}
-                                type={isDanger ? 'danger' : 'solid'}
+                                type={isDanger ? 'danger' : 'clear'}
                                 priority={3}
                                 onClick={() => action(selectedRowIDs)}
                                 className='select-action-button'

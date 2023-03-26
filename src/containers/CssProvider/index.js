@@ -33,8 +33,8 @@ const Root = styled.div`
     }
 
     label {
-        color: ${p => p.theme.textMain};
-        font-weight: 500;
+        color: ${p => p.theme.textPrimary};
+        font-weight: 600;
         font-size: 15px;
     }
 

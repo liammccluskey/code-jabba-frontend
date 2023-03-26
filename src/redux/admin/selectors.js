@@ -12,3 +12,6 @@ export const getBugReportsPagesCount = state => state.admin.bugReports.payload.p
 export const getBugReportsTotalCount = state => state.admin.bugReports.payload.totalCount
 export const getBugReport = state => state.admin.bugReport
 export const getLoadingBugReport = state => state.admin.loadingBugReport
+export const getBugReportNotFound = state => state.admin.bugReportNotFound
+export const getBugReportStats = state => state.admin.bugReportStats
+export const getLoadingBugReportStats = state => state.admin.loadingBugReportStats

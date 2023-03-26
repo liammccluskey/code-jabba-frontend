@@ -64,3 +64,18 @@ export const setLoadingBugReport = loading => ({
     type: Types.SET_LOADING_BUG_REPORT,
     value: loading
 })
+
+export const setBugReportNotFound = notFound => ({
+    type: Types.SET_BUG_REPORT_NOT_FOUND,
+    value: notFound
+})
+
+export const setBugReportStats = statistics => ({
+    type: Types.SET_BUG_REPORT_STATS,
+    value: statistics
+})
+
+export const setLoadingBugReportStats = loading => ({
+    type: Types.SET_LOADING_BUG_REPORT_STATS,
+    value: loading
+})

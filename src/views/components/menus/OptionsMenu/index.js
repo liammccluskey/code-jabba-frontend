@@ -75,6 +75,9 @@ const MenuContainer = styled.div`
         margin-right: 15px;
         color: ${p => p.theme.textMain};
     }
+    & .menu-option-container p {
+        margin-bottom: 0px !important;
+    }
 
     & .menu-option-container.danger p,
     & .menu-option-container.danger i {

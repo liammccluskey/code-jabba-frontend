@@ -17,6 +17,16 @@ const AdminState = {
     },
     bugReport: null,
     loadingBugReport: false,
+    bugReportNotFound: false,
+    bugReportStats: {
+        reportsCount: 0,
+        resolvedCount: 0,
+        archivedCount: 0,
+        reportsPercentDelta: 0,
+        resolvedPercentDelta: 0,
+        archivedPercentDelta: 0,
+    },
+    loadingBugReportStats: false
 }
 
 export const adminReducer = (state = AdminState, action) => {
@@ -128,6 +138,21 @@ export const adminReducer = (state = AdminState, action) => {
             return {
                 ...state,
                 loadingBugReport: action.value
+            }
+        case Types.SET_BUG_REPORT_NOT_FOUND:
+            return {
+                ...state,
+                bugReportNotFound: action.value
+            }
+        case Types.SET_BUG_REPORT_STATS:
+            return {
+                ...state,
+                bugReportStats: action.value
+            }
+        case Types.SET_LOADING_BUG_REPORT_STATS:
+            return {
+                ...state,
+                loadingBugReportStats: action.value
             }
         default:
             return state

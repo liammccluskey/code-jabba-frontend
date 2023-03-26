@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
@@ -7,6 +7,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import {
     getBugReport,
     getLoadingBugReport,
+    getBugReportNotFound,
     fetchBugReport,
     deleteBugReports,
     patchBugReports,
@@ -14,6 +15,7 @@ import {
 } from '../../../redux/admin'
 import { addModal } from '../../../redux/modal'
 import { ModalTypes } from '../../../containers/ModalProvider'
+import { addMessage } from '../../../redux/communication'
 import { getIsMobile } from '../../../redux/theme'
 import { MainHeader } from '../../components/headers/MainHeader'
 import { Subheader } from '../../components/headers/Subheader'
@@ -22,7 +24,8 @@ import { BodyContainer } from '../../components/common/BodyContainer'
 import { Loading } from '../../components/common/Loading'
 import { OptionsMenu } from '../../components/menus/OptionsMenu'
 import { Button } from '../../components/common/Button'
-import { PillLabel } from '../../components/common/Label'
+import { PillLabel } from '../../components/common/PillLabel'
+import { ErrorElement } from '../ErrorElement'
 
 export const BugReportComponent = props => {
     const {
@@ -31,12 +34,16 @@ export const BugReportComponent = props => {
     const {bugReportID} = useParams()
     const navigate = useNavigate()
     const [optionsMenuHidden, setOptionsMenuHidden] = useState(true)
+    const [editingOptionsMenuHidden, setEditingOptionsMenuHidden] = useState(true)
     const [editing, setEditing] = useState(false)
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
+    const [notes, setNotes] = useState('')
+    const notesRef = useRef()
 
     const titleModified = props.bugReport ? title !== props.bugReport.title : false
     const descriptionModified = props.bugReport ? description !== props.bugReport.description : false
+    const notesModified = props.bugReport ? notes !== props.bugReport.notes : false
 
     useEffect(() => {
        fetchCurrentBugReport()
@@ -46,6 +53,7 @@ export const BugReportComponent = props => {
         if (editing && props.bugReport) {
             setTitle(props.bugReport.title)
             setDescription(props.bugReport.description)
+            setNotes(props.bugReport.notes)
         }
     }, [editing])
 
@@ -58,6 +66,7 @@ export const BugReportComponent = props => {
     const fetchCurrentBugReportAndCloseMenu = () => {
         fetchCurrentBugReport()
         setOptionsMenuHidden(true)
+        setEditing(false)
     }
 
     // Direct
@@ -102,6 +111,11 @@ export const BugReportComponent = props => {
         })
     }
 
+    const onClickAddNotes = async () => {
+        await setEditing(true)
+        notesRef.current.focus()
+    }
+
     const onChangeTitle = e => {
         setTitle(e.target.value)
     }
@@ -110,24 +124,72 @@ export const BugReportComponent = props => {
         setDescription(e.target.value)
     }
 
+    const onChangeNotes = e => {
+        setNotes(e.target.value)
+    }
+
     const onClickCancelEditing = () => {
         setEditing(false)
     }
 
     const onClickSubmitEdits = () => {
-
+        if (titleModified || descriptionModified || notesModified) {
+            if (!title) {
+                props.addMessage('Title cannot be blank.', true)
+                return
+            } else if (!description) {
+                props.addMessage('Description cannot be blank', true)
+                return
+            }
+            props.patchBugReports(
+                [bugReportID],
+                {
+                    ...(titleModified ? {title} : {}),
+                    ...(descriptionModified ? {description} : {}),
+                    ...(notesModified ? {notes} : {})
+                },
+                () => {
+                    setEditing(false)
+                    fetchCurrentBugReport()
+                }
+            )
+        }
+        setEditing(false)
     }
 
-    return (
-        <PageContainer>
+    // Fucntion Dependent Variables
+
+    const menuOptions = !props.loadingBugReport && props.bugReport ? [
+        {title: 'Edit', icon: 'bi-pencil', onClick: onClickEdit},
+        {
+            title: props.bugReport.resolved ? 'Unresolve' : 'Resolve',
+            icon: props.bugReport.resolved ? 'bi-door-open' : 'bi-door-closed',
+            onClick: onClickEditResolved
+        },
+        {
+            title: props.bugReport.highPriority ? 'Make Regular Priority' : 'Make High Priority',
+            icon: 'bi-patch-exclamation',
+            onClick: onClickEditHighPriority
+        },
+        {
+            title: props.bugReport.archived ? 'De-archive' : 'Archive',
+            icon: 'bi-archive',
+            onClick: onClickEditArchived
+        },
+        {title: 'Delete', icon: 'bi-trash', onClick: onClickDelete, isDanger: true}
+    ] : []
+
+    return ( props.bugReportNotFound ?
+        <ErrorElement />
+        : <PageContainer>
             <MainHeader />
             <Subheader title='Bug Report' />
             <BodyContainer>
                 <Container className={`${props.isMobile && 'mobile'}`}>
                     {!props.loadingBugReport && props.bugReport ?
                         <div className='bug-report-container float-container'>
-                            <div className='header'>
-                                {editing ?
+                            <div className='content-container' style={editing ? {} : {display: 'none'}}>
+                                <div className='header-container'>
                                     <div className='header-edit-container'>
                                         <div className='edit-label-container'>
                                             <label>Title</label>
@@ -135,6 +197,7 @@ export const BugReportComponent = props => {
                                                 <PillLabel
                                                     title='Modified'
                                                     color='yellow'
+                                                    size='s'
                                                     className='pill-label'
                                                 />
                                                 : null
@@ -142,46 +205,38 @@ export const BugReportComponent = props => {
                                         </div>
                                         <input value={title} onChange={onChangeTitle} />
                                     </div>
-                                    : <h3>{props.bugReport.title}</h3>
-                                }
-                                <OptionsMenu
-                                    menuHidden={optionsMenuHidden}
-                                    setMenuHidden={setOptionsMenuHidden}
-                                    options={[
-                                        {title: 'Edit', icon: 'bi-pencil', onClick: onClickEdit},
-                                        ...(props.bugReport.resolved ?
-                                            [{title: 'Unresolve', icon: 'bi-door-open', onClick: onClickEditResolved}]
-                                            : [{title: 'Resolve', icon: 'bi-door-closed', onClick: onClickEditResolved}]
-                                        ),
-                                        ...(props.bugReport.highPriority ?
-                                            [{title: 'Make Regular Priority', icon: 'bi-patch-exclamation', onClick: onClickEditHighPriority}]
-                                            : [{title: 'Make High Priority', icon: 'bi-patch-exclamation', onClick: onClickEditHighPriority}]
-                                        ),
-                                        ...(props.bugReport.archived ?
-                                            [{title: 'De-archive', icon: 'bi-archive', onClick: onClickEditArchived}]
-                                            : [{title: 'Archive', icon: 'bi-archive', onClick: onClickEditArchived}]
-                                        ),
-                                        {title: 'Delete', icon: 'bi-trash', onClick: onClickDelete, isDanger: true}
-                                    ]}
-                                />
-                            </div>
-                            {editing ?
-                                <div className='edit-container'>
-                                    <div className='edit-label-container'>
-                                        <label>Description</label>
-                                        {descriptionModified ?
-                                            <PillLabel
-                                                title='Modified'
-                                                color='yellow'
-                                                className='pill-label'
-                                            />
-                                            : null
-                                        }
-                                    </div>
-                                    <textarea value={description} onChange={onChangeDescription} />
-                                </div> : null
-                            }
-                            {editing ?
+                                    <OptionsMenu
+                                        menuHidden={editingOptionsMenuHidden}
+                                        setMenuHidden={setEditingOptionsMenuHidden}
+                                        options={menuOptions}
+                                    />
+                                </div>
+                                <div className='edit-label-container'>
+                                    <label>Description</label>
+                                    {descriptionModified ?
+                                        <PillLabel
+                                            title='Modified'
+                                            color='yellow'
+                                            size='s'
+                                            className='pill-label'
+                                        />
+                                        : null
+                                    }
+                                </div>
+                                <textarea value={description} onChange={onChangeDescription} />
+                                <div className='edit-label-container'>
+                                    <label>Notes</label>
+                                    {notesModified ?
+                                        <PillLabel
+                                            title='Modified'
+                                            color='yellow'
+                                            size='s'
+                                            className='pill-label'
+                                        />
+                                        : null
+                                    }
+                                </div>
+                                <textarea value={notes} onChange={onChangeNotes} ref={notesRef}/>
                                 <div className='edit-buttons-container'>
                                     <Button
                                         title='Cancel'
@@ -196,8 +251,46 @@ export const BugReportComponent = props => {
                                         priority={2}
                                         onClick={onClickSubmitEdits}
                                     />
-                                </div> : null
-                            }
+                                </div>
+                            </div>
+                            <div className='content-container display-container' style={editing ? {display: 'none'} : {}}>
+                                <div className='header-container'>
+                                    <div className='title-container'>
+                                        <h3 className='line-clamp-1'>{props.bugReport.title}</h3>
+                                        {props.bugReport.resolved ?
+                                            <PillLabel title='Resolved' color='green' size='m' className='pill-label'/>
+                                            : <PillLabel title='Unresolved' color='red' size='m' className='pill-label'/>
+                                        }
+                                        {props.bugReport.highPriority ?
+                                            <PillLabel title='High Priority' color='orange' size='m' className='pill-label'/>
+                                            : null
+                                        }
+                                        {props.bugReport.archived ?
+                                            <PillLabel title='Archived' color='blue' size='m' className='pill-label'/>
+                                            : null
+                                        }
+                                    </div>
+                                    <OptionsMenu
+                                        menuHidden={optionsMenuHidden}
+                                        setMenuHidden={setOptionsMenuHidden}
+                                        options={menuOptions}
+                                    />
+                                </div>
+                                <label>Description</label>
+                                <p>{props.bugReport.description}</p>
+                                <label>Notes</label>
+                                {props.bugReport.notes ?
+                                    <p>{props.bugReport.notes}</p>
+                                    : <Button
+                                        title='Add Notes'
+                                        type='clear'
+                                        priority={3}
+                                        onClick={onClickAddNotes}
+                                        icon='bi-plus'
+                                        className='as-flex-start'
+                                    />
+                                }
+                            </div>
                         </div>
                         : <Loading />
                     }
@@ -211,22 +304,56 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: stretch;
+    width: 100%;
 
     & .bug-report-container {
         display: flex;
         flex-direction: column;
         align-items: stretch;
         padding: 30px;
+        width: 100%;
+        box-sizing: border-box;
     }
-
     &.mobile .bug-report-container {
         padding: 20px;
     }
 
-    & .header {
+    & .content-container {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    & .header-container {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
+        margin-bottom: 40px;
+    }
+
+    & .title-container {
+        display: flex;
+        align-items: center;
+    }
+    & .title-container .pill-label {
+        margin-left: 15px;
+    }
+    &.mobile .title-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    &.mobile .title-container .pill-label {
+        margin-left: 0px;
+        margin-bottom: 10px;
+    }
+    &.mobile .title-container h3 {
+        margin-bottom: 15px;
+    }
+
+    & .display-container label {
+        margin-bottom: 10px;
+    }
+    & .display-container p {
         margin-bottom: 30px;
     }
 
@@ -235,13 +362,6 @@ const Container = styled.div`
         flex-direction: column;
         align-items: flex-start;
         flex: 1;
-    }
-
-    & .edit-container {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        margin-bottom: 30px;
     }
 
     & .edit-label-container {
@@ -264,9 +384,11 @@ const Container = styled.div`
     }
 
     & textarea {
-        height: 100px;
+        height: 150px;
         width: 100% !important;
         box-sizing: border-box;
+        margin-bottom: 30px;
+        white-space: pre-line;
     }
 
     & .edit-buttons-container {
@@ -278,6 +400,7 @@ const Container = styled.div`
 const mapStateToProps = state => ({
     bugReport: getBugReport(state),
     loadingBugReport: getLoadingBugReport(state),
+    bugReportNotFound: getBugReportNotFound(state),
     isMobile: getIsMobile(state),
 })
 
@@ -286,7 +409,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     patchBugReports,
     deleteBugReports,
     setLoadingBugReport,
-    addModal
+    addModal,
+    addMessage
 }, dispatch)
 
 export const BugReport = connect(mapStateToProps, mapDispatchToProps)(BugReportComponent)

@@ -10,9 +10,12 @@ import {
     getCanLoadMoreBugReports,
     getBugReportsPagesCount,
     getBugReportsTotalCount,
+    getBugReportStats,
+    getLoadingBugReportStats,
     fetchBugReports,
     patchBugReports,
-    deleteBugReports
+    deleteBugReports,
+    fetchBugReportStats
 } from '../../../../redux/admin'
 import { getIsMobile } from '../../../../redux/theme'
 import { addModal } from '../../../../redux/modal'
@@ -30,7 +33,7 @@ import { SearchBar } from '../../../components/common/SearchBar'
 import { Loading } from '../../../components/common/Loading'
 import { Paginator } from '../../../components/common/Paginator'
 
-const TimePeriods = ['Week', 'Month', 'Year']
+const Timeframes = ['Week', 'Month', 'Year']
 const BugReportSortFilters = [
     {id: 'most-recent', title: 'Most Recent', filter: '-createdAt'},
     {id: 'least-recent', title: 'Least Recent', filter: '+createdAt'}
@@ -42,7 +45,7 @@ export const BugReportsComponent = props => {
     } = props
     const navigate = useNavigate()
     const [bugReportsPage, setBugReportsPage] = useState(1)
-    const [selectedTimePeriod, setSelectedTimePeriod] = useState(TimePeriods[0])
+    const [selectedTimeframe, setSelectedTimeframe] = useState(Timeframes[0])
     const [unresolvedPillActive, setUnresolvedPillActive] = useState(false)
     const [resolvedPillActive, setResolvedPillActive] = useState(false)
     const [highPriorityPillActive, setHighPriorityPillActive] = useState(false)
@@ -52,9 +55,12 @@ export const BugReportsComponent = props => {
     const [clearSelectedRows, setClearSelectedRows] = useState(false)
 
     const metrics = [
-        {title: 'Reports', value: 30, percentDelta: -10},
-        {title: 'Resolved', value: 50, percentDelta: 0},
-        {title: 'Archived', value: 10, percentDelta: 100}
+        // {title: 'Reports', value: 30, percentDelta: -10},
+        // {title: 'Resolved', value: 50, percentDelta: 0},
+        // {title: 'Archived', value: 10, percentDelta: 100},
+        {title: 'Reports', value: props.bugReportStats.reportsCount, percentDelta: props.bugReportStats.reportsPercentDelta},
+        {title: 'Resolved', value: props.bugReportStats.resolvedCount, percentDelta: props.bugReportStats.resolvedPercentDelta},
+        {title: 'Archived', value: props.bugReportStats.archivedCount, percentDelta: props.bugReportStats.archivedPercentDelta}
     ]
 
     const pills = [
@@ -88,8 +94,8 @@ export const BugReportsComponent = props => {
     }, [unresolvedPillActive, resolvedPillActive, highPriorityPillActive, archivedPillActive, bugReportsSortFilterID])
 
     useEffect(() => {
-        // TODO
-    }, [selectedTimePeriod])
+        props.fetchBugReportStats(selectedTimeframe.toLocaleLowerCase())
+    }, [selectedTimeframe])
 
     // Utils
 
@@ -110,8 +116,8 @@ export const BugReportsComponent = props => {
 
     // Direct
 
-    const onChangeSelectedTimePeriod = e => {
-        setSelectedTimePeriod(e.target.value)
+    const onChangeSelectedTimeframe = e => {
+        setSelectedTimeframe(e.target.value)
     }
 
     const onClickCreateBugReport = () => {
@@ -215,18 +221,21 @@ export const BugReportsComponent = props => {
                 <Container className={`${props.isMobile && 'mobile'}`}>
                     <div className='section-header '>
                         <h3>Metrics</h3>
-                        <select value={selectedTimePeriod} onChange={onChangeSelectedTimePeriod}>
-                            {TimePeriods.map(timePeriod => (
+                        <select value={selectedTimeframe} onChange={onChangeSelectedTimeframe}>
+                            {Timeframes.map(timePeriod => (
                                 <option value={timePeriod} key={timePeriod}>This {timePeriod}</option>
                             ))}
                         </select>
                     </div>
-                    <ValueDeltaSpread
-                        timePeriod={selectedTimePeriod.toLocaleLowerCase()}
-                        values={metrics}
-                        className='float-container'
-                        style={{padding: '15px 0px', marginBottom: 60}}
-                    />
+                    {props.loadingBugReportStats ?
+                        <Loading style={{height: 50}} />
+                        : <ValueDeltaSpread
+                            timePeriod={selectedTimeframe.toLocaleLowerCase()}
+                            values={metrics}
+                            className='float-container'
+                            style={{padding: '15px 0px', marginBottom: 60}}
+                        />
+                    }
                     <div className='section-header'>
                         <h3>Reports</h3>
                         <Button
@@ -363,13 +372,16 @@ const mapStateToProps = state => ({
     bugReports: getBugReports(state),
     canLoadMoreBugReports: getCanLoadMoreBugReports(state),
     bugReportsPagesCount: getBugReportsPagesCount(state),
-    bugReportsTotalCount: getBugReportsTotalCount(state)
+    bugReportsTotalCount: getBugReportsTotalCount(state),
+    bugReportStats: getBugReportStats(state),
+    loadingBugReportStats: getLoadingBugReportStats(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     fetchBugReports,
     patchBugReports,
     deleteBugReports,
+    fetchBugReportStats,
     addModal
 }, dispatch)
 

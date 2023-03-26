@@ -164,6 +164,7 @@ export const fetchUsersSearchResults = (searchText) => async (dispatch, getState
 
 export const fetchBugReport = bugReportID => async (dispatch, getState) => {
     dispatch(AdminActions.setLoadingBugReport(true))
+    dispatch(AdminActions.setBugReportNotFound(false))
 
     const state = getState()
     const mongoUser = getMongoUser(state)
@@ -179,6 +180,7 @@ export const fetchBugReport = bugReportID => async (dispatch, getState) => {
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
+        dispatch(AdminActions.setBugReportNotFound(true))
     }
 
     dispatch(AdminActions.setLoadingBugReport(false))
@@ -302,4 +304,28 @@ export const deleteBugReports = (
         dispatch(addMessage(errorMessage, true))
         onFailure()
     }
+}
+
+export const fetchBugReportStats = timeframe => async (dispatch, getState) => {
+    dispatch(AdminActions.setLoadingBugReportStats(true))
+
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    const queryString = stringifyQuery({timeframe})
+
+    try {
+        const res = await api.get(
+            `/admin/bugreports/stats${queryString}`,
+            AdminUtils.getAdminRequestConfig(mongoUser)
+        )
+
+        dispatch(AdminActions.setBugReportStats(res.data))
+    }  catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+    }
+
+    dispatch(AdminActions.setLoadingBugReportStats(false))
 }
