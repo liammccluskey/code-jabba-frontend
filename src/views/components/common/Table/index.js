@@ -82,7 +82,7 @@ export const Table = props => {
                 </div> : null
             }
             <div className='table-container'>
-                {selectable ?
+                {selectable && rows.length ?
                     <div className='checkboxes-container'>
                         <div className='header-checkbox-container'>
                             <Checkbox
@@ -109,15 +109,21 @@ export const Table = props => {
                             ))}
                         </tr>
                     </thead>
-                    <tbody>
-                        {rows.map( ({id, cells}, i) => (
-                            <tr className='table-row' onClick={() => onClickRow(id)} key={`table-row-${id}`}>
-                                {cells.map( cell => (
-                                    <td key={cell} className='line-clamp-1'>{cell}</td>
-                                ))}
-                            </tr>
-                        ))}
-                    </tbody>
+                    {rows.length ? 
+                        <tbody>
+                            {rows.map( ({id, cells}, i) => (
+                                <tr className='table-row' onClick={() => onClickRow(id)} key={`table-row-${id}`}>
+                                    {cells.map( cell => (
+                                        <td key={cell} className='line-clamp-1'>{cell}</td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                        : 
+                        <div className='no-results-container'>
+                            <h4>No results</h4>
+                        </div>
+                    }
                 </table>
             </div>
         </Root>
@@ -189,6 +195,16 @@ const Root = styled.div`
         align-items: stretch;
     }
 
+    & .no-results-container {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 20px 10px;
+    }
+    & .no-results-container h4 {
+        color: ${p => p.theme.textSecondary};
+    }
+
     & .header-checkbox-container {
         height: 38px;
         display: flex;
@@ -202,7 +218,6 @@ const Root = styled.div`
     & .header-row {
         height: 38px;
         padding: 10px 20px;
-        padding-left: 10px;
         border-bottom: 1px solid ${p => p.theme.bc};
         box-sizing: border-box;
     }
@@ -243,7 +258,7 @@ const Root = styled.div`
         align-items: center;
         flex: 1;
         padding: 12px 20px;
-        padding-left: 10px;
+        padding-left: 20px;
     }
 
     & th,

@@ -27,6 +27,8 @@ export const AuthContainerComponent = props => {
                     () => setLoading(false),
                     true
                 )
+            } else {
+                setLoading(false)
             }
         })
         return unsub
@@ -74,6 +76,7 @@ const Container = styled.div`
         height: 100px;
         width: 100px;
         margin-bottom: 30px;
+        border-radius: 50%;
     }
 `
 

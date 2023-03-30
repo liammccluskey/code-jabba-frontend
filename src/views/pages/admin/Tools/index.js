@@ -13,6 +13,8 @@ const FIREBASE_LOGO_URL = 'https://firebasestorage.googleapis.com/v0/b/template-
 const HEROKU_LOGO_URL = 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/logos%2Fheroku_logo.png?alt=media&token=69431417-d84f-4efa-ada9-34244885a81e'
 const MONGO_DB_URL = 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/logos%2Fmongo_db_logo.svg?alt=media&token=8331a2a3-6c9e-4dcd-a1a7-d92e06909907'
 const NETLIFY_LOGO_URL = 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/logos%2Fnetlify_logo.svg?alt=media&token=ee9c5e02-9a89-4bc2-8cf8-f3dfe9e3b50a'
+const STRIPE_LOGO_URL = 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/logos%2Fstripe_logo.png?alt=media&token=cc21acee-08c5-4d25-9853-598810a80cd5'
+const GITHUB_LOGO_URL = 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/logos%2Fgithub_logo.svg?alt=media&token=b43b79bb-ab1d-4c17-9c69-3bc695358d81'
 
 export const AdminToolsComponent = props => {
     const {
@@ -24,6 +26,8 @@ export const AdminToolsComponent = props => {
         {title: 'Heroku', logoURL: HEROKU_LOGO_URL, url: 'https://id.heroku.com/login', usage: 'Backend Hosting'},
         {title: 'Mongo DB', logoURL: MONGO_DB_URL, url: 'https://account.mongodb.com/account/login', usage: 'Backend Database' },
         {title: 'Netlify', logoURL: NETLIFY_LOGO_URL, url: 'https://app.netlify.com/login', usage: 'Frontend Hosting'},
+        {title: 'Stripe', logoURL: STRIPE_LOGO_URL, url: 'https://dashboard.stripe.com/login', usage: 'Subscription Management'},
+        {title: 'Github', logoURL: GITHUB_LOGO_URL, url: 'https://github.com/login', usage: 'Codebase'}
     ]
 
     const onClickPlatform = platformURL => {

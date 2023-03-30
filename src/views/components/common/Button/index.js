@@ -7,7 +7,7 @@ import { getIsMobile } from '../../../../redux/theme'
 
 export const ButtonComponent = props => {
     const {
-        priority, // 0 : big | 1 : medium
+        priority, // 0 : big | 1 : medium | 2 : small
         type, // 'solid' | 'clear' | 'tint' | 'error' | 'danger'
         title,
         imageURL=null,
@@ -16,6 +16,7 @@ export const ButtonComponent = props => {
         iconSize=18,
         isSubmitButton=false,
         disabled=false,
+        iconSide='left', // 'left' | 'right'
     
         onClick,
 
@@ -36,13 +37,17 @@ export const ButtonComponent = props => {
                 />
                 : null
             }
-            {icon ?
-                <i className={icon} style={{fontSize: iconSize}} />
+            {icon && iconSide === 'left' ?
+                <i className={icon} style={{fontSize: iconSize, marginRight: 5}} />
                 : null
             }
             {title}
             {isSubmitButton ?
                 <button type='submit' style={{display: 'none'}} />
+                : null
+            }
+            {icon && iconSide === 'right' ?
+                <i className={icon} style={{fontSize: iconSize, marginLeft: 5}} />
                 : null
             }
         </Root>
@@ -150,7 +155,7 @@ const Root = styled.div`
         color: #fdf1f0;
     }
 
-    & i, & img {
+    & img {
         margin-right: 5px;
     }
 `

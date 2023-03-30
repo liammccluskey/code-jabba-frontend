@@ -36,6 +36,13 @@ export const getMainMenuPageLinks = () => [
         id: 'settings',
         icon: 'bi-gear'
     },
+    {
+        name: 'Support',
+        url: '/support',
+        id: 'support',
+        icon: 'bi-question-circle',
+        openInNewTab: true
+    },
 ]
 
 export const MainHeaderComponent = props => {

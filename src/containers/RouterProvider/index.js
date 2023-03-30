@@ -16,6 +16,10 @@ import { AdminGeneral } from '../../views/pages/admin/AdminGeneral'
 import { BugReports } from '../../views/pages/admin/BugReports'
 import { AdminTools } from '../../views/pages/admin/Tools'
 import { BugReport } from '../../views/pages/BugReport'
+import { Support } from '../../views/pages/Support'
+import { FAQ } from '../../views/pages/admin/FAQ'
+import { IndividualAdminFAQ } from '../../views/pages/IndividualAdminFAQ'
+import { IndividualFAQ } from '../../views/pages/IndividualFAQ'
 import { ErrorElement } from '../../views/pages/ErrorElement'
 
 const router = createBrowserRouter([
@@ -39,7 +43,16 @@ const router = createBrowserRouter([
       element: <SignedOutRoute element={<ResetPassword />} />,
       errorElement: <ErrorElement />
     },
-
+    {
+      path: '/support',
+      element: <Support />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/support/faq/:faqID',
+      element: <IndividualFAQ />,
+      errorElement: <ErrorElement />
+    },
     // dashboard
     {
       path: '/dashboard',
@@ -90,6 +103,16 @@ const router = createBrowserRouter([
     {
       path: 'admin/bugreports/:bugReportID',
       element: <AdminRoute element={<BugReport />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/admin/faq',
+      element: <AdminRoute element={<FAQ />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/admin/faq/:faqID',
+      element: <AdminRoute element={<IndividualAdminFAQ />} />,
       errorElement: <ErrorElement />
     }
 ])

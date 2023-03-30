@@ -18,7 +18,7 @@ import { setThemeColor, setTintColor } from '../../../redux/theme'
 import { BodyContainer } from '../../components/common/BodyContainer'
 import { PageContainer } from '../../components/common/PageContainer'
 import { LandingHeader } from '../../components/headers/LandingHeader'
-import { LoginCard } from '../../components/login/LoginCard'
+import { LoginCard } from '../../components/landing/LoginCard'
 import { ActionLink } from '../../components/common/ActionLink'
 import { Button } from '../../components/common/Button'
 
@@ -99,9 +99,11 @@ export const LoginComponent = props => {
                             type="password"
                             required
                         />
-                        <ActionLink onClick={onClickForgotPassword} style={{marginTop: 5}}>
-                            Forgot password?
-                        </ActionLink>
+                        <ActionLink
+                            title='Forgot Password?'
+                            onClick={onClickForgotPassword}
+                            style={{marginTop: 5}}
+                        />
                         <br /><br />
                         <Button
                             type='solid'
@@ -127,9 +129,11 @@ export const LoginComponent = props => {
                     <p style={{marginRight: 10}}>
                         Don't have an account?
                     </p>
-                    <ActionLink onClick={onClickDontHaveAnAccount}>
-                        Sign up
-                    </ActionLink>
+                    <ActionLink
+                        title='Sign Up'
+                        onClick={onClickDontHaveAnAccount}
+                        style={{marginTop: 5}}
+                    />
                 </div>
             </BodyContainer>
         </PageContainer>

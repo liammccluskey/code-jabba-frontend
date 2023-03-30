@@ -19,4 +19,8 @@ export const LoginCard = styled.div`
             width: 100%;
         }
     }
+
+    & label {
+        font-weight: 500 !important;
+    }
 `

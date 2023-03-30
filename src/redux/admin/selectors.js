@@ -15,3 +15,12 @@ export const getLoadingBugReport = state => state.admin.loadingBugReport
 export const getBugReportNotFound = state => state.admin.bugReportNotFound
 export const getBugReportStats = state => state.admin.bugReportStats
 export const getLoadingBugReportStats = state => state.admin.loadingBugReportStats
+export const getFAQs = state => state.admin.faqs.payload.faqs
+export const getLoadingFAQs = state => state.admin.faqs.payload.loadingFAQs
+export const getLoadingFAQsFirstPage = state => state.admin.faqs.loadingFirstPage
+export const getCanLoadMoreFAQs = state => state.admin.faqs.payload.canLoadMore
+export const getFAQsPagesCount = state => state.admin.faqs.payload.pagesCount
+export const getFAQsTotalCount = state => state.admin.faqs.payload.totalCount
+export const getFAQ = state => state.admin.faq
+export const getLoadingFAQ = state => state.admin.loadingFAQ
+export const getFAQNotFound = state => state.admin.faqNotFound

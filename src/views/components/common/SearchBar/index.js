@@ -34,6 +34,7 @@ const Root = styled.form`
     width: 300px;
     padding-left: 10px;
     box-sizing: border-box;
+    background-color: ${p => p.theme.bgcLight};
 
     &:hover {
         border-color: ${p => p.theme.tint};

@@ -10,8 +10,8 @@ const AdminState = {
         loadingFirstPage: false,
         payload: {
             bugReports: [], // [{title, description, reporter, resolved, highPriority, archived, createdAt}]
-            pagesCount: 0,
             canLoadMore: false,
+            pagesCount: 0,
             totalCount: 0,
         }
     },
@@ -26,7 +26,21 @@ const AdminState = {
         resolvedPercentDelta: 0,
         archivedPercentDelta: 0,
     },
-    loadingBugReportStats: false
+    loadingBugReportStats: false,
+    faqs: {
+        loading: false,
+        loadingFirstPage: false,
+        payload: {
+            faqs: [],
+            canLoadMore: false,
+            pagesCount: 0,
+            totalCount: 0
+        }
+    },
+    faq: null,
+    loadingFAQ: false,
+    faqNotFound: false,
+
 }
 
 export const adminReducer = (state = AdminState, action) => {
@@ -153,6 +167,84 @@ export const adminReducer = (state = AdminState, action) => {
             return {
                 ...state,
                 loadingBugReportStats: action.value
+            }
+        case Types.SET_FAQS_DATA:
+            return {
+                ...state,
+                faqs: {
+                    ...state.faqs,
+                    payload: action.value
+                }
+            }
+        case Types.ADD_FAQS_DATA:
+            return {
+                ...state,
+                faqs: {
+                    ...state.faqs,
+                    payload: {
+                        ...state.faqs.payload,
+                        faqs: [
+                            ...state.faqs.payload.faqs,
+                            ...action.value
+                        ]
+                    }
+                }
+            }
+        case Types.SET_LOADING_FAQS:
+            return {
+                ...state,
+                faqs: {
+                    ...state.faqs,
+                    loading: action.value
+                }
+            }
+        case Types.SET_LOADING_FAQS_FIRST_PAGE:
+            return {
+                ...state,
+                faqs: {
+                    ...state.faqs,
+                    loadingFirstPage: action.value
+                }
+            }
+        case Types.UPDATE_FAQS:
+            return {
+                ...state,
+                faqs: {
+                    ...state.faqs,
+                    payload: {
+                        ...state.faqs.payload,
+                        faqs: state.faqs.payload.faqs.map(faq => action.value.faqIDs.includes(faq._id) ?
+                            {...faq, ...updatedFields}
+                            : faq
+                        )
+                    }
+                }
+            }
+        case Types.DELETE_FAQS:
+            return {
+                ...state,
+                faqs: {
+                    ...state.faqs,
+                    payload: {
+                        ...state.faqs.payload,
+                        faqs: state.faqs.payload.faqs.filter( faq => !action.faqIDs.includes(faq._id) )
+                    }
+                }
+            }
+        case Types.SET_FAQ:
+            return {
+                ...state,
+                faq: action.value
+            }
+        case Types.SET_LOADING_FAQ:
+            return {
+                ...state,
+                loadingFAQ: action.value
+            }
+        case Types.SET_FAQ_NOT_FOUND:
+            return {
+                ...state,
+                faqNotFound: action.value
             }
         default:
             return state

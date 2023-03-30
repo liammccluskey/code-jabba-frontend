@@ -20,7 +20,7 @@ export const Subheader = props => {
             <div className='d-flex fd-column jc-flex-start ai-flex-start'>
                 <Title>{title}</Title>
                 <div className='d-flex jc-flex-start ai-center'>
-                    {links.map( ({name, url, id}) => (
+                    {links.map( ({name, url, id, fullName}) => (
                         <PageLink
                             to={getLinkPath(url)}
                             className={getLinkClassName(id)}

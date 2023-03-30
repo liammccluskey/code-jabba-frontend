@@ -4,11 +4,13 @@ import {userReducer} from './user'
 import {communicationReducer} from './communication'
 import { modalReducer } from './modal/reducers'
 import { adminReducer } from './admin/reducers'
+import { supportReducer } from './support/reducers'
 
 export const rootReducer = combineReducers({
     theme: themeReducer,
     user: userReducer,
     communication: communicationReducer,
     modal: modalReducer,
-    admin: adminReducer
+    admin: adminReducer,
+    support: supportReducer
 })

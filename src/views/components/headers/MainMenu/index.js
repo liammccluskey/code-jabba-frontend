@@ -10,6 +10,8 @@ import {
     patchUserThemeColor,
     signOutUser
 } from '../../../../redux/user'
+import { addModal } from '../../../../redux/modal'
+import { ModalTypes } from '../../../../containers/ModalProvider'
 import { DropdownMenu } from '../DropdownMenu'
 import { UserIcon } from '../../common/UserIcon'
 import { Themes, Tints } from '../../../../redux/theme'
@@ -33,8 +35,17 @@ export const MainMenuComponent = props => {
         setMenuHidden(true)
     }
 
-    const onClickPageLink = url => {
-        navigate(url)
+    const onClickPageLink = (url, openInNewTab) => {
+        if (openInNewTab) {
+            window.open(url, '_blank')
+        } else {
+            navigate(url)
+        }
+        setMenuHidden(true)
+    }
+
+    const onClickReportBug = () => {
+        props.addModal(ModalTypes.CREATE_BUG_REPORT)
         setMenuHidden(true)
     }
 
@@ -76,16 +87,23 @@ export const MainMenuComponent = props => {
                         <h5 className='c-ts'>{props.user.email}</h5>
                     </div>
                     <div className='links-container'>
-                        {props.pageLinks.map( ({name, url, icon}) => (
+                        {props.pageLinks.map( ({name, url, icon, openInNewTab}) => (
                             <div
                                 className='row-container oh-dark oh-c-t'
-                                onClick={() => onClickPageLink(url)}
+                                onClick={() => onClickPageLink(url, openInNewTab)}
                                 key={name}
                             >
                                 <i className={icon} />
                                 <p>{name}</p>
                             </div>
                         ))}
+                        <div
+                            className='row-container oh-dark oh-c-t'
+                            onClick={onClickReportBug}
+                        >
+                            <i className='bi-bug' />
+                            <p>Report a Bug</p>
+                        </div>
                     </div>
                     <div className='appearance-container'>
                         <div className='row-container jc-space-between'>
@@ -111,7 +129,7 @@ export const MainMenuComponent = props => {
                         </div>
                         <div className='row-container jc-space-between'>
                             <div className='d-flex ai-center'>
-                                <i className='bi-palette' />
+                                <i className='bi-paint-bucket' />
                                 <p>Tint Color</p>
                             </div>
                             <div className='d-flex ai-center jc-flex-end'>
@@ -171,7 +189,7 @@ const MenuContainer = styled.div`
     }
 
     & .row-container {
-        padding: 12px 15px;
+        padding: 10px 15px;
         display: flex;
         justify-content: flex-start;
         align-items: center;
@@ -200,7 +218,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
     patchUserThemeColor,
     patchUserTintColor,
-    signOutUser
+    signOutUser,
+    addModal
 }, dispatch)
 
 export const MainMenu = connect(mapStateToProps, mapDispatchToProps)(MainMenuComponent)

@@ -42,11 +42,13 @@ const LightTheme = {
     textTertiary: 'rgb(102, 102, 102)',
     textYellow: '#85681d',
     boxShadow: '0 0 20px rgba(0, 0, 0, 0.05)',
-    //boxShadow: 'none',
     floatBorder: 'none',
-    //floatBorder: '1px solid rgb(215, 222, 226)',
     navBorder: '1px solid rgb(215, 222, 226)',
     boxShadowDark: '0 3px 20px rgb(89 105 129 / 30%), 0 1px 2px rgb(0 0 0 / 5%), 0 0 0 1px rgb(89 105 129 / 10%)',
+
+    // bgc: 'white',
+    // floatBorder: '1px solid rgb(218, 220, 224)',
+    // boxShadow: 'none',
 }
 
 const DarkTheme = {
@@ -112,8 +114,8 @@ export const Themes = {
 }
 
 export const Tints = {
-    0: {
-        value: 0,
+    2: {
+        value: 2,
         name: 'Mint',
         tint: Colors.mint,
         tintTranslucent: Colors.mintTranslucent
@@ -124,8 +126,8 @@ export const Tints = {
         tint: Colors.purple,
         tintTranslucent: Colors.purpleTranslucent
     },
-    2: {
-        value: 2,
+    0: {
+        value: 0,
         name: 'Blue',
         tint: Colors.blue,
         tintTranslucent: Colors.blueTranslucent

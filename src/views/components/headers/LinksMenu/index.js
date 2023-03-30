@@ -59,7 +59,7 @@ const LinksIcon = styled.i`
 
 const Menu = styled.div`
     & .row-container {
-        padding: 12px 15px;
+        padding: 10px 15px;
         display: flex;
         justify-content: flex-start;
         align-items: center;

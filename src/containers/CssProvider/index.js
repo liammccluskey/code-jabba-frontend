@@ -34,7 +34,7 @@ const Root = styled.div`
 
     label {
         color: ${p => p.theme.textPrimary};
-        font-weight: 600;
+        font-weight: 500;
         font-size: 15px;
     }
 
@@ -59,7 +59,7 @@ const Root = styled.div`
     input:focus, input:active,
     textarea:active, textarea:focus,
     select:active, select:focus {
-        border-color: ${p => p.theme.tint};
+        border-color: ${p => p.theme.tint} !important;
         background-color: transparent;
         transition: var(--duration-animation);
     }
@@ -379,12 +379,12 @@ const Root = styled.div`
     }
 
     .modal-container-small {
-        width: min(500px, 75vw);
+        width: min(500px, 90vw);
         max-height: 90vh;
     }
 
     .modal-container-large {
-        width: min(800px, 80vw);
+        width: min(800px, 90vw);
         max-height: 90vh;
     }
 

@@ -5,7 +5,7 @@ import * as AdminUtils from './utils'
 import { addMessage } from '../communication'
 import { getMongoUser } from '../user'
 import { fetchNotifications } from '../communication'
-import { getBugReports } from './selectors'
+import { getBugReports, getFAQs } from './selectors'
 
 export const fetchAdminUsers = () => async (dispatch, getState) => {
     dispatch(AdminActions.setLoadingAdminUsers(true))
@@ -328,4 +328,141 @@ export const fetchBugReportStats = timeframe => async (dispatch, getState) => {
     }
 
     dispatch(AdminActions.setLoadingBugReportStats(false))
+}
+
+export const fetchFAQ = faqID => async (dispatch, getState) => {
+    dispatch(AdminActions.setLoadingFAQ(true))
+    dispatch(AdminActions.setFAQNotFound(false))
+
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        const res = await api.get(
+            `/admin/faq/${faqID}`,
+            AdminUtils.getAdminRequestConfig(mongoUser)
+        )
+
+        dispatch(AdminActions.setFAQ(res.data))
+    }  catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        dispatch(AdminActions.setFAQNotFound(true))
+    }
+
+    dispatch(AdminActions.setLoadingFAQ(false))
+}
+
+export const fetchFAQs = (page, filters, sections, searchText) => async (dispatch, getState) => {
+    const state = getState()
+    const faqs = getFAQs(state)
+    if (page != 1 && faqs.length > (page - 1)*PageSizes.faqs) return
+    
+    if (page == 1) {
+        dispatch(AdminActions.setLoadingFAQsFirstPage(true))
+    } else {
+        dispatch(AdminActions.setLoadingFAQs(true))
+    }
+
+    const mongoUser = getMongoUser(state)
+    const queryString = stringifyQuery({
+        page,
+        ...filters,
+        ...(sections.length ? {sections: sections.join('-')} : {}),
+        ...(searchText ? {title: searchText} : {})
+    })
+
+    try {
+        const res = await api.get(
+            `/admin/faq/search${queryString}`,
+            AdminUtils.getAdminRequestConfig(mongoUser)
+        )
+
+        if (page == 1) {
+            dispatch(AdminActions.setFAQsData(res.data))
+        } else {
+            dispatch(AdminActions.addFAQsData(res.data))
+        }
+    }  catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+    }
+
+    if (page == 1) {
+        dispatch(AdminActions.setLoadingFAQsFirstPage(false))
+    } else {
+        dispatch(AdminActions.setLoadingFAQs(false))
+    }
+}
+
+export const postFAQ = (formData, onSuccess, onFailure) => async (dispatch, getState) => {
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        const res = await api.post(
+            `/admin/faq`,
+            formData,
+            AdminUtils.getAdminRequestConfig(mongoUser)
+        )
+
+        dispatch(addMessage(res.data.message))
+        onSuccess()
+    }  catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        onFailure()
+    }
+}
+
+export const patchFAQs = (faqIDs, updatedFields, onSuccess) => async (dispatch, getState) => {
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        const res = await api.patch(
+            `/admin/faq`,
+            {
+                faqIDs,
+                updatedFields
+            },
+            AdminUtils.getAdminRequestConfig(mongoUser)
+        )
+
+        dispatch(addMessage(res.data.message))
+        onSuccess()
+    }  catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+    }
+}
+
+export const deleteFAQs = (faqIDs, onSuccess, onFailure) => async (dispatch, getState) => {
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    const queryString = stringifyQuery({
+        faqIDs: faqIDs.join('-')
+    })
+    console.log(JSON.stringify({faqIDs: faqIDs || 'null', queryString}, null, 4))
+
+    try {
+        const res = await api.delete(
+            `/admin/faq${queryString}`,
+            AdminUtils.getAdminRequestConfig(mongoUser)
+        )
+        
+        dispatch(AdminActions.__deleteFAQs(faqIDs))
+        dispatch(addMessage(res.data.message))
+        onSuccess()
+    }  catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        onFailure()
+    }
 }

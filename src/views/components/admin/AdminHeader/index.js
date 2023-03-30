@@ -14,6 +14,11 @@ const PageLinks = [
         id: 'bug-reports'
     },
     {
+        name: 'FAQ',
+        url: '/faq',
+        id: 'faq'
+    },
+    {
         name: 'Tools',
         url: '/tools',
         id: 'tools'

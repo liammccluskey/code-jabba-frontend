@@ -74,6 +74,7 @@ export const BugReportComponent = props => {
     const onClickEdit = () => {
         setEditing(true)
         setOptionsMenuHidden(true)
+        setEditingOptionsMenuHidden(true)
     }
 
     const onClickEditResolved = () => {
@@ -355,6 +356,9 @@ const Container = styled.div`
     }
     & .display-container p {
         margin-bottom: 30px;
+    }
+    & p:last-child {
+        margin-bottom: 0px;
     }
 
     & .header-edit-container {

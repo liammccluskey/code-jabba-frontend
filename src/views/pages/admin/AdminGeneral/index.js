@@ -224,7 +224,7 @@ const Container = styled.div`
     }
 
     & .quick-action-container:last-child {
-        margin-right: 0px;
+        margin-right: 0px !important;
     }
     &.mobile .quick-action-container {
         margin-right: 15px;

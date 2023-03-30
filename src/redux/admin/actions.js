@@ -79,3 +79,49 @@ export const setLoadingBugReportStats = loading => ({
     type: Types.SET_LOADING_BUG_REPORT_STATS,
     value: loading
 })
+
+export const setFAQsData = faqsData => ({
+    type: Types.SET_FAQS_DATA,
+    value: faqsData
+})
+
+export const addFAQsData = faqsData => ({
+    type: Types.ADD_FAQS_DATA,
+    value: faqsData
+})
+
+export const setLoadingFAQs = loading => ({
+    type: Types.SET_LOADING_FAQS,
+    value: loading
+})
+
+export const setLoadingFAQsFirstPage = loading => ({
+    type: Types.SET_LOADING_FAQS_FIRST_PAGE,
+    value: loading
+})
+
+export const updateFAQs = (faqIDs, updatedFields) => ({
+    type: Types.UPDATE_FAQS,
+    faqIDs,
+    updatedFields
+})
+
+export const __deleteFAQs = faqIDs => ({
+    type: Types.DELETE_FAQS,
+    faqIDs
+})
+
+export const setFAQ = faq => ({
+    type: Types.SET_FAQ,
+    value: faq
+})
+
+export const setLoadingFAQ = loading => ({
+    type: Types.SET_LOADING_FAQ,
+    value: loading
+})
+
+export const setFAQNotFound = notFound => ({
+    type: Types.SET_FAQ_NOT_FOUND,
+    value: notFound
+})

@@ -1,15 +1,43 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
 import {useNavigate, Link} from 'react-router-dom'
+import { connect } from 'react-redux'
 
-import {Button} from '../../common/Button'
+import { getIsSemiMobile } from '../../../../redux/theme'
+import { Button } from '../../common/Button'
+import { LinksMenu } from '../../landing/menus/LinksMenu'
 
-export const LandingHeader = props => {
+const PageLinks = [
+    {
+        name: 'Home',
+        url: '/',
+        icon: 'bi-house',
+        id: '',
+    },
+    {
+        name: 'Support',
+        url: '/support',
+        icon: 'bi-question-circle',
+        id: 'support'
+    }
+]
+
+export const LandingHeaderComponent = props => {
     const {
-        showButtons=true
-    } = props
+        showButtons=true,
 
+        ...rest
+    } = props
     const navigate = useNavigate()
+    const [linksMenuHidden, setLinksMenuHidden] = useState(true)
+
+    const activeLinkID = window.location.pathname.split('/')[1]
+
+    useEffect(() => {
+        setLinksMenuHidden(true)
+    }, [props.isSemiMobile])
+
+    // Direct
 
     const onClickLogo = () => navigate('/')
 
@@ -18,9 +46,9 @@ export const LandingHeader = props => {
     const onClickSignUp = () => navigate('/register')
 
     return (
-        <Root className='d-flex fd-row jc-space-between ai-center'>
+        <Root {...rest}>
             <div
-                className='d-flex fd-row jc-flex-start ai-center'
+                className='d-flex jc-flex-start ai-center'
                 onClick={onClickLogo}
                 style={{cursor: 'pointer'}}
             >
@@ -33,32 +61,58 @@ export const LandingHeader = props => {
                     {process.env.REACT_APP_SITE_NAME}
                 </h3>
             </div>
-            {showButtons ?
-                <div className='d-flex jc-flex-end ai-center'>
-                    <Button
-                        type='clear'
-                        priority={1}
-                        onClick={onClickLogIn}
-                        title='Log In'
-                        style={{marginRight: 15}}
-                        className='fw-m'
-                    />
-                    <Button
-                        type='solid'
-                        priority={1}
-                        onClick={onClickSignUp}
-                        title='Sign Up'
-                        className='fw-m'
-                    />
+            {props.isSemiMobile ?
+                <LinksMenu
+                    menuHidden={linksMenuHidden}
+                    setMenuHidden={setLinksMenuHidden}
+                    pageLinks={PageLinks}
+                    style={{marginRight: 15}}
+                />
+                : <div className='links-container'>
+                    {PageLinks.map( ({name, url, id}) => (
+                        <PageLink
+                            key={id}
+                            to={url}
+                            className={id === activeLinkID ? 'active' : ''}
+                        >
+                            {name}
+                        </PageLink>
+                    ))}
+                    {showButtons ?
+                        <div className='d-flex jc-flex-end ai-center'>
+                            <Button
+                                type='clear'
+                                priority={1}
+                                onClick={onClickLogIn}
+                                title='Log In'
+                                style={{marginRight: 15}}
+                            />
+                            <Button
+                                type='solid'
+                                priority={1}
+                                onClick={onClickSignUp}
+                                title='Sign Up'
+                            />
+                        </div>
+                        : null
+                    }
                 </div>
-                : null
             }
             
         </Root>
     )
 }
 
+const mapStateToProps = state => ({
+    isSemiMobile: getIsSemiMobile(state),
+})
+
+export const LandingHeader = connect(mapStateToProps)(LandingHeaderComponent)
+
 const Root = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background-color: ${props => props.theme.bgcNav};
     min-height: var(--h-mainheader);
     padding: 0px var(--ps-mainheader);
@@ -66,6 +120,7 @@ const Root = styled.div`
     box-shadow: 0px 1px 4px 0px rgba(0,0,0,0.2);
     width: 100%;
     box-sizing: border-box;
+    z-index: 1;
 
     & .logo-icon {
         border-radius: 50%;
@@ -76,6 +131,12 @@ const Root = styled.div`
         font-weight: 600;
         cursor: pointer;
     }
+
+    & .links-container {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
 `
 
 const PageLink = styled(Link)`
@@ -85,8 +146,8 @@ const PageLink = styled(Link)`
     text-decoration: none;
     margin-right: 25px;
 
-    & :hover,
-    & .active {
-        background-color: ${p => p.theme.tint}
+    &:hover,
+    &.active {
+        color: ${p => p.theme.tint};
     }
 `
