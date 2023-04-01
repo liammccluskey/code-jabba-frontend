@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { bindActionCreators } from '@reduxjs/toolkit'
 import { useNavigate } from 'react-router-dom'
+import moment from 'moment'
 
 import { getIsMobile, getIsSemiMobile } from '../../../redux/theme'
 import { setThemeColor, setTintColor } from '../../../redux/theme'
@@ -33,11 +34,54 @@ const Config = {
             id: 2,
             imageURL: '',
             title: 'Stripe integration',
-            message: "",
+            message: "If your site uses a subscription model we've got you covered. Our webapps come with Stripe pre-integrated.",
             icon: 'bi-credit-card'
         }
     ],
-
+    pricing: [
+        {
+            title: 'Small Webapp',
+            price: '100',
+            features: [
+                {title: '2 Custom Pages', included: true},
+                {title: 'Source Code', included: true},
+                {title: 'Settings Page', included: true},
+                {title: 'Notifications Page', included: true},
+                {title: 'Admin Console', included: true},
+                {title: 'Bug Reports', included: true},
+                {title: 'Support Page', included: true}
+            ],
+            id: 's'
+        },
+        {
+            title: 'Medium Webapp',
+            price: '200',
+            features: [
+                {title: '4 Custom Pages', included: true},
+                {title: 'Source Code', included: true},
+                {title: 'Settings Page', included: true},
+                {title: 'Notifications Page', included: true},
+                {title: 'Admin Console', included: true},
+                {title: 'Bug Reports', included: true},
+                {title: 'Support Page', included: true}
+            ],
+            id: 'm'
+        },
+        {
+            title: 'Large Webapp',
+            price: '500',
+            features: [
+                {title: '10 Custom Pages', included: true},
+                {title: 'Source Code', included: true},
+                {title: 'Settings Page', included: true},
+                {title: 'Notifications Page', included: true},
+                {title: 'Admin Console', included: true},
+                {title: 'Bug Reports', included: true},
+                {title: 'Support Page', included: true}
+            ],
+            id: 'l'
+        }
+    ]
 }
 
 export const LandingComponent = props => {
@@ -50,15 +94,20 @@ export const LandingComponent = props => {
     }, [])
 
     const onClickGetStarted = () => {
-        navigate('/login')
+        navigate('/create')
     }
 
     const onClickViewPricing = () => {
-
+        const pricingElement = document.getElementById('pricing-container')
+        pricingElement.scrollIntoView()
     }
 
     const onClickWhyChooseUsOption = optionID => {
         setSelectedWhyChooseUsOptionID(optionID)
+    }
+
+    const onClickPricingOption = optionID => {
+        navigate(`/create/${optionID}`)
     }
 
     return (
@@ -117,6 +166,35 @@ export const LandingComponent = props => {
                         </div>
                     </div>
                 </div>
+                <div className='pricing-container' id='pricing-container'>
+                    <h1 className='title'>Pricing</h1>
+                    <div className='pricing-options-container'>
+                        {Config.pricing.map(({title, price, icon, iconColor, features, id}) => (
+                            <div className='pricing-option-container float-container' key={title}>
+                                <div className='header'>
+                                    <h3>{title}</h3>
+                                    <h3 className='price'>${price}</h3>
+                                </div>
+                                {features.map( ({title, included}, i) => (
+                                    <div className={`feature-list-item ${!i && 'bold'}`} key={title}>
+                                        <i className={`bi-check-circle-fill ${!included && 'not-included'}`} />
+                                        <h3>{title}</h3>
+                                    </div>
+                                ))}
+                                <Button
+                                    title='Get started'
+                                    type='clear'
+                                    priority={1}
+                                    onClick={() => onClickPricingOption(id)}
+                                    style={{marginTop: 15}}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className='copywrite-container'>
+                    © {moment().year} {process.env.REACT_APP_SITE_NAME}. All rights reserved.
+                </div>
             </Container>
         </PageContainer>
     )
@@ -156,7 +234,7 @@ const Container = styled.div`
         padding: 15px;
     }
 
-    & h1 {
+    & h1, h2 {
         font-weight: 700;
     }
 
@@ -175,6 +253,7 @@ const Container = styled.div`
         line-height: 160%;
         color: ${p => p.theme.textMain};
         font-size: 20px !important;
+        font-weight: 400 !important;
     }
 
     & .hero-image {
@@ -238,7 +317,85 @@ const Container = styled.div`
     & .why-choose-us-option-container * {
         color: white !important;
     }
-    & .why-choose-us-option-container.selected i {
+    & .why-choose-us-option-container.selected *  {
        color: black !important;
+    }
+
+    & .pricing-container {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 50px;
+        border-bottom: 1px solid black;
+        background-color: ${p => p.theme.bgcSettings};
+        background-color: ${p => p.theme.bgc};
+    }
+    &.semi-mobile .pricing-container {
+        padding: 30px;
+    }
+    &.mobile .pricing-container {
+        padding: 15px;
+    }
+    & .pricing-container .title {
+        margin-bottom: 30px;
+    }
+
+    & .pricing-options-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+    & .pricing-option-container {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        border-radius: var(--br-container);
+        padding: 30px;
+        margin-right: 30px;
+        flex: 1;
+        box-sizing: border-box;
+    }
+    & .pricing-option-container:last-child {
+        margin-right: 0px;
+    }
+
+    & .pricing-option-container .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    & .pricing-option-container .price {
+        color: ${p => p.theme.tint};
+        font-weight: 600;
+    }
+    & .pricing-option-container .header h3 {
+        font-weight: 700;
+    }
+
+    & .feature-list-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    & .feature-list-item i {
+        font-size: 20px;
+        color: ${p => p.theme.tint};
+    }
+    & .feature-list-item i.not-included {
+        color: ${p => p.theme.textSecondary};
+    }
+    & .feature-list-item h3 {
+        font-weight: 500;
+    }
+    & .feature-list-item.bold h3 {
+        font-weight: 600;
+    }
+
+    & .copywrite-container {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 50px 0px;
     }
 `

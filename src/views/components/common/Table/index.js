@@ -86,14 +86,14 @@ export const Table = props => {
                     <div className='checkboxes-container'>
                         <div className='header-checkbox-container'>
                             <Checkbox
-                                active={headerSelected}
+                                selected={headerSelected}
                                 onClick={onClickHeaderCheckbox}
                             />
                         </div>
                         {rows.map( ({id}) => (
                             <div className='checkbox-container' key={`checkbox-container-${id}`}>
                                 <Checkbox
-                                    active={selectedRowIDs.includes(id)}
+                                    selected={selectedRowIDs.includes(id)}
                                     onClick={e => onClickRowCheckbox(e, id)}
                                 />
                             </div>

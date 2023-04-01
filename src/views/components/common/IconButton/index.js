@@ -5,6 +5,7 @@ export const IconButton = props => {
     const {
         iconClassName,
         size, // 's' | 'm' | 'l'
+        showHoverOutline=true,
 
         onClick,
 
@@ -12,7 +13,7 @@ export const IconButton = props => {
     } = props
 
     return (
-        <Root {...rest} className={`${size} ${props.className}`} onClick={onClick}>
+        <Root {...rest} className={`${size} ${props.className} ${showHoverOutline && 'hover-outline'}`} onClick={onClick}>
             <i className={`icon ${iconClassName}`} />
         </Root>
     )
@@ -25,12 +26,13 @@ const Root = styled.div`
     border-radius: 50%;
     cursor: pointer;
 
-    &:hover {
+    &.hover-outline:hover {
         background-color: ${p => p.theme.tintTranslucent};
     }
 
     &.s {
-
+        height: 25px;
+        width: 25px;
     }
     &.m {
         height: 30px;
@@ -42,10 +44,10 @@ const Root = styled.div`
     }
 
     &.s i {
-        font-size: 20px;
+        font-size: 18px;
     }
     &.m i {
-        font-size: 30px;
+        font-size: 25px;
     }
     &.l i {
         font-size: 40px;

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 export const Checkbox = props => {
     const {
-        active,
+        selected,
 
         onClick,
 
@@ -13,10 +13,10 @@ export const Checkbox = props => {
     return (
         <Root
             {...rest}
-            className={`${active && 'active'} ${props.className}`}
+            className={`${selected && 'selected'} ${props.className}`}
             onClick={onClick}
         >
-            {active ? <i className='bi-check' /> : null}
+            {selected ? <i className='bi-check' /> : null}
         </Root>
     )
 }
@@ -35,7 +35,7 @@ const Root = styled.div`
         background-color: ${p => p.theme.tintTranslucent};
     }
 
-    &.active {
+    &.selected {
         border-color: ${p => p.theme.tint};
         background-color: ${p => p.theme.tint};
     }

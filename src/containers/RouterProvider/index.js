@@ -22,6 +22,8 @@ import { IndividualAdminFAQ } from '../../views/pages/IndividualAdminFAQ'
 import { IndividualFAQ } from '../../views/pages/IndividualFAQ'
 import { ErrorElement } from '../../views/pages/ErrorElement'
 
+import { CreateProject } from '../../views/pages/CreateProject'
+
 const router = createBrowserRouter([
     {
       path: '/',
@@ -113,6 +115,18 @@ const router = createBrowserRouter([
     {
       path: '/admin/faq/:faqID',
       element: <AdminRoute element={<IndividualAdminFAQ />} />,
+      errorElement: <ErrorElement />
+    },
+
+    // blackbox
+    {
+      path: '/create',
+      element: <CreateProject />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/create/:projectType',
+      element: <CreateProject />,
       errorElement: <ErrorElement />
     }
 ])
