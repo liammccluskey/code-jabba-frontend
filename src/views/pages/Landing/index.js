@@ -193,7 +193,7 @@ export const LandingComponent = props => {
                     </div>
                 </div>
                 <div className='copywrite-container'>
-                    © {moment().year} {process.env.REACT_APP_SITE_NAME}. All rights reserved.
+                    © {moment().year()} {process.env.REACT_APP_SITE_NAME}. All rights reserved.
                 </div>
             </Container>
         </PageContainer>

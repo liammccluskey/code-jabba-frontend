@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
@@ -19,11 +19,13 @@ import { Switch } from '../../components/common/Switch'
 import { ChecklistOptions } from '../../components/common/ChecklistOptions'
 import { IconButton } from '../../components/common/IconButton'
 import { PillLabel } from '../../components/common/PillLabel'
+import { InputWithMessage } from '../../components/common/InputWithMessage'
+import { ImagesInput } from '../../components/common/ImagesInput'
 
 const ProjectTypes = [
-    {title: 'Small Webapp - 2 Custom Pages', price: 100, id: 's'},
-    {title: 'Medium Webapp - 4 Custom Pages', price: 200, id: 'm'},
-    {title: 'Large Webapp - 10 Custom Pages', price: 500, id: 'l'}
+    {title: 'Small Webapp - 2 Custom Pages', price: 100, id: 's', pagesCount: 2},
+    {title: 'Medium Webapp - 4 Custom Pages', price: 200, id: 'm', pagesCount: 4},
+    {title: 'Large Webapp - 10 Custom Pages', price: 500, id: 'l', pagesCount: 10}
 ]
 
 export const CreateProjectComponent = props => {
@@ -35,6 +37,7 @@ export const CreateProjectComponent = props => {
     const [generalCompleted, setGeneralCompleted] = useState(false)
     const [landingCompleted, setLandingCompleted] = useState(false)
     const [themeCompleted, setThemeCompleted] = useState(false)
+    const [featuresCompleted, setFeaturesCompleted] = useState(false)
     const [reviewCompleted, setReviewCompleted] = useState(false)
     const [termsCompleted, setTermsCompleted] = useState(false)
     const [paymentCompleted, setPaymentCompleted] = useState(false)
@@ -55,7 +58,7 @@ export const CreateProjectComponent = props => {
         lightThemeDefault: true,
         darkThemeDefault: false,
         blueThemeDefault: false,
-        blueTintSelected: false,
+        blueTintSelected: true,
         purpleTintSelected: false,
         mintTintSelected: false,
         greenTintSelected: false,
@@ -63,41 +66,173 @@ export const CreateProjectComponent = props => {
         purpleTintDefault: false,
         mintTintDefault: false,
         greenTintDefault: false,
-        selectedTintColor: 0,
         customTintColor: null,
         useCustomTintColor: false,
+
+        // features
+        pagesText: [],
+        pagesImages: [],
+    })
+    const [errors, setErrors] = useState({
+        projectName: false,
+        email: false,
+
+        heroTitle: false,
+        heroMessage: false,
+
+        themes: false,
+        tintColors: false,
+        customTintColor: false,
+
+        pagesTextErrors: [],
     })
 
     const progressSteps = [
         {title: 'General', isComplete: generalCompleted, id: 'general'},
         {title: 'Landing', isComplete: landingCompleted, id: 'landing'},
         {title: 'Theme', isComplete: themeCompleted, id: 'theme'},
+        {title: 'Features', isComplete: featuresCompleted, id: 'features'},
         {title: 'Review', isComplete: reviewCompleted, id: 'review'},
         {title: 'Terms', isComplete: termsCompleted, id: 'terms'},
         {title: 'Payment', isComplete: paymentCompleted, id: 'payment'},
     ]
 
     const selectedStep = progressSteps.find(({id}) => id === selectedStepID)
+    const selectedProjectType = ProjectTypes.find(({id}) => id === formData.projectType)
 
-    const onClickProgressStep = stepID => {
+    useEffect(() => {
+        const {pagesCount} = selectedProjectType
+        setFormData(curr => ({
+            ...curr,
+            pagesText: Array(pagesCount).fill(''),
+            pagesImages: Array(pagesCount).fill(new Array(0)),
+        }))
+        setErrors(curr => ({
+            ...curr,
+            pagesTextErrors: Array(pagesCount).fill(false)
+        }))
+    }, [selectedProjectType])
+
+    // Utils
+
+    const navigateToStep = (stepID, completedSteps) => {
         switch (stepID) {
             case 'general':
                 setSelectedStepID('general')
                 break
             case 'landing':
-                setSelectedStepID('landing')
+                if (generalCompleted || completedSteps.general) {
+                    setSelectedStepID('landing')
+                }
                 break
             case 'theme':
-                setSelectedStepID('theme')
+                if (generalCompleted && landingCompleted || completedSteps.landing) {
+                    setSelectedStepID('theme')
+                }
+                break
+            case 'features':
+                if (generalCompleted && landingCompleted && themeCompleted || completedSteps.theme) {
+                    setSelectedStepID('features')
+                }
                 break
             case 'review':
-                setSelectedStepID('review')
+                if (generalCompleted && landingCompleted && themeCompleted && featuresCompleted || completedSteps.features) {
+                    setSelectedStepID('review')
+                }
                 break
             case 'terms':
-                setSelectedStepID('terms')
+                if (generalCompleted && landingCompleted && themeCompleted && featuresCompleted && reviewCompleted || completedSteps.review) {
+                    setSelectedStepID('terms')
+                }
                 break
             case 'payment':
-                setSelectedStepID('payment')
+                if (generalCompleted && landingCompleted && themeCompleted && featuresCompleted && reviewCompleted && termsCompleted || completedSteps.terms) {
+                    setSelectedStepID('payment')
+                }
+                break
+        }
+    }
+
+    const onNavigateAwayFromStep = navigateToStepID => {
+        switch (selectedStepID) {
+            case 'general':
+                const projectNameCompleted = !!formData.projectName
+                const emailCompleted = !!formData.email
+                setErrors(curr => ({
+                    ...curr,
+                    projectName: !projectNameCompleted,
+                    email: !emailCompleted
+                }))
+                if (projectNameCompleted && emailCompleted) {
+                    setGeneralCompleted(true)
+                    navigateToStep(navigateToStepID, {general: true})
+                }
+                break
+            case 'landing':
+                const heroTitleCompleted = !!formData.heroTitle
+                const heroMessageCompleted = !!formData.heroMessage
+                setErrors(curr => ({
+                    ...curr,
+                    heroTitle: !heroTitleCompleted,
+                    heroMessage: !heroMessageCompleted
+                }))
+                if (heroTitleCompleted && heroMessageCompleted) {
+                    setLandingCompleted(true)
+                    navigateToStep(navigateToStepID, {landing: true})
+                }
+                break
+            case 'theme':
+                const themesCompleted = formData.lightThemeSelected || formData.darkThemeSelected || formData.blueThemeSelected
+                const tintColorsCompleted = formData.blueTintSelected || formData.purpleTintSelected || formData.mintTintSelected || formData.greenTintSelected
+                const customTintColorCompleted = formData.useCustomTintColor ? !!formData.customTintColor : true
+                setErrors(curr => ({
+                    ...curr,
+                    themes: !themesCompleted,
+                    tintColors: !tintColorsCompleted,
+                    customTintColor: !customTintColorCompleted
+                }))
+                if (themesCompleted && tintColorsCompleted && customTintColorCompleted) {
+                    setThemeCompleted(true)
+                    navigateToStep(navigateToStepID, {theme: true})
+                }
+                break
+            case 'features':
+                setFeaturesCompleted(true)
+                navigateToStep(navigateToStepID, {features: true})
+                break
+            case 'review':
+                setReviewCompleted(true)
+                break
+            case 'terms':
+                setTermsCompleted(true)
+                break
+        }
+    }
+
+    // Direct
+
+    const onClickProgressStep = stepID => {
+        switch (stepID) {
+            case 'general':
+                onNavigateAwayFromStep('general')
+                break
+            case 'landing':
+                onNavigateAwayFromStep('landing')
+                break
+            case 'theme':
+                onNavigateAwayFromStep('theme')
+                break
+            case 'features':
+                onNavigateAwayFromStep('features')
+                break
+            case 'review':
+                onNavigateAwayFromStep('review')
+                break
+            case 'terms':
+                onNavigateAwayFromStep('terms')
+                break
+            case 'payment':
+                onNavigateAwayFromStep('payment')
                 break
         }
     }
@@ -243,66 +378,96 @@ export const CreateProjectComponent = props => {
                     customTintColor: ''
                 }))
                 switchEnabled && props.setTintColor(0)
+                setErrors(curr => ({
+                    ...curr,
+                    customTintColor: false,
+                    tintColors: false
+                }))
         }
     }
 
-    const onClickEditProjectName = () => {
-
+    const onChangePageText = (pageIndex, e) => {
+        setFormData(curr => ({
+            ...curr,
+            pagesText: curr.pagesText.map( (text, i) => (
+                i == pageIndex ?
+                    e.target.value
+                    : text
+            ))
+        }))
     }
 
-    const onClickEditProjectType = () => {
-
+    const onChangePageImages = (pageIndex, e) => {
+        if (!e.target.files[0]) return
+        setFormData(curr => ({
+            ...curr,
+            pagesImages: curr.pagesImages.map( (images, i) => (
+                i == pageIndex ?
+                    [
+                        ...curr.pagesImages[pageIndex],
+                        e.target.files[0]
+                    ]
+                    : images
+            ))
+        }))
     }
 
-    const onClickEditEmail = () => {
-
+    const onClickRemovePageImage = (pageIndex, imageIndex) => {
+        setFormData(curr => ({
+            ...curr,
+            pagesImages: curr.pagesImages.map( (images, i) => (
+                i == pageIndex ?
+                    images.filter( (_, j) => j != imageIndex)
+                    : images
+            ))
+        }))
     }
 
-    const onClickEditHeroTitle = () => {
-
-    }
-
-    const onClickEditHeroMessage = () => {
-
-    }
-    
-    const onClickEditThemes = () => {
-
-    }
-
-    const onClickEditDefaultTheme = () => {
-
-    }
-
-    const onClickEditUseCustomTintColor = () => {
-
-    }
-
-    const onClickEditTintColors = () => {
-
-    }
-
-    const onClickEditDefaultTintColor = () => {
-
-    }
-
-    const onClickEditCustomTintColor = () => {
-
+    const onClickEditField = fieldName => {
+        switch (fieldName) {
+            case 'projectName':
+            case 'projectType':
+            case 'email':
+                setSelectedStepID('general')
+                break
+            case 'heroTitle':
+            case 'heroMessage':
+                setSelectedStepID('landing')
+                break
+            case 'themes':
+            case 'defaultTheme':
+            case 'useCustomTintColor':
+            case 'tintColors':
+            case 'defaultTintColor':
+            case 'customTintColor':
+                setSelectedStepID('theme')
+                break
+            case 'pagesText':
+            case 'pagesImages':
+                setSelectedStepID('features')
+                break
+        }
     }
 
     const onClickBack = () => {
         switch (selectedStepID) {
-            case 'general':
-                break
             case 'landing':
+                onNavigateAwayFromStep('general')
                 break
             case 'theme':
+                onNavigateAwayFromStep('landing')
+                break
+            case 'features':
+                onNavigateAwayFromStep('theme')
                 break
             case 'review':
+                onNavigateAwayFromStep('features')
                 break
             case 'terms':
+                onNavigateAwayFromStep('review')
                 break
             case 'payment':
+                onNavigateAwayFromStep('terms')
                 break
         }
     }
@@ -310,19 +475,22 @@ export const CreateProjectComponent = props => {
     const onClickNext = () => {
         switch (selectedStepID) {
             case 'general':
-                setGeneralCompleted(true)
+                onNavigateAwayFromStep('landing')
                 break
             case 'landing':
-                setLandingCompleted(true)
+                onNavigateAwayFromStep('theme')
                 break
             case 'theme':
-                setThemeCompleted(true)
+                onNavigateAwayFromStep('features')
+                break
+            case 'features':
+                onNavigateAwayFromStep('review')
                 break
             case 'review':
-                setReviewCompleted(true)
+                onNavigateAwayFromStep('terms')
                 break
             case 'terms':
-                setTermsCompleted(true)
+                onNavigateAwayFromStep('payment')
                 break
         }
     }
@@ -350,187 +518,196 @@ export const CreateProjectComponent = props => {
                         <h3 className='title'>{selectedStep.title}</h3>
                         {selectedStepID === 'general' ?
                             <div className='inner-form-container'>
-                                <div className='label-with-message-container'>
-                                    <div className='label-container'>
-                                        <label>Project Name</label>
-                                        <input name='projectName' value={formData.projectName} onChange={onChangeFormValue} />
-                                    </div>
-                                    <p className='message'>This is the name that will appear in the top left corner of your site.</p>
-                                </div>
-                                <div className='label-with-message-container'>
-                                    <div className='label-container'>
-                                        <label>Project Type</label>
-                                        <select name='projectType' value={formData.projectType} onChange={onChangeFormValue}>
-                                            {ProjectTypes.map( ({title, price, id}) => (
-                                                <option value={id} key={id}>{title}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <h4 className='tint-message'>${ProjectTypes.find(({id}) => id === formData.projectType).price}</h4>
-                                </div>
-                                <div className='label-with-message-container'>
-                                    <div className='label-container'>
-                                        <label>Your Email</label>
-                                        <input name='email' value={formData.email} onChange={onChangeFormValue} />
-                                    </div>
-                                    <p className='message'>This is the email that will be used to create your Blackbox Solution account.</p>
-                                </div>
+                                <InputWithMessage
+                                    label='Project Name'
+                                    inputType='text'
+                                    text={formData.projectName}
+                                    onChangeText={onChangeFormValue}
+                                    fieldName='projectName'
+                                    message='This is the name that will appear in the top left corner of your site.'
+                                    hasError={errors.projectName}
+                                />
+                                <InputWithMessage
+                                    label='Project Type'
+                                    inputType='select'
+                                    fieldName='projectType'
+                                    selectValue={formData.projectType}
+                                    selectValues={ProjectTypes}
+                                    onChangeSelectValue={onChangeFormValue}
+                                    tintMessage={`$${selectedProjectType.price}`}
+                                />
+                                <InputWithMessage
+                                    label='Your Email'
+                                    inputType='text'
+                                    text={formData.email}
+                                    onChangeText={onChangeFormValue}
+                                    fieldName='email'
+                                    message='This is the email that will be used to create your Blackbox Solution account.'
+                                    hasError={errors.email}
+                                />
                             </div>
                         : selectedStepID === 'landing' ?
                             <div className='inner-form-container'>
-                                <div className='label-with-message-container'>
-                                    <div className='label-container'>
-                                        <label>Hero Title</label>
-                                        <input name='heroTitle' value={formData.heroTitle} onChange={onChangeFormValue} />
-                                    </div>
-                                    <p className='message'>This is the title that will be shown on the hero section of the landing page. We recommend a short statement about what your product does.</p>
-                                </div>
-                                <div className='label-with-message-container'>
-                                    <div className='label-container'>
-                                        <label>Hero Message</label>
-                                        <textarea name='heroMessage' value={formData.heroMessage} onChange={onChangeFormValue} />
-                                    </div>
-                                    <p className='message'>This is the message that will be shown beneath the hero title on the landing page. We recommend a 1-3 sentence message about what your product does and why people should use it.</p>
-                                </div>
+                                <InputWithMessage
+                                    label='Hero Title'
+                                    inputType='text'
+                                    text={formData.heroTitle}
+                                    onChangeText={onChangeFormValue}
+                                    fieldName='heroTitle'
+                                    message='This is the title that will be shown on the hero section of the landing page. We recommend a short statement about what your product does.'
+                                    hasError={errors.heroTitle}
+                                />
+                                <InputWithMessage
+                                    label='Hero Message'
+                                    inputType='textarea'
+                                    text={formData.heroMessage}
+                                    onChangeText={onChangeFormValue}
+                                    fieldName='heroMessage'
+                                    message='This is the message that will be shown beneath the hero title on the landing page. We recommend a 1-3 sentence message about what your product does and why people should use it.'
+                                    hasError={errors.heroTitle}
+                                />
                             </div>
                         : selectedStepID === 'theme' ?
                             <div className='inner-form-container'>
-                                <div className='label-with-message-container'>
-                                    <div className='label-container'>
-                                        <label>Themes</label>
-                                        <ChecklistOptions
-                                            options={[
-                                                {title: 'Light Theme', selected: formData.lightThemeSelected, id: 'lightThemeSelected'},
-                                                {title: 'Dark Theme', selected: formData.darkThemeSelected, id: 'darkThemeSelected'},
-                                                {title: 'Blue Theme', selected: formData.blueThemeSelected, id: 'blueThemeSelected'},
-                                            ]}
-                                            onClickCheckbox={onClickCheckbox}
-                                            className='checklist'
-                                        />
-                                    </div>
-                                    <p className='message'>Select up to three. Selecting multiple allows users to pick which theme to use on their version of the site.</p>
-                                </div>
-                                <div className='label-with-message-container'>
-                                    <div className='label-container'>
-                                        <label>Default Theme</label>
-                                        <ChecklistOptions
-                                            options={[
-                                                {title: 'Light Theme', selected: formData.lightThemeDefault, id: 'lightThemeDefault'},
-                                                {title: 'Dark Theme', selected: formData.darkThemeDefault, id: 'darkThemeDefault'},
-                                                {title: 'Blue Theme', selected: formData.blueThemeDefault, id: 'blueThemeDefault'},
-                                            ]}
-                                            onClickCheckbox={onClickCheckbox}
-                                            className='checklist'
-                                        />
-                                    </div>
-                                    <p className='message'>Select one.</p>
-                                </div>
-                                <div className='label-with-message-container'>
-                                    <div className='label-container'>
-                                        <label>Use Custom Tint Color</label>
-                                        <Switch
-                                            enabled={formData.useCustomTintColor}
-                                            onClick={() => onClickSwitch('useCustomTintColor')}
-                                            className='switch'
-                                        />
-                                    </div>
-                                    <p className='message'>If selected we will use your custom tint color instead of the default tint colors provided.</p>
-                                </div>
+                                <InputWithMessage
+                                    label='Themes'
+                                    inputType='checklist'
+                                    checklistOptions={[
+                                        {title: 'Light Theme', selected: formData.lightThemeSelected, id: 'lightThemeSelected'},
+                                        {title: 'Dark Theme', selected: formData.darkThemeSelected, id: 'darkThemeSelected'},
+                                        {title: 'Blue Theme', selected: formData.blueThemeSelected, id: 'blueThemeSelected'},
+                                    ]}
+                                    onClickCheckbox={onClickCheckbox}
+                                    message='Select up to three. Selecting multiple allows users to pick which theme to use on their version of the site.'
+                                    hasError={errors.themes}
+                                />
+                                <InputWithMessage
+                                    label='Default Theme'
+                                    inputType='checklist'
+                                    checklistOptions={[
+                                        {title: 'Light Theme', selected: formData.lightThemeDefault, id: 'lightThemeDefault'},
+                                        {title: 'Dark Theme', selected: formData.darkThemeDefault, id: 'darkThemeDefault'},
+                                        {title: 'Blue Theme', selected: formData.blueThemeDefault, id: 'blueThemeDefault'},
+                                    ]}
+                                    onClickCheckbox={onClickCheckbox}
+                                    message='Select one.'
+                                />
+                                <InputWithMessage
+                                    label='Use Custom Tint Color'
+                                    inputType='switch'
+                                    switchEnabled={formData.useCustomTintColor}
+                                    onClickSwitch={() => onClickSwitch('useCustomTintColor')}
+                                    message='If selected we will use your custom tint color instead of the default tint colors provided.'
+                                />
                                 {formData.useCustomTintColor ?
-                                    <div className='label-with-message-container'>
-                                        <div className='label-container'>
-                                            <label>Custom Tint Color</label>
-                                            <input
-                                                name='customTintColor'
-                                                value={formData.customTintColor}
-                                                onChange={onChangeFormValue}
-                                                placeholder='Enter rgb code or hex code'
-                                            />
-                                        </div>
-                                        <div className='custom-color-option-container'>
-                                            <div className='custom-color-option' style={{backgroundColor: formData.customTintColor}} />
-                                        </div>
-                                    </div>
+                                    <InputWithMessage
+                                        label='Custom Tint Color'
+                                        inputType='text'
+                                        text={formData.customTintColor}
+                                        onChangeText={onChangeFormValue}
+                                        fieldName='customTintColor'
+                                        placeholder='Enter rgb code or hex code'
+                                        rightChild={
+                                            <div className='custom-color-option-container'>
+                                                <div className='custom-color-option' style={{backgroundColor: formData.customTintColor}} />
+                                            </div>
+                                        }
+                                        hasError={errors.customTintColor}
+                                    />
                                     : null
                                 }
                                 { formData.useCustomTintColor ?
                                     null
-                                    : <div className='label-with-message-container'>
-                                        <div className='label-container'>
-                                            <label>Tint Colors</label>
-                                            <ChecklistOptions
-                                                options={[
-                                                    {
-                                                        title: 'Blue',
-                                                        selected: formData.blueTintSelected,
-                                                        id: 'blueTintSelected',
-                                                        leftChild: <div className='color-option' style={{backgroundColor: Tints[0].tint}} />
-                                                    },
-                                                    {
-                                                        title: 'Purple',
-                                                        selected: formData.purpleTintSelected,
-                                                        id: 'purpleTintSelected',
-                                                        leftChild: <div className='color-option' style={{backgroundColor: Tints[1].tint}} />
-                                                    },
-                                                    {
-                                                        title: 'Mint',
-                                                        selected: formData.mintTintSelected,
-                                                        id: 'mintTintSelected',
-                                                        leftChild: <div className='color-option' style={{backgroundColor: Tints[2].tint}} />
-                                                    },
-                                                    {
-                                                        title: 'Green',
-                                                        selected: formData.greenTintSelected,
-                                                        id: 'greenTintSelected',
-                                                        leftChild: <div className='color-option' style={{backgroundColor: Tints[3].tint}} />
-                                                    },
-                                                ]}
-                                                onClickCheckbox={onClickCheckbox}
-                                                className='checklist'
-                                            />
-                                        </div>
-                                        <p className='message'>Select up to four. Selecting multiple allows users to pick which tint color to use on their version of the site.</p>
-                                    </div>
+                                    : <InputWithMessage
+                                        label='Tint Colors'
+                                        inputType='checklist'
+                                        checklistOptions={[
+                                            {
+                                                title: 'Blue',
+                                                selected: formData.blueTintSelected,
+                                                id: 'blueTintSelected',
+                                                leftChild: <div className='color-option' style={{backgroundColor: Tints[0].tint}} />
+                                            },
+                                            {
+                                                title: 'Purple',
+                                                selected: formData.purpleTintSelected,
+                                                id: 'purpleTintSelected',
+                                                leftChild: <div className='color-option' style={{backgroundColor: Tints[1].tint}} />
+                                            },
+                                            {
+                                                title: 'Mint',
+                                                selected: formData.mintTintSelected,
+                                                id: 'mintTintSelected',
+                                                leftChild: <div className='color-option' style={{backgroundColor: Tints[2].tint}} />
+                                            },
+                                            {
+                                                title: 'Green',
+                                                selected: formData.greenTintSelected,
+                                                id: 'greenTintSelected',
+                                                leftChild: <div className='color-option' style={{backgroundColor: Tints[3].tint}} />
+                                            },
+                                        ]}
+                                        onClickCheckbox={onClickCheckbox}
+                                        message='Select up to four. Selecting multiple allows users to pick which tint color to use on their version of the site.'
+                                        hasError={errors.tintColors}
+                                    />
                                 }      
                                 { formData.useCustomTintColor ?
                                     null
-                                    : <div className='label-with-message-container'>
-                                        <div className='label-container'>
-                                            <label>Default Tint Color</label>
-                                            <ChecklistOptions
-                                                options={[
-                                                    {
-                                                        title: 'Blue',
-                                                        selected: formData.blueTintDefault,
-                                                        id: 'blueTintDefault',
-                                                        leftChild: <div className='color-option' style={{backgroundColor: Tints[0].tint}} />
-                                                    },
-                                                    {
-                                                        title: 'Purple',
-                                                        selected: formData.purpleTintDefault,
-                                                        id: 'purpleTintDefault',
-                                                        leftChild: <div className='color-option' style={{backgroundColor: Tints[1].tint}} />
-                                                    },
-                                                    {
-                                                        title: 'Mint',
-                                                        selected: formData.mintTintDefault,
-                                                        id: 'mintTintDefault',
-                                                        leftChild: <div className='color-option' style={{backgroundColor: Tints[2].tint}} />
-                                                    },
-                                                    {
-                                                        title: 'Green',
-                                                        selected: formData.greenTintDefault,
-                                                        id: 'greenTintDefault',
-                                                        leftChild: <div className='color-option' style={{backgroundColor: Tints[3].tint}} />
-                                                    },
-                                                ]}
-                                                onClickCheckbox={onClickCheckbox}
-                                                className='checklist'
-                                            />
-                                        </div>
-                                        <p className='message'>Select one.</p>
-                                    </div>
+                                    : <InputWithMessage
+                                        label='Default Tint Color'
+                                        inputType='checklist'
+                                        checklistOptions={[
+                                            {
+                                                title: 'Blue',
+                                                selected: formData.blueTintDefault,
+                                                id: 'blueTintDefault',
+                                                leftChild: <div className='color-option' style={{backgroundColor: Tints[0].tint}} />
+                                            },
+                                            {
+                                                title: 'Purple',
+                                                selected: formData.purpleTintDefault,
+                                                id: 'purpleTintDefault',
+                                                leftChild: <div className='color-option' style={{backgroundColor: Tints[1].tint}} />
+                                            },
+                                            {
+                                                title: 'Mint',
+                                                selected: formData.mintTintDefault,
+                                                id: 'mintTintDefault',
+                                                leftChild: <div className='color-option' style={{backgroundColor: Tints[2].tint}} />
+                                            },
+                                            {
+                                                title: 'Green',
+                                                selected: formData.greenTintDefault,
+                                                id: 'greenTintDefault',
+                                                leftChild: <div className='color-option' style={{backgroundColor: Tints[3].tint}} />
+                                            },
+                                        ]}
+                                        onClickCheckbox={onClickCheckbox}
+                                        message='Select one.'
+                                    />
                                 }
+                            </div>
+                        : selectedStepID === 'features' ?
+                            <div className='inner-form-container'>
+                                {formData.pagesText.map( (text, i) => (
+                                    <div className='d-flex fd-column ai-stretch' key={i}>
+                                        <InputWithMessage
+                                            label={`Page ${i + 1} Content`}
+                                            inputType='textarea'
+                                            text={text}
+                                            onChangeText={e => onChangePageText(i, e)}
+                                            placeholder={`Describe the content and features you want to see on page ${i + 1}`}
+                                        />
+                                        <ImagesInput
+                                            label={`Page ${i + 1} UI Images`}
+                                            imageFiles={formData.pagesImages[i]}
+                                            onChangeImageFiles={e => onChangePageImages(i, e)}
+                                            onClickRemoveImage={imageIndex => onClickRemovePageImage(i, imageIndex)}
+                                            key={i}
+                                        />
+                                    </div>
+                                ))}
                             </div>
                         : selectedStepID === 'terms' ?
                             <div className='inner-form-container'>
@@ -545,7 +722,7 @@ export const CreateProjectComponent = props => {
                                     <IconButton
                                         iconClassName='bi-pencil'
                                         size='s'
-                                        onClick={onClickEditProjectName}
+                                        onClick={() => onClickEditField('projectName')}
                                     />
                                 </div>
                                 <div className='label-with-message-container'>
@@ -556,7 +733,7 @@ export const CreateProjectComponent = props => {
                                     <IconButton
                                         iconClassName='bi-pencil'
                                         size='s'
-                                        onClick={onClickEditProjectType}
+                                        onClick={() => onClickEditField('projectType')}
                                     />
                                 </div>
                                 <div className='label-with-message-container'>
@@ -567,7 +744,7 @@ export const CreateProjectComponent = props => {
                                     <IconButton
                                         iconClassName='bi-pencil'
                                         size='s'
-                                        onClick={onClickEditEmail}
+                                        onClick={() => onClickEditField('email')}
                                     />
                                 </div>
                                 <div className='label-with-message-container'>
@@ -578,7 +755,7 @@ export const CreateProjectComponent = props => {
                                     <IconButton
                                         iconClassName='bi-pencil'
                                         size='s'
-                                        onClick={onClickEditHeroTitle}
+                                        onClick={() => onClickEditField('heroTitle')}
                                     />
                                 </div>
                                 <div className='label-with-message-container'>
@@ -589,7 +766,7 @@ export const CreateProjectComponent = props => {
                                     <IconButton
                                         iconClassName='bi-pencil'
                                         size='s'
-                                        onClick={onClickEditHeroMessage}
+                                        onClick={() => onClickEditField('heroMessage')}
                                     />
                                 </div>
                                 <div className='label-with-message-container'>
@@ -607,7 +784,7 @@ export const CreateProjectComponent = props => {
                                     <IconButton
                                         iconClassName='bi-pencil'
                                         size='s'
-                                        onClick={onClickEditThemes}
+                                        onClick={() => onClickEditField('themes')}
                                     />
                                 </div>
                                 <div className='label-with-message-container'>
@@ -623,7 +800,7 @@ export const CreateProjectComponent = props => {
                                     <IconButton
                                         iconClassName='bi-pencil'
                                         size='s'
-                                        onClick={onClickEditDefaultTheme}
+                                        onClick={() => onClickEditField('defaultTheme')}
                                     />
                                 </div>
                                 <div className='label-with-message-container'>
@@ -634,7 +811,7 @@ export const CreateProjectComponent = props => {
                                     <IconButton
                                         iconClassName='bi-pencil'
                                         size='s'
-                                        onClick={onClickEditUseCustomTintColor}
+                                        onClick={() => onClickEditField('useCustomTintColor')}
                                     />
                                 </div>
                                 { formData.useCustomTintColor ? 
@@ -652,7 +829,7 @@ export const CreateProjectComponent = props => {
                                         <IconButton
                                             iconClassName='bi-pencil'
                                             size='s'
-                                            onClick={onClickEditTintColors}
+                                            onClick={() => onClickEditField('customTintColor')}
                                         />
                                     </div>
                                     : null
@@ -675,7 +852,7 @@ export const CreateProjectComponent = props => {
                                         <IconButton
                                             iconClassName='bi-pencil'
                                             size='s'
-                                            onClick={onClickEditTintColors}
+                                            onClick={() => onClickEditField('tintColors')}
                                         />
                                     </div>
                                 }
@@ -695,7 +872,7 @@ export const CreateProjectComponent = props => {
                                         <IconButton
                                             iconClassName='bi-pencil'
                                             size='s'
-                                            onClick={onClickEditDefaultTintColor}
+                                            onClick={() => onClickEditField('defaultTintColor')}
                                         />
                                     </div>
                                 }
@@ -768,11 +945,6 @@ const Container = styled.div`
         align-items: stretch;
     }
 
-    & input, & select, & textarea {
-        width: 50%;
-        box-sizing: border-box;
-    }
-
     & .label-with-message-container {
         display: flex;
         align-items: center;
@@ -783,34 +955,6 @@ const Container = styled.div`
         flex-direction: column;
         align-items: flex-start;
         flex: 1;
-    }
-    & .label-with-message-container .message {
-        color: ${p => p.theme.textSecondary};
-        flex: 1;
-        padding-left: 50px;
-        text-align: right;
-    }
-    & .label-with-message-container .tint-message {
-        color: ${p => p.theme.tint};
-        font-weight: 600;
-        flex: 1;
-        text-align: right;
-        padding-left: 50px;
-    }
-    & .label-container input,
-    & .label-container select,
-    & .label-container textarea {
-        width: 100%;
-    }
-    & .label-container textarea {
-        height: 100px;
-    }
-    & .label-container .checklist {
-        margin-left: 15px;
-    }
-    & .label-container .switch {
-        margin-top: 5px;
-        margin-left: 5px;
     }
 
     & .color-option {

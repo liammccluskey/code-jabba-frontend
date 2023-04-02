@@ -42,6 +42,10 @@ const Root = styled.div`
         color: ${p => p.theme.textTertiary};
         opacity: 1;
     }
+    textarea::placeholder {
+        color: ${p => p.theme.textTertiary};
+        opacity: 1;
+    }
 
     input, input:active, input:focus,
     textarea, textarea:active, textarea:focus,
@@ -62,6 +66,22 @@ const Root = styled.div`
         border-color: ${p => p.theme.tint} !important;
         background-color: transparent;
         transition: var(--duration-animation);
+    }
+
+    input::file-selector-button {
+        border-radius: 20px;
+        padding: 5px 10px;
+        font: var(--font-family);
+        font-weight: 700;
+        outline: none;
+        cursor: pointer;
+        margin-right: 10px;
+        border: 1px solid ${p => p.theme.bc};
+        background-color: ${p => p.theme.bgcLight};
+        color: ${p => p.theme.tint};
+    }
+    input::file-selector-button:hover {
+        filter: brightness(80%);
     }
 
     /* Properties */
