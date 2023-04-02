@@ -34,7 +34,7 @@ export const SupportComponent = props => {
 
     return (
         <PageContainer className='bgc-bgc-settings'>
-            <LandingHeader showButtons={false}/>
+            <LandingHeader showButtons={false} hasSubheaderBelow={true}/>
             <Subheader title='Support' />
             <BodyContainer>
                 {props.loadingFAQs ?

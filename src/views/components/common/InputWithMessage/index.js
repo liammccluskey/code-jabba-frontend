@@ -11,7 +11,7 @@ export const InputWithMessage = props => {
         message='',
         tintMessage='',
         fieldName,
-        inputType, // 'text' | 'textarea' | 'select' | 'switch' | 'checklist' 
+        inputType, // 'text' | 'textarea' | 'select' | 'switch' | 'checklist'
         text='',
         placeholder='',
         selectValue=null,
@@ -64,7 +64,12 @@ export const InputWithMessage = props => {
                 <h4 className='tint-message'>{tintMessage}</h4>
                 : null
             }
-            {rightChild}
+            {rightChild ?
+                <div className='right-child-container'>
+                    {rightChild}
+                </div>
+                : null
+            }
         </Root>
     )
 }
@@ -121,5 +126,12 @@ const Root = styled.div`
     }
     & .label-header label {
         margin-right: 10px;
+    }
+
+    & .right-child-container {
+        display: flex;
+        justify-content: flex-end;
+        flex: 1;
+        align-items: center;
     }
 `

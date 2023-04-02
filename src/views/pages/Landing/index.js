@@ -41,43 +41,49 @@ const Config = {
     pricing: [
         {
             title: 'Small Webapp',
-            price: '100',
+            price: '200',
             features: [
                 {title: '2 Custom Pages', included: true},
                 {title: 'Source Code', included: true},
+                {title: 'Login Pages', included: true},
+                {title: 'Landing Page', included: true},
                 {title: 'Settings Page', included: true},
-                {title: 'Notifications Page', included: true},
+                {title: 'Support Page', included: true},
                 {title: 'Admin Console', included: true},
                 {title: 'Bug Reports', included: true},
-                {title: 'Support Page', included: true}
+                {title: 'Notifications Page', included: true},
             ],
             id: 's'
         },
         {
             title: 'Medium Webapp',
-            price: '200',
+            price: '400',
             features: [
                 {title: '4 Custom Pages', included: true},
                 {title: 'Source Code', included: true},
+                {title: 'Login Pages', included: true},
+                {title: 'Landing Page', included: true},
                 {title: 'Settings Page', included: true},
-                {title: 'Notifications Page', included: true},
+                {title: 'Support Page', included: true},
                 {title: 'Admin Console', included: true},
                 {title: 'Bug Reports', included: true},
-                {title: 'Support Page', included: true}
+                {title: 'Notifications Page', included: true},
             ],
             id: 'm'
         },
         {
             title: 'Large Webapp',
-            price: '500',
+            price: '1000',
             features: [
                 {title: '10 Custom Pages', included: true},
                 {title: 'Source Code', included: true},
+                {title: 'Login Pages', included: true},
+                {title: 'Landing Page', included: true},
                 {title: 'Settings Page', included: true},
-                {title: 'Notifications Page', included: true},
+                {title: 'Support Page', included: true},
                 {title: 'Admin Console', included: true},
                 {title: 'Bug Reports', included: true},
-                {title: 'Support Page', included: true}
+                {title: 'Notifications Page', included: true},
             ],
             id: 'l'
         }
@@ -192,7 +198,7 @@ export const LandingComponent = props => {
                         ))}
                     </div>
                 </div>
-                <div className='copywrite-container'>
+                <div className='copyright-container'>
                     © {moment().year()} {process.env.REACT_APP_SITE_NAME}. All rights reserved.
                 </div>
             </Container>
@@ -344,18 +350,22 @@ const Container = styled.div`
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
     }
+    &.semi-mobile .pricing-options-container {
+        grid-template-columns: 1fr;
+    }
     & .pricing-option-container {
         display: flex;
         flex-direction: column;
         align-items: stretch;
         border-radius: var(--br-container);
         padding: 30px;
-        margin-right: 30px;
         flex: 1;
         box-sizing: border-box;
+        margin: 0px 15px;
     }
-    & .pricing-option-container:last-child {
-        margin-right: 0px;
+    &.semi-mobile .pricing-option-container {
+        margin: 0px;
+        margin-bottom: 30px;
     }
 
     & .pricing-option-container .header {
@@ -392,7 +402,7 @@ const Container = styled.div`
         font-weight: 600;
     }
 
-    & .copywrite-container {
+    & .copyright-container {
         display: flex;
         justify-content: space-around;
         align-items: center;

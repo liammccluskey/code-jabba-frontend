@@ -19,13 +19,19 @@ const PageLinks = [
         url: '/support',
         icon: 'bi-question-circle',
         id: 'support'
-    }
+    },
+    {
+        name: 'Terms',
+        url: '/terms',
+        icon: 'bi-list-task',
+        id: 'terms'
+    },
 ]
 
 export const LandingHeaderComponent = props => {
     const {
         showButtons=true,
-
+        hasSubheaderBelow=false,
         ...rest
     } = props
     const navigate = useNavigate()
@@ -46,7 +52,7 @@ export const LandingHeaderComponent = props => {
     const onClickSignUp = () => navigate('/register')
 
     return (
-        <Root {...rest}>
+        <Root {...rest} className={`${!hasSubheaderBelow && 'no-subheader'}`}>
             <div
                 className='d-flex jc-flex-start ai-center'
                 onClick={onClickLogo}
@@ -120,7 +126,11 @@ const Root = styled.div`
     box-shadow: 0px 1px 4px 0px rgba(0,0,0,0.2);
     width: 100%;
     box-sizing: border-box;
-    z-index: 1;
+    
+    &.no-subheader {
+        position: sticky;
+        top: 0px;
+    }
 
     & .logo-icon {
         border-radius: 50%;

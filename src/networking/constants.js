@@ -30,7 +30,9 @@ export const PageSizes = {
     channelNotifications: 20,
     userSearch: 10,
     bugReports: 10,
-    faqs: 10
+    faqs: 10,
+
+    accessCodes: 10,
 }
 
 // Errors

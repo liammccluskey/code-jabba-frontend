@@ -37,6 +37,12 @@ export const getMainMenuPageLinks = () => [
         icon: 'bi-gear'
     },
     {
+        name: 'Terms',
+        url: '/terms',
+        id: 'terms',
+        icon: 'bi-list-task',
+    },
+    {
         name: 'Support',
         url: '/support',
         id: 'support',

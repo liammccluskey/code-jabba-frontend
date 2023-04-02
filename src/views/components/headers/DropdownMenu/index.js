@@ -82,8 +82,8 @@ const Root = styled.div`
         & .menu-container {
             width: calc(100% - var(--ps-body)*2);
             box-sizing: border-box;
-            right: 0;
-            left: 0;
+            right: 0px;
+            left: 0px;
             margin: 0px var(--ps-body);
         }
     }

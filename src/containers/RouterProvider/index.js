@@ -23,6 +23,7 @@ import { IndividualFAQ } from '../../views/pages/IndividualFAQ'
 import { ErrorElement } from '../../views/pages/ErrorElement'
 
 import { CreateProject } from '../../views/pages/CreateProject'
+import { Terms } from '../../views/pages/Terms'
 
 const router = createBrowserRouter([
     {
@@ -127,6 +128,11 @@ const router = createBrowserRouter([
     {
       path: '/create/:projectType',
       element: <CreateProject />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/terms',
+      element: <Terms />,
       errorElement: <ErrorElement />
     }
 ])

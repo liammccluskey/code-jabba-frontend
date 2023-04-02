@@ -4,6 +4,7 @@ import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 
+import { TermsSections } from '../Terms'
 import { setThemeColor, setTintColor } from '../../../redux/theme'
 import { Tints } from '../../../redux/theme'
 import { addMessage } from '../../../redux/communication'
@@ -15,37 +16,39 @@ import { Subheader } from '../../components/headers/Subheader'
 import { BodyContainer } from '../../components/common/BodyContainer'
 import { Button } from '../../components/common/Button'
 import { ProgressSteps } from '../../components/common/ProgressSteps'
-import { Switch } from '../../components/common/Switch'
-import { ChecklistOptions } from '../../components/common/ChecklistOptions'
 import { IconButton } from '../../components/common/IconButton'
-import { PillLabel } from '../../components/common/PillLabel'
 import { InputWithMessage } from '../../components/common/InputWithMessage'
 import { ImagesInput } from '../../components/common/ImagesInput'
+import { ValidLabel } from '../../components/common/ValidLabel'
 
 const ProjectTypes = [
-    {title: 'Small Webapp - 2 Custom Pages', price: 100, id: 's', pagesCount: 2},
-    {title: 'Medium Webapp - 4 Custom Pages', price: 200, id: 'm', pagesCount: 4},
-    {title: 'Large Webapp - 10 Custom Pages', price: 500, id: 'l', pagesCount: 10}
+    {title: 'Small Webapp - 2 Custom Pages', price: 200, id: 's', pagesCount: 2},
+    {title: 'Medium Webapp - 4 Custom Pages', price: 400, id: 'm', pagesCount: 4},
+    {title: 'Large Webapp - 10 Custom Pages', price: 1000, id: 'l', pagesCount: 10}
 ]
 
 export const CreateProjectComponent = props => {
     const {
-        
+        isEditMode=false,
     } = props
     const {projectType} = useParams()
     const [selectedStepID, setSelectedStepID] = useState('general')
-    const [generalCompleted, setGeneralCompleted] = useState(false)
-    const [landingCompleted, setLandingCompleted] = useState(false)
-    const [themeCompleted, setThemeCompleted] = useState(false)
-    const [featuresCompleted, setFeaturesCompleted] = useState(false)
-    const [reviewCompleted, setReviewCompleted] = useState(false)
-    const [termsCompleted, setTermsCompleted] = useState(false)
-    const [paymentCompleted, setPaymentCompleted] = useState(false)
+    const [generalCompleted, setGeneralCompleted] = useState(isEditMode)
+    const [landingCompleted, setLandingCompleted] = useState(isEditMode)
+    const [themeCompleted, setThemeCompleted] = useState(isEditMode)
+    const [featuresCompleted, setFeaturesCompleted] = useState(isEditMode)
+    const [reviewCompleted, setReviewCompleted] = useState(isEditMode)
+    const [termsCompleted, setTermsCompleted] = useState(isEditMode)
+    const [paymentCompleted, setPaymentCompleted] = useState(isEditMode)
     const [formData, setFormData] = useState({
         // general
+        name: '',
         projectName: '',
         projectType: projectType || 's',
         email: '',
+        domainProviderURL: '',
+        domainProviderUsername: '',
+        domainProviderPassword: '',
 
         // landing
         heroTitle: '',
@@ -72,20 +75,44 @@ export const CreateProjectComponent = props => {
         // features
         pagesText: [],
         pagesImages: [],
+
+        // terms
+        acceptedTermsAndConditions: false,
+        signature: '',
+
+        // payment
+        hasAccessCode: false,
+        accessCode: '',
     })
     const [errors, setErrors] = useState({
+        // general
+        name: false,
         projectName: false,
         email: false,
+        domainProviderURL: false,
+        domainProviderUsername: false,
+        domainProviderPassword: false,
 
+        // landing
         heroTitle: false,
         heroMessage: false,
 
+        // theme
         themes: false,
         tintColors: false,
         customTintColor: false,
 
-        pagesTextErrors: [],
+        // features
+        pagesText: [],
+
+        // terms
+        acceptedTermsAndConditions: false,
+        signature: false,
+
+        // payment
+        accessCode: '',
     })
+    const [accessCodeIsValid, setAccessCodeIsValid] = useState(false)
 
     const progressSteps = [
         {title: 'General', isComplete: generalCompleted, id: 'general'},
@@ -113,7 +140,15 @@ export const CreateProjectComponent = props => {
         }))
     }, [selectedProjectType])
 
+    useEffect(() => {
+        setAccessCodeIsValid(formData.accessCode.length % 2 == 0)
+    }, [formData.accessCode])
+
     // Utils
+
+    const showMissingRequiredFieldsError = () => {
+        props.addMessage('You are missing one or more required fields.', true)
+    }
 
     const navigateToStep = (stepID, completedSteps) => {
         switch (stepID) {
@@ -121,32 +156,32 @@ export const CreateProjectComponent = props => {
                 setSelectedStepID('general')
                 break
             case 'landing':
-                if (generalCompleted || completedSteps.general) {
+                if (isEditMode || generalCompleted || completedSteps.general) {
                     setSelectedStepID('landing')
                 }
                 break
             case 'theme':
-                if (generalCompleted && landingCompleted || completedSteps.landing) {
+                if (isEditMode || generalCompleted && landingCompleted || completedSteps.landing) {
                     setSelectedStepID('theme')
                 }
                 break
             case 'features':
-                if (generalCompleted && landingCompleted && themeCompleted || completedSteps.theme) {
+                if (isEditMode || generalCompleted && landingCompleted && themeCompleted || completedSteps.theme) {
                     setSelectedStepID('features')
                 }
                 break
             case 'review':
-                if (generalCompleted && landingCompleted && themeCompleted && featuresCompleted || completedSteps.features) {
+                if (isEditMode || generalCompleted && landingCompleted && themeCompleted && featuresCompleted || completedSteps.features) {
                     setSelectedStepID('review')
                 }
                 break
             case 'terms':
-                if (generalCompleted && landingCompleted && themeCompleted && featuresCompleted && reviewCompleted || completedSteps.review) {
+                if (isEditMode || generalCompleted && landingCompleted && themeCompleted && featuresCompleted && reviewCompleted || completedSteps.review) {
                     setSelectedStepID('terms')
                 }
                 break
             case 'payment':
-                if (generalCompleted && landingCompleted && themeCompleted && featuresCompleted && reviewCompleted && termsCompleted || completedSteps.terms) {
+                if (isEditMode || generalCompleted && landingCompleted && themeCompleted && featuresCompleted && reviewCompleted && termsCompleted || completedSteps.terms) {
                     setSelectedStepID('payment')
                 }
                 break
@@ -156,16 +191,26 @@ export const CreateProjectComponent = props => {
     const onNavigateAwayFromStep = navigateToStepID => {
         switch (selectedStepID) {
             case 'general':
+                const nameCompleted = !!formData.name
                 const projectNameCompleted = !!formData.projectName
                 const emailCompleted = !!formData.email
+                const domainProviderURLCompleted = !!formData.domainProviderURL
+                const domainProviderUsernameCompleted = !!formData.domainProviderUsername
+                const domainProviderPasswordCompleted = !!formData.domainProviderPassword
                 setErrors(curr => ({
                     ...curr,
+                    name: !nameCompleted,
                     projectName: !projectNameCompleted,
-                    email: !emailCompleted
+                    email: !emailCompleted,
+                    domainProviderURL: !domainProviderURLCompleted,
+                    domainProviderUsername: !domainProviderUsernameCompleted,
+                    domainProviderPassword: !domainProviderPasswordCompleted
                 }))
-                if (projectNameCompleted && emailCompleted) {
+                if (nameCompleted && projectNameCompleted && emailCompleted && domainProviderURLCompleted && domainProviderUsernameCompleted && domainProviderPasswordCompleted) {
                     setGeneralCompleted(true)
                     navigateToStep(navigateToStepID, {general: true})
+                } else {
+                    showMissingRequiredFieldsError()
                 }
                 break
             case 'landing':
@@ -179,6 +224,8 @@ export const CreateProjectComponent = props => {
                 if (heroTitleCompleted && heroMessageCompleted) {
                     setLandingCompleted(true)
                     navigateToStep(navigateToStepID, {landing: true})
+                } else {
+                    showMissingRequiredFieldsError()
                 }
                 break
             case 'theme':
@@ -194,18 +241,60 @@ export const CreateProjectComponent = props => {
                 if (themesCompleted && tintColorsCompleted && customTintColorCompleted) {
                     setThemeCompleted(true)
                     navigateToStep(navigateToStepID, {theme: true})
+                } else {
+                    showMissingRequiredFieldsError()
                 }
                 break
             case 'features':
-                setFeaturesCompleted(true)
-                navigateToStep(navigateToStepID, {features: true})
+                let pagesTextCompleted = true
+                formData.pagesText.forEach( text => {
+                    if (!text) pagesTextCompleted = false
+                })
+                setErrors(curr => ({
+                    ...curr,
+                    pagesText: formData.pagesText.map(text => !text)
+                }))
+                if (pagesTextCompleted) {
+                    setFeaturesCompleted(true)
+                    navigateToStep(navigateToStepID, {features: true})
+                } else {
+                    showMissingRequiredFieldsError()
+                }
                 break
             case 'review':
                 setReviewCompleted(true)
+                navigateToStep(navigateToStepID, {review: true})
                 break
             case 'terms':
-                setTermsCompleted(true)
+                const signatureCompleted = !!formData.signature && formData.signature === formData.name
+                setErrors(curr => ({
+                    ...curr,
+                    acceptedTermsAndConditions: !formData.acceptedTermsAndConditions,
+                    signature: !signatureCompleted
+                }))
+                if (formData.acceptedTermsAndConditions && signatureCompleted) {
+                    setTermsCompleted(true)
+                    navigateToStep(navigateToStepID, {terms: true})
+                }
+                if (!formData.acceptedTermsAndConditions) {
+                    showMissingRequiredFieldsError()
+                }
+                if (!signatureCompleted) {
+                    props.addMessage('Your signature should match the name you provided in the general section.', true)
+                }
                 break
+            case 'payment':
+                const accessCodeCompleted = formData.hasAccessCode ? accessCodeIsValid : true
+                setErrors(curr => ({
+                    ...curr,
+                    accessCode: !accessCodeCompleted
+                }))
+                if (accessCodeCompleted) {
+                    setPaymentCompleted(true)
+                    navigateToStep(navigateToStepID)
+                } else if (!accessCodeIsValid) {
+                    props.addMessage('The access code you provided is invalid.', true)
+                }
         }
     }
 
@@ -357,6 +446,17 @@ export const CreateProjectComponent = props => {
                     greenTintDefault: true
                 }))
                 break
+            case 'acceptedTermsAndConditions':
+                setFormData(curr => ({
+                    ...curr,
+                    acceptedTermsAndConditions: !curr.acceptedTermsAndConditions
+                }))
+                break
+            case 'hasAccessCode':
+                setFormData(curr => ({
+                    ...curr,
+                    hasAccessCode: !curr.hasAccessCode
+                }))
         }
     }
 
@@ -425,6 +525,10 @@ export const CreateProjectComponent = props => {
 
     const onClickEditField = fieldName => {
         switch (fieldName) {
+            case 'name':
+            case 'domainProviderURL':
+            case 'domainProviderUsername':
+            case 'domainProviderPassword':
             case 'projectName':
             case 'projectType':
             case 'email':
@@ -495,7 +599,7 @@ export const CreateProjectComponent = props => {
         }
     }
 
-    const onClickSubmit = () => {
+    const onClickCreateProject = () => {
 
     }
 
@@ -503,7 +607,7 @@ export const CreateProjectComponent = props => {
         <PageContainer>
             {props.isLoggedIn ?
                 <MainHeader />
-                : <LandingHeader showButtons={false} />
+                : <LandingHeader showButtons={false} hasSubheaderBelow={true}/>
             }
             <Subheader title='Create a Project' />
             <BodyContainer>
@@ -518,6 +622,15 @@ export const CreateProjectComponent = props => {
                         <h3 className='title'>{selectedStep.title}</h3>
                         {selectedStepID === 'general' ?
                             <div className='inner-form-container'>
+                                <InputWithMessage
+                                    label='Your Name'
+                                    inputType='text'
+                                    text={formData.name}
+                                    onChangeText={onChangeFormValue}
+                                    fieldName='name'
+                                    message=' '
+                                    hasError={errors.name}
+                                />
                                 <InputWithMessage
                                     label='Project Name'
                                     inputType='text'
@@ -544,6 +657,34 @@ export const CreateProjectComponent = props => {
                                     fieldName='email'
                                     message='This is the email that will be used to create your Blackbox Solution account.'
                                     hasError={errors.email}
+                                />
+                                <InputWithMessage
+                                    label='Domain Provider URL'
+                                    inputType='text'
+                                    text={formData.domainProviderURL}
+                                    onChangeText={onChangeFormValue}
+                                    fieldName='domainProviderURL'
+                                    placeholder='https://'
+                                    message='This is the domain service you used to purchase your domain. If you do not have one we recommend Google Domains.'
+                                    hasError={errors.domainProviderURL}
+                                />
+                                <InputWithMessage
+                                    label='Domain Provider Login'
+                                    inputType='text'
+                                    text={formData.domainProviderUsername}
+                                    onChangeText={onChangeFormValue}
+                                    fieldName='domainProviderUsername'
+                                    hasError={errors.domainProviderUsername}
+                                    message=' '
+                                />
+                                <InputWithMessage
+                                    label='Domain Provider Password'
+                                    inputType='text'
+                                    text={formData.domainProviderPassword}
+                                    onChangeText={onChangeFormValue}
+                                    fieldName='domainProviderPassword'
+                                    hasError={errors.domainProviderPassword}
+                                    message=' '
                                 />
                             </div>
                         : selectedStepID === 'landing' ?
@@ -698,152 +839,133 @@ export const CreateProjectComponent = props => {
                                             text={text}
                                             onChangeText={e => onChangePageText(i, e)}
                                             placeholder={`Describe the content and features you want to see on page ${i + 1}`}
+                                            hasError={errors.pagesText[i]}
                                         />
                                         <ImagesInput
                                             label={`Page ${i + 1} UI Images`}
                                             imageFiles={formData.pagesImages[i]}
                                             onChangeImageFiles={e => onChangePageImages(i, e)}
                                             onClickRemoveImage={imageIndex => onClickRemovePageImage(i, imageIndex)}
-                                            key={i}
                                         />
                                     </div>
                                 ))}
                             </div>
-                        : selectedStepID === 'terms' ?
-                            <div className='inner-form-container'>
-                            </div>
                         : selectedStepID === 'review' ? 
                             <div className='inner-form-container'>
-                                <div className='label-with-message-container'>
-                                    <div className='label-container'>
-                                        <label>Project Name</label>
-                                        <p className='review-item'>{formData.projectName}</p>
-                                    </div>
-                                    <IconButton
-                                        iconClassName='bi-pencil'
-                                        size='s'
-                                        onClick={() => onClickEditField('projectName')}
-                                    />
-                                </div>
-                                <div className='label-with-message-container'>
-                                    <div className='label-container'>
-                                        <label>Project Type</label>
-                                        <p className='review-item'>{ProjectTypes.find(({id}) => formData.projectType).title}</p>
-                                    </div>
-                                    <IconButton
-                                        iconClassName='bi-pencil'
-                                        size='s'
-                                        onClick={() => onClickEditField('projectType')}
-                                    />
-                                </div>
-                                <div className='label-with-message-container'>
-                                    <div className='label-container'>
-                                        <label>Your Email</label>
-                                        <p className='review-item'>{formData.email}</p>
-                                    </div>
-                                    <IconButton
-                                        iconClassName='bi-pencil'
-                                        size='s'
-                                        onClick={() => onClickEditField('email')}
-                                    />
-                                </div>
-                                <div className='label-with-message-container'>
-                                    <div className='label-container'>
-                                        <label>Hero Title</label>
-                                        <p className='review-item'>{formData.heroTitle}</p>
-                                    </div>
-                                    <IconButton
-                                        iconClassName='bi-pencil'
-                                        size='s'
-                                        onClick={() => onClickEditField('heroTitle')}
-                                    />
-                                </div>
-                                <div className='label-with-message-container'>
-                                    <div className='label-container'>
-                                        <label>Hero Message</label>
-                                        <p className='review-item'>{formData.heroMessage}</p>
-                                    </div>
-                                    <IconButton
-                                        iconClassName='bi-pencil'
-                                        size='s'
-                                        onClick={() => onClickEditField('heroMessage')}
-                                    />
-                                </div>
-                                <div className='label-with-message-container'>
-                                    <div className='label-container'>
-                                        <label>Themes</label>
-                                        <p className='review-item'>{[
-                                            [formData.lightThemeSelected, 'Light Theme'],
-                                            [formData.darkThemeSelected, 'Dark Theme'],
-                                            [formData.blueThemeSelected, 'Blue Theme']
-                                        ].filter( ([selected]) => selected)
-                                        .map( ([_, title]) => title)
-                                        .join(', ')
-                                        }</p>
-                                    </div>
-                                    <IconButton
-                                        iconClassName='bi-pencil'
-                                        size='s'
-                                        onClick={() => onClickEditField('themes')}
-                                    />
-                                </div>
-                                <div className='label-with-message-container'>
-                                    <div className='label-container'>
-                                        <label>Default Theme</label>
-                                        <p className='review-item'>{
-                                            formData.lightThemeDefault ? 'Light Theme'
-                                            : formData.darkThemeDefault ? 'Dark Theme'
-                                            : formData.blueThemeDefault ? 'Blue Theme'
-                                            : null
-                                        }</p>
-                                    </div>
-                                    <IconButton
-                                        iconClassName='bi-pencil'
-                                        size='s'
-                                        onClick={() => onClickEditField('defaultTheme')}
-                                    />
-                                </div>
-                                <div className='label-with-message-container'>
-                                    <div className='label-container'>
-                                        <label>Use Custom Tint Color</label>
-                                        <p className='review-item'>{formData.useCustomTintColor ? 'True' : 'False'}</p>
-                                    </div>
-                                    <IconButton
-                                        iconClassName='bi-pencil'
-                                        size='s'
-                                        onClick={() => onClickEditField('useCustomTintColor')}
-                                    />
-                                </div>
-                                { formData.useCustomTintColor ? 
+                                <h3 className='review-title'>General</h3>
+                                <div className='review-section'>
                                     <div className='label-with-message-container'>
                                         <div className='label-container'>
-                                            <label>Custom Tint Color</label>
-                                            <div className='d-flex jc-flex-start ai-center' style={{marginTop: 5}}>
-                                                <p className='review-item' style={{marginTop: 0}}>{formData.customTintColor}</p>
-                                                <div
-                                                    className='color-option'
-                                                    style={{backgroundColor: formData.customTintColor, marginLeft: 10}}
-                                                />
-                                            </div>
+                                            <label>Your Name</label>
+                                            <p className='review-item'>{formData.name}</p>
                                         </div>
                                         <IconButton
                                             iconClassName='bi-pencil'
                                             size='s'
-                                            onClick={() => onClickEditField('customTintColor')}
+                                            onClick={() => onClickEditField('name')}
                                         />
                                     </div>
-                                    : null
-                                }
-                                { formData.useCustomTintColor ? 
-                                    null
-                                    : <div className='label-with-message-container'>
+                                    <div className='label-with-message-container'>
                                         <div className='label-container'>
-                                            <label>Tint Colors</label>
+                                            <label>Project Name</label>
+                                            <p className='review-item'>{formData.projectName}</p>
+                                        </div>
+                                        <IconButton
+                                            iconClassName='bi-pencil'
+                                            size='s'
+                                            onClick={() => onClickEditField('projectName')}
+                                        />
+                                    </div>
+                                    <div className='label-with-message-container'>
+                                        <div className='label-container'>
+                                            <label>Project Type</label>
+                                            <p className='review-item'>{ProjectTypes.find(({id}) => formData.projectType).title}</p>
+                                        </div>
+                                        <IconButton
+                                            iconClassName='bi-pencil'
+                                            size='s'
+                                            onClick={() => onClickEditField('projectType')}
+                                        />
+                                    </div>
+                                    <div className='label-with-message-container'>
+                                        <div className='label-container'>
+                                            <label>Your Email</label>
+                                            <p className='review-item'>{formData.email}</p>
+                                        </div>
+                                        <IconButton
+                                            iconClassName='bi-pencil'
+                                            size='s'
+                                            onClick={() => onClickEditField('email')}
+                                        />
+                                    </div>
+                                    <div className='label-with-message-container'>
+                                        <div className='label-container'>
+                                            <label>Domain Provider URL</label>
+                                            <p className='review-item'>{formData.domainProviderURL}</p>
+                                        </div>
+                                        <IconButton
+                                            iconClassName='bi-pencil'
+                                            size='s'
+                                            onClick={() => onClickEditField('domainProviderURL')}
+                                        />
+                                    </div>
+                                    <div className='label-with-message-container'>
+                                        <div className='label-container'>
+                                            <label>Domain Provider Username</label>
+                                            <p className='review-item'>{formData.domainProviderUsername}</p>
+                                        </div>
+                                        <IconButton
+                                            iconClassName='bi-pencil'
+                                            size='s'
+                                            onClick={() => onClickEditField('domainProviderUsername')}
+                                        />
+                                    </div>
+                                    <div className='label-with-message-container'>
+                                        <div className='label-container'>
+                                            <label>Domain Provider Password</label>
+                                            <p className='review-item'>{formData.projectName}</p>
+                                        </div>
+                                        <IconButton
+                                            iconClassName='bi-pencil'
+                                            size='s'
+                                            onClick={() => onClickEditField('domainProviderPassword')}
+                                        />
+                                    </div>
+                                </div>
+                                <h3 className='review-title'>Landing</h3>
+                                <div className='review-section'>
+                                    <div className='label-with-message-container'>
+                                        <div className='label-container'>
+                                            <label>Hero Title</label>
+                                            <p className='review-item'>{formData.heroTitle}</p>
+                                        </div>
+                                        <IconButton
+                                            iconClassName='bi-pencil'
+                                            size='s'
+                                            onClick={() => onClickEditField('heroTitle')}
+                                        />
+                                    </div>
+                                    <div className='label-with-message-container'>
+                                        <div className='label-container'>
+                                            <label>Hero Message</label>
+                                            <p className='review-item'>{formData.heroMessage}</p>
+                                        </div>
+                                        <IconButton
+                                            iconClassName='bi-pencil'
+                                            size='s'
+                                            onClick={() => onClickEditField('heroMessage')}
+                                        />
+                                    </div>
+                                </div>
+                                <h3 className='review-title'>Theme</h3>
+                                <div className='review-section'>
+                                    <div className='label-with-message-container'>
+                                        <div className='label-container'>
+                                            <label>Themes</label>
                                             <p className='review-item'>{[
-                                                [formData.blueTintSelected, 'Blue'],
-                                                [formData.purpleTintSelected, 'Purple'],
-                                                [formData.mintTintSelected, 'Mint'],
-                                                [formData.greenTintSelected, 'Green']
+                                                [formData.lightThemeSelected, 'Light Theme'],
+                                                [formData.darkThemeSelected, 'Dark Theme'],
+                                                [formData.blueThemeSelected, 'Blue Theme']
                                             ].filter( ([selected]) => selected)
                                             .map( ([_, title]) => title)
                                             .join(', ')
@@ -852,34 +974,203 @@ export const CreateProjectComponent = props => {
                                         <IconButton
                                             iconClassName='bi-pencil'
                                             size='s'
-                                            onClick={() => onClickEditField('tintColors')}
+                                            onClick={() => onClickEditField('themes')}
                                         />
                                     </div>
-                                }
-                                { formData.useCustomTintColor ? 
-                                    null
-                                    : <div className='label-with-message-container'>
+                                    <div className='label-with-message-container'>
                                         <div className='label-container'>
-                                            <label>Default Tint Color</label>
+                                            <label>Default Theme</label>
                                             <p className='review-item'>{
-                                                formData.blueTintDefault ? 'Blue'
-                                                : formData.purpleTintDefault ? 'Purple'
-                                                : formData.mintTintDefault ? 'Mint'
-                                                : formData.greenTintDefault ? 'Green'
+                                                formData.lightThemeDefault ? 'Light Theme'
+                                                : formData.darkThemeDefault ? 'Dark Theme'
+                                                : formData.blueThemeDefault ? 'Blue Theme'
                                                 : null
                                             }</p>
                                         </div>
                                         <IconButton
                                             iconClassName='bi-pencil'
                                             size='s'
-                                            onClick={() => onClickEditField('defaultTintColor')}
+                                            onClick={() => onClickEditField('defaultTheme')}
                                         />
                                     </div>
-                                }
+                                    <div className='label-with-message-container'>
+                                        <div className='label-container'>
+                                            <label>Use Custom Tint Color</label>
+                                            <p className='review-item'>{formData.useCustomTintColor ? 'True' : 'False'}</p>
+                                        </div>
+                                        <IconButton
+                                            iconClassName='bi-pencil'
+                                            size='s'
+                                            onClick={() => onClickEditField('useCustomTintColor')}
+                                        />
+                                    </div>
+                                    { formData.useCustomTintColor ? 
+                                        <div className='label-with-message-container'>
+                                            <div className='label-container'>
+                                                <label>Custom Tint Color</label>
+                                                <div className='d-flex jc-flex-start ai-center' style={{marginTop: 5}}>
+                                                    <p className='review-item' style={{marginTop: 0}}>{formData.customTintColor}</p>
+                                                    <div
+                                                        className='color-option'
+                                                        style={{backgroundColor: formData.customTintColor, marginLeft: 10}}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <IconButton
+                                                iconClassName='bi-pencil'
+                                                size='s'
+                                                onClick={() => onClickEditField('customTintColor')}
+                                            />
+                                        </div>
+                                        : null
+                                    }
+                                    { formData.useCustomTintColor ? 
+                                        null
+                                        : <div className='label-with-message-container'>
+                                            <div className='label-container'>
+                                                <label>Tint Colors</label>
+                                                <p className='review-item'>{[
+                                                    [formData.blueTintSelected, 'Blue'],
+                                                    [formData.purpleTintSelected, 'Purple'],
+                                                    [formData.mintTintSelected, 'Mint'],
+                                                    [formData.greenTintSelected, 'Green']
+                                                ].filter( ([selected]) => selected)
+                                                .map( ([_, title]) => title)
+                                                .join(', ')
+                                                }</p>
+                                            </div>
+                                            <IconButton
+                                                iconClassName='bi-pencil'
+                                                size='s'
+                                                onClick={() => onClickEditField('tintColors')}
+                                            />
+                                        </div>
+                                    }
+                                    { formData.useCustomTintColor ? 
+                                        null
+                                        : <div className='label-with-message-container'>
+                                            <div className='label-container'>
+                                                <label>Default Tint Color</label>
+                                                <p className='review-item'>{
+                                                    formData.blueTintDefault ? 'Blue'
+                                                    : formData.purpleTintDefault ? 'Purple'
+                                                    : formData.mintTintDefault ? 'Mint'
+                                                    : formData.greenTintDefault ? 'Green'
+                                                    : null
+                                                }</p>
+                                            </div>
+                                            <IconButton
+                                                iconClassName='bi-pencil'
+                                                size='s'
+                                                onClick={() => onClickEditField('defaultTintColor')}
+                                            />
+                                        </div>
+                                    }
+                                </div>
+                                <h3 className='review-title'>Features</h3>
+                                <div className='review-section'>
+                                    {formData.pagesText.map( (text, i) => (
+                                        <div className='d-flex fd-column ai-stretch' key={i}>
+                                            <div className='label-with-message-container'>
+                                                <div className='label-container'>
+                                                    <label>{`Page ${i + 1} Content`}</label>
+                                                    <div className='d-flex jc-flex-start ai-center' style={{marginTop: 5}}>
+                                                        <p className='review-item' style={{marginTop: 0}}>{text}</p>
+                                                    </div>
+                                                </div>
+                                                <IconButton
+                                                    iconClassName='bi-pencil'
+                                                    size='s'
+                                                    onClick={() => onClickEditField('pagesText')}
+                                                />
+                                            </div>
+                                            <div className='label-with-message-container'>
+                                                <ImagesInput
+                                                    label={`Page ${i + 1} UI Images`}
+                                                    imageFiles={formData.pagesImages[i]}
+                                                    showInput={false}
+                                                    allowDelete={false}
+                                                />
+                                                <IconButton
+                                                    iconClassName='bi-pencil'
+                                                    size='s'
+                                                    onClick={() => onClickEditField('pagesImages')}
+                                                    className='edit-icon'
+                                                />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                            
+                        : selectedStepID === 'terms' ?
+                            <div className='inner-form-container'>
+                                <label>Terms and Conditions</label>
+                                <div className='terms-container'>
+                                    {TermsSections.map( ({title, body}) => (
+                                        <div className='terms-section-container'>
+                                            <h4 className='terms-section-title'>{title}</h4>
+                                            <p className='terms-section-body'>{body}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                                <InputWithMessage
+                                    label='Acceptance'
+                                    inputType='checklist'
+                                    checklistOptions={[
+                                        {
+                                            title: 'I agree to these terms and conditions',
+                                            selected: formData.acceptedTermsAndConditions,
+                                            id: 'acceptedTermsAndConditions'
+                                        }
+                                    ]}
+                                    onClickCheckbox={onClickCheckbox}
+                                    hasError={errors.acceptedTermsAndConditions}
+                                />
+                                <InputWithMessage
+                                    label='Signature'
+                                    inputType='text'
+                                    text={formData.signature}
+                                    fieldName='signature'
+                                    placeholder={formData.name}
+                                    onChangeText={onChangeFormValue}
+                                    message=' '
+                                    hasError={errors.signature}
+                                />
+                            </div>
                         : selectedStepID === 'payment' ?
                             <div className='inner-form-container'>
+                                <InputWithMessage
+                                    label='Access Code'
+                                    inputType='checklist'
+                                    checklistOptions={[
+                                        {
+                                            title: 'I have an access code',
+                                            selected: formData.hasAccessCode,
+                                            id: 'hasAccessCode'
+                                        }
+                                    ]}
+                                    onClickCheckbox={onClickCheckbox}
+                                    hasError={errors.acceptedTermsAndConditions}
+                                />
+                                {formData.hasAccessCode ?
+                                    <InputWithMessage
+                                        label='Access Code'
+                                        inputType='text'
+                                        text={formData.accessCode}
+                                        fieldName='accessCode'
+                                        placeholder='Enter your access code'
+                                        onChangeText={onChangeFormValue}
+                                        hasError={errors.accessCode}
+                                        rightChild={
+                                            <ValidLabel
+                                                isValid={accessCodeIsValid}
+                                                validMessage='Access code is valid'
+                                                invalidMessage='Access code is invalid'
+                                            />
+                                        }
+                                    />
+                                    : null
+                                }
                             </div>
                         : null
                         }
@@ -896,10 +1187,10 @@ export const CreateProjectComponent = props => {
                             }
                             {selectedStepID === 'payment' ?
                                 <Button
-                                    title='Submit'
+                                    title='Create Project'
                                     type='solid'
                                     priority={1}
-                                    onClick={onClickSubmit}
+                                    onClick={onClickCreateProject}
                                 />
                                 : <Button
                                     title='Next'
@@ -949,12 +1240,16 @@ const Container = styled.div`
         display: flex;
         align-items: center;
         margin-bottom: 30px;
+        width: 100%;
     }
     & .label-with-message-container .label-container {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
         flex: 1;
+    }
+    & .label-with-message-container .edit-icon {
+        justify-self: flex-end;
     }
 
     & .color-option {
@@ -975,8 +1270,46 @@ const Container = styled.div`
         border-radius: 7px;
     }
 
+    & .review-section {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        padding-left: 15px;
+        box-sizing: border-box;
+    }
+
     & .review-item {
         margin-top: 5px;
+    }
+
+    & .review-title {
+        margin-bottom: 20px;
+    }
+
+    & .terms-container {
+        height: min(60vh, 300px);
+        border: 1px solid ${p => p.theme.bc};
+        border-radius: 5px;
+        padding: 20px;
+        margin-top: 5px;
+        overflow: scroll;
+        margin-bottom: 20px;
+    }
+
+    & .terms-section-container {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        margin-bottom: 30px;
+    }
+
+    & .terms-section-title {
+        margin-bottom: 5px;
+    }
+
+    & .terms-section-body {
+        white-space: pre-line;
     }
 
     & .buttons-container {

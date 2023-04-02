@@ -40,26 +40,29 @@ export const ImagesInput = props => {
                 : null
             }
             <div className='images-container'>
-                {imageFiles.map( (file, i) => (
-                    <div className='image-container' key={file.name}>
-                        <IconButton
-                            size='s'
-                            iconClassName='bi-arrows-fullscreen'
-                            onClick={() => onClickFullscreenImage(i)}
-                            className='fullscreen-icon'
-                        />
-                        {allowDelete ?
+                {imageFiles.length ?
+                    imageFiles.map( (file, i) => (
+                        <div className='image-container' key={file.name}>
                             <IconButton
-                                size='m'
-                                iconClassName='bi-trash'
-                                onClick={() => onClickRemoveImage(i)}
-                                className='delete-icon'
+                                size='s'
+                                iconClassName='bi-arrows-fullscreen'
+                                onClick={() => onClickFullscreenImage(i)}
+                                className='fullscreen-icon'
                             />
-                            : null
-                        }
-                        <img src={URL.createObjectURL(file)} className='image' />
-                    </div>
-                ))}
+                            {allowDelete ?
+                                <IconButton
+                                    size='m'
+                                    iconClassName='bi-trash'
+                                    onClick={() => onClickRemoveImage(i)}
+                                    className='delete-icon'
+                                />
+                                : null
+                            }
+                            <img src={URL.createObjectURL(file)} className='image' />
+                        </div>
+                    ))
+                    : <p style={{marginTop: 5}}>None chosen</p>
+                }
             </div>
             { displayingImageFullscreen ?
                 <div className='fullscreen-image-container'>
@@ -83,6 +86,7 @@ const Root = styled.div`
     flex-direction: column;
     align-items: stretch;
     margin-bottom: 40px;
+    flex: 1;
 
     & input {
         width: 50%;
