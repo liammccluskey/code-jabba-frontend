@@ -176,7 +176,7 @@ const MenuContainer = styled.div`
     }
 
     & .profile-container {
-        padding: 20px 10px;
+        padding: 15px 10px;
     }
 
     & .links-container {
@@ -189,13 +189,13 @@ const MenuContainer = styled.div`
     }
 
     & .row-container {
-        padding: 10px 15px;
+        padding: 9px 15px;
         display: flex;
         justify-content: flex-start;
         align-items: center;
     }
     & .row-container i {
-        font-size: 20px;
+        font-size: 18px;
         color: ${p => p.theme.textMain};
         margin-right: 15px;
     }

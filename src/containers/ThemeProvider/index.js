@@ -21,23 +21,15 @@ export const ThemeProviderComponent = props => {
 
     useEffect(() => {
         const handleResize = e => {
-            const width = window.innerWidth
-            const isMobile = calculateIsMobile(width)
-            const isSemiMobile = calculateIsSemiMobile(width)
-
-            if (isMobile != props.isMobile) {
-                props.setIsMobile(isMobile)
-            }
-            if (isSemiMobile != props.isSemiMobile) {
-                props.setIsSemiMobile(isSemiMobile)
-            }
+            const width = e.target.innerWidth
+            props.setIsMobile(calculateIsMobile(width))
+            props.setIsSemiMobile(calculateIsSemiMobile(width))
         }
-        props.setIsMobile(calculateIsMobile(window.innerWidth))
-        props.setIsSemiMobile(calculateIsSemiMobile(window.innerWidth))
+        handleResize({target: {innerWidth: window.innerWidth}})
 
         window.addEventListener('resize', handleResize)
         return () => window.removeEventListener('resize', handleResize)
-    }, [props.isMobile, props.isSemiMobile])
+    }, [])
 
     return (
         <div>

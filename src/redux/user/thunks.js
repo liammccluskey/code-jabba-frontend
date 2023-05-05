@@ -12,27 +12,22 @@ export const fetchThisMongoUser = (
     firebaseUser,
     onSuccess = () => {},
     onFailure = () => {},
-    isInitialFetch=false
+    isInitialFetch = false
 ) => async (dispatch) => {
     isInitialFetch && dispatch(UserActions.setLoadingSignIn(true))
     dispatch(UserActions.setLoadingMongoUser(true))
     const {uid} = firebaseUser
 
     try {
-        let getRes = await UserUtils.__fetchMongoUserByuid(uid)
-        let postRes = null
+        const res = await UserUtils.__fetchMongoUserByuid(uid)
 
-        if (!getRes.data) {
-            const postRes = await UserUtils.__postMongoUser(firebaseUser)
-            dispatch(addMessage(postRes.data.message))
-            getRes = await UserUtils.__fetchMongoUserByuid(uid)
+        if (!res.data) {
+            throw Error('No users matched those filters.')
         }
-        if (!getRes.data) {
-            throw Error('There is no user with that uid.')
-        }
-        dispatch(UserActions.setMongoUser(getRes.data))
-        dispatch(ThemeActions.setThemeColor(getRes.data.settings.theme.themeColor))
-        dispatch(ThemeActions.setTintColor(getRes.data.settings.theme.tintColor))
+
+        dispatch(UserActions.setMongoUser(res.data))
+        dispatch(ThemeActions.setThemeColor(res.data.settings.theme.themeColor))
+        dispatch(ThemeActions.setTintColor(res.data.settings.theme.tintColor))
         onSuccess()
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message
@@ -43,6 +38,23 @@ export const fetchThisMongoUser = (
 
     dispatch(UserActions.setLoadingMongoUser(false))
     isInitialFetch && dispatch(UserActions.setLoadingSignIn(false))
+}
+
+export const postMongoUser = (
+    firebaseUser,
+    onSuccess,
+    onFailure
+) => async (dispatch) => {
+    try {
+        const res = await UserUtils.__postMongoUser(firebaseUser)
+        dispatch(addMessage(res.data.message))
+        onSuccess()
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        onFailure()
+    }
 }
 
 // TODO : unused, consider deleting
@@ -156,8 +168,9 @@ export const patchUserPhoto = (
 
     try {
         const storageRef = ref(storage, `/users/${_id}/photo`)
-        const photoURL = getDownloadURL(storageRef)
+        let photoURL = null
         try {
+            photoURL = await getDownloadURL(storageRef)
             await uploadBytes(storageRef, photoFile)
             await updateProfile(firebaseUser, {photoURL})
         } catch (error) {

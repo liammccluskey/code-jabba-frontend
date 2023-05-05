@@ -18,7 +18,7 @@ const Config = {
     whyChooseUs: [
         {
             id: 0,
-            imageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_console_general.png?alt=media&token=406942e7-7c3c-4c4f-b69e-9cf0cab27fed',
+            imageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_general.png?alt=media&token=727861ea-e064-46ed-9f15-8e386243d39f',
             title: 'Pre-built admin console',
             message: "With our pre-built admin console, you'll be able to send announcements to users, track user-submitted bug reports, and view site analytics.",
             icon: 'bi-person-circle'
@@ -50,7 +50,6 @@ const Config = {
                 {title: 'Settings Page', included: true},
                 {title: 'Support Page', included: true},
                 {title: 'Admin Console', included: true},
-                {title: 'Bug Reports', included: true},
                 {title: 'Notifications Page', included: true},
             ],
             id: 's'
@@ -66,7 +65,6 @@ const Config = {
                 {title: 'Settings Page', included: true},
                 {title: 'Support Page', included: true},
                 {title: 'Admin Console', included: true},
-                {title: 'Bug Reports', included: true},
                 {title: 'Notifications Page', included: true},
             ],
             id: 'm'
@@ -82,7 +80,6 @@ const Config = {
                 {title: 'Settings Page', included: true},
                 {title: 'Support Page', included: true},
                 {title: 'Admin Console', included: true},
-                {title: 'Bug Reports', included: true},
                 {title: 'Notifications Page', included: true},
             ],
             id: 'l'
@@ -235,6 +232,7 @@ const Container = styled.div`
     }
     &.semi-mobile .hero-container {
         padding: 30px;
+        grid-template-columns: 1fr;
     }
     &.mobile .hero-container {
         padding: 15px;
@@ -250,6 +248,10 @@ const Container = styled.div`
         justify-content: space-around;
         align-items: center;
         margin-right: 50px;
+    }
+    &.semi-mobile .hero-message-container {
+        margin-right: 0px;
+        margin-bottom: 50px;
     }
     & .hero-title {
         margin-bottom: 20px;
@@ -293,6 +295,9 @@ const Container = styled.div`
         display: grid;
         grid-template-columns: 1fr 1fr;
     }
+    &.semi-mobile .why-choose-us-grid-container {
+        grid-template-columns: 1fr;
+    }
 
     & .why-choose-us-image-container {
         display: flex;
@@ -304,18 +309,30 @@ const Container = styled.div`
         border: 5px solid ${p => p.theme.bc};
         border-radius: 20px;
     }
+    &.semi-mobile .why-choose-us-image {
+        margin-bottom: -300px;
+    }
 
     & .why-choose-us-option-container {
         display: flex;
         align-items: center;
         padding: 20px 20px;
-        border-radius: var(--br-container);
         cursor: pointer;
+        background-color: ${p => p.theme.tint};
+        border-top: 1px solid white;
+    }
+    & .why-choose-us-option-container.selected {
+        border-color: black;
+        border-width: 2px;
     }
     & .why-choose-us-option-container i {
         font-size: 50px;
         color: black;
         margin-right: 30px;
+    }
+    &.semi-mobile .why-choose-us-option-container i {
+        margin-right: 15px;
+        margin-left: -15px;
     }
     & .why-choose-us-option-container .title {
         margin-bottom: 15px;
@@ -350,8 +367,13 @@ const Container = styled.div`
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
     }
-    &.semi-mobile .pricing-options-container {
-        grid-template-columns: 1fr;
+    @media only screen and (max-width: 1000px) {
+        & .pricing-options-container {
+            grid-template-columns: 1fr;
+        }
+        & .pricing-option-container {
+            margin-bottom: 30px !important;
+        }
     }
     & .pricing-option-container {
         display: flex;
@@ -362,10 +384,6 @@ const Container = styled.div`
         flex: 1;
         box-sizing: border-box;
         margin: 0px 15px;
-    }
-    &.semi-mobile .pricing-option-container {
-        margin: 0px;
-        margin-bottom: 30px;
     }
 
     & .pricing-option-container .header {

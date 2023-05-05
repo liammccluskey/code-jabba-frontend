@@ -24,6 +24,7 @@ import { ErrorElement } from '../../views/pages/ErrorElement'
 
 import { CreateProject } from '../../views/pages/CreateProject'
 import { Terms } from '../../views/pages/Terms'
+import { ProjectOverview } from '../../views/pages/project/ProjectOverview'
 
 const router = createBrowserRouter([
     {
@@ -134,7 +135,14 @@ const router = createBrowserRouter([
       path: '/terms',
       element: <Terms />,
       errorElement: <ErrorElement />
-    }
+    },
+
+    // project
+    {
+      path: '/projects/:projectID',
+      element: <PrivateRoute element={<ProjectOverview />} />,
+      errorElement: <ErrorElement />
+    },
 ])
 
 export const RouterProvider = props => {

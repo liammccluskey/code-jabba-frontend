@@ -19,8 +19,10 @@ export const InputWithMessage = props => {
         switchEnabled=false,
         checklistOptions=[], // [{title, selected, ?leftChild, ?rightChild, id}]
         hasError,
+        modified=false,
+        locked=false,
         rightChild=null,
-
+    
         onChangeText, // e => void
         onChangeSelectValue, // e => void
         onClickSwitch, // () => void
@@ -35,24 +37,54 @@ export const InputWithMessage = props => {
                 <div className='label-header'>
                     <label>{label}</label>
                     {hasError ?
-                        <PillLabel title='Required Field' size='s' color='red' />
+                        <PillLabel title='Required Field' size='s' color='red' style={{marginRight: 10}}/>
                         : null
+                    }
+                    {modified ?
+                        <PillLabel title='Modified' size='s' color='yellow' style={{marginRight: 10}} />
+                        : null
+                    }
+                    {locked ?
+                        <i className='bi-lock-fill lock-icon' />
+                        : null 
                     }
                 </div>
                 {inputType === 'text' ?
-                    <input name={fieldName} value={text} onChange={onChangeText} placeholder={placeholder}/>
+                    <input
+                        name={fieldName}
+                        value={text}
+                        onChange={locked ? () => {} : onChangeText}
+                        placeholder={placeholder}
+                    />
                 : inputType === 'textarea' ?
-                    <textarea name={fieldName} value={text} onChange={onChangeText} placeholder={placeholder}/>
+                    <textarea
+                        name={fieldName}
+                        value={text}
+                        onChange={locked ? () => {} : onChangeText}
+                        placeholder={placeholder}
+                    />
                 : inputType === 'select' ?
-                    <select name={fieldName} value={selectValue} onChange={onChangeSelectValue}>
+                    <select
+                        name={fieldName}
+                        value={selectValue}
+                        onChange={locked ? () => {} : onChangeSelectValue}
+                    >
                         {selectValues.map( ({title, id}) => (
                             <option value={id} key={id}>{title}</option>
                         ))}
                     </select>
                 : inputType === 'switch' ?
-                    <Switch enabled={switchEnabled} onClick={onClickSwitch} className='switch'/>
+                    <Switch
+                        enabled={switchEnabled}
+                        onClick={locked ? () => {} : onClickSwitch}
+                        className='switch'
+                    />
                 : inputType === 'checklist' ?
-                    <ChecklistOptions options={checklistOptions} onClickCheckbox={onClickCheckbox} className='checklist'/>
+                    <ChecklistOptions
+                        options={checklistOptions}
+                        onClickCheckbox={locked ? () => {} : onClickCheckbox}
+                        className='checklist'
+                    />
                 : null
                 }
             </div>
@@ -133,5 +165,10 @@ const Root = styled.div`
         justify-content: flex-end;
         flex: 1;
         align-items: center;
+    }
+
+    & .lock-icon {
+        font-size: 15px;
+        color: ${p => p.theme.textSecondary};
     }
 `

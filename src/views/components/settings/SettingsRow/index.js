@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
 
 import { Button } from '../../common/Button'
+import { PendingMessage } from '../../common/PendingMessage'
 
 export const SettingsRow = props => {
     const {
@@ -23,6 +24,7 @@ export const SettingsRow = props => {
     const [imageFile, setImageFile] = useState(null)
     const [inputText, setInputText] = useState(initialValue)
     const [selectValue, setSelectValue] = useState(initialValue)
+    const [loadingUpdate, setLoadingUpdate] = useState(false)
 
     useEffect(() => {
         setInputText(initialValue)
@@ -40,7 +42,16 @@ export const SettingsRow = props => {
         setSelectValue(initialValue)
     }
 
-    const submitForm = val => onSubmit(val, closeEditForm)
+    const submitForm = val => onSubmit(
+        val,
+        () => {
+            setTimeout(() => {
+                closeEditForm()
+                setLoadingUpdate(false)
+            }, 3*1000)
+        },
+        () => setLoadingUpdate(false)
+    )
 
     // Direct
 
@@ -66,6 +77,7 @@ export const SettingsRow = props => {
                 submitForm(selectValue)
                 break
         }
+        setLoadingUpdate(true)
     }
 
     const onChangeInputText = e => {
@@ -140,21 +152,27 @@ export const SettingsRow = props => {
                         priority={2}
                         onClick={onClickClose}
                     />
-                    : <div className='d-flex ai-center jc-flex-end'>
-                        <Button
-                            title='Cancel'
-                            type='tint'
-                            priority={2}
-                            onClick={onClickCancel}
-                            style={{marginRight: 20}}
-                        />
-                        <Button
-                            title='Save'
-                            type='solid'
-                            priority={2}
-                            onClick={onClickSubmit}
-                            isSubmitButton={true}
-                        />
+                    : <div className='d-flex ai-center jc-space-between'>
+                        {loadingUpdate ?
+                            <PendingMessage />
+                            : null
+                        }
+                        <div className='d-flex ai-center jc-flex-end'>
+                            <Button
+                                title='Cancel'
+                                type='tint'
+                                priority={2}
+                                onClick={onClickCancel}
+                                style={{marginRight: 20}}
+                            />
+                            <Button
+                                title='Save'
+                                type='solid'
+                                priority={2}
+                                onClick={onClickSubmit}
+                                isSubmitButton={true}
+                            />
+                        </div>
                     </div>
                 }
             </div>

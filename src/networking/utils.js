@@ -8,6 +8,9 @@ export const stringifyQuery = queryParams => {
 }
 
 export const getFirebaseErrorMessage = error => {
+    if (!error.code) {
+        return error.message
+    }
     const [type, code] = error.code.split('/')
     return FirebaseErrors[type] && FirebaseErrors[type][code] ?
         FirebaseErrors[type][code]

@@ -4,13 +4,12 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import { useNavigate } from 'react-router-dom'
 import {
-    signInWithRedirect,
     signInWithPopup,
     createUserWithEmailAndPassword,
     GoogleAuthProvider,
-    updateProfile
 } from 'firebase/auth'
 
+import { postMongoUser, fetchThisMongoUser } from '../../../redux/user'
 import * as Constants from '../Login/constants'
 import {auth, getFirebaseErrorMessage} from '../../../networking'
 import { setThemeColor, setTintColor } from '../../../redux/theme'
@@ -39,7 +38,10 @@ export const RegisterComponent = props => {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password)
             if (userCredential) {
                 const {user} = userCredential
-                props.fetchThisMongoUser(user, undefined, undefined, true)
+                props.postMongoUser(
+                    user,
+                    () => props.fetchThisMongoUser(user, undefined, undefined, true)
+                )
             }
         } catch (error) {
             const errorMessage = getFirebaseErrorMessage(error)
@@ -53,7 +55,13 @@ export const RegisterComponent = props => {
             const result = await signInWithPopup(auth, new GoogleAuthProvider())
             if (result) {
                 const {user} = result
-                props.fetchThisMongoUser(user, undefined, undefined, true)
+                console.log(JSON.stringify(
+                    {user}
+                , null, 4))
+                props.postMongoUser(
+                    user,
+                    () => props.fetchThisMongoUser(user, undefined, undefined, true)
+                )
             }
         } catch (error) {
             const errorMessage = getFirebaseErrorMessage(error)
@@ -147,7 +155,9 @@ export const RegisterComponent = props => {
 const mapDispatchToProps = dispatch => bindActionCreators({
     addMessage,
     setTintColor,
-    setThemeColor
+    setThemeColor,
+    postMongoUser,
+    fetchThisMongoUser
 }, dispatch)
 
 export const Register = connect(null, mapDispatchToProps)(RegisterComponent)

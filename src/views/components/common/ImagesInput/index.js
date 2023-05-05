@@ -2,34 +2,52 @@ import React, {useState} from 'react'
 import styled from 'styled-components'
 
 import { IconButton } from '../IconButton'
+import { PillLabel } from '../PillLabel'
 
 export const ImagesInput = props => {
     const {
         label,
-        imageFiles,
+        imageFiles=null,
+        imageURLs=null,
         showInput=true,
         allowDelete=true,
+        modified=false,
 
         onChangeImageFiles, // e => void
-        onClickRemoveImage, // imageIndex => void
+        onClickRemoveImageFile, // imageIndex => void
+        onClickRemoveImageURL, // imageIndex => void
 
         ...rest
     } = props
-    const [displayingImageFullscreen, setDisplayingImageFullscreen] = useState(false)
-    const [fullscreenImageIndex, setFullscreenImageIndex] = useState(0)
+    const [displayingImageFileFullscreen, setDisplayingImageFileFullscreen] = useState(false)
+    const [displayingImageURLFullscreen, setDisplayingImageURLFullscreen] = useState(false)
+    const [fullscreenImageFileIndex, setFullscreenImageFileIndex] = useState(0)
+    const [fullscreenImageURLIndex, setFullscreenImageURLIndex] = useState(0)
 
-    const onClickFullscreenImage = imageIndex => {
-        setDisplayingImageFullscreen(true)
-        setFullscreenImageIndex(imageIndex)
+    const onClickFullscreenImageFile = imageIndex => {
+        setDisplayingImageFileFullscreen(true)
+        setFullscreenImageFileIndex(imageIndex)
+    }
+
+    const onClickFullscreenImageURL = imageIndex => {
+        setDisplayingImageURLFullscreen(true)
+        setFullscreenImageURLIndex(imageIndex)
     }
 
     const onClickCloseImageFullscreen = () => {
-        setDisplayingImageFullscreen(false)
+        setDisplayingImageFileFullscreen(false)
+        setDisplayingImageURLFullscreen(false)
     }
 
     return (
         <Root {...rest}>
-            <label>{label}</label>
+            <div className='label-container'>
+                <label>{label}</label>
+                {modified ?
+                    <PillLabel title='Modified' color='yellow' size='s' />
+                    : null
+                }
+            </div>
             {showInput ?
                 <input
                     type='file'
@@ -40,20 +58,20 @@ export const ImagesInput = props => {
                 : null
             }
             <div className='images-container'>
-                {imageFiles.length ?
+                {imageFiles ?
                     imageFiles.map( (file, i) => (
                         <div className='image-container' key={file.name}>
                             <IconButton
                                 size='s'
                                 iconClassName='bi-arrows-fullscreen'
-                                onClick={() => onClickFullscreenImage(i)}
+                                onClick={() => onClickFullscreenImageFile(i)}
                                 className='fullscreen-icon'
                             />
                             {allowDelete ?
                                 <IconButton
                                     size='m'
                                     iconClassName='bi-trash'
-                                    onClick={() => onClickRemoveImage(i)}
+                                    onClick={() => onClickRemoveImageFile(i)}
                                     className='delete-icon'
                                 />
                                 : null
@@ -61,12 +79,52 @@ export const ImagesInput = props => {
                             <img src={URL.createObjectURL(file)} className='image' />
                         </div>
                     ))
-                    : <p style={{marginTop: 5}}>None chosen</p>
+                    : null
+                }
+                {imageURLs ?
+                    imageURLs.map( (url, i) => (
+                        <div className='image-container' key={url}>
+                            <IconButton
+                                size='s'
+                                iconClassName='bi-arrows-fullscreen'
+                                onClick={() => onClickFullscreenImageURL(i)}
+                                className='fullscreen-icon'
+                            />
+                            {allowDelete ?
+                                <IconButton
+                                    size='m'
+                                    iconClassName='bi-trash'
+                                    onClick={() => onClickRemoveImageURL(i)}
+                                    className='delete-icon'
+                                />
+                                : null
+                            }
+                            <img src={url} className='image' />
+                        </div>
+                    ))
+                    : null
+                }
+                {!imageURLs && !imageFiles ?
+                    <p style={{marginTop: 5}}>None chosen</p>
+                    : null
                 }
             </div>
-            { displayingImageFullscreen ?
+            { displayingImageFileFullscreen ?
                 <div className='fullscreen-image-container'>
-                    <img src={URL.createObjectURL(imageFiles[fullscreenImageIndex])} className='fullscreen-image' />
+                    <img src={URL.createObjectURL(imageFiles[fullscreenImageFileIndex])} className='fullscreen-image' />
+                    <IconButton
+                        size='l'
+                        iconClassName='bi-x'
+                        onClick={onClickCloseImageFullscreen}
+                        className='close-icon'
+                        color='white'
+                    />
+                </div>
+                : null
+            }
+            { displayingImageURLFullscreen ?
+                <div className='fullscreen-image-container'>
+                    <img src={imageURLs[fullscreenImageURLIndex]} className='fullscreen-image' />
                     <IconButton
                         size='l'
                         iconClassName='bi-x'
@@ -87,6 +145,14 @@ const Root = styled.div`
     align-items: stretch;
     margin-bottom: 40px;
     flex: 1;
+
+    & .label-container {
+        display: flex;
+        align-items: center;
+    }
+    & .label-container label {
+        margin-right: 10px;
+    }
 
     & input {
         width: 50%;

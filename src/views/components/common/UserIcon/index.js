@@ -8,14 +8,14 @@ export const UserIcon = props => {
 
         ...rest
     } = props
-    const hasPhoto = !!props.user.photoURL
+    const hasPhoto = !!user.photoURL
     const [failedLoadImage, setFailedLoadImage] = useState(false)
-
+    
     const onErrorLoadingImage = () => setFailedLoadImage(true)
 
     return hasPhoto && !failedLoadImage ?
         <Image
-            src={props.user.photoURL}
+            src={user.photoURL}
             className={size}
             onError={onErrorLoadingImage}
             {...rest}

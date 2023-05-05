@@ -8,6 +8,8 @@ import { auth } from '../../networking'
 import {
     getLoadingLogout,
     getLoadingSignIn,
+    getIsLoggedIn,
+    getFirebaseUser,
     fetchThisMongoUser,
 } from '../../redux/user'
 import { PendingMessage } from '../../views/components/common/PendingMessage'
@@ -20,7 +22,13 @@ export const AuthContainerComponent = props => {
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, firebaseUser => {
-            if (firebaseUser && !props.loadingSignIn) {
+            const {pathname} = window.location
+            const route = pathname.split('/')[1]
+
+            if (
+                firebaseUser && !props.loadingSignIn
+                && !(route === 'login' || route === 'register' || route === 'create' && !props.isLoggedIn)
+            ) {
                 props.fetchThisMongoUser(
                     firebaseUser,
                     () => setLoading(false),
@@ -32,17 +40,25 @@ export const AuthContainerComponent = props => {
             }
         })
         return unsub
-    }, [])
+    }, [props.loadingUserFetch])
 
     return (
         <div>
             {props.loadingSignIn ?
-                <Container>
-                    <div className='content-container'>
-                        <img className='logo-icon' src='/images/logo.png' />
-                        <PendingMessage message='Logging you in' />
-                    </div>
-                </Container>
+                props.firebaseUser ?
+                    <Container>
+                        <div className='content-container'>
+                            <img className='logo-icon' src='/images/logo.png' />
+                            <PendingMessage message='Loading page' />
+                        </div>
+                    </Container>
+                    : 
+                    <Container>
+                        <div className='content-container'>
+                            <img className='logo-icon' src='/images/logo.png' />
+                            <PendingMessage message='Logging you in' />
+                        </div>
+                    </Container>
             : props.loadingLogout ?
                 <Container>
                     <div className='content-container'>
@@ -83,6 +99,8 @@ const Container = styled.div`
 const mapStateToProps = state => ({
     loadingLogout: getLoadingLogout(state),
     loadingSignIn: getLoadingSignIn(state),
+    isLoggedIn: getIsLoggedIn(state),
+    firebaseUser: getFirebaseUser()
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

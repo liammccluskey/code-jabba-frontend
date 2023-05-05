@@ -46,7 +46,7 @@ export const NotificationCard = props => {
             }
             <div className={`notification-body`}>
                 <div className='notification-title-container'>
-                    <h5 className='fw-m line-clamp-1'>{channel.title}</h5>
+                    <h5 className='notification title fw-m line-clamp-1'>{channel.title}</h5>
                     <h6>{timeText}</h6>
                 </div>
                 <p className={`notification-message line-clamp-2 ${!isRead && 'fw-m c-tp'}`}>
@@ -129,5 +129,6 @@ const Root = styled.div`
     & .notification-message {
         text-overflow: ellipsis;
         color: ${p => p.theme.textMain};
+        white-space: pre-line;
     }
 `

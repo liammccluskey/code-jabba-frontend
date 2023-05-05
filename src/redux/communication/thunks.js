@@ -1,15 +1,15 @@
-import moment from 'moment'
+import {v4 as uuid} from 'uuid'
 
 import * as CommunicationActions from './actions'
 import { getMessages } from './selectors'
 import { getMongoUser } from '../user'
 import { api, stringifyQuery } from '../../networking'
 
-export const addMessage = (title, isError=false) => (dispatch, getState) => {
+export const addMessage = (title, isError=false, linger=false) => (dispatch, getState) => {
     const message = {
         title,
         isError,
-        id: moment().format()
+        id: uuid()
     }
     const messages = getMessages(getState())
 
@@ -20,7 +20,7 @@ export const addMessage = (title, isError=false) => (dispatch, getState) => {
         dispatch(CommunicationActions.setMessages(newMessages))
         setTimeout(() => {
             dispatch(CommunicationActions.deleteMessage(message.id))
-        }, 6*1000)
+        }, linger ? 10*1000 : 6*1000)
     }
 }
 

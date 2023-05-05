@@ -6,6 +6,7 @@ const UserState = {
     loadingProfileUpdate: false,
     loadingLogout: false,
     loadingSignIn: false,
+    loadingUserFetch: false,
 
     // calculated,
     firebaseUser: null,

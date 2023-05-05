@@ -48,7 +48,6 @@ export const LoginComponent = props => {
 
     const onClickContinueWithGoogle = async () => {
         try {
-            //signInWithRedirect(auth, new GoogleAuthProvider())
             const result = await signInWithPopup(auth, new GoogleAuthProvider())
             if (result) {
                 const {user} = result

@@ -71,9 +71,9 @@ export const TermsComponent = props => {
             <Subheader title='Terms and Conditions' />
             <BodyContainer>
                 <Container>
-                    {TermsSections.map( ({title, body}) => (
+                    {TermsSections.map( ({title, body}, i) => (
                         <div className='terms-section' key={title}>
-                            <h3 className='terms-section-title'>{title}</h3>
+                            <h3 className='terms-section-title'>{`${i + 1}. ${title}`}</h3>
                             <p className='terms-section-body'>{body}</p>
                         </div>
                     ))}
@@ -87,6 +87,7 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: stretch;
+    padding-bottom: 200px;
 
     & .terms-section {
         display: flex;

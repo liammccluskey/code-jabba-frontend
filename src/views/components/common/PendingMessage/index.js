@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 export const PendingMessage = props => {
     const {
-        message,
+        message='Operation in progress',
 
         ...rest
     } = props
