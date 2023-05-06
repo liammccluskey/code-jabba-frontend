@@ -8,14 +8,15 @@ import { useNavigate } from 'react-router-dom'
 import {
     getBugReports,
     getLoadingBugReports,
-    getCanLoadMoreBugReports,
     getBugReportsPagesCount,
-    getBugReportsTotalCount,
+
     getBugReportStats,
     getLoadingBugReportStats,
+
     fetchBugReports,
     patchBugReports,
     deleteBugReports,
+
     fetchBugReportStats
 } from '../../../../redux/admin'
 import { getIsMobile } from '../../../../redux/theme'
@@ -32,24 +33,25 @@ import { SearchableTable } from '../../../components/common/SearchableTable'
 import { Loading } from '../../../components/common/Loading'
 
 const Timeframes = ['Week', 'Month', 'Year']
-const BugReportSortFilters = [
+export const SortFilters = [
     {title: 'Most Recent', filter: '-createdAt'},
     {title: 'Least Recent', filter: '+createdAt'}
 ]
+const BugReportsSortFilters = SortFilters
 
 export const BugReportsComponent = props => {
     const {
         
     } = props
     const navigate = useNavigate()
-    const [bugReportsPage, setBugReportsPage] = useState(1)
+    const [bugReportsPage, setBugReportsPage] = useState(0)
     const [selectedTimeframe, setSelectedTimeframe] = useState(Timeframes[0])
     const [unresolvedPillActive, setUnresolvedPillActive] = useState(false)
     const [resolvedPillActive, setResolvedPillActive] = useState(false)
     const [highPriorityPillActive, setHighPriorityPillActive] = useState(false)
     const [archivedPillActive, setArchivedPillActive] = useState(false)
     const [searchText, setSearchText] = useState('')
-    const [bugReportsSortFilter, setBugReportsSortFilter] = useState(BugReportSortFilters[0].filter)
+    const [bugReportsSortFilter, setBugReportsSortFilter] = useState(BugReportsSortFilters[0].filter)
     const [clearSelectedRows, setClearSelectedRows] = useState(false)
 
     const metrics = [
@@ -204,7 +206,7 @@ export const BugReportsComponent = props => {
     }
 
     const onClickIncrementPage = () => {
-        if (bugReportsPage == props.bugReportsPagesCount) return
+        if (bugReportsPage == props.bugReportsPagesCount || props.bugReportsPagesCount == 0) return
         else {
             props.fetchBugReports(getBugReportFilters(), searchText, bugReportsPage + 1)
             setBugReportsPage(curr => curr + 1)
@@ -248,7 +250,7 @@ export const BugReportsComponent = props => {
                         loading={props.loadingBugReports}
                         searchText={searchText}
                         pills={pills}
-                        sortFilters={BugReportSortFilters}
+                        sortFilters={BugReportsSortFilters}
                         sortFilter={bugReportsSortFilter}
                         tableHeaders={tableHeaders}
                         tableRows={tableRows}
@@ -299,11 +301,11 @@ const Container = styled.div`
 `
 const mapStateToProps = state => ({
     isMobile: getIsMobile(state),
+
     bugReports: getBugReports(state),
-    loadingBugReports: getLoadingBugReportStats(state),
-    canLoadMoreBugReports: getCanLoadMoreBugReports(state),
+    loadingBugReports: getLoadingBugReports(state),
     bugReportsPagesCount: getBugReportsPagesCount(state),
-    bugReportsTotalCount: getBugReportsTotalCount(state),
+
     bugReportStats: getBugReportStats(state),
     loadingBugReportStats: getLoadingBugReportStats(state),
 })

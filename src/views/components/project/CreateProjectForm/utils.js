@@ -1,3 +1,41 @@
+export const getFormData = initialUnmappedFormData => ({
+    // general
+    creatorName: initialUnmappedFormData.creator.displayName,
+    projectName: initialUnmappedFormData.projectName,
+    projectType: initialUnmappedFormData.projectType,
+    email: initialUnmappedFormData.creator.email,
+    domainProviderURL: initialUnmappedFormData.domainProviderURL,
+    domainProviderUsername: initialUnmappedFormData.domainProviderUsername,
+    domainProviderPassword: initialUnmappedFormData.domainProviderPassword,
+
+    // landing
+    heroTitle: initialUnmappedFormData.heroTitle,
+    heroMessage: initialUnmappedFormData.heroMessage,
+
+    // theme
+    lightThemeSelected: initialUnmappedFormData.selectedThemes.includes(0),
+    darkThemeSelected: initialUnmappedFormData.selectedThemes.includes(1),
+    blueThemeSelected: initialUnmappedFormData.selectedThemes.includes(2),
+    lightThemeDefault: initialUnmappedFormData.defaultTheme == 0,
+    darkThemeDefault: initialUnmappedFormData.defaultTheme == 1,
+    blueThemeDefault: initialUnmappedFormData.defaultTheme == 2,
+    blueTintSelected: initialUnmappedFormData.selectedTintColors.includes(0),
+    purpleTintSelected: initialUnmappedFormData.selectedTintColors.includes(1),
+    mintTintSelected: initialUnmappedFormData.selectedTintColors.includes(2),
+    greenTintSelected: initialUnmappedFormData.selectedTintColors.includes(3),
+    blueTintDefault: initialUnmappedFormData.defaultTintColor == 0,
+    purpleTintDefault: initialUnmappedFormData.defaultTintColor == 1,
+    mintTintDefault: initialUnmappedFormData.defaultTintColor == 2,
+    greenTintDefault: initialUnmappedFormData.defaultTintColor == 3,
+    customTintColor: initialUnmappedFormData.customTintColor,
+    useCustomTintColor: !!initialUnmappedFormData.customTintColor,
+
+    // features
+    pagesText: initialUnmappedFormData.pagesText,
+    pagesImages: [],
+    pagesImageURLs: initialUnmappedFormData.pagesImageURLs,
+})
+
 export const getFormDataModified = (currentFormData, initialUnmappedFormData) => {
     if (!initialUnmappedFormData) return {}
     const initFormData = getFormData(initialUnmappedFormData)
@@ -43,41 +81,3 @@ export const getFormDataModified = (currentFormData, initialUnmappedFormData) =>
         pagesImageURLs: initFormData.pagesImageURLs !== currentFormData.pagesImageURLs,
     }
 }
-
-export const getFormData = initialUnmappedFormData => ({
-    // general
-    creatorName: initialUnmappedFormData.creator.displayName,
-    projectName: initialUnmappedFormData.projectName,
-    projectType: initialUnmappedFormData.projectType,
-    email: initialUnmappedFormData.creator.email,
-    domainProviderURL: initialUnmappedFormData.domainProviderURL,
-    domainProviderUsername: initialUnmappedFormData.domainProviderUsername,
-    domainProviderPassword: initialUnmappedFormData.domainProviderPassword,
-
-    // landing
-    heroTitle: initialUnmappedFormData.heroTitle,
-    heroMessage: initialUnmappedFormData.heroMessage,
-
-    // theme
-    lightThemeSelected: initialUnmappedFormData.selectedThemes.includes(0),
-    darkThemeSelected: initialUnmappedFormData.selectedThemes.includes(1),
-    blueThemeSelected: initialUnmappedFormData.selectedThemes.includes(2),
-    lightThemeDefault: initialUnmappedFormData.defaultTheme == 0,
-    darkThemeDefault: initialUnmappedFormData.defaultTheme == 1,
-    blueThemeDefault: initialUnmappedFormData.defaultTheme == 2,
-    blueTintSelected: initialUnmappedFormData.selectedTintColors.includes(0),
-    purpleTintSelected: initialUnmappedFormData.selectedTintColors.includes(1),
-    mintTintSelected: initialUnmappedFormData.selectedTintColors.includes(2),
-    greenTintSelected: initialUnmappedFormData.selectedTintColors.includes(3),
-    blueTintDefault: initialUnmappedFormData.defaultTintColor == 0,
-    purpleTintDefault: initialUnmappedFormData.defaultTintColor == 1,
-    mintTintDefault: initialUnmappedFormData.defaultTintColor == 2,
-    greenTintDefault: initialUnmappedFormData.defaultTintColor == 3,
-    customTintColor: initialUnmappedFormData.customTintColor,
-    useCustomTintColor: !!initialUnmappedFormData.customTintColor,
-
-    // features
-    pagesText: initialUnmappedFormData.pagesText,
-    pagesImages: [],
-    pagesImageURLs: initialUnmappedFormData.pagesImageURLs,
-})

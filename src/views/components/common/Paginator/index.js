@@ -34,7 +34,7 @@ const Root = styled.div`
     & .left-arrow,
     & .right-arrow {
         color: ${p => p.theme.tint};
-        font-size: 25px;
+        font-size: 20px;
         padding: 5px 15px;
         cursor: pointer;
     }

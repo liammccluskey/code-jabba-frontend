@@ -36,7 +36,7 @@ export const SearchableTableComponent = props => {
     } = props
 
     return (
-        <Root {...rest} className={`${props.isMobile && 'mobile'}`}>
+        <Root {...rest} className={`searchable-table ${props.isMobile && 'mobile'}`}>
             <SearchBar
                 value={searchText}
                 placeholder='Search by title'

@@ -6,6 +6,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import {
     getProject,
     getLoadingProject,
+    getProjectNotFound,
     fetchProject,
     patchProject
 } from '../../../../redux/project'
@@ -15,6 +16,7 @@ import { MainHeader } from '../../../components/headers/MainHeader'
 import { ProjectHeader } from '../../../components/project/ProjectHeader'
 import { CreateProjectForm } from '../../../components/project/CreateProjectForm'
 import { Loading } from '../../../components/common/Loading'
+import { ErrorElement } from '../../ErrorElement'
 
 export const ProjectOverviewComponent = props => {
     const {
@@ -40,8 +42,9 @@ export const ProjectOverviewComponent = props => {
         
     }
 
-    return (
-        <PageContainer>
+    return (props.projectNotFound ?
+        <ErrorElement />
+        : <PageContainer>
             <MainHeader />
             <ProjectHeader activeLinkID='' projectID={projectID}/>
             <BodyContainer>
@@ -63,6 +66,7 @@ export const ProjectOverviewComponent = props => {
 const mapStateToProps = state => ({
     project: getProject(state),
     loadingProject: getLoadingProject(state),
+    projectNotFound: getProjectNotFound(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

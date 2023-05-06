@@ -12,7 +12,7 @@ import { LandingHeader } from '../../components/headers/LandingHeader'
 import { Button } from '../../components/common/Button'
 
 const Config = {
-    heroTitle: 'Webapps done right',
+    heroTitle: 'Custom webapps done right',
     heroMessage: "We'll convert your product idea into a professional webapp. Just fill out our form and tell us about your product to get started.",
     heroImageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_console_bug_reports.png?alt=media&token=f0a1c444-2c6d-4b89-b1ec-67525c7dbe46',
     whyChooseUs: [

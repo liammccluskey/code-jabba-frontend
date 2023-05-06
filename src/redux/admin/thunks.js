@@ -201,7 +201,7 @@ export const fetchBugReports = (filters, searchText, page) => async (dispatch, g
 
     const queryString = stringifyQuery({
         ...filters,
-        title: searchText,
+        projectName: searchText,
         page
     })
 
@@ -229,7 +229,7 @@ export const fetchBugReports = (filters, searchText, page) => async (dispatch, g
     }
 }
 
-export const postBugReport = (bugReportData, onSuccess) => async (dispatch, getState) => {
+export const postBugReport = (bugReportData, onSuccess, onFailure) => async (dispatch, getState) => {
     const state = getState()
     const mongoUser = getMongoUser(state)
 
@@ -245,6 +245,7 @@ export const postBugReport = (bugReportData, onSuccess) => async (dispatch, getS
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
+        onFailure()
     }
 }
 

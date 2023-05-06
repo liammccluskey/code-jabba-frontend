@@ -1,7 +1,6 @@
 export const mapProjectFormDataToProjectData = formData => ({
     projectName: formData.projectName,
     projectType: formData.projectType,
-    creatorEmail: formData.email,
     domainProviderURL: formData.domainProviderURL,
     domainProviderUsername: formData.domainProviderUsername,
     domainProviderPassword: formData.domainProviderPassword,
@@ -27,4 +26,6 @@ export const mapProjectFormDataToProjectData = formData => ({
     customTintColor: formData.customTintColor,
     pagesText: formData.pagesText,
     pagesImageURLs: formData.pagesImageURLs,
+
+    accessCode: formData.accessCode
 })

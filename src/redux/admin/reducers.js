@@ -9,7 +9,7 @@ const AdminState = {
         loading: false,
         loadingFirstPage: false,
         payload: {
-            bugReports: [], // [{title, description, reporter, resolved, highPriority, archived, createdAt}]
+            bugReports: [],
             canLoadMore: false,
             pagesCount: 0,
             totalCount: 0,

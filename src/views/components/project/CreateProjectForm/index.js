@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 
-import { fetchIsValidAccessCode } from '../../../../redux/project'
+import { fetchIsValidAccessCode, getIsValidAccessCode } from '../../../../redux/project'
 import {getFormData, getFormDataModified} from './utils'
 import { TermsSections } from '../../../pages/Terms'
 import { setThemeColor, setTintColor } from '../../../../redux/theme'
@@ -785,7 +785,7 @@ export const CreateProjectFormComponent = props => {
                             fieldName='heroTitle'
                             message='This is the title that will be shown on the hero section of the landing page. We recommend a short statement about what your product does.'
                             hasError={errors.heroTitle}
-                            modified={isEditMode && modified.name}
+                            modified={isEditMode && modified.heroTitle}
                         />
                         <InputWithMessage
                             label='Hero Message'
@@ -957,7 +957,7 @@ export const CreateProjectFormComponent = props => {
                             <div className='label-with-message-container'>
                                 <div className='label-container'>
                                     <label>Your Name</label>
-                                    <p className='review-item'>{formData.name}</p>
+                                    <p className='review-item'>{formData.creatorName}</p>
                                 </div>
                                 <IconButton
                                     iconClassName='bi-pencil'
@@ -1426,6 +1426,7 @@ const Container = styled.div`
 `
 
 const mapStateToProps = state => ({
+    isValidAccessCode: getIsValidAccessCode(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

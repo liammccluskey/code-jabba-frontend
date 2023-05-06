@@ -3,9 +3,14 @@ import {v4 as uuid} from 'uuid'
 import {ref, uploadBytes, getDownloadURL} from 'firebase/storage'
 import moment from 'moment'
 
+import {
+    getAdminProjects,
+    getThisUserProjects,
+} from './selectors'
+import { getAdminRequestConfig } from '../admin'
 import { getMongoUser, getFirebaseUser } from '../user'
 import { fetchThisMongoUser } from '../user'
-import { auth, storage } from '../../networking'
+import { auth, storage, PageSizes } from '../../networking'
 import * as ProjectActions from './actions'
 import { api, getFirebaseErrorMessage, stringifyQuery } from '../../networking'
 import { mapProjectFormDataToProjectData } from './utils'
@@ -13,6 +18,7 @@ import { __postMongoUser } from '../user'
 import { addMessage } from '../communication'
 
 export const fetchProject = projectID => async (dispatch) => {
+    dispatch(ProjectActions.setProjectNotFound(false))
     dispatch(ProjectActions.setLoadingProject(true))
 
     try {
@@ -23,9 +29,158 @@ export const fetchProject = projectID => async (dispatch) => {
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
+        dispatch(ProjectActions.setProjectNotFound(true))
     }
 
     dispatch(ProjectActions.setLoadingProject(false))
+}
+
+export const fetchAdminUserProjects = (filters, searchText, page) => async (dispatch, getState) => {
+    const state = getState()
+    const adminProjects = getAdminProjects(state)
+    if (page != 1 && adminProjects.length > (page - 1)*PageSizes.adminProjects) return
+
+    if (page == 1) {
+        dispatch(ProjectActions.setLoadingAdminProjectsFirstPage(true))
+    } else {
+        dispatch(ProjectActions.setLoadingAdminProjects(true))
+    }
+
+    const mongoUser = getMongoUser(state)
+
+    const queryString = stringifyQuery({
+        ...filters,
+        title: searchText,
+        page
+    })
+
+    try {
+        const res = await api.get(
+            `/admin/projects/search${queryString}`,
+            getAdminRequestConfig(mongoUser)
+        )
+
+        if (page == 1) {
+            dispatch(ProjectActions.setAdminProjectsData(res.data))
+        } else {
+            dispatch(ProjectActions.addAdminProjectsData(res.data))
+        }
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+    }
+
+    if (page == 1) {
+        dispatch(ProjectActions.setLoadingAdminProjectsFirstPage(false))
+    } else {
+        dispatch(ProjectActions.setLoadingAdminProjects(false))
+    }
+}
+
+export const fetchThisUserProjects = (filters, searchText, page) => async (dispatch, getState) => {
+    const state = getState()
+    const thisUserProjects = getThisUserProjects(state)
+    if (page != 1 && thisUserProjects.length > (page - 1)*PageSizes.thisUserProjects) return
+
+    if (page == 1) {
+        dispatch(ProjectActions.setLoadingThisUserProjectsFirstPage(true))
+    } else {
+        dispatch(ProjectActions.setLoadingThisUserProjects(true))
+    }
+
+    const mongoUser = getMongoUser(state)
+
+    const queryString = stringifyQuery({
+        ...filters,
+        title: searchText,
+        page,
+        creator: mongoUser._id
+    })
+
+    try {
+        const res = await api.get(`/projects/search${queryString}`)
+
+        if (page == 1) {
+            dispatch(ProjectActions.setThisUserProjectsData(res.data))
+        } else {
+            dispatch(ProjectActions.addThisUserProjectsData(res.data))
+        }
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+    }
+
+    if (page == 1) {
+        dispatch(ProjectActions.setLoadingThisUserProjectsFirstPage(false))
+    } else {
+        dispatch(ProjectActions.setLoadingThisUserProjects(false))
+    }
+}
+
+export const fetchAccessCodes = (filters, searchText, page) => async (dispatch, getState) => {
+    const state = getState()
+    const accessCodes = getAdminProjects(state)
+    if (page != 1 && accessCodes.length > (page - 1)*PageSizes.accessCodes) return
+
+    if (page == 1) {
+        dispatch(ProjectActions.setLoadingAccessCodesFirstPage(true))
+    } else {
+        dispatch(ProjectActions.setLoadingAccessCodes(true))
+    }
+
+    const mongoUser = getMongoUser(state)
+
+    const queryString = stringifyQuery({
+        ...filters,
+        title: searchText,
+        page
+    })
+
+    try {
+        const res = await api.get(
+            `/admin/accesscodes/search${queryString}`,
+            getAdminRequestConfig(mongoUser)
+        )
+
+        if (page == 1) {
+            dispatch(ProjectActions.setAccessCodesData(res.data))
+        } else {
+            dispatch(ProjectActions.addAccessCodesData(res.data))
+        }
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+    }
+
+    if (page == 1) {
+        dispatch(ProjectActions.setLoadingAccessCodesFirstPage(false))
+    } else {
+        dispatch(ProjectActions.setLoadingAccessCodes(false))
+    }
+}
+
+export const postAccessCode = (title, onSuccess, onFailure) => async (dispatch, getState) => {
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        const res = await api.post(
+            '/admin/accesscodes',
+            {title},
+            getAdminRequestConfig(mongoUser)
+        )
+
+        dispatch(addMessage(res.data.message))
+        onSuccess()
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        onFailure()
+    }
 }
 
 export const createUserAndPostProject = (
@@ -64,10 +219,16 @@ export const createUserAndPostProject = (
 
             try {
                 // create mongo user
-                let res = await __postMongoUser({
-                    ...fbUser,
-                    displayName: projectFormData.name
-                })
+                const userBody = {
+                    uid: fbUser.uid,
+                    email: fbUser.email,
+                    photoURL: fbUser.photoURL,
+                    displayName: projectFormData.creatorName
+                }
+                console.log(JSON.stringify(
+                    {projectFormData, userBody}
+                , null, 4))
+                let res = await __postMongoUser(userBody)
 
                 userID = res.data.userID
                 dispatch(addMessage(res.data.message), false, true)

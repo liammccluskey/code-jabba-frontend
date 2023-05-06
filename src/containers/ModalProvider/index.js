@@ -8,12 +8,14 @@ import { Confirm } from '../../views/components/modals/Confirm'
 import { CreateNewAdminModal } from '../../views/components/admin/modals/CreateNewAdminModal'
 import { CreateBugReportModal } from '../../views/components/admin/modals/CreateBugReportModal'
 import { CreateFAQModal } from '../../views/components/admin/modals/CreateFAQModal'
+import { CreateAccessCodeModal } from '../../views/components/admin/modals/CreateAccessCodeModal'
 
 export const ModalTypes = {
     CONFIRM: 'confirm',
     CREATE_NEW_ADMIN: 'create-new-admin',
     CREATE_BUG_REPORT: 'create-bug-report',
     CREATE_FAQ: 'create-faq',
+    CREATE_ACCESS_CODE: 'create-access-code',
 }
 
 export const ModalProviderComponent = props => {
@@ -33,6 +35,8 @@ export const ModalProviderComponent = props => {
                 return <CreateBugReportModal {...modalProps} key={modalID} />
             case ModalTypes.CREATE_FAQ:
                 return <CreateFAQModal {...modalProps} key={modalID} />
+            case ModalTypes.CREATE_ACCESS_CODE:
+                return <CreateAccessCodeModal {...modalProps} key={modalID} />
             default:
                 return null
         }

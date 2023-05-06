@@ -33,6 +33,8 @@ export const PageSizes = {
     faqs: 10,
 
     accessCodes: 10,
+    adminProjects: 10,
+    thisUserProjects: 10,
 }
 
 // Errors
