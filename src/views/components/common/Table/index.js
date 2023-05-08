@@ -11,6 +11,7 @@ export const Table = props => {
         rows, // [{id, cells}]
         selectActions=[], // [{title, action: (selectedRowIDs, onSuccess) => void, isDanger}]
         clearSelectedRows,
+        clampCells=true,
 
         onClickRow, // rowID => void
 
@@ -62,7 +63,7 @@ export const Table = props => {
                 <div className='selected-feedback-container'>
                     <IconButton
                         size='m'
-                        iconClassName='bi-x'
+                        icon='bi-x'
                         onClick={onClickCancelSelect}
                         style={{marginRight: 10}}
                     />
@@ -109,12 +110,12 @@ export const Table = props => {
                             ))}
                         </tr>
                     </thead>
-                    {rows.length ? 
+                    {rows.length ?
                         <tbody>
                             {rows.map( ({id, cells}, i) => (
                                 <tr className='table-row' onClick={() => onClickRow(id)} key={`table-row-${id}`}>
                                     {cells.map( cell => (
-                                        <td key={cell} className='line-clamp-1'>{cell}</td>
+                                        <td key={cell} className={clampCells && 'line-clamp-1'}>{cell}</td>
                                     ))}
                                 </tr>
                             ))}

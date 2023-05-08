@@ -23,7 +23,7 @@ const Root = styled.div`
 
     &.yellow {
         background-color: ${p => p.theme.yellowTranslucent};
-        border-color: ${p => p.theme.yellow};
+        border-color: ${p => p.theme.textYellow};
     }
     &.yellow h6 {
         color: ${p => p.theme.textYellow};

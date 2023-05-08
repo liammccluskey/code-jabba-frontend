@@ -1,7 +1,6 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import {v4 as uuid} from 'uuid'
 import {ref, uploadBytes, getDownloadURL} from 'firebase/storage'
-import moment from 'moment'
 
 import {
     getAdminProjects,
@@ -190,7 +189,7 @@ export const createUserAndPostProject = (
     navigate
 ) => async (dispatch, getState) => {
     const projectData = mapProjectFormDataToProjectData(projectFormData)
-    const {pagesImages, email} = projectFormData
+    const {pagesImages, logoImages, email} = projectFormData
 
     const state = getState()
     const mongoUser = getMongoUser(state)
@@ -267,7 +266,24 @@ export const createUserAndPostProject = (
             throw (error)
         }
 
-        // post images
+        // post logo images
+        let logoImageURLs = []
+        try {
+            for (let i = 0; i < logoImages.length; i++) {
+                const imageFile = logoImages[i]
+                const storageRef = ref(storage, `/projects/${projectID}/logos/${imageFile.name}`)
+                await uploadBytes(storageRef, imageFile)
+                const downloadURL = await getDownloadURL(storageRef)
+                logoImageURLs.push(downloadURL)
+            }
+
+            console.log('posted logo images')
+        } catch (error) {
+            console.log('post logo images error')
+            throw (error)
+        }
+
+        // post pages images
         let pagesImageURLs = []
         try {
             for (let i = 0; i < pagesImages.length; i++) {
@@ -276,22 +292,25 @@ export const createUserAndPostProject = (
                 
                 for (let j = 0; j < pageImages.length; j++) {
                     const imageFile = pageImages[j]
-                    const storageRef = ref(storage, `/projects/${projectID}/${imageFile.name}`)
+                    const storageRef = ref(storage, `/projects/${projectID}/pages/page${i + 1}/${imageFile.name}`)
                     await uploadBytes(storageRef, imageFile)
                     const downloadURL = await getDownloadURL(storageRef)
                     pagesImageURLs[i].push(downloadURL)
                 }
             }
 
-            console.log('posted images')
+            console.log('posted pages images')
         } catch (error) {
-            console.log('post images error')
+            console.log('post pages images error')
             throw (error)
         }
         
         // patch project
         try {
-            await api.patch(`/projects/${projectID}`, {pagesImageURLs})
+            await api.patch(`/projects/${projectID}`, {
+                pagesImageURLs,
+                logoImageURLs
+            })
             console.log('patched project')
         } catch (error) {
             console.log('patch project error')
@@ -316,29 +335,49 @@ export const createUserAndPostProject = (
         dispatch(addMessage(errorMessage, true))
         onFailure()
     }
-
-    console.log('on success')
 }
 
-export const patchProject = (projectID, updatedFields) => async (dispatch) => {
+export const patchProjects = (projectIDs, updatedFields, onSuccess, onFailure) => async (dispatch, getState) => {
     dispatch(ProjectActions.setLoadingProject(true))
 
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
     try {
-        const res = await api.patch(`/projects/${projectID}`, updatedFields)
+        const res = await api.patch(
+            `/admin/projects`, 
+            {
+                updatedFields,
+                projectIDs
+            },
+            getAdminRequestConfig(mongoUser)
+        )
 
         dispatch(addMessage(res.data.message))
+        onSuccess()
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
+        onFailure()
     }
 
     dispatch(ProjectActions.setLoadingProject(false))
 }
 
-export const deleteProject = (projectID, onSuccess, onFailure) => async (dispatch) => {
+export const deleteProjects = (projectIDs, onSuccess, onFailure) => async (dispatch, getState) => {
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    const queryString = stringifyQuery({
+        projectIDs: projectIDs.join('-')
+    })
+
     try {
-        const res = await api.delete(`/project/${projectID}`)
+        const res = await api.delete(
+            `/admin/projects${queryString}`,
+            getAdminRequestConfig(mongoUser)
+        )
 
         dispatch(addMessage(res.data.message))
         onSuccess()
@@ -358,6 +397,31 @@ export const fetchIsValidAccessCode = accessCode => async dispatch => {
         dispatch(ProjectActions.setIsValidAccessCode(res.data.isValid))
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
     }
+}
+
+export const fetchAccessCode = accessCodeID => async (dispatch, getState) => {
+    dispatch(ProjectActions.setLoadingAccessCode(true))
+    dispatch(ProjectActions.setAccessCodeNotFound(false))
+
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        const res = await api.get(
+            `/admin/accesscodes/${accessCodeID}`,
+            getAdminRequestConfig(mongoUser)
+        )
+
+        dispatch(ProjectActions.setAccessCode(res.data))
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        dispatch(ProjectActions.setAccessCodeNotFound(true))
+    }
+
+    dispatch(ProjectActions.setLoadingAccessCode(false))
 }

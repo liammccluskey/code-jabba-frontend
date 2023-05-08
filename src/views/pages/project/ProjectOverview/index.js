@@ -7,8 +7,8 @@ import {
     getProject,
     getLoadingProject,
     getProjectNotFound,
+
     fetchProject,
-    patchProject
 } from '../../../../redux/project'
 import { PageContainer } from '../../../components/common/PageContainer'
 import { BodyContainer } from '../../../components/common/BodyContainer'
@@ -46,7 +46,10 @@ export const ProjectOverviewComponent = props => {
         <ErrorElement />
         : <PageContainer>
             <MainHeader />
-            <ProjectHeader activeLinkID='' projectID={projectID}/>
+            <ProjectHeader
+                activeLinkID=''
+                projectID={projectID}
+            />
             <BodyContainer>
                 {props.loadingProject ?
                     <Loading />

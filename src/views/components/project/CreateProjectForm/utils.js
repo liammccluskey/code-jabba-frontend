@@ -3,6 +3,8 @@ export const getFormData = initialUnmappedFormData => ({
     creatorName: initialUnmappedFormData.creator.displayName,
     projectName: initialUnmappedFormData.projectName,
     projectType: initialUnmappedFormData.projectType,
+    logoImages: [],
+    logoImageURLs: initialUnmappedFormData.logoImageURLs,
     email: initialUnmappedFormData.creator.email,
     domainProviderURL: initialUnmappedFormData.domainProviderURL,
     domainProviderUsername: initialUnmappedFormData.domainProviderUsername,
@@ -34,6 +36,10 @@ export const getFormData = initialUnmappedFormData => ({
     pagesText: initialUnmappedFormData.pagesText,
     pagesImages: [],
     pagesImageURLs: initialUnmappedFormData.pagesImageURLs,
+
+    // subscriptions
+    hasSubscriptions: initialUnmappedFormData.hasSubscriptions,
+    subscriptionTiers: initialUnmappedFormData.subscriptionTiers,
 })
 
 export const getFormDataModified = (currentFormData, initialUnmappedFormData) => {
@@ -60,6 +66,7 @@ export const getFormDataModified = (currentFormData, initialUnmappedFormData) =>
     return {
         // general
         creatorName: initFormData.creatorName !== currentFormData.creatorName,
+        logoImageURLs: initFormData.logoImageURLs !== currentFormData.logoImageURLs,
         domainProviderURL: initFormData.domainProviderURL !== currentFormData.domainProviderURL,
         domainProviderUsername: initFormData.domainProviderUsername !== currentFormData.domainProviderUsername,
         domainProviderPassword: initFormData.domainProviderPassword !== currentFormData.domainProviderPassword,
@@ -79,5 +86,9 @@ export const getFormDataModified = (currentFormData, initialUnmappedFormData) =>
         // features
         pagesText: initFormData.pagesText !== currentFormData.pagesText,
         pagesImageURLs: initFormData.pagesImageURLs !== currentFormData.pagesImageURLs,
+
+        // subscriptions
+        hasSubscriptions: initFormData.hasSubscriptions != currentFormData.hasSubscriptions,
+        subscriptionTiers: initFormData.subscriptionTiers !== currentFormData.subscriptionTiers,
     }
 }

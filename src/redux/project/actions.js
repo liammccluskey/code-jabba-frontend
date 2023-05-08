@@ -1,5 +1,6 @@
 import { ProjectActionTypes as Types } from "./types"
 
+// Project Actions
 export const setProject = project => ({
     type: Types.SET_PROJECT,
     value: project
@@ -15,6 +16,7 @@ export const setProjectNotFound = notFound => ({
     value: notFound
 })
 
+// Access Code Actions
 export const setIsValidAccessCode = isValid => ({
     type: Types.SET_IS_VALID_ACCESS_CODE,
     value: isValid
@@ -114,4 +116,21 @@ export const updateThisUserProjects = (thisUserProjectIDs, updatedFields) => ({
     type: Types.UPDATE_THIS_USER_PROJECTS,
     thisUserProjectIDsToUpdate: thisUserProjectIDs,
     updatedFields
+})
+
+// Access Code Actions
+
+export const setAccessCode = accessCode => ({
+    type: Types.SET_ACCESS_CODE,
+    value: accessCode
+})
+
+export const setLoadingAccessCode = loading => ({
+    type: Types.SET_LOADING_ACCESS_CODE,
+    value: loading
+})
+
+export const setAccessCodeNotFound = notFound => ({
+    type: Types.SET_ACCESS_CODE_NOT_FOUND,
+    value: notFound
 })

@@ -12,6 +12,7 @@ export const ImagesInput = props => {
         showInput=true,
         allowDelete=true,
         modified=false,
+        hasError=false,
 
         onChangeImageFiles, // e => void
         onClickRemoveImageFile, // imageIndex => void
@@ -43,6 +44,10 @@ export const ImagesInput = props => {
         <Root {...rest}>
             <div className='label-container'>
                 <label>{label}</label>
+                {hasError ?
+                    <PillLabel title='Required' color='red' size='s' style={{marginRight: 10}} />
+                    : null
+                }
                 {modified ?
                     <PillLabel title='Modified' color='yellow' size='s' />
                     : null
@@ -63,14 +68,14 @@ export const ImagesInput = props => {
                         <div className='image-container' key={file.name}>
                             <IconButton
                                 size='s'
-                                iconClassName='bi-arrows-fullscreen'
+                                icon='bi-arrows-fullscreen'
                                 onClick={() => onClickFullscreenImageFile(i)}
                                 className='fullscreen-icon'
                             />
                             {allowDelete ?
                                 <IconButton
                                     size='m'
-                                    iconClassName='bi-trash'
+                                    icon='bi-trash'
                                     onClick={() => onClickRemoveImageFile(i)}
                                     className='delete-icon'
                                 />
@@ -86,14 +91,14 @@ export const ImagesInput = props => {
                         <div className='image-container' key={url}>
                             <IconButton
                                 size='s'
-                                iconClassName='bi-arrows-fullscreen'
+                                icon='bi-arrows-fullscreen'
                                 onClick={() => onClickFullscreenImageURL(i)}
                                 className='fullscreen-icon'
                             />
                             {allowDelete ?
                                 <IconButton
                                     size='m'
-                                    iconClassName='bi-trash'
+                                    icon='bi-trash'
                                     onClick={() => onClickRemoveImageURL(i)}
                                     className='delete-icon'
                                 />
@@ -114,7 +119,7 @@ export const ImagesInput = props => {
                     <img src={URL.createObjectURL(imageFiles[fullscreenImageFileIndex])} className='fullscreen-image' />
                     <IconButton
                         size='l'
-                        iconClassName='bi-x'
+                        icon='bi-x'
                         onClick={onClickCloseImageFullscreen}
                         className='close-icon'
                         color='white'
@@ -127,7 +132,7 @@ export const ImagesInput = props => {
                     <img src={imageURLs[fullscreenImageURLIndex]} className='fullscreen-image' />
                     <IconButton
                         size='l'
-                        iconClassName='bi-x'
+                        icon='bi-x'
                         onClick={onClickCloseImageFullscreen}
                         className='close-icon'
                         color='white'

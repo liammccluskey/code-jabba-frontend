@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 export const IconButton = props => {
     const {
-        iconClassName,
+        icon,
         size, // 's' | 'm' | 'l'
         showHoverOutline=true,
         color='', // 'tint' | 'white'
@@ -19,7 +19,7 @@ export const IconButton = props => {
             className={`${size} ${props.className} ${showHoverOutline && 'hover-outline'} ${color}`}
             onClick={onClick}
         >
-            <i className={`icon ${iconClassName}`} />
+            <i className={`icon ${icon}`} />
         </Root>
     )
 }

@@ -26,3 +26,7 @@ export const getLoadingThisUserProjectsFirstPage = state => state.project.thisUs
 export const getCanLoadMoreThisUserProjects = state => state.project.thisUserProjects.payload.canLoadMore
 export const getThisUserProjectsPagesCount = state => state.project.thisUserProjects.payload.pagesCount
 export const getThisUserProjectsTotalCount = state => state.project.thisUserProjects.payload.totalCount
+
+export const getAccessCode = state => state.project.accessCode
+export const getLoadingAccessCode = state => state.project.loadingAccessCode
+export const getAccessCodeNotFound = state => state.project.accessCodeNotFound

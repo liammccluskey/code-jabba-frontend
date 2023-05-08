@@ -8,7 +8,7 @@ import { Confirm } from '../../views/components/modals/Confirm'
 import { CreateNewAdminModal } from '../../views/components/admin/modals/CreateNewAdminModal'
 import { CreateBugReportModal } from '../../views/components/admin/modals/CreateBugReportModal'
 import { CreateFAQModal } from '../../views/components/admin/modals/CreateFAQModal'
-import { CreateAccessCodeModal } from '../../views/components/admin/modals/CreateAccessCodeModal'
+import { CreateAccessCodeModal } from '../../views/components/project/modals/CreateAccessCodeModal'
 
 export const ModalTypes = {
     CONFIRM: 'confirm',

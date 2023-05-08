@@ -25,6 +25,9 @@ import { ErrorElement } from '../../views/pages/ErrorElement'
 import { CreateProject } from '../../views/pages/CreateProject'
 import { Terms } from '../../views/pages/Terms'
 import { ProjectOverview } from '../../views/pages/project/ProjectOverview'
+import { ProjectAdmin } from '../../views/pages/project/ProjectAdmin'
+import { ProjectStatus } from '../../views/pages/project/ProjectStatus'
+import { AccessCode } from '../../views/pages/AccessCode'
 
 const router = createBrowserRouter([
     {
@@ -143,6 +146,21 @@ const router = createBrowserRouter([
       element: <PrivateRoute element={<ProjectOverview />} />,
       errorElement: <ErrorElement />
     },
+    {
+      path: '/projects/:projectID/status',
+      element: <PrivateRoute element={<ProjectStatus />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/projects/:projectID/admin',
+      element: <AdminRoute element={<ProjectAdmin />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/accesscodes/:accessCodeID',
+      element: <AdminRoute element={<AccessCode />} />,
+      errorElement: <ErrorElement />
+    }
 ])
 
 export const RouterProvider = props => {

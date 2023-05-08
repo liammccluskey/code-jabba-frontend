@@ -13,7 +13,6 @@ export const CreateAccessCodeModalComponent = props => {
         ...rest
     } = props
     const [title, setTitle] = useState('')
-    const [description, setDescription] = useState('')
 
     const onChangeTitle = e => setTitle(e.target.value)
 

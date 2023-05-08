@@ -20,7 +20,7 @@ import { PendingMessage } from '../../common/PendingMessage'
 const ProjectTypes = [
     {title: 'Small Webapp - 2 Custom Pages', price: 200, id: 's', pagesCount: 2},
     {title: 'Medium Webapp - 4 Custom Pages', price: 400, id: 'm', pagesCount: 4},
-    {title: 'Large Webapp - 10 Custom Pages', price: 1000, id: 'l', pagesCount: 10}
+    {title: 'Large Webapp - 10 Custom Pages', price: 1500, id: 'l', pagesCount: 10}
 ]
 
 export const CreateProjectFormComponent = props => {
@@ -35,11 +35,12 @@ export const CreateProjectFormComponent = props => {
 
         ...rest
     } = props
-    const [selectedStepID, setSelectedStepID] = useState(isEditMode ? 'review' : 'payment')
+    const [selectedStepID, setSelectedStepID] = useState(isEditMode ? 'review' : 'subscriptions')
     const [generalCompleted, setGeneralCompleted] = useState(isEditMode)
     const [landingCompleted, setLandingCompleted] = useState(isEditMode)
     const [themeCompleted, setThemeCompleted] = useState(isEditMode)
     const [featuresCompleted, setFeaturesCompleted] = useState(isEditMode)
+    const [subscriptionsCompleted, setSubscriptionsCompleted] = useState(isEditMode)
     const [reviewCompleted, setReviewCompleted] = useState(isEditMode)
     const [termsCompleted, setTermsCompleted] = useState(isEditMode)
     const [paymentCompleted, setPaymentCompleted] = useState(isEditMode)
@@ -50,6 +51,8 @@ export const CreateProjectFormComponent = props => {
             creatorName: '',
             projectName: '',
             projectType: projectType || 's',
+            logoImages: [],
+            logoImageURLs: [],
             email: '',
             domainProviderURL: '',
             domainProviderUsername: '',
@@ -80,7 +83,11 @@ export const CreateProjectFormComponent = props => {
             // features
             pagesText: [],
             pagesImages: [],
-            pagesImageURLs: null,
+            pagesImageURLs: [],
+
+            // subscriptions
+            hasSubscriptions: false,
+            subscriptionTiers: [],
 
             // terms
             acceptedTermsAndConditions: false,
@@ -95,6 +102,7 @@ export const CreateProjectFormComponent = props => {
         // general
         creatorName: false,
         projectName: false,
+        logoImages: false,
         email: false,
         domainProviderURL: false,
         domainProviderUsername: false,
@@ -112,6 +120,9 @@ export const CreateProjectFormComponent = props => {
         // features
         pagesText: [],
 
+        // subscriptions
+        subscriptionTiers: [],
+
         // terms
         acceptedTermsAndConditions: false,
         signature: false,
@@ -121,12 +132,14 @@ export const CreateProjectFormComponent = props => {
     })
     const [modified, setModified] = useState(getFormDataModified(formData, initFormData))
     const [loadingCreateProject, setLoadingCreateProject] = useState(false)
+    const [subscriptionTiersCount, setSubscriptionTiersCount] = useState(0)
 
     const progressSteps = [
         {title: 'General', isComplete: generalCompleted, id: 'general'},
         {title: 'Landing', isComplete: landingCompleted, id: 'landing'},
         {title: 'Theme', isComplete: themeCompleted, id: 'theme'},
         {title: 'Features', isComplete: featuresCompleted, id: 'features'},
+        {title: 'Subscriptions', isComplete: subscriptionsCompleted, id: 'subscriptions'},
         {title: isEditMode ? 'Overview' : 'Review', isComplete: reviewCompleted, id: 'review'},
         ...(isEditMode ?
             []
@@ -144,6 +157,8 @@ export const CreateProjectFormComponent = props => {
             creatorName: 'test',
             projectName: 'Test',
             projectType: 's',
+            logoImages: [],
+            logoImageURLs: [],
             email: 'liammail100@gmail.com',
             domainProviderURL: 'test',
             domainProviderUsername: 'test',
@@ -175,6 +190,10 @@ export const CreateProjectFormComponent = props => {
             pagesText: ['test', 'test'],
             pagesImages: [],
             pagesImageURLs: null,
+
+            // subscriptions
+            hasSubscriptions: false,
+            subscriptionTiers: [],
     
             // terms
             acceptedTermsAndConditions: true,
@@ -213,6 +232,22 @@ export const CreateProjectFormComponent = props => {
     }, [selectedProjectType])
 
     useEffect(() => {
+        for (let i = 0; i < subscriptionTiersCount; i++) {
+            setErrors(curr => ({
+                ...curr,
+                subscriptionTiers: [
+                    ...curr.subscriptionTiers,
+                    {
+                        name: false,
+                        pricePerMonth: false,
+                        features: false,
+                    }
+                ]
+            }))
+        }
+    }, [subscriptionTiersCount])
+
+    useEffect(() => {
         props.fetchIsValidAccessCode(formData.accessCode)
     }, [formData.accessCode])
 
@@ -242,18 +277,23 @@ export const CreateProjectFormComponent = props => {
                     setSelectedStepID('features')
                 }
                 break
-            case 'review':
+            case 'subscriptions':
                 if (isEditMode || generalCompleted && landingCompleted && themeCompleted && featuresCompleted || completedSteps.features) {
+                    setSelectedStepID('subscriptions')
+                }
+                break
+            case 'review':
+                if (isEditMode || generalCompleted && landingCompleted && themeCompleted && featuresCompleted && subscriptionsCompleted || completedSteps.features) {
                     setSelectedStepID('review')
                 }
                 break
             case 'terms':
-                if (isEditMode || generalCompleted && landingCompleted && themeCompleted && featuresCompleted && reviewCompleted || completedSteps.review) {
+                if (isEditMode || generalCompleted && landingCompleted && themeCompleted && featuresCompleted && subscriptionsCompleted && reviewCompleted || completedSteps.review) {
                     setSelectedStepID('terms')
                 }
                 break
             case 'payment':
-                if (isEditMode || generalCompleted && landingCompleted && themeCompleted && featuresCompleted && reviewCompleted && termsCompleted || completedSteps.terms) {
+                if (isEditMode || generalCompleted && landingCompleted && themeCompleted && featuresCompleted && subscriptionsCompleted && reviewCompleted && termsCompleted || completedSteps.terms) {
                     setSelectedStepID('payment')
                 }
                 break
@@ -265,6 +305,7 @@ export const CreateProjectFormComponent = props => {
             case 'general':
                 const nameCompleted = !!formData.creatorName
                 const projectNameCompleted = !!formData.projectName
+                const logoImagesCompleted = formData.logoImages.length > 0 || formData.logoImageURLs.length > 0
                 const emailCompleted = !!formData.email
                 const domainProviderURLCompleted = !!formData.domainProviderURL
                 const domainProviderUsernameCompleted = !!formData.domainProviderUsername
@@ -273,12 +314,13 @@ export const CreateProjectFormComponent = props => {
                     ...curr,
                     name: !nameCompleted,
                     projectName: !projectNameCompleted,
+                    logoImages: !logoImagesCompleted,
                     email: !emailCompleted,
                     domainProviderURL: !domainProviderURLCompleted,
                     domainProviderUsername: !domainProviderUsernameCompleted,
                     domainProviderPassword: !domainProviderPasswordCompleted
                 }))
-                if (nameCompleted && projectNameCompleted && emailCompleted && domainProviderURLCompleted && domainProviderUsernameCompleted && domainProviderPasswordCompleted) {
+                if (nameCompleted && projectNameCompleted && logoImagesCompleted && emailCompleted && domainProviderURLCompleted && domainProviderUsernameCompleted && domainProviderPasswordCompleted) {
                     setGeneralCompleted(true)
                     navigateToStep(navigateToStepID, {general: true})
                 } else {
@@ -337,6 +379,26 @@ export const CreateProjectFormComponent = props => {
                 setReviewCompleted(true)
                 navigateToStep(navigateToStepID, {review: true})
                 break
+            case 'subscriptions':
+                let subscriptionTiersCompleted = true
+                formData.subscriptionTiers.forEach( ({name, price, features}) => {
+                    if (!name || !price || !features) subscriptionTiersCompleted = false
+                })
+                setErrors(curr => ({
+                    ...curr,
+                    subscriptionTiers: formData.subscriptionTiers.map( ({name, price, features}) => ({
+                        name: !name,
+                        pricePerMonth: !price,
+                        features: !features
+                    }))
+                }))
+                if (subscriptionTiersCompleted) {
+                    setSubscriptionsCompleted(true)
+                    navigateToStep(navigateToStepID, {subscriptions: true})
+                } else {
+                    showMissingRequiredFieldsError()
+                }
+                break
             case 'terms':
                 const signatureCompleted = !!formData.signature && formData.signature === formData.creatorName
                 setErrors(curr => ({
@@ -386,6 +448,9 @@ export const CreateProjectFormComponent = props => {
                 break
             case 'features':
                 onNavigateAwayFromStep('features')
+                break
+            case 'subscriptions':
+                onNavigateAwayFromStep('subscriptions')
                 break
             case 'review':
                 onNavigateAwayFromStep('review')
@@ -519,6 +584,38 @@ export const CreateProjectFormComponent = props => {
                     greenTintDefault: true
                 }))
                 break
+            case 'hasSubscriptions':
+                if (formData.hasSubscriptions) {
+                    setSubscriptionTiersCount(0)
+                    setFormData(curr => ({
+                        ...curr,
+                        hasSubscriptions: !curr.hasSubscriptions,
+                        subscriptionTiers: [],
+                    }))
+                    setErrors(curr => ({
+                        ...curr,
+                        subscriptionTiers: []
+                    }))
+                } else {
+                    setSubscriptionTiersCount(1)
+                    setFormData(curr => ({
+                        ...curr,
+                        hasSubscriptions: !curr.hasSubscriptions,
+                        subscriptionTiers: [{
+                            name: '',
+                            pricePerMonth: '',
+                            features: '',
+                        }]
+                    }))
+                    setErrors(curr => ({
+                        ...curr,
+                        subscriptionTiers: [{
+                            name: false,
+                            pricePerMonth: false,
+                            features: false
+                        }]
+                    }))
+                }
             case 'acceptedTermsAndConditions':
                 setFormData(curr => ({
                     ...curr,
@@ -570,6 +667,17 @@ export const CreateProjectFormComponent = props => {
         }))
     }
 
+    const onChangeLogoImages = e => {
+        if (!e.target.files[0]) return
+        setFormData(curr => ({
+            ...curr,
+            logoImages: [
+                ...curr.logoImages,
+                e.target.files[0]
+            ]
+        }))
+    }
+
     const onChangePageImages = (pageIndex, e) => {
         if (!e.target.files[0]) return
         setFormData(curr => ({
@@ -582,6 +690,20 @@ export const CreateProjectFormComponent = props => {
                     ]
                     : images
             ))
+        }))
+    }
+
+    const onClickRemoveLogoImage = imageIndex => {
+        setFormData(curr => ({
+            ...curr,
+            logoImages: curr.logoImages.filter( (_, i) => i != imageIndex)
+        }))
+    }
+
+    const onClickRemoveLogoImageURL = imageIndex => {
+        setFormData(curr => ({
+            ...curr,
+            logoImageURLs: curr.logoImageURLs.filter( (_, i) => i != imageIndex)
         }))
     }
 
@@ -607,6 +729,44 @@ export const CreateProjectFormComponent = props => {
         }))
     }
 
+    const onChangeSubscriptionTier = (tierIndex, itemFieldname, e) => {
+        setFormData(curr => ({
+            ...curr,
+            subscriptionTiers: curr.subscriptionTiers.map( (subscriptionTier, i) => (
+                i == tierIndex ?
+                    {
+                        ...subscriptionTier,
+                        [itemFieldname]: e.target.value
+                    }
+                    : subscriptionTier
+            ))
+        }))
+    }
+
+    const onClickAddSubscriptionTier = () => {
+        setFormData(curr => ({
+            ...curr,
+            subscriptionTiers: [
+                ...curr.subscriptionTiers,
+                {
+                    name: '',
+                    pricePerMonth: '',
+                    features: '',
+                }
+            ]
+        }))
+        setSubscriptionTiersCount(curr => curr + 1)
+    }
+
+    const onClickDeleteSubscriptionTier = tierIndex => {
+        setFormData(curr => ({
+            ...curr,
+            hasSubscriptions: subscriptionTiersCount == 1 ? false : true,
+            subscriptionTiers: curr.subscriptionTiers.filter( (_, i) => i != tierIndex)
+        }))
+        setSubscriptionTiersCount(curr => curr - 1)
+    }
+
     const onClickEditField = fieldName => {
         switch (fieldName) {
             case 'name':
@@ -615,6 +775,7 @@ export const CreateProjectFormComponent = props => {
             case 'domainProviderPassword':
             case 'projectName':
             case 'projectType':
+            case 'logoImages':
             case 'email':
                 setSelectedStepID('general')
                 break
@@ -634,6 +795,9 @@ export const CreateProjectFormComponent = props => {
             case 'pagesImages':
                 setSelectedStepID('features')
                 break
+            case 'subscriptions':
+                setSelectedStepID('subscriptions')
+                break
         }
     }
 
@@ -648,8 +812,11 @@ export const CreateProjectFormComponent = props => {
             case 'features':
                 onNavigateAwayFromStep('theme')
                 break
-            case 'review':
+            case 'subscriptions':
                 onNavigateAwayFromStep('features')
+                break
+            case 'review':
+                onNavigateAwayFromStep('subscriptions')
                 break
             case 'terms':
                 onNavigateAwayFromStep('review')
@@ -672,6 +839,9 @@ export const CreateProjectFormComponent = props => {
                 onNavigateAwayFromStep('features')
                 break
             case 'features':
+                onNavigateAwayFromStep('subscriptions')
+                break
+            case 'subscriptions':
                 onNavigateAwayFromStep('review')
                 break
             case 'review':
@@ -731,6 +901,16 @@ export const CreateProjectFormComponent = props => {
                             onChangeSelectValue={onChangeFormValue}
                             tintMessage={`$${selectedProjectType.price}`}
                             locked={isEditMode}
+                        />
+                        <ImagesInput
+                            label='Logo Images'
+                            imageFiles={formData.logoImages}
+                            imageURLs={formData.logoImageURLs}
+                            onChangeImageFiles={onChangeLogoImages}
+                            onClickRemoveImageFile={onClickRemoveLogoImage}
+                            onClickRemoveImageURL={onClickRemoveLogoImageURL}
+                            modified={isEditMode && (formData.logoImages.length || modified.logoImageURLs)}
+                            hasError={errors.logoImages}
                         />
                         <InputWithMessage
                             label='Your Email'
@@ -950,6 +1130,77 @@ export const CreateProjectFormComponent = props => {
                             </div>
                         ))}
                     </div>
+                : selectedStepID === 'subscriptions' ? 
+                    <div className='inner-form-container'>
+                        <InputWithMessage
+                            label='Subscriptions'
+                            inputType='checklist'
+                            checklistOptions={[
+                                {
+                                    title: 'My webapp uses subscriptions',
+                                    selected: formData.hasSubscriptions,
+                                    id: 'hasSubscriptions'
+                                }
+                            ]}
+                            onClickCheckbox={onClickCheckbox}
+                            modified={isEditMode && modified.hasSubscriptions}
+                        />
+                        {formData.subscriptionTiers.map( (subscriptionTier, i) => (
+                            <div
+                                className='d-flex fd-column ai-stretch'
+                                key={i}
+                                style={{marginBottom: 30}}
+                            >
+                                <div className='d-flex jc-space-between ai-center' style={{marginBottom: 20}}>
+                                    <h4>{`Subscription Tier ${i + 1}`}</h4>
+                                    <IconButton
+                                        icon='bi-trash'
+                                        size='m'
+                                        onClick={() => onClickDeleteSubscriptionTier(i)}
+                                    />
+                                </div>
+                                <InputWithMessage
+                                    label={`Name`}
+                                    inputType='text'
+                                    text={subscriptionTier.name}
+                                    onChangeText={e => onChangeSubscriptionTier(i, 'name', e)}
+                                    placeholder={`Premium`}
+                                    hasError={errors.subscriptionTiers[i] ? errors.subscriptionTiers[i].name : false} 
+                                    modified={isEditMode && modified.subscriptionTiers}
+                                    message=' '
+                                />
+                                <InputWithMessage
+                                    label={`Price per Month`}
+                                    inputType='text'
+                                    text={subscriptionTier.pricePerMonth}
+                                    onChangeText={e => onChangeSubscriptionTier(i, 'pricePerMonth', e)}
+                                    placeholder={`$10.00`}
+                                    hasError={errors.subscriptionTiers[i] ? errors.subscriptionTiers[i].pricePerMonth : false}
+                                    modified={isEditMode && modified.subscriptionTiers}
+                                    message=' '
+                                />
+                                <InputWithMessage
+                                    label={`Features`}
+                                    inputType='textarea'
+                                    text={subscriptionTier.features}
+                                    onChangeText={e => onChangeSubscriptionTier(i, 'features', e)}
+                                    placeholder={`Describe the features that are available for this subscription tier.`}
+                                    hasError={errors.subscriptionTiers[i] ? errors.subscriptionTiers[i].features : false}
+                                    modified={isEditMode && modified.subscriptionTiers}
+                                />
+                            </div>
+                        ))}
+                        {formData.hasSubscriptions ?
+                            <Button
+                                title='Add Subscription Tier'
+                                priority={2}
+                                type='clear'
+                                onClick={onClickAddSubscriptionTier}
+                                style={{marginBottom: 30}}
+                            />
+                            : null
+                        }
+                    </div>
                 : selectedStepID === 'review' ? 
                     <div className='inner-form-container'>
                         <h3 className='review-title'>General</h3>
@@ -960,7 +1211,7 @@ export const CreateProjectFormComponent = props => {
                                     <p className='review-item'>{formData.creatorName}</p>
                                 </div>
                                 <IconButton
-                                    iconClassName='bi-pencil'
+                                    icon='bi-pencil'
                                     size='s'
                                     onClick={() => onClickEditField('name')}
                                 />
@@ -971,7 +1222,7 @@ export const CreateProjectFormComponent = props => {
                                     <p className='review-item'>{formData.projectName}</p>
                                 </div>
                                 <IconButton
-                                    iconClassName='bi-pencil'
+                                    icon='bi-pencil'
                                     size='s'
                                     onClick={() => onClickEditField('projectName')}
                                 />
@@ -982,9 +1233,24 @@ export const CreateProjectFormComponent = props => {
                                     <p className='review-item'>{ProjectTypes.find(({id}) => formData.projectType).title}</p>
                                 </div>
                                 <IconButton
-                                    iconClassName='bi-pencil'
+                                    icon='bi-pencil'
                                     size='s'
                                     onClick={() => onClickEditField('projectType')}
+                                />
+                            </div>
+                            <div className='label-with-message-container'>
+                                <ImagesInput
+                                    label='Logo Images'
+                                    imageFiles={formData.logoImages}
+                                    imageURLs={formData.logoImageURLs}
+                                    showInput={false}
+                                    allowDelete={false}
+                                />
+                                <IconButton
+                                    icon='bi-pencil'
+                                    size='s'
+                                    onClick={() => onClickEditField('logoImages')}
+                                    className='edit-icon'
                                 />
                             </div>
                             <div className='label-with-message-container'>
@@ -993,7 +1259,7 @@ export const CreateProjectFormComponent = props => {
                                     <p className='review-item'>{formData.email}</p>
                                 </div>
                                 <IconButton
-                                    iconClassName='bi-pencil'
+                                    icon='bi-pencil'
                                     size='s'
                                     onClick={() => onClickEditField('email')}
                                 />
@@ -1004,7 +1270,7 @@ export const CreateProjectFormComponent = props => {
                                     <p className='review-item'>{formData.domainProviderURL}</p>
                                 </div>
                                 <IconButton
-                                    iconClassName='bi-pencil'
+                                    icon='bi-pencil'
                                     size='s'
                                     onClick={() => onClickEditField('domainProviderURL')}
                                 />
@@ -1015,7 +1281,7 @@ export const CreateProjectFormComponent = props => {
                                     <p className='review-item'>{formData.domainProviderUsername}</p>
                                 </div>
                                 <IconButton
-                                    iconClassName='bi-pencil'
+                                    icon='bi-pencil'
                                     size='s'
                                     onClick={() => onClickEditField('domainProviderUsername')}
                                 />
@@ -1026,7 +1292,7 @@ export const CreateProjectFormComponent = props => {
                                     <p className='review-item'>{formData.projectName}</p>
                                 </div>
                                 <IconButton
-                                    iconClassName='bi-pencil'
+                                    icon='bi-pencil'
                                     size='s'
                                     onClick={() => onClickEditField('domainProviderPassword')}
                                 />
@@ -1040,7 +1306,7 @@ export const CreateProjectFormComponent = props => {
                                     <p className='review-item'>{formData.heroTitle}</p>
                                 </div>
                                 <IconButton
-                                    iconClassName='bi-pencil'
+                                    icon='bi-pencil'
                                     size='s'
                                     onClick={() => onClickEditField('heroTitle')}
                                 />
@@ -1051,7 +1317,7 @@ export const CreateProjectFormComponent = props => {
                                     <p className='review-item'>{formData.heroMessage}</p>
                                 </div>
                                 <IconButton
-                                    iconClassName='bi-pencil'
+                                    icon='bi-pencil'
                                     size='s'
                                     onClick={() => onClickEditField('heroMessage')}
                                 />
@@ -1072,7 +1338,7 @@ export const CreateProjectFormComponent = props => {
                                     }</p>
                                 </div>
                                 <IconButton
-                                    iconClassName='bi-pencil'
+                                    icon='bi-pencil'
                                     size='s'
                                     onClick={() => onClickEditField('themes')}
                                 />
@@ -1088,7 +1354,7 @@ export const CreateProjectFormComponent = props => {
                                     }</p>
                                 </div>
                                 <IconButton
-                                    iconClassName='bi-pencil'
+                                    icon='bi-pencil'
                                     size='s'
                                     onClick={() => onClickEditField('defaultTheme')}
                                 />
@@ -1099,7 +1365,7 @@ export const CreateProjectFormComponent = props => {
                                     <p className='review-item'>{formData.useCustomTintColor ? 'True' : 'False'}</p>
                                 </div>
                                 <IconButton
-                                    iconClassName='bi-pencil'
+                                    icon='bi-pencil'
                                     size='s'
                                     onClick={() => onClickEditField('useCustomTintColor')}
                                 />
@@ -1117,7 +1383,7 @@ export const CreateProjectFormComponent = props => {
                                         </div>
                                     </div>
                                     <IconButton
-                                        iconClassName='bi-pencil'
+                                        icon='bi-pencil'
                                         size='s'
                                         onClick={() => onClickEditField('customTintColor')}
                                     />
@@ -1140,7 +1406,7 @@ export const CreateProjectFormComponent = props => {
                                         }</p>
                                     </div>
                                     <IconButton
-                                        iconClassName='bi-pencil'
+                                        icon='bi-pencil'
                                         size='s'
                                         onClick={() => onClickEditField('tintColors')}
                                     />
@@ -1160,7 +1426,7 @@ export const CreateProjectFormComponent = props => {
                                         }</p>
                                     </div>
                                     <IconButton
-                                        iconClassName='bi-pencil'
+                                        icon='bi-pencil'
                                         size='s'
                                         onClick={() => onClickEditField('defaultTintColor')}
                                     />
@@ -1179,7 +1445,7 @@ export const CreateProjectFormComponent = props => {
                                             </div>
                                         </div>
                                         <IconButton
-                                            iconClassName='bi-pencil'
+                                            icon='bi-pencil'
                                             size='s'
                                             onClick={() => onClickEditField('pagesText')}
                                         />
@@ -1193,10 +1459,62 @@ export const CreateProjectFormComponent = props => {
                                             allowDelete={false}
                                         />
                                         <IconButton
-                                            iconClassName='bi-pencil'
+                                            icon='bi-pencil'
                                             size='s'
                                             onClick={() => onClickEditField('pagesImages')}
                                             className='edit-icon'
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <h3 className='review-title'>Subscriptions</h3>
+                        <div className='review-section'>
+                            <div className='label-with-message-container'>
+                                <div className='label-container'>
+                                    <label>Webapp Uses Subscriptions</label>
+                                    <p className='review-item'>{formData.hasSubscriptions ? 'True' : 'False'}</p>
+                                </div>
+                                <IconButton
+                                    icon='bi-pencil'
+                                    size='s'
+                                    onClick={() => onClickEditField('subscriptions')}
+                                />
+                            </div>
+                            {formData.subscriptionTiers.map( (subscriptionTier, i) => (
+                                <div className='d-flex fd-column ai-stretch' key={i}>
+                                    <h4 style={{marginBottom: 20}}>{`Subscription Tier ${i + 1}`}</h4>
+                                    <div className='label-with-message-container'>
+                                        <div className='label-container'>
+                                            <label>Name</label>
+                                            <p className='review-item'>{subscriptionTier.name}</p>
+                                        </div>
+                                        <IconButton
+                                            icon='bi-pencil'
+                                            size='s'
+                                            onClick={() => onClickEditField('subscriptions')}
+                                        />
+                                    </div>
+                                    <div className='label-with-message-container'>
+                                        <div className='label-container'>
+                                            <label>Price per Month</label>
+                                            <p className='review-item'>{subscriptionTier.pricePerMonth}</p>
+                                        </div>
+                                        <IconButton
+                                            icon='bi-pencil'
+                                            size='s'
+                                            onClick={() => onClickEditField('subscriptions')}
+                                        />
+                                    </div>
+                                    <div className='label-with-message-container'>
+                                        <div className='label-container'>
+                                            <label>Webapp Uses Subscriptions</label>
+                                            <p className='review-item'>{subscriptionTier.features}</p>
+                                        </div>
+                                        <IconButton
+                                            icon='bi-pencil'
+                                            size='s'
+                                            onClick={() => onClickEditField('subscriptions')}
                                         />
                                     </div>
                                 </div>
@@ -1353,6 +1671,7 @@ const Container = styled.div`
         flex-direction: column;
         align-items: flex-start;
         flex: 1;
+        white-space: pre-line;
     }
     & .label-with-message-container .edit-icon {
         justify-self: flex-end;

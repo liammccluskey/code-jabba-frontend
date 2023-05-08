@@ -152,7 +152,9 @@ export const BugReportComponent = props => {
                 () => {
                     setEditing(false)
                     fetchCurrentBugReport()
-                }
+                },
+                () => {},
+                false
             )
         }
         setEditing(false)

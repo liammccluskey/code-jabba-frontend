@@ -35,7 +35,9 @@ const ProjectState = {
             totalCount: 0,
         }
     },
-    
+    accessCode: null,
+    loadingAccessCode: false,
+    accessCodeNotFound: false
 }
 
 export const projectReducer = (state = ProjectState, action) => {
@@ -278,6 +280,21 @@ export const projectReducer = (state = ProjectState, action) => {
                             )
                     }
                 }
+            }
+        case Types.SET_ACCESS_CODE:
+            return {
+                ...state,
+                accessCode: action.value
+            }
+        case Types.SET_LOADING_ACCESS_CODE:
+            return {
+                ...state,
+                loadingAccessCode: action.value
+            }
+        case Types.SET_ACCESS_CODE_NOT_FOUND:
+            return {
+                ...state,
+                accessCodeNotFound: action.value
             }
         default:
             return state

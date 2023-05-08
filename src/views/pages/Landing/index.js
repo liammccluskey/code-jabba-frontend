@@ -71,7 +71,7 @@ const Config = {
         },
         {
             title: 'Large Webapp',
-            price: '1000',
+            price: '1500',
             features: [
                 {title: '10 Custom Pages', included: true},
                 {title: 'Source Code', included: true},

@@ -24,7 +24,7 @@ export const Pill = props => {
 }
 
 const Root = styled.div`
-    padding: 5px 15px;
+    padding: 2px 10px;
     background-color: ${p => p.theme.bgcLight};
     border-radius: 16px;
     border: 1px solid ${p => p.theme.bc};

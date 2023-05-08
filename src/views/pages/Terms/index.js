@@ -45,11 +45,11 @@ export const TermsSections = [
     },
     {
         title: 'Refunds',
-        body: 'Blackbox Solution has a no refund policy. Once a project is submitted and the invoice is paid you agree that all payments are final.',
+        body: 'Except in the event Blackbox Solution has to terminate your project prematurely, Blackbox Solution has a no refund policy. Once a project is submitted and the invoice is paid you agree that all payments are final.',
     },
     {
         title: 'Termination',
-        body: 'If for any reason Blackbox Solution must terminate your project at any point, you will receive a full refund minus taxes.',
+        body: 'If for any reason Blackbox Solution must terminate your project at any point, you will receive a full refund.',
     },
     {
         title: 'General',

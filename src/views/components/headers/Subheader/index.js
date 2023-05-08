@@ -19,7 +19,7 @@ export const Subheader = props => {
         <Root className='d-flex jc-space-between ai-center'>
             <div className='d-flex fd-column jc-flex-start ai-flex-start'>
                 <Title>{title}</Title>
-                <div className='d-flex jc-flex-start ai-center'>
+                <div className='page-links-container'>
                     {links.map( ({name, url, id, fullName}) => (
                         <PageLink
                             to={getLinkPath(url)}
@@ -49,6 +49,12 @@ const Root = styled.div`
     box-sizing: border-box;
     position: sticky;
     top: 0px;
+
+    & .page-links-container {
+        display: flex;
+        align-items: center;
+        overflow-x: scroll;
+    }
 `
 
 const Title = styled.h2`
