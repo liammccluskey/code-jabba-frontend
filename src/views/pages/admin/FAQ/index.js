@@ -26,7 +26,7 @@ import { SearchableTable } from '../../../components/common/SearchableTable'
 export const FAQSections = [
     {
         title: 'Account',
-        id: 'account'
+        id: 'Account'
     }
 ]
 

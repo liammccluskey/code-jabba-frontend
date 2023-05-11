@@ -20,12 +20,6 @@ const PageLinks = [
         icon: 'bi-question-circle',
         id: 'support'
     },
-    {
-        name: 'Terms',
-        url: '/terms',
-        icon: 'bi-list-task',
-        id: 'terms'
-    },
 ]
 
 export const LandingHeaderComponent = props => {

@@ -22,14 +22,6 @@ import { IndividualAdminFAQ } from '../../views/pages/IndividualAdminFAQ'
 import { IndividualFAQ } from '../../views/pages/IndividualFAQ'
 import { ErrorElement } from '../../views/pages/ErrorElement'
 
-import { CreateProject } from '../../views/pages/CreateProject'
-import { Terms } from '../../views/pages/Terms'
-import { ProjectOverview } from '../../views/pages/project/ProjectOverview'
-import { ProjectAdmin } from '../../views/pages/project/ProjectAdmin'
-import { ProjectStatus } from '../../views/pages/project/ProjectStatus'
-import { ProjectRevisions } from '../../views/pages/project/ProjectRevisions'
-import { AccessCode } from '../../views/pages/AccessCode'
-
 const router = createBrowserRouter([
     {
       path: '/',
@@ -123,50 +115,6 @@ const router = createBrowserRouter([
       element: <AdminRoute element={<IndividualAdminFAQ />} />,
       errorElement: <ErrorElement />
     },
-
-    // blackbox
-    {
-      path: '/create',
-      element: <CreateProject />,
-      errorElement: <ErrorElement />
-    },
-    {
-      path: '/create/:projectType',
-      element: <CreateProject />,
-      errorElement: <ErrorElement />
-    },
-    {
-      path: '/terms',
-      element: <Terms />,
-      errorElement: <ErrorElement />
-    },
-
-    // project
-    {
-      path: '/projects/:projectID',
-      element: <PrivateRoute element={<ProjectOverview />} />,
-      errorElement: <ErrorElement />
-    },
-    {
-      path: '/projects/:projectID/status',
-      element: <PrivateRoute element={<ProjectStatus />} />,
-      errorElement: <ErrorElement />
-    },
-    {
-      path: '/projects/:projectID/revisions',
-      element: <PrivateRoute element={<ProjectRevisions />} />,
-      errorElement: <ErrorElement />
-    },
-    {
-      path: '/projects/:projectID/admin',
-      element: <AdminRoute element={<ProjectAdmin />} />,
-      errorElement: <ErrorElement />
-    },
-    {
-      path: '/accesscodes/:accessCodeID',
-      element: <AdminRoute element={<AccessCode />} />,
-      errorElement: <ErrorElement />
-    }
 ])
 
 export const RouterProvider = props => {
