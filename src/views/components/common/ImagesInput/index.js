@@ -13,6 +13,7 @@ export const ImagesInput = props => {
         allowDelete=true,
         modified=false,
         hasError=false,
+        locked=false,
 
         onChangeImageFiles, // e => void
         onClickRemoveImageFile, // imageIndex => void
@@ -52,6 +53,10 @@ export const ImagesInput = props => {
                     <PillLabel title='Modified' color='yellow' size='s' />
                     : null
                 }
+                {locked ?
+                    <i className='bi-lock-fill lock-icon' />
+                    : null 
+                }
             </div>
             {showInput ?
                 <input
@@ -59,6 +64,7 @@ export const ImagesInput = props => {
                     multiple='multiple'
                     accept='image/*'
                     onChange={onChangeImageFiles}
+                    disabled={locked}
                 />
                 : null
             }
@@ -230,5 +236,10 @@ const Root = styled.div`
         position: fixed;
         top: 20px;
         right: 20px;
+    }
+
+    & .lock-icon {
+        font-size: 15px;
+        color: ${p => p.theme.textSecondary};
     }
 `

@@ -35,6 +35,8 @@ import { BodyContainer } from '../../components/common/BodyContainer'
 import { MainHeader } from '../../components/headers/MainHeader'
 import { SearchableTable } from '../../components/common/SearchableTable'
 import { Button } from '../../components/common/Button'
+import { Tooltip } from '../../components/common/Tooltip'
+import { IconButton } from '../../components/common/IconButton'
 
 const AdminProjectsSortFilters = SortFilters
 const ThisUserProjectsSortFilters = SortFilters
@@ -452,7 +454,17 @@ export const DashboardComponent = props => {
                     </Container>
                     : <Container>
                         <div className='section-header'>
-                            <h3>Your Webapps</h3>
+                            <div className='d-flex jc-flex-start ai-center'>
+                                <h3>Your Webapps</h3>
+                                <Tooltip title='Is your project not showing up? Try clicking the "Archived" filter.'>
+                                    <IconButton
+                                        icon='bi-question-circle'
+                                        size='s'
+                                        onClick={() => {}}
+                                        style={{marginLeft: 5}}
+                                    />
+                                </Tooltip>
+                            </div>
                             <Button
                                 title='Create a Webapp'
                                 icon='bi-plus'

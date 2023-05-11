@@ -53,7 +53,7 @@ export const TermsSections = [
     },
     {
         title: 'General',
-        body: 'Your signature below constitutes acceptance and agreement to these terms and conditions in full. A copy of these terms and conditions will be emailed to you upon submission of your project.'
+        body: 'Your signature below constitutes acceptance and agreement to these terms and conditions in full.'
     }
 ]
 

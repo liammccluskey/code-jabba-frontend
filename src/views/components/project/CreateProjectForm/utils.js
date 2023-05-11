@@ -34,7 +34,7 @@ export const getFormData = initialUnmappedFormData => ({
 
     // features
     pagesText: initialUnmappedFormData.pagesText,
-    pagesImages: [],
+    pagesImages: initialUnmappedFormData.pagesText.map(_ => []),
     pagesImageURLs: initialUnmappedFormData.pagesImageURLs,
 
     // subscriptions
@@ -84,11 +84,19 @@ export const getFormDataModified = (currentFormData, initialUnmappedFormData) =>
         useCustomTintColor: !!initFormData.customTintColor != currentFormData.useCustomTintColor,
 
         // features
-        pagesText: initFormData.pagesText !== currentFormData.pagesText,
-        pagesImageURLs: initFormData.pagesImageURLs !== currentFormData.pagesImageURLs,
+        pagesText: currentFormData.pagesText.map( (text, i) => (
+            initFormData.pagesText[i] ? initFormData.pagesText[i] !== text : true
+        )),
+        pagesImageURLs: currentFormData.pagesImageURLs.map( (pageImagesURLs, i) => (
+            initFormData.pagesImageURLs[i] ? initFormData.pagesImageURLs[i] !== pageImagesURLs : true
+        )),
 
         // subscriptions
         hasSubscriptions: initFormData.hasSubscriptions != currentFormData.hasSubscriptions,
-        subscriptionTiers: initFormData.subscriptionTiers !== currentFormData.subscriptionTiers,
+        subscriptionTiers: currentFormData.subscriptionTiers.map( (subscriptionTier, i) => ({
+            name: initFormData.subscriptionTiers[i] ? initFormData.subscriptionTiers[i].name !== subscriptionTier.name : true,
+            pricePerMonth: initFormData.subscriptionTiers[i] ? initFormData.subscriptionTiers[i].pricePerMonth !== subscriptionTier.pricePerMonth : true,
+            features: initFormData.subscriptionTiers[i] ? initFormData.subscriptionTiers[i].features !== subscriptionTier.features : true
+        }))
     }
 }

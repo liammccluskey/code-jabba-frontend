@@ -5,7 +5,7 @@ import { bindActionCreators } from '@reduxjs/toolkit'
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment'
 
-import { getIsMobile, getIsSemiMobile } from '../../../redux/theme'
+import { getIsMobile, getIsSemiMobile, Themes } from '../../../redux/theme'
 import { setThemeColor, setTintColor } from '../../../redux/theme'
 import { PageContainer } from '../../components/common/PageContainer'
 import { LandingHeader } from '../../components/headers/LandingHeader'
@@ -13,8 +13,8 @@ import { Button } from '../../components/common/Button'
 
 const Config = {
     heroTitle: 'Custom webapps done right',
-    heroMessage: "We'll convert your product idea into a professional webapp. Just fill out our form and tell us about your product to get started.",
-    heroImageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_console_bug_reports.png?alt=media&token=f0a1c444-2c6d-4b89-b1ec-67525c7dbe46',
+    heroMessage: "We'll convert your webapp idea into a professional webapp. Just fill out our form and tell us about your webapp to get started.",
+    heroImageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_bug_reports.png?alt=media&token=706ccd87-b9b6-4225-adf8-c07f45cf97bd',
     whyChooseUs: [
         {
             id: 0,
@@ -41,7 +41,7 @@ const Config = {
     pricing: [
         {
             title: 'Small Webapp',
-            price: '200',
+            price: '250',
             features: [
                 {title: '2 Custom Pages', included: true},
                 {title: 'Source Code', included: true},
@@ -56,7 +56,7 @@ const Config = {
         },
         {
             title: 'Medium Webapp',
-            price: '400',
+            price: '500',
             features: [
                 {title: '4 Custom Pages', included: true},
                 {title: 'Source Code', included: true},
@@ -196,7 +196,7 @@ export const LandingComponent = props => {
                     </div>
                 </div>
                 <div className='copyright-container'>
-                    © {moment().year()} {process.env.REACT_APP_SITE_NAME}. All rights reserved.
+                    <p>© {moment().year()} {process.env.REACT_APP_SITE_NAME}. All rights reserved.</p>
                 </div>
             </Container>
         </PageContainer>
@@ -306,7 +306,7 @@ const Container = styled.div`
     }
     & .why-choose-us-image {
         height: 550px;
-        border: 5px solid ${p => p.theme.bc};
+        border: 5px solid ${p => Themes[1].bc};
         border-radius: 20px;
     }
     &.semi-mobile .why-choose-us-image {

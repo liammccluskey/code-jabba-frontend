@@ -73,7 +73,7 @@ const Root = styled.div`
     & .channel-photo {
         height: 35px;
         width: 35px;
-        border-radius: 50%;
+        // border-radius: 50%;
         margin-right: 10px;
     }
 
@@ -84,7 +84,6 @@ const Root = styled.div`
         width: 35px;
         min-height: 35px;
         min-width: 35px;
-        border-radius: 50%;
         margin-right: 10px;
     }
 
@@ -93,6 +92,7 @@ const Root = styled.div`
         justify-content: space-around;
         align-items: center;
         background-color: ${p => p.theme.tintTranslucent};
+        border-radius: 50%;
     }
 
     & .channel-icon {

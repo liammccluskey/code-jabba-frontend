@@ -22,6 +22,11 @@ const pageLinks = hasAdminPriveleges => [
         url: '/status',
         id: 'status'
     },
+    {
+        name: 'Revisions',
+        url: '/revisions',
+        id: 'revisions',
+    },
     ...(hasAdminPriveleges ? 
         [
             {

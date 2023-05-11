@@ -1,3 +1,7 @@
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
+
+import { storage } from "../../networking"
+
 export const mapProjectFormDataToProjectData = formData => ({
     projectName: formData.projectName,
     projectType: formData.projectType,
@@ -36,3 +40,48 @@ export const mapProjectFormDataToProjectData = formData => ({
 
     accessCode: formData.accessCode
 })
+
+export const uploadProjectLogoImages = async (logoImages, projectID) => {
+    let logoImageURLs = []
+    try {
+        for (let i = 0; i < logoImages.length; i++) {
+            const imageFile = logoImages[i]
+            const storageRef = ref(storage, `/projects/${projectID}/logos/${imageFile.name}`)
+            await uploadBytes(storageRef, imageFile)
+            const downloadURL = await getDownloadURL(storageRef)
+            logoImageURLs.push(downloadURL)
+        }
+
+        console.log('posted logo images')
+    } catch (error) {
+        console.log('post logo images error')
+        throw (error)
+    }
+
+    return logoImageURLs
+}
+
+export const uploadProjectPagesImages = async (pagesImages, projectID) => {
+    let pagesImageURLs = []
+    try {
+        for (let i = 0; i < pagesImages.length; i++) {
+            const pageImages = pagesImages[i]
+            pagesImageURLs.push([])
+            
+            for (let j = 0; j < pageImages.length; j++) {
+                const imageFile = pageImages[j]
+                const storageRef = ref(storage, `/projects/${projectID}/pages/page${i + 1}/${imageFile.name}`)
+                await uploadBytes(storageRef, imageFile)
+                const downloadURL = await getDownloadURL(storageRef)
+                pagesImageURLs[i].push(downloadURL)
+            }
+        }
+
+        console.log('posted pages images')
+    } catch (error) {
+        console.log('post pages images error')
+        throw (error)
+    }
+
+    return pagesImageURLs
+}

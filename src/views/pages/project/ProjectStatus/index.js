@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import { useParams, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import moment from 'moment'
 
 import { getIsMobile } from '../../../../redux/theme'
 import {
@@ -48,7 +49,11 @@ export const ProjectStatusComponent = props => {
                         <div className='header-container'>
                             <h3 className='line-clamp-1'>{props.project.projectName}</h3>
                         </div>
-                        <div className='status-row'>
+                        <div className='item-row'>
+                            <label>Date Created: </label>
+                            <p>{moment(props.project.createdAt).format('LLL')}</p>
+                        </div>
+                        <div className='item-row'>
                             <label>Project Status: </label>
                             <PillLabel
                                 title={props.project.status}
@@ -67,18 +72,46 @@ export const ProjectStatusComponent = props => {
                                 size='s'
                             />
                         </div>
-                        <div className='status-row'>
+                        <div className='item-row'>
                             <label>Payment Status: </label>
                             {props.project.receivedPayment ?
                                 <PillLabel title='Paid' color='green' size='s' />
                                 : <PillLabel title='Unpaid' color='red' size='s' />
                             }
                         </div>
-                        <div className='status-row' style={{marginBottom: 0}}>
+                        <div className='item-row' >
+                            <label>Invoice Status: </label>
+                            {props.project.invoiceSent ?
+                                <PillLabel title='Sent' color='green' size='s' />
+                                : <PillLabel title='Not sent' color='blue' size='s' />
+                            }
+                        </div>
+                        <div className='item-row' >
                             <label>Refund Status: </label>
                             {props.project.refundIssued ?
                                 <PillLabel title='Issued' color='green' size='s' />
                                 : <PillLabel title='Not issued' color='blue' size='s' />
+                            }
+                        </div>
+                        <div className='item-row'>
+                            <label>Editing: </label>
+                            {props.project.editingLocked ?
+                                <PillLabel title='Locked' color='red' size='s' />
+                                : <PillLabel title='Allowed' color='green' size='s' />
+                            }
+                        </div>
+                        <div className='item-row' >
+                            <label>Revisions: </label>
+                            {props.project.revisionsLocked ?
+                                <PillLabel title='Locked' color='red' size='s' />
+                                : <PillLabel title='Allowed' color='green' size='s' />
+                            }
+                        </div>
+                        <div className='item-row' style={{marginBottom: 0}}>
+                            <label>Archived: </label>
+                            {props.project.archived ?
+                                <PillLabel title='True' color='green' size='s' />
+                                : <PillLabel title='False' color='red' size='s' />
                             }
                         </div>
                     </Container>
@@ -106,12 +139,12 @@ const Container = styled.div`
         margin-bottom: 40px;
     }
 
-    & .status-row {
+    & .item-row {
         display: flex;
         align-items: center;
         margin-bottom: 20px;
     }
-    & .status-row label {
+    & .item-row label {
         margin-right: 10px;
     }
 `

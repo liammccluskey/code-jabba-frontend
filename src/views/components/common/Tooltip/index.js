@@ -21,7 +21,7 @@ export const Tooltip = props => {
 
 const Root = styled.div`
     display: inline-flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: flex-start;
     cursor: pointer;
 

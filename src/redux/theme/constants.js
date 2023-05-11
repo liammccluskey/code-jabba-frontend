@@ -94,23 +94,23 @@ const BlueTheme = {
 
 export const Themes = {
     0: {
-        ...LightTheme,
+        ...BlueTheme,
         value: 0,
+        name: 'Blue',
+        icon: 'water'
+    },
+    1: {
+        ...LightTheme,
+        value: 1,
         name: 'Light',
         icon: 'sun',
     },
-    1: {
+    2: {
         ...DarkTheme,
-        value: 1,
+        value: 2,
         name: 'Dark',
         icon: 'moon'
     },
-    2: {
-        ...BlueTheme,
-        value: 2,
-        name: 'Blue',
-        icon: 'water'
-    }
 }
 
 export const Tints = {

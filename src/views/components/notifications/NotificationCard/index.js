@@ -73,9 +73,6 @@ const Root = styled.div`
     &.notification-container.active {
         border-left: 3px solid ${p => p.theme.tint};
     }
-    &:last-child {
-        // border-bottom: none;
-    }
 
     & .unread-mark,
     & .read-mark {
@@ -99,7 +96,7 @@ const Root = styled.div`
         width: 35px;
         min-height: 35px;
         min-width: 35px;
-        border-radius: 50%;
+        // border-radius: 50%;
         margin-right: 15px;
     }
 

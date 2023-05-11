@@ -2,11 +2,12 @@ import { createUserWithEmailAndPassword } from 'firebase/auth'
 import {v4 as uuid} from 'uuid'
 import {ref, uploadBytes, getDownloadURL} from 'firebase/storage'
 
+import { uploadProjectLogoImages, uploadProjectPagesImages } from './utils'
 import {
     getAdminProjects,
     getThisUserProjects,
 } from './selectors'
-import { getAdminRequestConfig } from '../admin'
+import { getAdminRequestConfig, updateFAQs } from '../admin'
 import { getMongoUser, getFirebaseUser } from '../user'
 import { fetchThisMongoUser } from '../user'
 import { auth, storage, PageSizes } from '../../networking'
@@ -16,7 +17,11 @@ import { mapProjectFormDataToProjectData } from './utils'
 import { __postMongoUser } from '../user'
 import { addMessage } from '../communication'
 
-export const fetchProject = projectID => async (dispatch) => {
+export const fetchProject = (
+    projectID,
+    onSuccess = () => {},
+    onFailure = () => {}
+) => async (dispatch) => {
     dispatch(ProjectActions.setProjectNotFound(false))
     dispatch(ProjectActions.setLoadingProject(true))
 
@@ -24,11 +29,13 @@ export const fetchProject = projectID => async (dispatch) => {
         const res = await api.get(`/projects/${projectID}`)
 
         dispatch(ProjectActions.setProject(res.data))
+        onSuccess()
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
         dispatch(ProjectActions.setProjectNotFound(true))
+        onFailure()
     }
 
     dispatch(ProjectActions.setLoadingProject(false))
@@ -189,7 +196,6 @@ export const createUserAndPostProject = (
     navigate
 ) => async (dispatch, getState) => {
     const projectData = mapProjectFormDataToProjectData(projectFormData)
-    const {pagesImages, logoImages, email} = projectFormData
 
     const state = getState()
     const mongoUser = getMongoUser(state)
@@ -205,6 +211,7 @@ export const createUserAndPostProject = (
 
             // create fb user
             try {
+                const {email} = projectFormData
                 const {user} = await createUserWithEmailAndPassword(auth, email, password)
                 fbUser = user
                 console.log('created fb user')
@@ -218,16 +225,12 @@ export const createUserAndPostProject = (
 
             try {
                 // create mongo user
-                const userBody = {
+                let res = await __postMongoUser({
                     uid: fbUser.uid,
                     email: fbUser.email,
                     photoURL: fbUser.photoURL,
                     displayName: projectFormData.creatorName
-                }
-                console.log(JSON.stringify(
-                    {projectFormData, userBody}
-                , null, 4))
-                let res = await __postMongoUser(userBody)
+                })
 
                 userID = res.data.userID
                 dispatch(addMessage(res.data.message), false, true)
@@ -237,7 +240,7 @@ export const createUserAndPostProject = (
                 // send temporary password email
                 res = await api.post('/users/temporarypasswordemail', {
                     displayName: projectFormData.name,
-                    email,
+                    email: fbUser.email,
                     password
                 })
 
@@ -267,43 +270,10 @@ export const createUserAndPostProject = (
         }
 
         // post logo images
-        let logoImageURLs = []
-        try {
-            for (let i = 0; i < logoImages.length; i++) {
-                const imageFile = logoImages[i]
-                const storageRef = ref(storage, `/projects/${projectID}/logos/${imageFile.name}`)
-                await uploadBytes(storageRef, imageFile)
-                const downloadURL = await getDownloadURL(storageRef)
-                logoImageURLs.push(downloadURL)
-            }
-
-            console.log('posted logo images')
-        } catch (error) {
-            console.log('post logo images error')
-            throw (error)
-        }
+        const logoImageURLs = await uploadProjectLogoImages(projectFormData.logoImages, projectID)
 
         // post pages images
-        let pagesImageURLs = []
-        try {
-            for (let i = 0; i < pagesImages.length; i++) {
-                const pageImages = pagesImages[i]
-                pagesImageURLs.push([])
-                
-                for (let j = 0; j < pageImages.length; j++) {
-                    const imageFile = pageImages[j]
-                    const storageRef = ref(storage, `/projects/${projectID}/pages/page${i + 1}/${imageFile.name}`)
-                    await uploadBytes(storageRef, imageFile)
-                    const downloadURL = await getDownloadURL(storageRef)
-                    pagesImageURLs[i].push(downloadURL)
-                }
-            }
-
-            console.log('posted pages images')
-        } catch (error) {
-            console.log('post pages images error')
-            throw (error)
-        }
+        const pagesImageURLs = await uploadProjectPagesImages(projectFormData.pagesImages, projectID)
         
         // patch project
         try {
@@ -378,6 +348,77 @@ export const deleteProjects = (projectIDs, onSuccess, onFailure) => async (dispa
             `/admin/projects${queryString}`,
             getAdminRequestConfig(mongoUser)
         )
+
+        dispatch(addMessage(res.data.message))
+        onSuccess()
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        onFailure()
+    }
+}
+
+export const patchProjectWithProjectForm = (projectID, updatedProjectFormData, onSuccess, onFailure) => async (dispatch) => {
+    dispatch(ProjectActions.setLoadingProject(true))
+
+    const updatedFields = mapProjectFormDataToProjectData(updatedProjectFormData)
+
+    try {
+        let logoImageURLs = []
+        let pagesImageURLs = updatedProjectFormData.pagesImageURLs.map( _ => [])
+        if (updatedProjectFormData.logoImages.length) {
+            logoImageURLs = await uploadProjectLogoImages(updatedProjectFormData.logoImages, projectID)
+        }
+        let hasPagesImages = false
+        updatedProjectFormData.pagesImages.forEach( pageImages => {
+            if (pageImages.length) hasPagesImages = true
+        })
+        if (hasPagesImages) {
+            pagesImageURLs = await uploadProjectPagesImages(updatedProjectFormData.pagesImages, projectID)
+        }
+
+        const res = await api.patch(`/projects/${projectID}`, {
+            ...updatedFields,
+            pagesImageURLs: updatedFields.pagesImageURLs.map( (pageImageURLs, i) => ([
+                ...pageImageURLs,
+                ...pagesImageURLs[i]
+            ])),
+            logoImageURLs: [
+                ...updatedFields.logoImageURLs,
+                ...logoImageURLs
+            ]
+        })
+
+        dispatch(addMessage(res.data.message))
+        onSuccess()
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        onFailure()
+    }
+
+    dispatch(ProjectActions.setLoadingProject(false))
+}
+
+export const patchProject = (projectID, updatedFields, onSuccess, onFailure) => async (dispatch) => {
+    try {
+        const res = await api.patch(`/projects/${projectID}`, updatedFields)
+
+        dispatch(addMessage(res.data.message))
+        onSuccess()
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        onFailure()
+    }
+}
+
+export const deleteProject = (projectID, onSuccess, onFailure) => async (dispatch) => {
+    try {
+        const res = await api.delete(`/project/${projectID}`)
 
         dispatch(addMessage(res.data.message))
         onSuccess()

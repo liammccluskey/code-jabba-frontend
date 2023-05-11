@@ -9,6 +9,7 @@ import {
     getProjectNotFound,
 
     fetchProject,
+    patchProjectWithProjectForm
 } from '../../../../redux/project'
 import { PageContainer } from '../../../components/common/PageContainer'
 import { BodyContainer } from '../../../components/common/BodyContainer'
@@ -27,8 +28,16 @@ export const ProjectOverviewComponent = props => {
     const [projectFormData, setProjectFormData] = useState(null)
 
     useEffect(() => {
-        props.fetchProject(projectID)
+        fetchCurrentProject()
     }, [])
+
+    // Utils
+
+    const fetchCurrentProject = (onSuccess = () => {}, onFailure = () => {}) => {
+        props.fetchProject(projectID, onSuccess, onFailure)
+    }
+
+    // Direct
 
     const onChangeFormData = formData => {
         setProjectFormData(formData)
@@ -38,8 +47,17 @@ export const ProjectOverviewComponent = props => {
         navigate('/create')
     }
 
-    const onClickSubmitEdits = () => {
-        
+    const onSubmitProjectEdits = (onSuccess, onFailure) => {
+        props.patchProjectWithProjectForm(
+            projectID,
+            projectFormData,
+            () => fetchCurrentProject(onSuccess, onFailure),
+            onFailure
+        )
+    }
+    
+    const onCancelProjectEdits = (onSuccess, onFailure) => {
+        fetchCurrentProject(onSuccess, onFailure)
     }
 
     return (props.projectNotFound ?
@@ -58,7 +76,8 @@ export const ProjectOverviewComponent = props => {
                         initFormData={props.project}
                         onChangeFormData={onChangeFormData}
                         onClickCreateProject={onClickCreateProject}
-                        onClickSubmitEdits={onClickSubmitEdits}
+                        onSubmitEdits={onSubmitProjectEdits}
+                        onCancelEdits={onCancelProjectEdits}
                     />
                 }
             </BodyContainer>
@@ -73,7 +92,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    fetchProject
+    fetchProject,
+    patchProjectWithProjectForm
 }, dispatch)
 
 export const ProjectOverview = connect(mapStateToProps, mapDispatchToProps)(ProjectOverviewComponent)

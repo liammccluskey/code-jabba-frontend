@@ -3,6 +3,8 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 
+
+import { getProject } from '../../../../redux/project'
 import { fetchIsValidAccessCode, getIsValidAccessCode } from '../../../../redux/project'
 import {getFormData, getFormDataModified} from './utils'
 import { TermsSections } from '../../../pages/Terms'
@@ -18,8 +20,8 @@ import { ValidLabel } from '../../common/ValidLabel'
 import { PendingMessage } from '../../common/PendingMessage'
 
 const ProjectTypes = [
-    {title: 'Small Webapp - 2 Custom Pages', price: 200, id: 's', pagesCount: 2},
-    {title: 'Medium Webapp - 4 Custom Pages', price: 400, id: 'm', pagesCount: 4},
+    {title: 'Small Webapp - 2 Custom Pages', price: 250, id: 's', pagesCount: 2},
+    {title: 'Medium Webapp - 4 Custom Pages', price: 500, id: 'm', pagesCount: 4},
     {title: 'Large Webapp - 10 Custom Pages', price: 1500, id: 'l', pagesCount: 10}
 ]
 
@@ -31,11 +33,13 @@ export const CreateProjectFormComponent = props => {
 
         onChangeFormData = () => {}, // formData => void
         onCreateProject = () => {}, // (onSuccess, onFailure) => void
-        onClickSubmitEdits = () => {}, // () => void
+        onSubmitEdits = () => {}, // (onSuccess, onFailure) => void
+        onCancelEdits = () => {}, // (onSuccess, onFailure) => void
 
         ...rest
     } = props
-    const [selectedStepID, setSelectedStepID] = useState(isEditMode ? 'review' : 'subscriptions')
+    // Selected Step
+    const [selectedStepID, setSelectedStepID] = useState(isEditMode ? 'review' : 'general')
     const [generalCompleted, setGeneralCompleted] = useState(isEditMode)
     const [landingCompleted, setLandingCompleted] = useState(isEditMode)
     const [themeCompleted, setThemeCompleted] = useState(isEditMode)
@@ -44,6 +48,7 @@ export const CreateProjectFormComponent = props => {
     const [reviewCompleted, setReviewCompleted] = useState(isEditMode)
     const [termsCompleted, setTermsCompleted] = useState(isEditMode)
     const [paymentCompleted, setPaymentCompleted] = useState(isEditMode)
+    // Form Data
     const [formData, setFormData] = useState(initFormData ?
         getFormData(initFormData)
         : {
@@ -131,8 +136,16 @@ export const CreateProjectFormComponent = props => {
         accessCode: '',
     })
     const [modified, setModified] = useState(getFormDataModified(formData, initFormData))
+    const [generalModified, setGeneralModified] = useState(false)
+    const [landingModified, setLandingModified] = useState(false)
+    const [themeModified, setThemeModified] = useState(false)
+    const [featuresModified, setFeaturesModified] = useState(false)
+    const [subscriptionsModified, setSubscriptionsModified] = useState(false)
+    const [formDataModified, setFormDataModified] = useState(false)
+    // Misc
     const [loadingCreateProject, setLoadingCreateProject] = useState(false)
-    const [subscriptionTiersCount, setSubscriptionTiersCount] = useState(0)
+    const [loadingSaveEdits, setLoadingSaveEdits] = useState(false)
+    const [subscriptionTiersCount, setSubscriptionTiersCount] = useState(initFormData ? initFormData.subscriptionTiers.length : 0)
 
     const progressSteps = [
         {title: 'General', isComplete: generalCompleted, id: 'general'},
@@ -205,6 +218,13 @@ export const CreateProjectFormComponent = props => {
         })
     }, [])
 
+    // test
+    useEffect(() => {
+        console.log(JSON.stringify(
+            {projectType, formDataProjectType: formData.projectType}
+        , null, 4))
+    }, [formData])
+
     const selectedStep = progressSteps.find(({id}) => id === selectedStepID)
     const selectedProjectType = ProjectTypes.find(({id}) => id === formData.projectType)
 
@@ -251,6 +271,37 @@ export const CreateProjectFormComponent = props => {
         props.fetchIsValidAccessCode(formData.accessCode)
     }, [formData.accessCode])
 
+    useEffect(() => {
+        if (!Object.keys(modified).length) return
+        setGeneralModified(modified.creatorName || modified.logoImageURLs || isEditMode && formData.logoImages.length || modified.domainProviderURL || modified.domainProviderUsername || modified.domainProviderPassword)
+        setLandingModified(modified.heroTitle || modified.heroMessage)
+        setThemeModified(modified.themes || modified.defaultTheme || modified.selectedTintColors || modified.defaultTintColor || modified.customTintColor || modified.useCustomTintColor)
+
+        let pagesTextModified = false
+        let pagesImageURLsModified = false
+        let pagesImagesModified = false
+        modified.pagesText.forEach( modified => {
+            if (modified) pagesTextModified = true
+        })
+        modified.pagesImageURLs.forEach( modified => {
+            if (modified) pagesImageURLsModified = true
+        })
+        formData.pagesImages.map( pageImages => {
+            if (pageImages.length && isEditMode) pagesImagesModified = true
+        })
+        setFeaturesModified(pagesTextModified || pagesImageURLsModified || pagesImagesModified)
+
+        let subscriptionTiersModified = false
+        modified.subscriptionTiers.forEach( ({name, pricePerMonth, features}) => {
+            if (name || pricePerMonth || features) subscriptionTiersModified = true
+        })
+        setSubscriptionsModified(modified.hasSubscriptions || subscriptionTiersModified)
+    }, [modified])
+
+    useEffect(() => {
+        setFormDataModified(generalModified || landingModified || themeModified || featuresModified || subscriptionsModified)
+    }, [generalModified, landingModified, themeModified, featuresModified, subscriptionsModified])
+
     // Utils
 
     const showMissingRequiredFieldsError = () => {
@@ -283,7 +334,7 @@ export const CreateProjectFormComponent = props => {
                 }
                 break
             case 'review':
-                if (isEditMode || generalCompleted && landingCompleted && themeCompleted && featuresCompleted && subscriptionsCompleted || completedSteps.features) {
+                if (isEditMode || generalCompleted && landingCompleted && themeCompleted && featuresCompleted && subscriptionsCompleted || completedSteps.subscriptions) {
                     setSelectedStepID('review')
                 }
                 break
@@ -301,6 +352,10 @@ export const CreateProjectFormComponent = props => {
     }
 
     const onNavigateAwayFromStep = navigateToStepID => {
+        if (formDataModified) {
+            props.addMessage('You have unsaved data. Save or cancel changes before navigating away from this page.', true)
+            return
+        }
         switch (selectedStepID) {
             case 'general':
                 const nameCompleted = !!formData.creatorName
@@ -381,14 +436,14 @@ export const CreateProjectFormComponent = props => {
                 break
             case 'subscriptions':
                 let subscriptionTiersCompleted = true
-                formData.subscriptionTiers.forEach( ({name, price, features}) => {
-                    if (!name || !price || !features) subscriptionTiersCompleted = false
+                formData.subscriptionTiers.forEach( ({name, pricePerMonth, features}) => {
+                    if (!name || !pricePerMonth || !features) subscriptionTiersCompleted = false
                 })
                 setErrors(curr => ({
                     ...curr,
-                    subscriptionTiers: formData.subscriptionTiers.map( ({name, price, features}) => ({
+                    subscriptionTiers: formData.subscriptionTiers.map( ({name, pricePerMonth, features}) => ({
                         name: !name,
-                        pricePerMonth: !price,
+                        pricePerMonth: !pricePerMonth,
                         features: !features
                     }))
                 }))
@@ -494,30 +549,33 @@ export const CreateProjectFormComponent = props => {
                 }))
                 break
             case 'lightThemeDefault':
-                props.setThemeColor(0)
+                props.setThemeColor(1)
                 setFormData(curr => ({
                     ...curr,
                     lightThemeDefault: true,
                     darkThemeDefault: false,
                     blueThemeDefault: false,
+                    lightThemeSelected: true,
                 }))
                 break
             case 'darkThemeDefault':
-                props.setThemeColor(1)
-                setFormData(curr => ({
-                    ...curr,
-                    lightThemeDefault: false,
-                    darkThemeDefault: true,
-                    blueThemeDefault: false
-                }))
-                break
-            case 'blueThemeDefault':
                 props.setThemeColor(2)
                 setFormData(curr => ({
                     ...curr,
                     lightThemeDefault: false,
+                    darkThemeDefault: true,
+                    blueThemeDefault: false,
+                    darkThemeSelected: true,
+                }))
+                break
+            case 'blueThemeDefault':
+                props.setThemeColor(0)
+                setFormData(curr => ({
+                    ...curr,
+                    lightThemeDefault: false,
                     darkThemeDefault: false,
-                    blueThemeDefault: true
+                    blueThemeDefault: true,
+                    blueThemeSelected: true
                 }))
                 break
             case 'blueTintSelected':
@@ -551,7 +609,8 @@ export const CreateProjectFormComponent = props => {
                     blueTintDefault: true,
                     purpleTintDefault: false,
                     mintTintDefault: false,
-                    greenTintDefault: false
+                    greenTintDefault: false,
+                    blueTintSelected: true,
                 }))
                 break
             case 'purpleTintDefault':
@@ -561,7 +620,8 @@ export const CreateProjectFormComponent = props => {
                     blueTintDefault: false,
                     purpleTintDefault: true,
                     mintTintDefault: false,
-                    greenTintDefault: false
+                    greenTintDefault: false,
+                    purpleTintSelected: true,
                 }))
                 break
             case 'mintTintDefault':
@@ -571,7 +631,8 @@ export const CreateProjectFormComponent = props => {
                     blueTintDefault: false,
                     purpleTintDefault: false,
                     mintTintDefault: true,
-                    greenTintDefault: false
+                    greenTintDefault: false,
+                    mintTintSelected: true,
                 }))
                 break
             case 'greenTintDefault':
@@ -581,7 +642,8 @@ export const CreateProjectFormComponent = props => {
                     blueTintDefault: false,
                     purpleTintDefault: false,
                     mintTintDefault: false,
-                    greenTintDefault: true
+                    greenTintDefault: true,
+                    greenTintSelected: true,
                 }))
                 break
             case 'hasSubscriptions':
@@ -616,6 +678,7 @@ export const CreateProjectFormComponent = props => {
                         }]
                     }))
                 }
+                break
             case 'acceptedTermsAndConditions':
                 setFormData(curr => ({
                     ...curr,
@@ -854,9 +917,25 @@ export const CreateProjectFormComponent = props => {
     }
 
     const onClickCreateProject = () => {
+        if (formData.hasAccessCode && !props.isValidAccessCode) {
+            props.addMessage('The access code you entered is invalid.', true)
+            return
+        }
         const cancelLoadingProject = () => setLoadingCreateProject(false)
         setLoadingCreateProject(true)
         onCreateProject(cancelLoadingProject, cancelLoadingProject)
+    }
+
+    const onClickSubmitEdits = () => {
+        const cancelSaveEdits = () => setLoadingSaveEdits(false)
+        setLoadingSaveEdits(true)
+        onSubmitEdits(cancelSaveEdits, cancelSaveEdits)
+    }
+
+    const onClickCancelEdits = () => {
+        const cancelSaveEdits = () => setLoadingSaveEdits(false)
+        setLoadingSaveEdits(true)
+        onCancelEdits(cancelSaveEdits, cancelSaveEdits)
     }
 
     return (
@@ -880,6 +959,7 @@ export const CreateProjectFormComponent = props => {
                             message=' '
                             hasError={errors.creatorName}
                             modified={isEditMode && modified.creatorName}
+                            locked={isEditMode}
                         />
                         <InputWithMessage
                             label='Project Name'
@@ -911,6 +991,7 @@ export const CreateProjectFormComponent = props => {
                             onClickRemoveImageURL={onClickRemoveLogoImageURL}
                             modified={isEditMode && (formData.logoImages.length || modified.logoImageURLs)}
                             hasError={errors.logoImages}
+                            locked={isEditMode && (props.project ? props.project.editingLocked : true)}
                         />
                         <InputWithMessage
                             label='Your Email'
@@ -933,6 +1014,7 @@ export const CreateProjectFormComponent = props => {
                             message='This is the domain service you used to purchase your domain. If you do not have one we recommend Google Domains.'
                             hasError={errors.domainProviderURL}
                             modified={isEditMode && modified.domainProviderURL}
+                            locked={isEditMode && (props.project ? props.project.editingLocked : true)}
                         />
                         <InputWithMessage
                             label='Domain Provider Username'
@@ -943,6 +1025,7 @@ export const CreateProjectFormComponent = props => {
                             hasError={errors.domainProviderUsername}
                             message=' '
                             modified={isEditMode && modified.domainProviderUsername}
+                            locked={isEditMode && (props.project ? props.project.editingLocked : true)}
                         />
                         <InputWithMessage
                             label='Domain Provider Password'
@@ -953,6 +1036,7 @@ export const CreateProjectFormComponent = props => {
                             hasError={errors.domainProviderPassword}
                             message=' '
                             modified={isEditMode && modified.domainProviderPassword}
+                            locked={isEditMode && (props.project ? props.project.editingLocked : true)}
                         />
                     </div>
                 : selectedStepID === 'landing' ?
@@ -966,6 +1050,7 @@ export const CreateProjectFormComponent = props => {
                             message='This is the title that will be shown on the hero section of the landing page. We recommend a short statement about what your product does.'
                             hasError={errors.heroTitle}
                             modified={isEditMode && modified.heroTitle}
+                            locked={isEditMode && (props.project ? props.project.editingLocked : true)}
                         />
                         <InputWithMessage
                             label='Hero Message'
@@ -976,6 +1061,7 @@ export const CreateProjectFormComponent = props => {
                             message='This is the message that will be shown beneath the hero title on the landing page. We recommend a 1-3 sentence message about what your product does and why people should use it.'
                             hasError={errors.heroTitle}
                             modified={isEditMode && modified.heroMessage}
+                            locked={isEditMode && (props.project ? props.project.editingLocked : true)}
                         />
                     </div>
                 : selectedStepID === 'theme' ?
@@ -992,6 +1078,7 @@ export const CreateProjectFormComponent = props => {
                             message='Select up to three. Selecting multiple allows users to pick which theme to use on their version of the site.'
                             hasError={errors.themes}
                             modified={isEditMode && modified.themes}
+                            locked={isEditMode && (props.project ? props.project.editingLocked : true)}
                         />
                         <InputWithMessage
                             label='Default Theme'
@@ -1004,6 +1091,7 @@ export const CreateProjectFormComponent = props => {
                             onClickCheckbox={onClickCheckbox}
                             message='Select one.'
                             modified={isEditMode && modified.defaultTheme}
+                            locked={isEditMode && (props.project ? props.project.editingLocked : true)}
                         />
                         <InputWithMessage
                             label='Use Custom Tint Color'
@@ -1012,6 +1100,7 @@ export const CreateProjectFormComponent = props => {
                             onClickSwitch={() => onClickSwitch('useCustomTintColor')}
                             message='If selected we will use your custom tint color instead of the default tint colors provided.'
                             modified={isEditMode && modified.useCustomTintColor}
+                            locked={isEditMode && (props.project ? props.project.editingLocked : true)}
                         />
                         {formData.useCustomTintColor ?
                             <InputWithMessage
@@ -1028,6 +1117,7 @@ export const CreateProjectFormComponent = props => {
                                 }
                                 hasError={errors.customTintColor}
                                 modified={isEditMode && modified.customTintColor}
+                                locked={isEditMode && (props.project ? props.project.editingLocked : true)}
                             />
                             : null
                         }
@@ -1066,6 +1156,7 @@ export const CreateProjectFormComponent = props => {
                                 message='Select up to four. Selecting multiple allows users to pick which tint color to use on their version of the site.'
                                 hasError={errors.tintColors}
                                 modified={isEditMode && modified.selectedTintColors}
+                                locked={isEditMode && (props.project ? props.project.editingLocked : true)}
                             />
                         }      
                         { formData.useCustomTintColor ?
@@ -1102,11 +1193,24 @@ export const CreateProjectFormComponent = props => {
                                 onClickCheckbox={onClickCheckbox}
                                 message='Select one.'
                                 modified={isEditMode && modified.defaultTintColor}
+                                locked={isEditMode && (props.project ? props.project.editingLocked : true)}
                             />
                         }
                     </div>
                 : selectedStepID === 'features' ?
                     <div className='inner-form-container'>
+                        <div className='label-with-message-container'>
+                            <div className='label-container'>
+                                <label>Included Pages</label>
+                                <p className='review-item ml-10'>- Login Page</p>
+                                <p className='review-item ml-10'>- Registration Page</p>
+                                <p className='review-item ml-10'>- Landing Page</p>
+                                <p className='review-item ml-10'>- Settings Page</p>
+                                <p className='review-item ml-10'>- Support Page</p>
+                                <p className='review-item ml-10'>- Admin Console Page</p>
+                                <p className='review-item ml-10'>- Notifications Page</p>
+                            </div>
+                        </div>
                         {formData.pagesText.map( (text, i) => (
                             <div className='d-flex fd-column ai-stretch' key={i}>
                                 <InputWithMessage
@@ -1116,7 +1220,8 @@ export const CreateProjectFormComponent = props => {
                                     onChangeText={e => onChangePageText(i, e)}
                                     placeholder={`Describe the content and features you want to see on page ${i + 1}`}
                                     hasError={errors.pagesText[i]}
-                                    modified={isEditMode && modified.pagesText}
+                                    modified={isEditMode && modified.pagesText[i]}
+                                    locked={isEditMode && (props.project ? props.project.editingLocked : true)}
                                 />
                                 <ImagesInput
                                     label={`Page ${i + 1} UI Images`}
@@ -1125,7 +1230,8 @@ export const CreateProjectFormComponent = props => {
                                     onChangeImageFiles={e => onChangePageImages(i, e)}
                                     onClickRemoveImageFile={imageIndex => onClickRemovePageImage(i, imageIndex)}
                                     onClickRemoveImageURL={imageIndex => onClickRemovePageImageURL(i, imageIndex)}
-                                    modified={isEditMode && (formData.pagesImages.length || modified.pagesImageURLs)}
+                                    modified={isEditMode && (formData.pagesImages[i].length || modified.pagesImageURLs[i])}
+                                    locked={isEditMode && (props.project ? props.project.editingLocked : true)}
                                 />
                             </div>
                         ))}
@@ -1144,6 +1250,7 @@ export const CreateProjectFormComponent = props => {
                             ]}
                             onClickCheckbox={onClickCheckbox}
                             modified={isEditMode && modified.hasSubscriptions}
+                            locked={isEditMode && (props.project ? props.project.editingLocked : true)}
                         />
                         {formData.subscriptionTiers.map( (subscriptionTier, i) => (
                             <div
@@ -1166,8 +1273,9 @@ export const CreateProjectFormComponent = props => {
                                     onChangeText={e => onChangeSubscriptionTier(i, 'name', e)}
                                     placeholder={`Premium`}
                                     hasError={errors.subscriptionTiers[i] ? errors.subscriptionTiers[i].name : false} 
-                                    modified={isEditMode && modified.subscriptionTiers}
+                                    modified={isEditMode && modified.subscriptionTiers[i] ? modified.subscriptionTiers[i].name : false}
                                     message=' '
+                                    locked={isEditMode && (props.project ? props.project.editingLocked : true)}
                                 />
                                 <InputWithMessage
                                     label={`Price per Month`}
@@ -1176,8 +1284,9 @@ export const CreateProjectFormComponent = props => {
                                     onChangeText={e => onChangeSubscriptionTier(i, 'pricePerMonth', e)}
                                     placeholder={`$10.00`}
                                     hasError={errors.subscriptionTiers[i] ? errors.subscriptionTiers[i].pricePerMonth : false}
-                                    modified={isEditMode && modified.subscriptionTiers}
+                                    modified={isEditMode && modified.subscriptionTiers[i] ? modified.subscriptionTiers[i].pricePerMonth : false}
                                     message=' '
+                                    locked={isEditMode && (props.project ? props.project.editingLocked : true)}
                                 />
                                 <InputWithMessage
                                     label={`Features`}
@@ -1186,7 +1295,8 @@ export const CreateProjectFormComponent = props => {
                                     onChangeText={e => onChangeSubscriptionTier(i, 'features', e)}
                                     placeholder={`Describe the features that are available for this subscription tier.`}
                                     hasError={errors.subscriptionTiers[i] ? errors.subscriptionTiers[i].features : false}
-                                    modified={isEditMode && modified.subscriptionTiers}
+                                    modified={isEditMode && modified.subscriptionTiers[i] ? modified.subscriptionTiers[i].features : false}
+                                    locked={isEditMode && (props.project ? props.project.editingLocked : true)}
                                 />
                             </div>
                         ))}
@@ -1599,8 +1709,12 @@ export const CreateProjectFormComponent = props => {
                         <PendingMessage message="Operation in progress. Don't exit this page, this might take a little while." />
                         : <div />
                     }
+                    {loadingSaveEdits ?
+                        <PendingMessage message="Operation in progress, don't exit this page." />
+                        : <div />
+                    }
                     <div className='buttons-container'>
-                        {selectedStepID === 'general' ?
+                        {selectedStepID === 'general' || formDataModified ?
                             null
                             : <Button
                                 title='Back'
@@ -1617,12 +1731,32 @@ export const CreateProjectFormComponent = props => {
                                 priority={1}
                                 onClick={onClickCreateProject}
                             />
-                            : <Button
+                        : formDataModified ?
+                            null
+                        : <Button
                                 title='Next'
                                 type='solid'
                                 priority={1}
                                 onClick={onClickNext}
                             />
+                        }
+                        {formDataModified ?
+                            <div className='d-flex jc-flex-end ai-center'>
+                                <Button
+                                    title='Cancel'
+                                    type='tint'
+                                    priority={1}
+                                    onClick={onClickCancelEdits}
+                                    style={{marginRight: 10}}
+                                />
+                                <Button
+                                    title='Save Changes'
+                                    type='solid'
+                                    priority={1}
+                                    onClick={onClickSubmitEdits}
+                                />
+                            </div>
+                            : null
                         }
                     </div>
                 </div>
@@ -1742,10 +1876,15 @@ const Container = styled.div`
         align-items: center;
         justify-content: flex-end;
     }
+
+    & .ml-10 {
+        margin-left: 10px;
+    }
 `
 
 const mapStateToProps = state => ({
     isValidAccessCode: getIsValidAccessCode(state),
+    project: getProject(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

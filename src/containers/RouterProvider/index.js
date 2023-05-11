@@ -27,6 +27,7 @@ import { Terms } from '../../views/pages/Terms'
 import { ProjectOverview } from '../../views/pages/project/ProjectOverview'
 import { ProjectAdmin } from '../../views/pages/project/ProjectAdmin'
 import { ProjectStatus } from '../../views/pages/project/ProjectStatus'
+import { ProjectRevisions } from '../../views/pages/project/ProjectRevisions'
 import { AccessCode } from '../../views/pages/AccessCode'
 
 const router = createBrowserRouter([
@@ -149,6 +150,11 @@ const router = createBrowserRouter([
     {
       path: '/projects/:projectID/status',
       element: <PrivateRoute element={<ProjectStatus />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/projects/:projectID/revisions',
+      element: <PrivateRoute element={<ProjectRevisions />} />,
       errorElement: <ErrorElement />
     },
     {

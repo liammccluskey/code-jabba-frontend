@@ -74,7 +74,7 @@ export const LoginComponent = props => {
     return (
         <PageContainer>
             <LandingHeader showButtons={false} />
-            <BodyContainer className='ai-center bgc-tt'>
+            <BodyContainer className='ai-center'>
                 <LoginCard className='d-flex fd-column ai-stretch'>
                     <h3>Sign in to your account</h3>
                     <br /><br />

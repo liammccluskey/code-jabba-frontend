@@ -71,6 +71,30 @@ export const ProjectAdminComponent = props => {
         }, fetchCurrentProjectAndCloseMenu, () => {})
     }
 
+    const onClickEditInvoiceSent = () => {
+        props.patchProjects([projectID], {
+            invoiceSent: !props.project.invoiceSent
+        }, fetchCurrentProjectAndCloseMenu, () => {})
+    }
+
+    const onClickEditEditingLocked = () => {
+        props.patchProjects([projectID], {
+            editingLocked: !props.project.editingLocked
+        }, fetchCurrentProjectAndCloseMenu, () => {})
+    }
+
+    const onClickEditRevisionsLocked = () => {
+        props.patchProjects([projectID], {
+            revisionsLocked: !props.project.revisionsLocked
+        }, fetchCurrentProjectAndCloseMenu, () => {})
+    }
+
+    const onClickEditArchived = () => {
+        props.patchProjects([projectID], {
+            archived: !props.project.archived
+        }, fetchCurrentProjectAndCloseMenu, () => {})
+    }
+
     const onClickDeleteProject = () => {
         props.addModal(ModalTypes.CONFIRM, {
             title: 'Delete Project',
@@ -108,6 +132,21 @@ export const ProjectAdminComponent = props => {
         },
         {
             title: !props.loadingProject && props.project ?
+                props.project.invoiceSent ?
+                    'Unsend Invoice'
+                    : 'Send Invoice'
+                : 'Send Invoice'
+            ,
+            icon: !props.loadingProject && props.project ?
+                props.project.invoiceSent ?
+                    'bi-newspaper'
+                    : 'bi-newspaper'
+                : 'bi-newspaper'
+            ,
+            onClick: onClickEditInvoiceSent
+        },
+        {
+            title: !props.loadingProject && props.project ?
                 props.project.refundIssued ?
                     'Remove Refund'
                     : 'Issue Refund'
@@ -115,6 +154,46 @@ export const ProjectAdminComponent = props => {
             ,
             icon: 'bi-cash-stack',
             onClick: onClickEditRefundIssued
+        },
+        {
+            title: !props.loadingProject && props.project ?
+                props.project.editingLocked ?
+                    'Allow Editing'
+                    : 'Lock Editing'
+                : 'Allow Editing'
+            ,
+            icon: !props.loadingProject && props.project ?
+                props.project.editingLocked ?
+                    'bi-unlock'
+                    : 'bi-lock'
+                : 'bi-unlock'
+            ,
+            onClick: onClickEditEditingLocked
+        },
+        {
+            title: !props.loadingProject && props.project ?
+                props.project.revisionsLocked ?
+                    'Allow Revisions'
+                    : 'Lock Revisions'
+                : 'Allow Revisions'
+            ,
+            icon: !props.loadingProject && props.project ?
+                props.project.revisionsLocked ?
+                    'bi-unlock'
+                    : 'bi-lock'
+                : 'bi-unlock'
+            ,
+            onClick: onClickEditRevisionsLocked
+        },
+        {
+            title: !props.loadingProject && props.project ?
+                props.project.archived ?
+                    'De-archive'
+                    : 'Archive'
+                : 'Archive'
+            ,
+            icon: 'bi-archive',
+            onClick: onClickEditArchived
         },
         {title: 'Delete', icon: 'bi-trash', onClick: onClickDeleteProject, isDanger: true},
     ]
@@ -168,11 +247,39 @@ export const ProjectAdminComponent = props => {
                                 : <PillLabel title='Unpaid' color='red' size='s' />
                             }
                         </div>
-                        <div className='item-row' style={{marginBottom: 0}}>
+                        <div className='item-row' >
+                            <label>Invoice Status: </label>
+                            {props.project.invoiceSent ?
+                                <PillLabel title='Sent' color='green' size='s' />
+                                : <PillLabel title='Not sent' color='blue' size='s' />
+                            }
+                        </div>
+                        <div className='item-row' >
                             <label>Refund Status: </label>
                             {props.project.refundIssued ?
                                 <PillLabel title='Issued' color='green' size='s' />
                                 : <PillLabel title='Not issued' color='blue' size='s' />
+                            }
+                        </div>
+                        <div className='item-row' >
+                            <label>Editing: </label>
+                            {props.project.editingLocked ?
+                                <PillLabel title='Locked' color='red' size='s' />
+                                : <PillLabel title='Allowed' color='green' size='s' />
+                            }
+                        </div>
+                        <div className='item-row' >
+                            <label>Revisions: </label>
+                            {props.project.revisionsLocked ?
+                                <PillLabel title='Locked' color='red' size='s' />
+                                : <PillLabel title='Allowed' color='green' size='s' />
+                            }
+                        </div>
+                        <div className='item-row' style={{marginBottom: 0}}>
+                            <label>Archived: </label>
+                            {props.project.archived ?
+                                <PillLabel title='True' color='green' size='s' />
+                                : <PillLabel title='False' color='red' size='s' />
                             }
                         </div>
                     </Container>

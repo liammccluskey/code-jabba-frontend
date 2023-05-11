@@ -154,7 +154,7 @@ export const MainMenuComponent = props => {
                         </div>
                     </div>
                     <div 
-                        className='row-container oh-dark'
+                        className='logout-row-container row-container'
                         onClick={onClickLogOut}
                     >
                         <i className='bi-box-arrow-right' />
@@ -193,6 +193,7 @@ const MenuContainer = styled.div`
         display: flex;
         justify-content: flex-start;
         align-items: center;
+        cursor: pointer;
     }
     & .row-container i {
         font-size: 18px;
@@ -208,6 +209,13 @@ const MenuContainer = styled.div`
 
     & .user-icon-container {
         background-color: red;
+    }
+
+    & .logout-row-container:hover {
+        background-color: ${p => p.theme.errorTranslucent}
+    }
+    & .logout-row-container:hover * {
+        color: ${p => p.theme.error};
     }
     
 `

@@ -27,7 +27,7 @@ export const AuthContainerComponent = props => {
 
             if (
                 firebaseUser && !props.loadingSignIn
-                && !(route === 'login' || route === 'register' || route === 'create' && !props.isLoggedIn)
+                && !(route === 'login' || route === 'register')
             ) {
                 props.fetchThisMongoUser(
                     firebaseUser,
