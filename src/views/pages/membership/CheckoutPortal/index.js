@@ -16,8 +16,10 @@ export const CheckoutPortalComponent = props => {
         
     } = props
 
-    const onClickPurchase= async () => {
+    const onClickPurchase = async () => {
         const res = await api.post('/membership/create-checkout-session')
+        const {sessionURL} = res.data
+        window.location.href = sessionURL
     }
 
     return (

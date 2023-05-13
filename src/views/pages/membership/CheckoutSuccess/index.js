@@ -2,28 +2,54 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
+import { useNavigate } from 'react-router-dom'
 
+import { Features } from '../../Premium'
 import { PageContainer } from '../../../components/common/PageContainer'
 import { BodyContainer } from '../../../components/common/BodyContainer'
 import { MainHeader } from '../../../components/headers/MainHeader'
-import { Subheader } from '../../../components/headers/Subheader'
+import { Button } from '../../../components/common/Button'
 
-export const CheckoutPortalComponent = props => {
+export const CheckoutSuccessComponent = props => {
     const {
         
     } = props
+    const navigate = useNavigate()
+
+    // Direct
+
+    const onClickGoToDashboard = () => {
+        navigate('/dashboard')
+    }
 
     return (
         <PageContainer>
             <MainHeader />
-            <Subheader title='Checkout' />
             <BodyContainer>
                 <Container>
                     <div className='body-container float-container'>
-                        <h3 className='title'>Review your Purchase</h3>
-                        <div className='purchase-container'>
-
+                        <h3 className='title'>Thank you for your purchase</h3>
+                        <p className='message'>You now have access to the following features.</p>
+                        <div className='features-container'>
+                            {Features.map( ({title, description, icon}) => (
+                                <div className='feature-container' key={title}>
+                                    <div className='icon-container'>
+                                        <i className={icon} />
+                                    </div>
+                                    <div className='d-flex fd-column ai-flex-start'>
+                                        <h4 className='feature-title'>{title}</h4>
+                                        <p>{description}</p>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
+                        <Button
+                            title='Go to Dashboard'
+                            priority={1}
+                            type='solid'
+                            onClick={onClickGoToDashboard}
+                            className='as-flex-start'
+                        />
                     </div>
                 </Container>
             </BodyContainer>
@@ -44,17 +70,45 @@ const Container = styled.div`
     }
 
     & .title {
+        margin-bottom: 0px;
+    }
+
+    & .message {
         margin-bottom: 20px;
     }
 
-    & .purchase-container {
+    & .features-container {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        border: 1px solid ${p => p.theme.bc};
+        border-radius: var(--br-container);
+        padding: 15px;
+        margin-bottom: 40px;
+    }
+
+    & .feature-container {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+    }
+    & .feature-container .icon-container {
         display: flex;
         justify-content: space-around;
         align-items: center;
-        border: 1px solid ${p => p.theme.bc};
-        border-radius: var(--br-container);
-        padding: 30px;
-        margin-bottom: 20px;
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+        background-color: ${p => p.theme.tintTranslucent};
+        margin-right: 15px;
+    }
+    & .feature-container i {
+        font-size: 20px;
+        color: ${p => p.theme.tint};
+    }
+    & .feature-title {
+        font-weight: 600;
+        margin-bottom: 10px;
     }
 `
 const mapStateToProps = state => ({
@@ -65,4 +119,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     
 }, dispatch)
 
-export const CheckoutPortal = connect(mapStateToProps, mapDispatchToProps)(CheckoutPortalComponent)
+export const CheckoutSuccess = connect(mapStateToProps, mapDispatchToProps)(CheckoutSuccessComponent)

@@ -5,19 +5,12 @@ import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
 import { api } from '../../../networking'
-import { Colors } from '../../../redux/theme'
 import { PageContainer } from '../../components/common/PageContainer'
 import { BodyContainer } from '../../components/common/BodyContainer'
 import { MainHeader } from '../../components/headers/MainHeader'
 import { Button } from '../../components/common/Button'
 
 export const PremiumPricePerMonth = 10
-const FeatureIconColors = [
-    Colors.blue,
-    Colors.purple,
-    Colors.mint,
-    Colors.green
-]
 export const Features = [
     {
         title: 'Feature 1',
@@ -81,7 +74,7 @@ export const PremiumComponent = props => {
                                 className='feature-container'
                                 style={{marginRight: i % 2 == 0 ? 40 : 0, marginBottom: i <= 1 ? 40 : 0}}
                             >
-                                <div className='icon-container' style={{backgroundColor: FeatureIconColors[i]}} >
+                                <div className='icon-container' >
                                     <i className={icon}/>
                                 </div>
                                 <h3 className='title'>{title}</h3>
@@ -152,10 +145,12 @@ const Container = styled.div`
         justify-content: space-around;
         align-items: center;
         margin-bottom: 10px;
+        background-color: ${p => p.theme.tintTranslucent};
     }
     & .feature-container i {
         color: white;
         font-size: 20px;
+        color: ${p => p.theme.tint};
     }
     & .feature-container .title {
         margin-bottom: 10px;

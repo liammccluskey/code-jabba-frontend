@@ -22,6 +22,8 @@ import { IndividualAdminFAQ } from '../../views/pages/IndividualAdminFAQ'
 import { IndividualFAQ } from '../../views/pages/IndividualFAQ'
 import { Premium } from '../../views/pages/Premium'
 import { CheckoutPortal } from '../../views/pages/membership/CheckoutPortal'
+import { CheckoutSuccess } from '../../views/pages/membership/CheckoutSuccess'
+import { CheckoutCancel } from '../../views/pages/membership/CheckoutCancel'
 import { ErrorElement } from '../../views/pages/ErrorElement'
 
 const router = createBrowserRouter([
@@ -122,6 +124,16 @@ const router = createBrowserRouter([
     {
       path: '/membership/checkoutportal',
       element: <PrivateRoute element={<CheckoutPortal />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/membership/checkoutsuccess',
+      element: <PrivateRoute element={<CheckoutSuccess />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/membership/checkoutcancel',
+      element: <PrivateRoute element={<CheckoutCancel />} />,
       errorElement: <ErrorElement />
     },
 
