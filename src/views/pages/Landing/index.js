@@ -5,7 +5,7 @@ import { bindActionCreators } from '@reduxjs/toolkit'
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment'
 
-import { getIsMobile, getIsSemiMobile, Themes } from '../../../redux/theme'
+import { getIsMobile, getIsSemiMobile } from '../../../redux/theme'
 import { setThemeColor, setTintColor } from '../../../redux/theme'
 import { PageContainer } from '../../components/common/PageContainer'
 import { LandingHeader } from '../../components/headers/LandingHeader'
@@ -306,7 +306,7 @@ const Container = styled.div`
     }
     & .why-choose-us-image {
         height: 550px;
-        border: 5px solid ${p => Themes[1].bc};
+        border: 5px solid ${p => p.theme.bc};
         border-radius: 20px;
     }
     &.semi-mobile .why-choose-us-image {

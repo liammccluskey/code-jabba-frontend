@@ -87,9 +87,9 @@ export const MainMenuComponent = props => {
                         <h5 className='c-ts'>{props.user.email}</h5>
                     </div>
                     <div className='links-container'>
-                        {props.pageLinks.map( ({name, url, icon, openInNewTab}) => (
+                        {props.pageLinks.map( ({name, url, icon, openInNewTab}, i) => (
                             <div
-                                className='row-container oh-dark oh-c-t'
+                                className={`clickable-row-container row-container ${i == 0 && 'gold'}`}
                                 onClick={() => onClickPageLink(url, openInNewTab)}
                                 key={name}
                             >
@@ -98,7 +98,7 @@ export const MainMenuComponent = props => {
                             </div>
                         ))}
                         <div
-                            className='row-container oh-dark oh-c-t'
+                            className='clickable-row-container row-container'
                             onClick={onClickReportBug}
                         >
                             <i className='bi-bug' />
@@ -199,6 +199,28 @@ const MenuContainer = styled.div`
         font-size: 18px;
         color: ${p => p.theme.textMain};
         margin-right: 15px;
+    }
+    & .row-container.gold i {
+        color: ${p => p.theme.gold};
+    }
+    & .row-container.gold p {
+        font-weight: 600;
+    }
+    & .row-container.gold:hover {
+        background-color: ${p => p.theme.goldTranslucent};
+    }
+    & .row-container.gold:hover i {
+        color: ${p => p.theme.gold} !important;
+    }
+    & .row-container.gold:hover p {
+        color: ${p => p.theme.textMain} !important;
+    }
+
+    & .clickable-row-container:hover {
+        background-color: ${p => p.theme.tintTranslucent};
+    }
+    & .clickable-row-container:hover * {
+        color: ${p => p.theme.tint};
     }
 
     & .bi-chevron-down {

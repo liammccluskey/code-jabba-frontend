@@ -8,7 +8,7 @@ import { getIsMobile } from '../../../../redux/theme'
 export const ButtonComponent = props => {
     const {
         priority, // 0 : big | 1 : medium | 2 : small
-        type, // 'solid' | 'clear' | 'tint' | 'error' | 'danger'
+        type, // 'solid' | 'clear' | 'tint' | 'error' | 'danger' | 'gold'
         title,
         imageURL=null,
         imageSize=18,
@@ -126,6 +126,11 @@ const Root = styled.div`
         color: ${p => p.theme.brightRed};
         border: 1px solid ${p => p.theme.bc};
     }
+    &.tgold {
+        background-color: ${p => p.theme.bgcLight};
+        color: ${p => p.theme.gold};
+        border: 1px solid ${p => p.theme.bc};
+    }
 
     &:hover {
         transition: 0.3s
@@ -153,6 +158,10 @@ const Root = styled.div`
         background-color: ${p => p.theme.error};
         border-color: ${p => p.theme.error};
         color: #fdf1f0;
+    }
+
+    &.tgold:hover {
+        background-color: ${p => p.theme.goldTranslucent};
     }
 
     & img {

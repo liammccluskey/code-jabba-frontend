@@ -30,11 +30,11 @@ export const getMainPageLinks = hasAdminPrivileges => [
 ]
 
 export const getMainMenuPageLinks = () => [
-    {   // blackbox
-        name: 'Create a Webapp',
-        url: '/create',
-        id: 'create',
-        icon: 'bi-plus-circle'
+    {
+        name: 'Go Premium',
+        url: '/premium',
+        id: 'premium',
+        icon: 'bi-trophy-fill'
     },
     {
         name: 'Settings',

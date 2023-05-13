@@ -7,6 +7,8 @@ export const Colors = {
     brightRedTranslucent: 'rgba(240, 71, 71, 0.2)',
     success: 'rgb(23, 169, 86)',
     successTranslucent: 'rgba(23, 169, 86, 0.3)',
+    error: 'rgb(211,47,48)',
+    errorTranslucent: 'rgba(211,47,48,0.2)',
     pageLink: 'rgb(70, 141, 228)',
     pageLinkTranslucent: 'rgba(70, 141, 228, 0.3)',
     orange: 'rgb(252,92,22)',
@@ -20,10 +22,8 @@ export const Colors = {
     mint: '#189e8a',
     mintTranslucent: 'rgba(24, 158, 138, 0.2)',
     gray: '#6f787d',
-    facebookBlue: '#4267B2',
-
-    error: 'rgb(211,47,48)',
-    errorTranslucent: 'rgba(211,47,48,0.2)'
+    gold: 'rgb(255,198,87)',
+    goldTranslucent: 'rgba(255,198,87,0.25)',
 }
 
 const LightTheme = {
@@ -94,22 +94,22 @@ const BlueTheme = {
 
 export const Themes = {
     0: {
-        ...BlueTheme,
+        ...LightTheme,
         value: 0,
-        name: 'Blue',
-        icon: 'water'
+        name: 'Light',
+        icon: 'sun'
     },
     1: {
-        ...LightTheme,
+        ...DarkTheme,
         value: 1,
-        name: 'Light',
-        icon: 'sun',
+        name: 'Dark',
+        icon: 'moon',
     },
     2: {
-        ...DarkTheme,
+        ...BlueTheme,
         value: 2,
-        name: 'Dark',
-        icon: 'moon'
+        name: 'Blue',
+        icon: 'water'
     },
 }
 
