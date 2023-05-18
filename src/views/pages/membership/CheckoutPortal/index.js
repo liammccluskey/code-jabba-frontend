@@ -1,8 +1,11 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
+import { useNavigate } from 'react-router-dom'
 
+import { addMessage } from '../../../../redux/communication'
+import { getIsPremiumUser, isPremiumUser } from '../../../../redux/user'
 import { api } from '../../../../networking'
 import { PremiumPricePerMonth } from '../../Premium'
 import { PageContainer } from '../../../components/common/PageContainer'
@@ -15,6 +18,15 @@ export const CheckoutPortalComponent = props => {
     const {
         
     } = props
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (props.isPremiumUser) {
+            navigate('/dashboard')
+            props.addMessage('You are already a premium user.')
+            
+        }
+    }, [])
 
     const onClickPurchase = async () => {
         const res = await api.post('/membership/create-checkout-session')
@@ -95,11 +107,11 @@ const Container = styled.div`
     }
 `
 const mapStateToProps = state => ({
-    
+    isPremiumUser: getIsPremiumUser(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    
+    addMessage
 }, dispatch)
 
 export const CheckoutPortal = connect(mapStateToProps, mapDispatchToProps)(CheckoutPortalComponent)

@@ -24,6 +24,7 @@ import { Premium } from '../../views/pages/Premium'
 import { CheckoutPortal } from '../../views/pages/membership/CheckoutPortal'
 import { CheckoutSuccess } from '../../views/pages/membership/CheckoutSuccess'
 import { CheckoutCancel } from '../../views/pages/membership/CheckoutCancel'
+import { CancelMembership } from '../../views/pages/membership/CancelMembership'
 import { ErrorElement } from '../../views/pages/ErrorElement'
 
 const router = createBrowserRouter([
@@ -122,6 +123,11 @@ const router = createBrowserRouter([
 
     // membership
     {
+      path: '/membership/premium',
+      element: <PrivateRoute element={<Premium />} />,
+      errorElement: <ErrorElement />
+    },
+    {
       path: '/membership/checkoutportal',
       element: <PrivateRoute element={<CheckoutPortal />} />,
       errorElement: <ErrorElement />
@@ -136,13 +142,13 @@ const router = createBrowserRouter([
       element: <PrivateRoute element={<CheckoutCancel />} />,
       errorElement: <ErrorElement />
     },
-
-    // misc
     {
-      path: '/premium',
-      element: <PrivateRoute element={<Premium />} />,
+      path: '/membership/cancel',
+      element: <PrivateRoute element={<CancelMembership />} />,
       errorElement: <ErrorElement />
     },
+
+    // misc
 ])
 
 export const RouterProvider = props => {

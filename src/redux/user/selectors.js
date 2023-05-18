@@ -1,6 +1,6 @@
 import {createSelector} from '@reduxjs/toolkit'
 import {auth} from '../../networking'
-import { isAdmin, isSuperAdmin } from './utils'
+import { isAdmin, isSuperAdmin, isPremiumUser } from './utils'
 
 export const getMongoUser = state => state.user.mongoUser
 export const getFirebaseUser = () => auth.currentUser
@@ -40,4 +40,11 @@ export const getIsLoggedIn = createSelector(
         getFirebaseUser
     ],
     (mongoUser, firebaseUser) => !!mongoUser && !!firebaseUser
+)
+
+export const getIsPremiumUser = createSelector(
+    [
+        getMongoUser
+    ],
+    mongoUser => mongoUser && isPremiumUser(mongoUser)
 )

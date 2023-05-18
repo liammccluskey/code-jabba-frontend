@@ -4,7 +4,10 @@ import {useNavigate, Link} from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import { getIsMobile } from '../../../../redux/theme'
-import { getHasAdminPrivileges } from '../../../../redux/user'
+import {
+    getHasAdminPrivileges,
+    getIsPremiumUser
+} from '../../../../redux/user'
 import { MainMenu } from '../MainMenu'
 import { LinksMenu } from '../LinksMenu'
 import { NotificationsMenu } from '../NotificationsMenu'
@@ -29,13 +32,19 @@ export const getMainPageLinks = hasAdminPrivileges => [
     )
 ]
 
-export const getMainMenuPageLinks = () => [
-    {
-        name: 'Go Premium',
-        url: '/premium',
-        id: 'premium',
-        icon: 'bi-trophy-fill'
-    },
+export const getMainMenuPageLinks = isPremiumUser => [
+    ...(isPremiumUser ?
+        []
+        : [
+            {
+                name: 'Go Premium',
+                url: '/membership/premium',
+                id: 'premium',
+                icon: 'bi-trophy-fill',
+                color: 'gold'
+            }
+        ]
+    ),
     {
         name: 'Settings',
         url: '/settings',
@@ -74,8 +83,8 @@ export const MainHeaderComponent = props => {
 
     useEffect(() => {
         setMainPageLinks(getMainPageLinks(props.hasAdminPrivileges))
-        setMainMenuPageLinks(getMainMenuPageLinks())
-    }, [props.hasAdminPrivileges])
+        setMainMenuPageLinks(getMainMenuPageLinks(props.isPremiumUser))
+    }, [props.hasAdminPrivileges, props.isPremiumUser])
 
     return (
         <Root className={`d-flex jc-space-between ai-center ${!hasSubheaderBelow && 'no-subheader'}`}>
@@ -129,7 +138,8 @@ export const MainHeaderComponent = props => {
 
 const mapStateToProps = state => ({
     isMobile: getIsMobile(state),
-    hasAdminPrivileges: getHasAdminPrivileges(state)
+    hasAdminPrivileges: getHasAdminPrivileges(state),
+    isPremiumUser: getIsPremiumUser(state),
 })
 
 const Root = styled.div`

@@ -1,5 +1,7 @@
 import {api, stringifyQuery} from '../../networking'
 
+import { SubscriptionTiers } from './constants'
+
 // Networking
 
 export const __fetchMongoUserByuid = async uid => {
@@ -87,4 +89,8 @@ export const isSuperAdmin = user => {
 export const isAdmin = user => {
     const {adminKey} = user
     return user.isAdmin && adminKey === process.env.REACT_APP_ADMIN_KEY
+}
+
+export const isPremiumUser = user => {
+    return user.subscriptionTier === SubscriptionTiers.premium
 }

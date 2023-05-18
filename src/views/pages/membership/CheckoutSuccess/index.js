@@ -1,9 +1,15 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
+import { addMessage } from '../../../../redux/communication'
+import {
+    getFirebaseUser,
+    updateSubscription,
+    fetchThisMongoUser
+} from '../../../../redux/user'
 import { Features } from '../../Premium'
 import { PageContainer } from '../../../components/common/PageContainer'
 import { BodyContainer } from '../../../components/common/BodyContainer'
@@ -15,6 +21,13 @@ export const CheckoutSuccessComponent = props => {
         
     } = props
     const navigate = useNavigate()
+
+    useEffect(() => {
+        props.addMessage('Your subscription may take a minute to activate', false, true)
+        setTimeout(() => {
+            props.updateSubscription(() => props.fetchThisMongoUser(props.firebaseUser))
+        }, 15*1000)
+    }, [])
 
     // Direct
 
@@ -112,11 +125,13 @@ const Container = styled.div`
     }
 `
 const mapStateToProps = state => ({
-    
+    firebaseUser: getFirebaseUser()
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    
+    updateSubscription,
+    fetchThisMongoUser,
+    addMessage
 }, dispatch)
 
 export const CheckoutSuccess = connect(mapStateToProps, mapDispatchToProps)(CheckoutSuccessComponent)

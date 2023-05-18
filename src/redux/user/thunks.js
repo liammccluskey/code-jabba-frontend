@@ -1,10 +1,11 @@
 import {updateProfile, updateEmail, signOut, deleteUser as deleteFirebaseUser} from 'firebase/auth'
 import {ref, uploadBytes, getDownloadURL} from 'firebase/storage'
 
+import { SubscriptionTiers } from './constants'
 import * as UserActions from './actions'
 import * as ThemeActions from '../theme'
 import * as UserUtils from './utils'
-import { getFirebaseUser, getIsLoggedIn, getMongoUser } from './selectors'
+import { getFirebaseUser, getMongoUser } from './selectors'
 import {api, auth, storage, getFirebaseErrorMessage} from '../../networking'
 import { addMessage } from '../communication'
 
@@ -275,5 +276,50 @@ export const deleteUser = onSuccess => async (dispatch, getState) => {
             : error.message
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
+    }
+}
+
+export const updateSubscription = (onSuccess = () => {}, onFailure = () => {}) => async (dispatch, getState) => {
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        const res = await api.patch('/membership/update-subscription', {
+            userID: mongoUser._id,
+            userEmail: mongoUser.email,
+            subscriptionTier: SubscriptionTiers.premium
+        })
+
+        dispatch(addMessage(res.data.message))
+        onSuccess()
+    } catch (error) {
+        const errorMessage = error.response ?
+            error.response.data.message
+            : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        onFailure()
+    }
+}
+
+export const cancelSubscription = (onSuccess = () => {}, onFailure = () => {}) => async (dispatch, getState) => {
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        const res = await api.patch('/membership/cancel-subscription', {
+            userID: mongoUser._id,
+            stripeID: mongoUser.stripeID
+        })
+
+        dispatch(addMessage(res.data.message))
+        onSuccess()
+    } catch (error) {
+        const errorMessage = error.response ?
+            error.response.data.message
+            : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        onFailure()
     }
 }

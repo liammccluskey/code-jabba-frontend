@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 
 import {
     getUser,
+    getIsPremiumUser,
     patchUserTintColor,
     patchUserThemeColor,
     signOutUser
@@ -73,7 +74,7 @@ export const MainMenuComponent = props => {
             menuElement={
                 <MenuContainer className='d-flex fd-column jc-flex-start ai-stretch'>
                     <div
-                        className='d-flex fd-column jc-flex-start ai-center profile-container oh-dark'
+                        className='profile-container'
                         onClick={onClickProfileContainer}
                     >
                         <UserIcon
@@ -87,9 +88,9 @@ export const MainMenuComponent = props => {
                         <h5 className='c-ts'>{props.user.email}</h5>
                     </div>
                     <div className='links-container'>
-                        {props.pageLinks.map( ({name, url, icon, openInNewTab}, i) => (
+                        {props.pageLinks.map( ({name, url, icon, openInNewTab, color}) => (
                             <div
-                                className={`clickable-row-container row-container ${i == 0 && 'gold'}`}
+                                className={`clickable-row-container row-container ${color === 'gold' && 'gold'}`}
                                 onClick={() => onClickPageLink(url, openInNewTab)}
                                 key={name}
                             >
@@ -176,7 +177,14 @@ const MenuContainer = styled.div`
     }
 
     & .profile-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         padding: 15px 10px;
+        cursor: pointer;
+    }
+    & .profile-container:hover {
+        background-color: ${p => p.theme.tintTranslucent};
     }
 
     & .links-container {
@@ -243,6 +251,7 @@ const MenuContainer = styled.div`
 `
 const mapStateToProps = state => ({
     user: getUser(state),
+    isPremiumUser: getIsPremiumUser(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

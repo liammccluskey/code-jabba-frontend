@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
@@ -13,12 +13,17 @@ import { MainHeader } from '../../../components/headers/MainHeader'
 import { SettingsHeader } from '../../../components/settings/SettingsHeader'
 import {
     getUser,
+    getFirebaseUser,
+    getIsPremiumUser,
     patchUserDisplayName,
     patchUserEmail,
     patchUserPhoto,
     patchUserThemeColor,
     patchUserTintColor,
-    deleteUser
+    deleteUser,
+    fetchThisMongoUser,
+    updateSubscription,
+    cancelSubscription
 } from '../../../../redux/user'
 import { addModal } from '../../../../redux/modal'
 import { ModalTypes } from '../../../../containers/ModalProvider'
@@ -42,6 +47,7 @@ export const GeneralSettingsComponent = props => {
     const formInitialValues = {
         membership: {
             memberSince: moment(props.user.createdAt).format('LL'),
+            membership: props.user.subscriptionTier ? props.user.subscriptionTier : 'None'
         },
         account: {
             email: props.user.email
@@ -64,6 +70,14 @@ export const GeneralSettingsComponent = props => {
                 selectValues: Object.values(Tints)
             }
         }
+    }
+
+    const onClickGoPremium = () => {
+        navigate('/membership/premium')
+    }
+
+    const onClickCancelPremium = () => {
+        navigate('/membership/cancel')
     }
 
     const onClickResetPassword = async () => {
@@ -129,6 +143,27 @@ export const GeneralSettingsComponent = props => {
                             isEditable={false}
                             rightChild={
                                 <p>{formInitialValues.membership.memberSince}</p>
+                            }
+                        />
+                        <SettingsRow
+                            title='Memberhsip'
+                            isEditable={false}
+                            middleChild={
+                                <p>{formInitialValues.membership.membership}</p>
+                            }
+                            rightChild={props.isPremiumUser ?
+                                <Button
+                                    title='Cancel Premium'
+                                    priority={2}
+                                    type='error'
+                                    onClick={onClickCancelPremium}
+                                />
+                                : <Button
+                                    title='Go Premium'
+                                    priority={2}
+                                    type='gold'
+                                    onClick={onClickGoPremium}
+                                />
                             }
                         />
                     </div>
@@ -248,17 +283,22 @@ const Container = styled.div`
 
 const mapStateToProps = state => ({
     user: getUser(state),
+    firebaseUser: getFirebaseUser(),
+    isPremiumUser: getIsPremiumUser(state),
     tintColor: getTintColor(state),
     themeColor: getThemeColor(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
+    fetchThisMongoUser,
     patchUserDisplayName,
     patchUserEmail,
     patchUserThemeColor,
     patchUserTintColor,
     patchUserPhoto,
     deleteUser,
+    updateSubscription,
+    cancelSubscription,
     addMessage,
     addModal,
 }, dispatch)

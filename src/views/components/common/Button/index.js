@@ -127,7 +127,7 @@ const Root = styled.div`
         border: 1px solid ${p => p.theme.bc};
     }
     &.tgold {
-        background-color: ${p => p.theme.bgcLight};
+        background-color: black;
         color: ${p => p.theme.gold};
         border: 1px solid ${p => p.theme.bc};
     }
@@ -162,6 +162,7 @@ const Root = styled.div`
 
     &.tgold:hover {
         background-color: ${p => p.theme.goldTranslucent};
+        color: ${p => p.theme.textPrimary};
     }
 
     & img {

@@ -73,6 +73,7 @@ export const PremiumComponent = props => {
                             <div
                                 className='feature-container'
                                 style={{marginRight: i % 2 == 0 ? 40 : 0, marginBottom: i <= 1 ? 40 : 0}}
+                                key={title}
                             >
                                 <div className='icon-container' >
                                     <i className={icon}/>
