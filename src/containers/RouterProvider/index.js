@@ -26,6 +26,10 @@ import { CheckoutSuccess } from '../../views/pages/membership/CheckoutSuccess'
 import { CheckoutCancel } from '../../views/pages/membership/CheckoutCancel'
 import { CancelMembership } from '../../views/pages/membership/CancelMembership'
 import { ErrorElement } from '../../views/pages/ErrorElement'
+import { Jobs } from '../../views/pages/Jobs'
+import { Companies } from '../../views/pages/Companies'
+import { Job } from '../../views/pages/Job'
+import { Company } from '../../views/pages/Company'
 
 const router = createBrowserRouter([
     {
@@ -148,7 +152,27 @@ const router = createBrowserRouter([
       errorElement: <ErrorElement />
     },
 
-    // misc
+    // main
+    {
+      path: '/jobs',
+      element: <PrivateRoute element={<Jobs />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/companies',
+      element: <PrivateRoute element={<Companies />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/companies/:companyID',
+      element: <PrivateRoute element={<Company />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: 'jobs/:jobID',
+      element: <PrivateRoute element={<Jobs />} />,
+      errorElement: <ErrorElement />
+    }
 ])
 
 export const RouterProvider = props => {

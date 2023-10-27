@@ -28,3 +28,8 @@ export const setLoadingSignIn = loading => ({
     type: Types.SET_LOADING_SIGN_IN,
     value: loading
 })
+
+export const setIsRecruiterMode = isRecruiterMode => ({
+    type: Types.SET_IS_RECRUITER_MODE,
+    value: isRecruiterMode
+})

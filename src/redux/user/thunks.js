@@ -26,6 +26,10 @@ export const fetchThisMongoUser = (
             throw Error('No users matched those filters.')
         }
 
+        if (isInitialFetch && res.data.isRecruiter) {
+            dispatch(UserActions.setIsRecruiterMode(true))
+        }
+
         dispatch(UserActions.setMongoUser(res.data))
         dispatch(ThemeActions.setThemeColor(res.data.settings.theme.themeColor))
         dispatch(ThemeActions.setTintColor(res.data.settings.theme.tintColor))

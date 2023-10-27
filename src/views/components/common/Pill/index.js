@@ -7,7 +7,7 @@ export const Pill = props => {
         id,
         active,
 
-        onClick,
+        onClick, // pillID => void
 
         ...rest
     } = props
@@ -15,7 +15,7 @@ export const Pill = props => {
     return (
         <Root
             {...rest}
-            onClick={onClick}
+            onClick={() => onClick(id)}
             className={`${active && 'active'} ${props.className} no-select`}
         >
             <p>{title}</p>

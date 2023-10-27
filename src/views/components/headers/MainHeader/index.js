@@ -2,22 +2,45 @@ import React, {useEffect, useState} from 'react'
 import styled from 'styled-components'
 import {useNavigate, Link} from 'react-router-dom'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 
 import { getIsMobile } from '../../../../redux/theme'
 import {
     getHasAdminPrivileges,
-    getIsPremiumUser
+    getIsPremiumUser,
+    getIsRecruiterMode,
+    setIsRecruiterMode
 } from '../../../../redux/user'
 import { MainMenu } from '../MainMenu'
 import { LinksMenu } from '../LinksMenu'
 import { NotificationsMenu } from '../NotificationsMenu'
+import { Pill } from '../../common/Pill'
+import { Tooltip } from '../../common/Tooltip'
 
-export const getMainPageLinks = hasAdminPrivileges => [
+export const getMainPageLinks = (hasAdminPrivileges, isRecruiterMode) => [
     {
         name: 'Dashboard',
         url: '/dashboard',
         id: 'dashboard',
         icon: 'bi-house'
+    },
+    ...( isRecruiterMode ? [
+
+        ]
+        : [
+            {
+                name: 'Jobs',
+                url: '/jobs',
+                id: 'jobs',
+                icon: 'bi-briefcase'
+            },
+        ]
+    ),
+    {
+        name: 'Companies',
+        url: '/companies',
+        id: 'companies',
+        icon: 'bi-globe2'
     },
     ...( hasAdminPrivileges ?
         [
@@ -29,7 +52,7 @@ export const getMainPageLinks = hasAdminPrivileges => [
             }
         ]
         : []
-    )
+    ),
 ]
 
 export const getMainMenuPageLinks = isPremiumUser => [
@@ -52,12 +75,6 @@ export const getMainMenuPageLinks = isPremiumUser => [
         icon: 'bi-gear'
     },
     {
-        name: 'Terms',
-        url: '/terms',
-        id: 'terms',
-        icon: 'bi-list-task',
-    },
-    {
         name: 'Support',
         url: '/support',
         id: 'support',
@@ -76,15 +93,24 @@ export const MainHeaderComponent = props => {
     const [mainMenuHidden, setMainMenuHidden] = useState(true)
     const [mainPageLinks, setMainPageLinks] = useState([])
     const [mainMenuPageLinks, setMainMenuPageLinks] = useState([])
+    const [loadingPageLinks, setLoadingPageLinks] = useState(true)
 
-    const activeLinkID = window.location.pathname.split('/')[1]
+    const activeLinkID = window.location.pathname.split('/').length == 2 ?
+        window.location.pathname.split('/')[1]
+        : null
+        
+    useEffect(() => {
+        setLoadingPageLinks(true)
+        setMainPageLinks(getMainPageLinks(props.hasAdminPrivileges, props.isRecruiterMode))
+        setMainMenuPageLinks(getMainMenuPageLinks(props.isPremiumUser))
+        setLoadingPageLinks(false)
+    }, [props.hasAdminPrivileges, props.isPremiumUser, props.isRecruiterMode])
 
     const onClickLogo = () => navigate('/')
 
-    useEffect(() => {
-        setMainPageLinks(getMainPageLinks(props.hasAdminPrivileges))
-        setMainMenuPageLinks(getMainMenuPageLinks(props.isPremiumUser))
-    }, [props.hasAdminPrivileges, props.isPremiumUser])
+    const onClickSwitchModePill = () => {
+        props.setIsRecruiterMode(!props.isRecruiterMode)
+    }
 
     return (
         <Root className={`d-flex jc-space-between ai-center ${!hasSubheaderBelow && 'no-subheader'}`}>
@@ -104,6 +130,20 @@ export const MainHeaderComponent = props => {
                 }
             </div>
             <div className='d-flex jc-flex-end ai-center'>
+                {loadingPageLinks ?
+                    null
+                    : <Tooltip
+                        title={props.isRecruiterMode ? 'Switch to candidate mode' : 'Switch to recruiter mode'}
+                        marginTop={35}
+                        style={{marginRight: 25}}
+                    >
+                        <Pill
+                            title={props.isRecruiterMode ? 'Recruiter mode' : 'Candidate mode'}
+                            active={true}
+                            onClick={onClickSwitchModePill}
+                        />
+                    </Tooltip> 
+                }   
                 {props.isMobile ?
                     <LinksMenu
                         style={{marginRight: 15}}
@@ -136,12 +176,6 @@ export const MainHeaderComponent = props => {
     )
 }
 
-const mapStateToProps = state => ({
-    isMobile: getIsMobile(state),
-    hasAdminPrivileges: getHasAdminPrivileges(state),
-    isPremiumUser: getIsPremiumUser(state),
-})
-
 const Root = styled.div`
     background-color: ${props => props.theme.bgcNav};
     min-height: var(--h-mainheader);
@@ -156,7 +190,7 @@ const Root = styled.div`
     }
 
     & .logo-icon {
-        // border-radius: 50%;
+        border-radius: 50%;
         margin-right: 15px;
     }
 
@@ -179,4 +213,16 @@ const PageLink = styled(Link)`
     }
 `
 
-export const MainHeader = connect(mapStateToProps)(MainHeaderComponent)
+
+const mapStateToProps = state => ({
+    isMobile: getIsMobile(state),
+    hasAdminPrivileges: getHasAdminPrivileges(state),
+    isPremiumUser: getIsPremiumUser(state),
+    isRecruiterMode: getIsRecruiterMode(state),
+})
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+    setIsRecruiterMode
+}, dispatch)
+
+export const MainHeader = connect(mapStateToProps, mapDispatchToProps)(MainHeaderComponent)

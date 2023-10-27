@@ -5,6 +5,7 @@ export const Tooltip = props => {
     const {
         children,
         title,
+        marginTop=-36,
 
         ...rest
     } = props
@@ -12,7 +13,7 @@ export const Tooltip = props => {
     return (
         <Root {...rest}>
             {children}
-            <h5 className='tooltip-text'>
+            <h5 className='tooltip-text' style={{marginTop}}>
                 {title}
             </h5>
         </Root>
@@ -29,6 +30,7 @@ const Root = styled.div`
         visibility: visible;
     }
     & .tooltip-text {
+        z-index: 50;
         visibility: hidden;
         box-sizing: border-box;
         display: inline-flex;
@@ -36,7 +38,6 @@ const Root = styled.div`
         align-items: center;
         padding: 2px 10px;
         height: 30px;
-        margin-top: -36px;
         border-radius: 5px;
         background-color: var(--bgc-light);
         pointer-events: none;

@@ -15,7 +15,7 @@ export const Paginator = props => {
     return (
         <Root {...rest}>
             <i className='left-arrow bi-chevron-left' onClick={onClickDecrementPage} />
-            <h4>{page}</h4>
+            <h4>{pagesCount == 0 ? 0 : page}</h4>
             <h5>of</h5>
             <h4>{pagesCount}</h4>
             <i className='right-arrow bi-chevron-right' onClick={onClickIncrementPage} />

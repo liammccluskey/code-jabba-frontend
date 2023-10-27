@@ -51,7 +51,7 @@ export const SearchableTableComponent = props => {
                             title={title}
                             id={id}
                             active={active}
-                            onClick={() => onClickPill(id)}
+                            onClick={onClickPill}
                             key={id}
                         />
                     ))}

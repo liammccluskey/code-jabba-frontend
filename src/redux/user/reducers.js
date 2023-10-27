@@ -7,8 +7,9 @@ const UserState = {
     loadingLogout: false,
     loadingSignIn: false,
     loadingUserFetch: false,
+    isRecruiterMode: false,
 
-    // calculated,
+    // calculated
     firebaseUser: null,
     user: null,
     isLoggedIn: false,
@@ -55,6 +56,11 @@ export const userReducer = (state = UserState, action) => {
             return {
                 ...state,
                 loadingSignIn: action.value
+            }
+        case Types.SET_IS_RECRUITER_MODE:
+            return {
+                ...state,
+                isRecruiterMode: action.value
             }
         default:
             return state

@@ -8,6 +8,7 @@ export const getLoadingMongoUser = state => state.user.loadingMongoUser
 export const getLoadingProfileUpdate = state => state.user.loadingProfileUpdate
 export const getLoadingLogout = state => state.user.loadingLogout
 export const getLoadingSignIn = state => state.user.loadingSignIn
+export const getIsRecruiterMode = state => state.user.isRecruiterMode
 
 export const getHasAdminPrivileges = createSelector(
     [

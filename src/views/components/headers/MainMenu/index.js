@@ -17,7 +17,6 @@ import { DropdownMenu } from '../DropdownMenu'
 import { UserIcon } from '../../common/UserIcon'
 import { Themes, Tints } from '../../../../redux/theme'
 import { Tooltip } from '../../common/Tooltip'
-
 export const MainMenuComponent = props => {
     const {
         menuHidden,
@@ -223,10 +222,7 @@ const MenuContainer = styled.div`
     }
 
     & .clickable-row-container:hover {
-        background-color: ${p => p.theme.tintTranslucent};
-    }
-    & .clickable-row-container:hover * {
-        color: ${p => p.theme.tint};
+        background-color: ${p => p.theme.bgcHover};
     }
 
     & .bi-chevron-down {

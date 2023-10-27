@@ -24,14 +24,19 @@ export const CheckoutPortalComponent = props => {
         if (props.isPremiumUser) {
             navigate('/dashboard')
             props.addMessage('You are already a premium user.')
-            
         }
     }, [])
 
     const onClickPurchase = async () => {
-        const res = await api.post('/membership/create-checkout-session')
-        const {sessionURL} = res.data
-        window.location.href = sessionURL
+        try {
+            const res = await api.post('/membership/create-checkout-session')
+            const {sessionURL} = res.data
+            window.location.href = sessionURL
+        } catch (error) {
+            const errorMessage = error.message
+            console.log(errorMessage)
+            props.addMessage(errorMessage, true)
+        }
     }
 
     return (

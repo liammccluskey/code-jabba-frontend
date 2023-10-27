@@ -12,8 +12,8 @@ import { LandingHeader } from '../../components/headers/LandingHeader'
 import { Button } from '../../components/common/Button'
 
 const Config = {
-    heroTitle: 'Custom webapps done right',
-    heroMessage: "We'll convert your webapp idea into a professional webapp. Just fill out our form and tell us about your webapp to get started.",
+    heroTitle: 'The job board for software engineers',
+    heroMessage: "Forget job titles. Search by language, skill, and experience level instead.",
     heroImageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_bug_reports.png?alt=media&token=706ccd87-b9b6-4225-adf8-c07f45cf97bd',
     whyChooseUs: [
         {
@@ -40,49 +40,25 @@ const Config = {
     ],
     pricing: [
         {
-            title: 'Small Webapp',
-            price: '250',
+            title: 'Basic Plan',
+            price: 'Free',
+            formatCurrency: false,
             features: [
-                {title: '2 Custom Pages', included: true},
-                {title: 'Source Code', included: true},
-                {title: 'Login Pages', included: true},
-                {title: 'Landing Page', included: true},
-                {title: 'Settings Page', included: true},
-                {title: 'Support Page', included: true},
-                {title: 'Admin Console', included: true},
-                {title: 'Notifications Page', included: true},
+                {title: 'Unlimited job applications', included: true},
+                {title: 'Message recruiters / candidates', included: true},
+                {title: '1 job posting', included: true}
             ],
             id: 's'
         },
         {
-            title: 'Medium Webapp',
-            price: '500',
+            title: 'Premium Plan',
+            price: '30 / month',
+            formatCurrency: true,
             features: [
-                {title: '4 Custom Pages', included: true},
-                {title: 'Source Code', included: true},
-                {title: 'Login Pages', included: true},
-                {title: 'Landing Page', included: true},
-                {title: 'Settings Page', included: true},
-                {title: 'Support Page', included: true},
-                {title: 'Admin Console', included: true},
-                {title: 'Notifications Page', included: true},
+                {title: 'All free plan benefits', included: true},
+                {title: 'Unlimited job postings', included: true}
             ],
             id: 'm'
-        },
-        {
-            title: 'Large Webapp',
-            price: '1500',
-            features: [
-                {title: '10 Custom Pages', included: true},
-                {title: 'Source Code', included: true},
-                {title: 'Login Pages', included: true},
-                {title: 'Landing Page', included: true},
-                {title: 'Settings Page', included: true},
-                {title: 'Support Page', included: true},
-                {title: 'Admin Console', included: true},
-                {title: 'Notifications Page', included: true},
-            ],
-            id: 'l'
         }
     ]
 }
@@ -97,7 +73,7 @@ export const LandingComponent = props => {
     }, [])
 
     const onClickGetStarted = () => {
-        navigate('/create')
+        navigate('/register')
     }
 
     const onClickViewPricing = () => {
@@ -110,7 +86,7 @@ export const LandingComponent = props => {
     }
 
     const onClickPricingOption = optionID => {
-        navigate(`/create/${optionID}`)
+        navigate(`/register`)
     }
 
     return (
@@ -172,11 +148,11 @@ export const LandingComponent = props => {
                 <div className='pricing-container' id='pricing-container'>
                     <h1 className='title'>Pricing</h1>
                     <div className='pricing-options-container'>
-                        {Config.pricing.map(({title, price, icon, iconColor, features, id}) => (
+                        {Config.pricing.map(({title, price, formatCurrency, features, id}) => (
                             <div className='pricing-option-container float-container' key={title}>
                                 <div className='header'>
                                     <h3>{title}</h3>
-                                    <h3 className='price'>${price}</h3>
+                                    <h3 className='price'>{`${formatCurrency ? '$' : '' } ${price}`}</h3>
                                 </div>
                                 {features.map( ({title, included}, i) => (
                                     <div className={`feature-list-item ${!i && 'bold'}`} key={title}>
@@ -365,7 +341,7 @@ const Container = styled.div`
 
     & .pricing-options-container {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
     }
     @media only screen and (max-width: 1000px) {
         & .pricing-options-container {
@@ -379,6 +355,7 @@ const Container = styled.div`
         display: flex;
         flex-direction: column;
         align-items: stretch;
+        justify-content: space-between;
         border-radius: var(--br-container);
         padding: 30px;
         flex: 1;
