@@ -41,6 +41,9 @@ const Root = styled.div`
         align-items: center;
         margin-bottom: 10px;
     }
+    & .option-container:last-child {
+        margin-bottom: 0px;
+    }
 
     & .checkbox {
         margin-right: 15px;

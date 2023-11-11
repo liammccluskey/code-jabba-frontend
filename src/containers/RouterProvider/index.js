@@ -29,7 +29,13 @@ import { ErrorElement } from '../../views/pages/ErrorElement'
 import { Jobs } from '../../views/pages/Jobs'
 import { Companies } from '../../views/pages/Companies'
 import { Job } from '../../views/pages/Job'
-import { Company } from '../../views/pages/Company'
+import { CompanyGeneral } from '../../views/pages/company/CompanyGeneral'
+import { CreateJob } from '../../views/pages/CreateJob'
+import { CreateCompany } from '../../views/pages/CreateCompany'
+import { CompanyReviews } from '../../views/pages/company/CompanyReviews'
+import { CompanyJobs } from '../../views/pages/company/CompanyJobs'
+import { Applications } from '../../views/pages/Applications'
+import { EditJob } from '../../views/pages/EditJob'
 
 const router = createBrowserRouter([
     {
@@ -164,15 +170,47 @@ const router = createBrowserRouter([
       errorElement: <ErrorElement />
     },
     {
-      path: '/companies/:companyID',
-      element: <PrivateRoute element={<Company />} />,
+      path: '/jobs/:jobID',
+      element: <PrivateRoute element={<Job />} />,
       errorElement: <ErrorElement />
     },
     {
-      path: 'jobs/:jobID',
-      element: <PrivateRoute element={<Jobs />} />,
+      path: '/create-company',
+      element: <CreateCompany />,
       errorElement: <ErrorElement />
-    }
+    },
+    {
+      path: '/create-job',
+      element: <CreateJob />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/edit-job/:jobID',
+      element: <EditJob />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/applications/:jobID',
+      element: <Applications />,
+      errorElement: <ErrorElement />
+    },
+
+    // company
+    {
+      path: '/companies/:companyID',
+      element: <CompanyGeneral />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/companies/:companyID/reviews',
+      element: <CompanyReviews />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/companies/:companyID/jobs',
+      element: <CompanyJobs />,
+      errorElement: <ErrorElement />
+    },
 ])
 
 export const RouterProvider = props => {

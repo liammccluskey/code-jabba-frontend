@@ -10,6 +10,7 @@ export const DropdownMenuComponent = props => {
         triggerElement,
         menuElement,
         triggerHeight,
+        positionRelative=false,
 
         setMenuHidden,
 
@@ -36,7 +37,7 @@ export const DropdownMenuComponent = props => {
     }
 
     return (
-        <Root className='d-inline-flex fd-column jc-flex-start ai-flex-end' {...rest}>
+        <Root {...rest} style={positionRelative ? {position: 'relative', ...props.style} : props.style}>
             <div
                 className='trigger-container d-flex jc-space-around ai-center'
                 onClick={onClickTriggerContainer}
@@ -52,6 +53,7 @@ export const DropdownMenuComponent = props => {
                     className={`
                         menu-container animation-pop-in no-select
                         d-flex fd-column jc-flex-start ai-stretch
+                        ${positionRelative ? 'relative' : 'absolute'}
                     `}
                     ref={menuRef}
                 >
@@ -63,6 +65,10 @@ export const DropdownMenuComponent = props => {
 }
 
 const Root = styled.div`
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-start;
     & .trigger-container {
         cursor: pointer;
     }
@@ -73,18 +79,23 @@ const Root = styled.div`
         border-radius: var(--br-container);
         background-color: ${p => p.theme.bgcLight};
         width: 320px;
+        min-width: 320px;
         box-shadow: ${p => p.theme.boxShadowDark};
         overflow: hidden;
         z-index: 10;
     }
 
     @media only screen and (max-width: 601px) {
-        & .menu-container {
-            width: calc(100% - var(--ps-body)*2);
+        & .menu-container.absolute {
+            min-width: calc(100% - var(--ps-body)*2);
             box-sizing: border-box;
             right: 0px;
             left: 0px;
             margin: 0px var(--ps-body);
+        }
+        & .menu-container.relative {
+            width: auto;
+            min-width: 0px;
         }
     }
 `

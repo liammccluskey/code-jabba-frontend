@@ -58,6 +58,8 @@ const Root = styled.div`
         font-size: 14px;
         background-color: ${p => p.theme.bgcInput};
         margin-top: 5px;
+        height: 43px;
+        box-sizing: border-box;
     }
 
     input:focus, input:active,
@@ -82,6 +84,12 @@ const Root = styled.div`
     }
     input::file-selector-button:hover {
         filter: brightness(80%);
+    }
+
+    & select.clear {
+        background-color: transparent !important;
+        border: 1px solid ${p => p.theme.bc} !important;
+        margin-top: 0px !important;
     }
 
     /* Properties */
@@ -377,7 +385,7 @@ const Root = styled.div`
         border-radius: var(--br-container);
         border: ${p => p.theme.floatBorder};
         padding: none;
-        overflow: hidden;
+        overflow: visible;
         background-color: ${p => p.theme.bgcLight};
         box-shadow: ${p => p.theme.boxShadow};
     }

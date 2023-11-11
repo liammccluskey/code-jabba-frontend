@@ -14,15 +14,16 @@ export const SearchableTableComponent = props => {
     const {
         searchText,
         loading,
-        pills, // [{title, id, active}]
-        sortFilters, // [{title, filter}]
+        pills=[], // [{title, id, active}]
+        sortFilters=[], // [{title, filter}]
         sortFilter,
-        tableHeaders,
-        tableRows,
-        tableSelectActions, // [{title, action}]
+        tableHeaders, // [string]
+        tableRows, // [{id, cells}]
+        tableSelectActions=[], // [{title, action}]
         clearSelectedRows,
         page,
         pagesCount,
+        searchable=true,
 
         onChangeSearchText, // e => void
         onSubmitSearch,
@@ -37,13 +38,16 @@ export const SearchableTableComponent = props => {
 
     return (
         <Root {...rest} className={`searchable-table ${props.isMobile && 'mobile'}`}>
-            <SearchBar
-                value={searchText}
-                placeholder='Search by title'
-                onChange={onChangeSearchText}
-                onSubmit={onSubmitSearch}
-                className='search-bar'
-            />
+            {searchable ?
+                <SearchBar
+                    value={searchText}
+                    placeholder='Search by title'
+                    onChange={onChangeSearchText}
+                    onSubmit={onSubmitSearch}
+                    className='search-bar'
+                />
+                : null
+            }
             <div className='filters-row-container'>
                 <div className='pills-container'>
                     {pills.map(({title, id, active}) => (
@@ -56,11 +60,14 @@ export const SearchableTableComponent = props => {
                         />
                     ))}
                 </div>
-                <select value={sortFilter} onChange={onChangeSortFilter}>
-                    {sortFilters.map(({title, filter}) => (
-                        <option value={filter} key={filter}>{title}</option>
-                    ))}
-                </select>
+                {sortFilters.length ?
+                    <select value={sortFilter} onChange={onChangeSortFilter}>
+                        {sortFilters.map(({title, filter}) => (
+                            <option value={filter} key={filter}>{title}</option>
+                        ))}
+                    </select>
+                    : null
+                }
             </div>
             {loading ?
                 <Loading style={{height: 'auto', margin: '20px 0px'}}/>

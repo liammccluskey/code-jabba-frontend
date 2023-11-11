@@ -31,6 +31,7 @@ export const fetchThisMongoUser = (
         }
 
         dispatch(UserActions.setMongoUser(res.data))
+        isInitialFetch && dispatch(UserActions.setIsRecruiterMode(res.data.isRecruiter))
         dispatch(ThemeActions.setThemeColor(res.data.settings.theme.themeColor))
         dispatch(ThemeActions.setTintColor(res.data.settings.theme.tintColor))
         onSuccess()

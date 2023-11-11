@@ -1,11 +1,15 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import styled from 'styled-components'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
 
+import { getIsMobile } from '../../../../redux/theme'
 import { Switch } from '../Switch'
 import { ChecklistOptions } from '../ChecklistOptions'
 import { PillLabel } from '../PillLabel'
+import AutoComplete from 'react-google-autocomplete'
 
-export const InputWithMessage = props => {
+export const InputWithMessageComponent = props => {
     const {
         label,
         message='',
@@ -21,32 +25,65 @@ export const InputWithMessage = props => {
         hasError,
         modified=false,
         locked=false,
+        optional=false,
         rightChild=null,
+        labelRightChild=null,
+        labelMarginBottom=0,
+        verticalLabels=false,
+        switchLabel='',
+        switchID=null,
     
         onChangeText, // e => void
         onChangeSelectValue, // e => void
-        onClickSwitch, // () => void
+        onClickSwitch, // switchID => void
         onClickCheckbox, // optionID => void
+        onChangeLocation, // (location, fieldName) => void
 
         ...rest
     } = props
 
     return (
-        <Root {...rest}>
+        <Root {...rest} className={`${props.className} ${props.isMobile && 'mobile'}`}>
             <div className='input-container'>
-                <div className='label-header'>
+                <div
+                    className={`label-header ${verticalLabels && 'vertical'}`}
+                    style={{marginBottom: labelMarginBottom}}
+                >
                     <label>{label}</label>
+                    {optional ?
+                        <h5 className='optional-text' style={{marginRight: 10}}>Optional</h5>
+                        : null
+                    }
                     {hasError ?
-                        <PillLabel title='Required Field' size='s' color='red' style={{marginRight: 10}}/>
+                        <PillLabel
+                            title='Required Field'
+                            size='s'
+                            color='red'
+                            style={{marginRight: 10}}
+                            className='pill-label'
+
+                        />
                         : null
                     }
                     {modified ?
-                        <PillLabel title='Modified' size='s' color='yellow' style={{marginRight: 10}} />
+                        <PillLabel
+                            title='Modified'
+                            size='s'
+                            color='yellow'
+                            style={{marginRight: 10}}
+                            className='pill-label'
+                        />
                         : null
                     }
                     {locked ?
                         <i className='bi-lock-fill lock-icon' />
                         : null 
+                    }
+                    {labelRightChild ?
+                        <div className='label-right-child'>
+                            {labelRightChild}
+                        </div>
+                        : null
                     }
                 </div>
                 {inputType === 'text' ?
@@ -62,6 +99,7 @@ export const InputWithMessage = props => {
                         value={text}
                         onChange={locked ? () => {} : onChangeText}
                         placeholder={placeholder}
+                        style={{height: 150}}
                     />
                 : inputType === 'select' ?
                     <select
@@ -74,16 +112,31 @@ export const InputWithMessage = props => {
                         ))}
                     </select>
                 : inputType === 'switch' ?
-                    <Switch
-                        enabled={switchEnabled}
-                        onClick={locked ? () => {} : onClickSwitch}
-                        className='switch'
-                    />
+                    <div className='switch-container'>
+                        <Switch
+                            enabled={switchEnabled}
+                            onClick={locked ?
+                                () => {}
+                                : () => onClickSwitch(switchID)
+                            }
+                            className='switch'
+                        />
+                        <p>{switchLabel}</p>
+                    </div>
                 : inputType === 'checklist' ?
                     <ChecklistOptions
                         options={checklistOptions}
                         onClickCheckbox={locked ? () => {} : onClickCheckbox}
                         className='checklist'
+                    />
+                : inputType === 'location' ?
+                    <AutoComplete
+                        apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+                        onPlaceSelected={location => onChangeLocation(location, fieldName)}
+                        onChange={onChangeText}
+                        value={text}
+                        name={fieldName}
+                        className='location-input'
                     />
                 : null
                 }
@@ -116,11 +169,15 @@ const Root = styled.div`
         flex-direction: column;
         align-items: flex-start;
         flex: 1;
+        width: 50%;
+        box-sizing: border-box;
+    }
+    &.mobile .message {
+        display: none;
     }
     & .message {
         color: ${p => p.theme.textSecondary};
         flex: 1;
-        padding-left: 50px;
         text-align: right;
     }
     & .tint-message {
@@ -134,6 +191,7 @@ const Root = styled.div`
     & .input-container select,
     & .input-container textarea {
         width: 100%;
+        box-sizing: border-box;
     }
     & .input-container textarea {
         height: 100px;
@@ -142,19 +200,13 @@ const Root = styled.div`
     & .input-container .checklist {
         margin-left: 15px;
     }
-    & .input-container .switch {
-        margin-top: 5px;
-        margin-left: 5px;
-    }
-
-    & input, & select, & textarea {
-        width: 50%;
-        box-sizing: border-box;
-    }
 
     & .label-header {
         display: flex;
-        align-items: flex-start;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        position: relative;
     }
     & .label-header label {
         margin-right: 10px;
@@ -171,4 +223,43 @@ const Root = styled.div`
         font-size: 15px;
         color: ${p => p.theme.textSecondary};
     }
+
+    & .optional-text {
+        color: ${p => p.theme.textTertiary};
+    }
+
+    & .label-right-child {
+        display: inline-flex;
+        align-items: center;
+        position: absolute;
+        right: 0px;
+    }
+    & .label-header.vertical {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    & .label-header.vertical .pill-label {
+        margin-bottom: 5px;
+    }
+
+    & .switch-container {
+        display: flex;
+        align-items: center;
+        margin-top: 5px;
+        margin-left: 5px;
+    }
+    & .switch-container p {
+        color: ${p => p.theme.textSecondary};
+        margin-left: 10px;
+    }
 `
+
+const mapStateToProps = state => ({
+    isMobile: getIsMobile(state),
+})
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+    
+}, dispatch)
+
+export const InputWithMessage = connect(mapStateToProps, mapDispatchToProps)(InputWithMessageComponent)

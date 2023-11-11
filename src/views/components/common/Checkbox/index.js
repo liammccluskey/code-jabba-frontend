@@ -27,6 +27,8 @@ const Root = styled.div`
     align-items: center;
     height: 18px;
     width: 18px;
+    min-width: 18px;
+    min-height: 18px;
     border-radius: 3px;
     border: 1px solid ${p => p.theme.textTertiary};
     cursor: pointer;

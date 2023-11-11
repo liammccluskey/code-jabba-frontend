@@ -31,10 +31,10 @@ export const PageSizes = {
     userSearch: 10,
     bugReports: 10,
     faqs: 10,
-
-    accessCodes: 10,
-    adminProjects: 10,
-    thisUserProjects: 10,
+    companySearch: 20,
+    jobSearch: 20,
+    candidateApplicationSearch: 20,
+    recruiterApplicationSearch: 50,
 }
 
 // Errors

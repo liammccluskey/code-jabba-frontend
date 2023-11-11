@@ -6,6 +6,7 @@ export const Pill = props => {
         title,
         id,
         active,
+        closeable=false,
 
         onClick, // pillID => void
 
@@ -16,15 +17,23 @@ export const Pill = props => {
         <Root
             {...rest}
             onClick={() => onClick(id)}
-            className={`${active && 'active'} ${props.className} no-select`}
+            className={`${(active || closeable) && 'active'} ${props.className} no-select`}
+            key={id}
         >
             <p>{title}</p>
+            {closeable ?
+                <i className='bi-x close-icon'/>
+                : null
+            }
         </Root>
     )
 }
 
 const Root = styled.div`
-    padding: 2px 10px;
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 15px;
+    height: 20px;
     background-color: ${p => p.theme.bgcLight};
     border-radius: 16px;
     border: 1px solid ${p => p.theme.bc};
@@ -49,8 +58,6 @@ const Root = styled.div`
         color: ${p => p.theme.bgcLight};
     }
 
-    // 
-
     &.active {
         background-color: ${p => p.theme.tintTranslucent};
         border-color: ${p => p.theme.tint};
@@ -58,5 +65,12 @@ const Root = styled.div`
 
     &.active p {
         color: ${p => p.theme.tint};
+    }
+
+    & .close-icon {
+        color: ${p => p.theme.tint};
+        font-size: 25px;
+        margin-top: 2px;
+        margin-right: -5px;
     }
 `

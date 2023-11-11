@@ -1,2 +1,2 @@
-import * as ThemeActions from './actions'
+import * as Actions from './actions'
 import {api} from '../../networking'

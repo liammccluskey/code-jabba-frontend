@@ -2,39 +2,25 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
-import { useParams } from 'react-router-dom'
 
 import { PageContainer } from '../../components/common/PageContainer'
 import { BodyContainer } from '../../components/common/BodyContainer'
 import { MainHeader } from '../../components/headers/MainHeader'
+import { Subheader } from '../../components/headers/Subheader'
+import { EditJobCard } from '../../components/job/EditJobCard'
 
-export const CompanyComponent = props => {
+export const CreateJob = props => {
     const {
         
     } = props
-    const {companyID} = useParams()
 
     return (
         <PageContainer>
             <MainHeader />
-            <BodyContainer>
-                <Root>
-
-                </Root>
+            <Subheader title='Create a Job' />
+            <BodyContainer style={{paddingTop: 0, paddingBottom: 0}}>
+                <EditJobCard style={{margingTop: 40, marginBottom: 40}} />
             </BodyContainer>
         </PageContainer>
     )
 }
-
-const Root = styled.div`
-    
-`
-const mapStateToProps = state => ({
-    
-})
-
-const mapDispatchToProps = dispatch => bindActionCreators({
-    
-}, dispatch)
-
-export const Company = connect(mapStateToProps, mapDispatchToProps)(CompanyComponent)

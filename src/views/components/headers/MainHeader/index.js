@@ -4,7 +4,7 @@ import {useNavigate, Link} from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-import { getIsMobile } from '../../../../redux/theme'
+import { getIsMobile, getIsSemiMobile } from '../../../../redux/theme'
 import {
     getHasAdminPrivileges,
     getIsPremiumUser,
@@ -55,7 +55,7 @@ export const getMainPageLinks = (hasAdminPrivileges, isRecruiterMode) => [
     ),
 ]
 
-export const getMainMenuPageLinks = isPremiumUser => [
+export const getMainMenuPageLinks = (isPremiumUser, isRecruiterMode) => [
     ...(isPremiumUser ?
         []
         : [
@@ -67,6 +67,23 @@ export const getMainMenuPageLinks = isPremiumUser => [
                 color: 'gold'
             }
         ]
+    ),
+    ...(isRecruiterMode ?
+        [
+            {
+                name: 'Create a Job',
+                url: '/create-job',
+                id: 'create-job',
+                icon: 'bi-briefcase'
+            },
+            {
+                name: 'Create a Company',
+                url: '/create-company',
+                id: 'create-company',
+                icon: 'bi-globe2'
+            },
+        ]
+        : []
     ),
     {
         name: 'Settings',
@@ -98,11 +115,11 @@ export const MainHeaderComponent = props => {
     const activeLinkID = window.location.pathname.split('/').length == 2 ?
         window.location.pathname.split('/')[1]
         : null
-        
+
     useEffect(() => {
         setLoadingPageLinks(true)
         setMainPageLinks(getMainPageLinks(props.hasAdminPrivileges, props.isRecruiterMode))
-        setMainMenuPageLinks(getMainMenuPageLinks(props.isPremiumUser))
+        setMainMenuPageLinks(getMainMenuPageLinks(props.isPremiumUser, props.isRecruiterMode))
         setLoadingPageLinks(false)
     }, [props.hasAdminPrivileges, props.isPremiumUser, props.isRecruiterMode])
 
@@ -123,8 +140,9 @@ export const MainHeaderComponent = props => {
                     height={35}
                     width={35}
                 />
-                {props.isMobile ? null :
-                    <h3 className='logo-text'>
+                {props.isMobile ?
+                    null
+                    : <h3 className='logo-text'>
                         {process.env.REACT_APP_SITE_NAME}
                     </h3>
                 }
@@ -135,16 +153,17 @@ export const MainHeaderComponent = props => {
                     : <Tooltip
                         title={props.isRecruiterMode ? 'Switch to candidate mode' : 'Switch to recruiter mode'}
                         marginTop={35}
-                        style={{marginRight: 25}}
+                        style={{marginRight: 15}}
                     >
                         <Pill
-                            title={props.isRecruiterMode ? 'Recruiter mode' : 'Candidate mode'}
+                            title={props.isRecruiterMode ? 'Recruiter' : 'Candidate'}
                             active={true}
+                            
                             onClick={onClickSwitchModePill}
                         />
                     </Tooltip> 
                 }   
-                {props.isMobile ?
+                {props.isSemiMobile ?
                     <LinksMenu
                         style={{marginRight: 15}}
                         menuHidden={linksMenuHidden}
@@ -205,7 +224,7 @@ const PageLink = styled(Link)`
     font-weight: 400;
     font-size: 15px;
     text-decoration: none;
-    margin-right: 25px;
+    margin-right: 15px;
 
     &:hover,
     &.active {
@@ -216,6 +235,7 @@ const PageLink = styled(Link)`
 
 const mapStateToProps = state => ({
     isMobile: getIsMobile(state),
+    isSemiMobile: getIsSemiMobile(state),
     hasAdminPrivileges: getHasAdminPrivileges(state),
     isPremiumUser: getIsPremiumUser(state),
     isRecruiterMode: getIsRecruiterMode(state),

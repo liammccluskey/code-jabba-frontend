@@ -14,7 +14,7 @@ export const CompaniesComponent = props => {
 
     return (
         <PageContainer>
-            <MainHeader />
+            <MainHeader hasSubheaderBelow={false}/>
             <BodyContainer>
                 <Root>
 

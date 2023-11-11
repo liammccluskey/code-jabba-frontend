@@ -4,12 +4,12 @@ import styled from 'styled-components'
 export const PendingMessage = props => {
     const {
         message='Operation in progress',
-
+        clear, // boolean
         ...rest
     } = props
 
     return (
-        <Root {...rest}>
+        <Root {...rest} className={`${props.className} ${clear && 'clear'}`}>
             <div style={props.style} className="lds-ring"><div></div><div></div><div></div><div></div></div>
             <p>{message}</p>
         </Root>
@@ -24,6 +24,12 @@ const Root = styled.div`
     border-radius: 5px;
     border: 1px solid ${p => p.theme.tint};
     padding: 10px;
+
+    &.clear {
+        background-color: transparent;
+        border: none;
+    }
+
 
     & p {
         color: ${p => p.theme.textMain};

@@ -13,7 +13,7 @@ export const addMessage = (title, isError=false, linger=false) => (dispatch, get
     }
     const messages = getMessages(getState())
 
-    const isDuplicate = messages.find(({id}) => id === message.id)
+    const isDuplicate = messages.find(m => m.id === message.id || m.title === message.title && m.isError && message.isError)
 
     if (!isDuplicate) {
         const newMessages = [...messages, message]

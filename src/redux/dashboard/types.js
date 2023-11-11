@@ -1,0 +1,15 @@
+export const ActionTypes = {
+    setRecruiterApplicationStats: 'dashboard/SET_RECRUITER_APPLICATION_STATS',
+    setLoadingRecruiterApplicationStats: 'dashboard/SET_LOADING_RECRUITER_APPLICATION_STATS',
+    setCandidateApplicationStats: 'dashboard/SET_CANDIDATE_APPLICATION_STATS',
+    setLoadingCandidateApplicationStats: 'dashboard/SET_LOADING_CANDIDATE_APPLICATION_STATS',
+    setRecruiterCompanies: 'dashboard/SET_RECRUITER_COMPANIES',
+    addRecruiterCompanies: 'dashboard/ADD_RECRUITER_COMPANIES',
+    setLoadingRecruiterCompanies: 'dashboard/SET_LOADING_RECRUITER_COMPANIES',
+    setRecruiterJobs: 'dashboard/SET_RECRUITER_JOBS',
+    addRecruiterJobs: 'dashobard/ADD_RECRUITER_JOBS',
+    setLoadingRecruiterJobs: 'dashboard/SET_LOADING_RECRUITER_JOBS',
+    setApplications: 'dashboard/SET_APPLICATIONS',
+    addApplications: 'dashboard/ADD_APPLICATIONS',
+    setLoadingApplications: 'dashboard/SET_LOADING_APPLICATIONS',
+}   

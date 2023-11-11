@@ -44,6 +44,7 @@ export const ValueDeltaSpread = connect(mapStateToProps)(ValueDeltaSpreadCompone
 
 const Root = styled.div`
     display: flex;
+    overflow: scroll !important;
     
     & .value-container {
         display: flex;

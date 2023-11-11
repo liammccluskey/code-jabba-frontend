@@ -1,45 +1,542 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
+import moment from 'moment'
 
+import {
+    getPaginatedDataForCurrentPage,
+    PageSizes
+} from '../../../networking'
+import {
+    getIsMobile,
+    getIsSemiMobile
+} from '../../../redux/theme'
+import {
+    getMongoUser,
+    getIsRecruiterMode
+} from '../../../redux/user'
+import {
+    getRecruiterApplicationStats,
+    getLoadingRecruiterApplicationStats,
+    getCandidateApplicationStats,
+    getLoadingCandidateApplicationStats,
+    getRecruiterCompanies,
+    getLoadingRecruiterCompanies,
+    getRecruiterCompaniesPagesCount,
+    getRecruiterJobs,
+    getLoadingRecruiterJobs,
+    getRecruiterJobsPagesCount,
+    getApplications,
+    getLoadingApplications,
+    getApplicationsPagesCount,
+
+    fetchRecruiterCompanies,
+    fetchRecruiterJobs,
+    fetchApplicationStats,
+    fetchApplications,
+} from '../../../redux/dashboard'
+import { setApplicationsPage } from '../../../redux/application'
+import { SortFilters } from '../admin/BugReports'
+import { capitalizeWords } from '../../../utils/misc'
 import { PageContainer } from '../../components/common/PageContainer'
 import { BodyContainer } from '../../components/common/BodyContainer'
 import { MainHeader } from '../../components/headers/MainHeader'
 import { Button } from '../../components/common/Button'
+import { SearchableTable } from '../../components/common/SearchableTable'
+import { Loading } from '../../components/common/Loading'
+import { ValueDeltaSpread } from '../../components/common/ValueDeltaSpread'
 
-import {signOutUser} from '../../../redux/user'
-import { Subheader } from '../../components/headers/Subheader'
-import { Tooltip } from '../../components/common/Tooltip'
+export const Timeframes = ['Week', 'Month', 'Year']
+const JobsSortFilters = SortFilters
+const ApplicationsSortFilters = SortFilters
 
 export const DashboardComponent = props => {
     const {
         
     } = props
     const navigate = useNavigate()
+    // recruiter
+    const [companiesPage, setCompaniesPage] = useState(1)
+    const [companySearchText, setCompanySearchText] = useState('')
+    const [jobsPage, setJobsPage] = useState(1)
+    const [jobSearchText, setJobSearchText] = useState('')
+    const [jobsSortFilter, setJobsSortFilter] = useState(JobsSortFilters[0].filter)
+    // candidate
+    const [applicationsPage, setApplicationsPage] = useState(1)
+    const [applicationsSortFilter, setApplicationsSortFilter] = useState(ApplicationsSortFilters[0].filter)
+    const [data, setData] = useState({
+        // recruiter
+        recruiterApplicationTimeframe: Timeframes[1],
+        companyAdminPillActive: false,
+        jobArchivedPillActive: false,
 
-    const onClickLogOut = () => {
-        props.signOutUser(() => {
-            navigate('/')
-        })
+        // candidate
+        candidateApplicationTimeframe: Timeframes[1],
+        applicationViewedPillActive: false,
+        applicationRejectedPillActive: false,
+        applicationAcceptedPillActive: false,
+        applicationArchivedPillActive: false,
+    })
+
+    const companyHeaders = ['Name', 'Role']
+    const companyRows = !props.loadingRecruiterCompanies ?
+        getPaginatedDataForCurrentPage(props.recruiterCompanies, companiesPage, PageSizes.companySearch).map(({name, admins, _id}) =>({
+            id: _id,
+            cells: [name, admins.includes(props.mongoUser._id )? 'Admin' : 'Recruiter']
+        })) : []
+
+    const jobHeaders = ['Title', 'Company', 'Status', 'Date Posted']
+    const jobRows = !props.loadingRecruiterJobs ?
+        getPaginatedDataForCurrentPage(props.recruiterJobs, jobsPage, PageSizes.jobSearch).map(({title, archived, company, createdAt, _id}) =>({
+            id: _id,
+            cells: [title, company.name, archived ? 'Archived' : 'Active', moment(createdAt).format('ll')]
+        })) : []
+
+    const applicationHeaders = ['Title', 'Company', 'Status', 'Date Submitted']
+    const applicationsRows = !props.loadingApplications ?
+        getPaginatedDataForCurrentPage(props.applications, applicationsPage, PageSizes.candidateApplicationSearch).map(({job, status, createdAt, archived, _id}) =>({
+            id: _id,
+            cells: [job.title, job.company.name, archived ? 'Archived' : capitalizeWords(status), moment(createdAt).format('ll')]
+        })) : []
+
+    const companyPills = [
+        {title: 'Admin', id: 'companyAdmin', active: data.companyAdminPillActive},
+    ]
+    const jobPills = [
+        {title: 'Archived', id: 'jobArchived', active: data.jobArchivedPillActive},
+    ]
+    const applicationPills = [
+        {title: 'Viewed', id: 'applicationViewed', active: data.applicationViewedPillActive},
+        {title: 'Rejected', id: 'applicationRejected', active: data.applicationRejectedPillActive},
+        {title: 'Accepted', id: 'applicationAccepted', active: data.applicationAcceptedPillActive},
+        {title: 'Archived', id: 'applicationArchived', active: data.applicationArchivedPillActive}
+    ]
+
+    const recruiterApplicationMetrics = [
+        {title: 'Submitted', value: props.recruiterApplicationStats.submittedCount, percentDelta: props.recruiterApplicationStats.submittedPercentDelta},
+        {title: 'Viewed', value: props.recruiterApplicationStats.viewedCount, percentDelta: props.recruiterApplicationStats.viewedPercentDelta},
+        {title: 'Rejected', value: props.recruiterApplicationStats.rejectedCount, percentDelta: props.recruiterApplicationStats.rejectedPercentDelta},
+        {title: 'Accepted', value: props.recruiterApplicationStats.acceptedCount, percentDelta: props.recruiterApplicationStats.acceptedPercentDelta},
+    ]
+
+    const candidateApplicationMetrics = [
+        {title: 'Submitted', value: props.candidateApplicationStats.submittedCount, percentDelta: props.candidateApplicationStats.submittedPercentDelta},
+        {title: 'Viewed', value: props.candidateApplicationStats.viewedCount, percentDelta: props.candidateApplicationStats.viewedPercentDelta},
+        {title: 'Rejected', value: props.candidateApplicationStats.rejectedCount, percentDelta: props.candidateApplicationStats.rejectedPercentDelta},
+        {title: 'Accepted', value: props.candidateApplicationStats.acceptedCount, percentDelta: props.candidateApplicationStats.acceptedPercentDelta},
+    ]
+
+    useEffect(() => {
+        fetchCompaniesFirstPage()
+    }, [data.companyAdminPillActive, props.isRecruiterMode])
+
+    useEffect(() => {
+        fetchJobsFirstPage()
+    }, [data.jobArchivedPillActive, jobsSortFilter, props.isRecruiterMode])
+
+    useEffect(() => {
+        !props.isRecruiterMode && fetchApplicationsFirstPage()
+    }, [
+        data.applicationViewedPillActive, 
+        data.applicationRejectedPillActive, 
+        data.applicationAcceptedPillActive,
+        data.applicationArchivedPillActive, 
+        applicationsSortFilter, 
+        props.isRecruiterMode
+    ])
+
+    useEffect(() => {
+        props.fetchApplicationStats(
+            props.isRecruiterMode,
+            props.isRecruiterMode ? data.recruiterApplicationTimeframe : data.candidateApplicationTimeframe
+        )
+    }, [props.isRecruiterMode, data.recruiterApplicationTimeframe, data.candidateApplicationTimeframe])
+
+    // Utils
+
+    const updatePill = (pillID, pillActive) => {
+        const fieldName = pillID + 'PillActive'
+
+        setData(curr => ({
+            ...curr,
+            [fieldName]: pillActive === undefined ? !curr[fieldName] : pillActive
+        }))
+    }
+
+    const getCompaniesFilters = () => {
+        return {
+            ...(data.companyAdminPillActive ? {isAdmin: true} : {}),
+        }
+    }
+
+    const fetchCompaniesFirstPage = () => {
+        props.fetchRecruiterCompanies(getCompaniesFilters(), companySearchText, 1) 
+        setCompaniesPage(1)
+    }
+
+    const getJobsFilters = () => {
+        return{
+            ...(data.jobArchivedPillActive ? {archived: true} : {}),
+            sortBy: jobsSortFilter
+        }
+    }
+
+    const fetchJobsFirstPage = () => {
+        props.fetchRecruiterJobs(getJobsFilters(), jobSearchText, 1)
+        setJobsPage(1)
+    }
+
+    const getApplicationsFilters = () => {
+        return {
+            ...(data.applicationViewedPillActive ? {status: 'viewed'} : {}),
+            ...(data.applicationRejectedPillActive ? {status: 'rejected'} : {}),
+            ...(data.applicationAcceptedPillActive ? {status: 'accepted'} : {}),
+            ...(data.applicationArchivedPillActive ? {archived: true} : {}),
+            sortBy: applicationsSortFilter
+        }
+    }
+
+    const fetchApplicationsFirstPage = () => {
+        props.fetchApplications(getApplicationsFilters(), 1)
+        setApplicationsPage(1)
+    }
+
+    // Direct
+    
+    const onChangeCompanySearchText = e => {
+        setCompanySearchText(e.target.value)
+    }
+
+    const onSubmitCompanySearch = e => {
+        e.preventDefault()
+        fetchCompaniesFirstPage()
+    }
+
+    const onChangeJobSearchText = e => {
+        setJobSearchText(e.target.value)
+    }
+
+    const onSubmitJobSearch = e => {
+        e.preventDefault()
+        fetchJobsFirstPage()
+    }
+
+    const onClickPill = pillID => {
+        switch (pillID) {
+            case 'companyAdmin':
+            case 'jobArchived':
+            case 'applicationArchived':
+                updatePill(pillID)
+                break
+            case 'applicationViewed':
+                updatePill(pillID)
+                updatePill('applicationRejected', false)
+                updatePill('applicationAccepted', false)
+                break
+            case 'applicationRejected':
+                updatePill(pillID)
+                updatePill('applicationViewed', false)
+                updatePill('applicationAccepted', false)
+                break
+            case 'applicationAccepted':
+                updatePill(pillID)
+                updatePill('applicationViewed', false)
+                updatePill('applicationRejected', false)
+                break
+        }
+    }
+
+    const onChangeField = e => {
+        const {name, value} = e.target
+
+        setData(curr => ({
+            ...curr,
+            [name]: value
+        }))
+    }
+
+    const onClickCreateCompany = () => {
+        navigate('/create-company')
+    }
+
+    const onClickCreateJob = () => {
+        navigate('/create-job')
+    }
+
+    const onClickCompanyRow = rowID => {
+        navigate(`/companies/${rowID}`)
+    }
+
+    const onClickDecrementCompaniesPage = () => {
+        if (companiesPage == 1) return
+        else {
+            setCompaniesPage(curr => curr - 1)
+        }
+    }
+
+    const onClickIncrementCompaniesPage = () => {
+        if (companiesPage == props.recruiterCompaniesPagesCount || props.recruiterCompaniesPagesCount == 0) return
+        else {
+            props.fetchRecruiterCompanies(getCompaniesFilters(), companySearchText, companiesPage + 1)
+            setCompaniesPage(curr => curr + 1)
+        }   
+    }
+
+    const onClickJobRow = rowID => {
+        props.setApplicationsPage(1)
+        navigate(`/applications/${rowID}`)
+    }
+
+    const onClickDecrementJobsPage = () => {
+        if (jobsPage == 1) return
+        else {
+            setJobsPage(curr => curr - 1)
+        }
+    }
+
+    const onClickIncrementJobsPage = () => {
+        if (jobsPage == props.recruiterJobsPagesCount || props.recruiterJobsPagesCount == 0) return
+        else {
+            props.fetchRecruiterJobs(getJobsFilters(), jobSearchText, jobsPage + 1)
+            setJobsPage(curr => curr + 1)
+        }   
+    }
+
+    const onClickApplicationRow = rowID => {
+        console.log(rowID)
+    }
+
+    const onClickDecrementApplicationsPage = () => {
+        if (applicationsPage == 1) return
+        else {
+            setApplicationsPage(curr => curr - 1)
+        }
+    }
+
+    const onClickIncrementApplicationsPage = () => {
+        if (applicationsPage == props.applicationsPagesCount || props.applicationsPagesCount == 0) return
+        else {
+            props.fetchApplications(getApplicationsFilters(), applicationsPage + 1)
+            setApplicationsPage(curr => curr + 1)
+        }   
+    }
+
+    const onChangeSortFilter = (e, table) => {
+        switch (table) {
+            case 'jobs':
+                setJobsSortFilter(e.target.value)
+                break
+            case 'applications':
+                setApplicationsSortFilter(e.target.value)
+                break
+        }
     }
 
     return (
         <PageContainer>
             <MainHeader hasSubheaderBelow={false}/>
-            <BodyContainer>
+            <BodyContainer style={{padding: '40px 5%'}}>
+                {props.isRecruiterMode ?
+                    <Root className={`${props.isMobile && 'mobile'} ${props.isSemiMobile && 'semi-mobile'}`}>
+                        <div className='section-header '>
+                            <h3>Application Metrics</h3>
+                            <select
+                                value={data.recruiterApplicationTimeframe}
+                                onChange={onChangeField}
+                                name='recruiterApplicationTimeframe'
+                                className='clear'
+                            >
+                                {Timeframes.map(timePeriod => (
+                                    <option value={timePeriod} key={timePeriod}>This {timePeriod}</option>
+                                ))}
+                            </select>
+                        </div>
+                        {props.loadingRecruiterApplicationStats ?
+                            <Loading style={{height: 50}} />
+                            : <ValueDeltaSpread
+                                timePeriod={data.recruiterApplicationTimeframe.toLocaleLowerCase()}
+                                values={recruiterApplicationMetrics}
+                                className='float-container value-delta-spread'
+                            />
+                        }
+                        <div className='tables-container'>
+                            <div className='table-section-container'>
+                                <div className='section-header'>
+                                    <h3>My companies</h3>
+                                    <Button
+                                        title='Create a company'
+                                        icon='bi-plus'
+                                        priority={3}
+                                        type='clear'
+                                        onClick={onClickCreateCompany}
+                                    />
+                                </div>
+                                <SearchableTable
+                                    loading={props.loadingRecruiterCompanies}
+                                    searchText={companySearchText}
+                                    onChangeSearchText={onChangeCompanySearchText}
+                                    tableHeaders={companyHeaders}
+                                    tableRows={companyRows}
+                                    pills={companyPills}
+                                    onClickPill={onClickPill}
+                                    page={companiesPage}
+                                    pagesCount={props.recruiterCompaniesPagesCount}
+                                    onSubmitSearch={onSubmitCompanySearch}
+                                    onClickTableRow={onClickCompanyRow}
+                                    onClickDecrementPage={onClickDecrementCompaniesPage}
+                                    onClickIncrementPage={onClickIncrementCompaniesPage}
+                                    
+                                />
+                            </div>
+                            <div className='table-section-container'>
+                            <div className='section-header'>
+                                    <h3>My job posts</h3>
+                                    <Button
+                                        title='Create a job'
+                                        icon='bi-plus'
+                                        priority={3}
+                                        type='clear'
+                                        onClick={onClickCreateJob}
+                                    />
+                                </div>
+                                <SearchableTable
+                                    searchText={jobSearchText}
+                                    loading={props.loadingRecruiterJobs}
+                                    onChangeSearchText={onChangeJobSearchText}
+                                    tableHeaders={jobHeaders}
+                                    tableRows={jobRows}
+                                    pills={jobPills}
+                                    onClickPill={onClickPill}
+                                    page={jobsPage}
+                                    pagesCount={props.recruiterJobsPagesCount}
+                                    onSubmitSearch={onSubmitJobSearch}
+                                    onClickTableRow={onClickJobRow}
+                                    onClickDecrementPage={onClickDecrementJobsPage}
+                                    onClickIncrementPage={onClickIncrementJobsPage}
+                                    sortFilter={jobsSortFilter}
+                                    sortFilters={JobsSortFilters}
+                                    onChangeSortFilter={e => onChangeSortFilter(e, 'jobs')}
+                                />
+                            </div>
+                        </div>
+                    </Root>
+                    : <Root className={`${props.isMobile && 'mobile'} ${props.isSemiMobile && 'semi-mobile'}`}>
+                        <div className='section-header '>
+                            <h3>Application Metrics</h3>
+                            <select
+                                value={data.candidateApplicationTimeframe}
+                                onChange={onChangeField}
+                                name='candidateApplicationTimeframe'
+                                className='clear'
+                            >
+                                {Timeframes.map(timePeriod => (
+                                    <option value={timePeriod} key={timePeriod}>This {timePeriod}</option>
+                                ))}
+                            </select>
+                        </div>
+                        {props.loadingCandidateApplicationStats ?
+                            <Loading style={{height: 50}} />
+                            : <ValueDeltaSpread
+                                timePeriod={data.candidateApplicationTimeframe.toLowerCase()}
+                                values={candidateApplicationMetrics}
+                                className='float-container value-delta-spread'
+                            />
+                        }
+                        <div className='section-header'>
+                            <h3>My applications</h3>
+                        </div>
+                        <SearchableTable
+                            searchable={false}
+                            loading={props.loadingApplications}
+                            tableHeaders={applicationHeaders}
+                            tableRows={applicationsRows}
+                            pills={applicationPills}
+                            onClickPill={onClickPill}
+                            page={applicationsPage}
+                            pagesCount={props.applicationsPagesCount}
+                            onClickTableRow={onClickApplicationRow}
+                            onClickDecrementPage={onClickDecrementApplicationsPage}
+                            onClickIncrementPage={onClickIncrementApplicationsPage}
+                            sortFilter={applicationsSortFilter}
+                            sortFilters={ApplicationsSortFilters}
+                            onChangeSortFilter={e => onChangeSortFilter(e, 'applications')}
+                        />
+                    </Root>
+                }
             </BodyContainer>
         </PageContainer>
     )
 }
 
+const Root = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    & .tables-container {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+    }
+    &.semi-mobile .tables-container {
+        grid-template-columns: 1fr;
+    }
+    & .tables-container .table-section-container:first-child {
+        margin-right: 30px;
+    }
+    & .tables-container .table-section-container:last-child {
+        margin-left: 30px;
+    }
+
+    &.semi-mobile .table-section-container:first-child,
+    &.semi-mobile .table-section-container:last-child {
+        margin-right: 0px;
+        margin-left: 0px;
+    }&.semi-mobile  .table-section-container:first-child
+     {
+        margin-bottom: 60px;
+    }
+
+    & .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    & .value-delta-spread {
+        padding: 15px 0px;
+        margin-bottom: 60px;
+    }
+`
+
 const mapStateToProps = state => ({
-    
+    isMobile: getIsMobile(state),
+    isSemiMobile: getIsSemiMobile(state),
+    mongoUser: getMongoUser(state),
+    isRecruiterMode: getIsRecruiterMode(state),
+    recruiterApplicationStats: getRecruiterApplicationStats(state),
+    loadingRecruiterApplicationStats: getLoadingRecruiterApplicationStats(state),
+    candidateApplicationStats: getCandidateApplicationStats(state),
+    loadingCandidateApplicationStats: getLoadingCandidateApplicationStats(state),
+    recruiterCompanies: getRecruiterCompanies(state),
+    loadingRecruiterCompanies: getLoadingRecruiterCompanies(state),
+    recruiterCompaniesPagesCount: getRecruiterCompaniesPagesCount(state),
+    recruiterJobs: getRecruiterJobs(state),
+    loadingRecruiterJobs: getLoadingRecruiterJobs(state),
+    recruiterJobsPagesCount: getRecruiterJobsPagesCount(state),
+    applications: getApplications(state),
+    loadingApplications: getLoadingApplications(state),
+    applicationsPagesCount: getApplicationsPagesCount(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    signOutUser
+    fetchRecruiterCompanies,
+    fetchRecruiterJobs,
+    fetchApplicationStats,
+    fetchApplications,
+    setApplicationsPage
 }, dispatch)
 
 export const Dashboard = connect(mapStateToProps, mapDispatchToProps)(DashboardComponent)
