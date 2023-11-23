@@ -16,7 +16,6 @@ import {
     getFirebaseUser,
     getIsPremiumUser,
     patchUserDisplayName,
-    patchUserEmail,
     patchUserPhoto,
     patchUserThemeColor,
     patchUserTintColor,
@@ -176,11 +175,10 @@ export const GeneralSettingsComponent = props => {
                             title='Email'
                             inputType='text'
                             initialValue={formInitialValues.account.email}
-                            isEditable={true}
+                            isEditable={false}
                             rightChild={
                                 <p>{formInitialValues.account.email}</p>
                             }
-                            onSubmit={submitEmail}
                         />
                         <SettingsRow
                             title='Password'
@@ -292,7 +290,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
     fetchThisMongoUser,
     patchUserDisplayName,
-    patchUserEmail,
     patchUserThemeColor,
     patchUserTintColor,
     patchUserPhoto,

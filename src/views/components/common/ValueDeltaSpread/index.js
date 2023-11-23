@@ -7,29 +7,33 @@ import { getIsMobile } from '../../../../redux/theme'
 
 export const ValueDeltaSpreadComponent = props => {
     const {
-        values, // [{title, value, percentDelta}]
-        timePeriod,
-        isMobile,
+        values, // [{title, value, percentDelta?}]
+        timePeriod=null,
+        showDelta=true,
+        blackLabels=false,
 
         ...rest
     } = props
 
     return (
-        <Root {...rest} className={`${isMobile && 'mobile'} ${props.className}`}>
-            {values.map(({title, value, percentDelta}) => (
+        <Root {...rest} className={`${props.isMobile && 'mobile'} ${blackLabels && 'black-labels'} ${props.className}`}>
+            {values.map(({title, value, percentDelta=null}) => (
                 <div className={`value-container`} key={title}>
                     <h2 className='value-text'>{value}</h2>
                     <p className='title-text'>{title}</p>
-                    <div className='d-flex jc-center ai-center'>
-                        {percentDelta >= 0 ?
-                            <i className='delta-arrow bi-arrow-up-short' />
-                            : <i className='delta-arrow bi-arrow-down-short' />
-                        }
-                        <p className={`delta-text ${percentDelta >= 0 ? 'pos' : 'neg'}`}>
-                            {percentDelta}%
-                        </p>
-                        <p className='time-text'>vs. last {timePeriod}</p>
-                    </div>
+                    {showDelta ?
+                        <div className='d-flex jc-center ai-center'>
+                            {percentDelta >= 0 ?
+                                <i className='delta-arrow bi-arrow-up-short' />
+                                : <i className='delta-arrow bi-arrow-down-short' />
+                            }
+                            <p className={`delta-text ${percentDelta >= 0 ? 'pos' : 'neg'}`}>
+                                {percentDelta}%
+                            </p>
+                            <p className='time-text'>vs. last {timePeriod}</p>
+                        </div>
+                        : null
+                    }
                 </div>
             ))}
         </Root>
@@ -57,6 +61,12 @@ const Root = styled.div`
     & .value-container:last-child {
         border-right: none;
     }
+    &.black-labels .value-container {
+        border-color: black;
+    }
+    &.black-labels {
+        border-color: black;
+    }
 
     & .value-text {
         margin-bottom: 4px;
@@ -65,6 +75,9 @@ const Root = styled.div`
     & .title-text {
         color: ${p => p.theme.textSecondary} !important;
         margin-bottom: 7px;
+    }
+    &.black-labels .title-text {
+        color: black !important;
     }
 
     & .delta-arrow {

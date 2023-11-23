@@ -58,8 +58,10 @@ const Root = styled.div`
         font-size: 14px;
         background-color: ${p => p.theme.bgcInput};
         margin-top: 5px;
-        height: 43px;
         box-sizing: border-box;
+    }
+    select {
+        height: 43px;
     }
 
     input:focus, input:active,
@@ -81,6 +83,7 @@ const Root = styled.div`
         border: 1px solid ${p => p.theme.bc};
         background-color: ${p => p.theme.bgcLight};
         color: ${p => p.theme.tint};
+        align-self: center;
     }
     input::file-selector-button:hover {
         filter: brightness(80%);
@@ -398,11 +401,10 @@ const Root = styled.div`
         align-items: stretch;
         width: min(500px, 75vw);
         max-height: 90vh;
-        overflow: scroll !important;
+        overflow: visible;
         background-color: ${p => p.theme.bgcLight};
         border: 1px solid ${p => p.theme.bc};
         border-radius: var(--br-container);
-        overflow: hidden;
         box-sizing: border-box;
     }
 

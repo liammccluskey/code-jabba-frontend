@@ -8,7 +8,10 @@ export const Subheader = props => {
         activeLinkID,
         title,
         links = [], // [{name, url, id}]
-        children
+        children,
+        headerChildren,
+        imageURL=null,
+        showUserIcon=false,
     } = props
 
     const getLinkPath = linkURL => path + linkURL
@@ -18,7 +21,25 @@ export const Subheader = props => {
     return (
         <Root className='d-flex jc-space-between ai-center'>
             <div className='d-flex fd-column jc-flex-start ai-flex-start'>
-                <Title>{title}</Title>
+                <div className='d-flex jc-flex-start ai-center'>
+                    {imageURL ?
+                        <img className='header-image' src={imageURL} />
+                        : showUserIcon ?
+                            <div className='header-icon-container'>
+                                <i className='bi-person person-icon' />
+                            </div>
+                            : null
+                    }
+                    <div className='header-container'>
+                        <h2 className='subheader-title'>{title}</h2>
+                        {headerChildren ?
+                            <div className='header-children-container'>
+                                {headerChildren}
+                            </div>
+                            : null
+                        }
+                    </div>
+                </div>
                 <div className='page-links-container'>
                     {links.map( ({name, url, id, fullName}) => (
                         <PageLink
@@ -47,19 +68,47 @@ const Root = styled.div`
     z-index: 1;
     width: 100%;
     box-sizing: border-box;
-    position: sticky;
-    top: 0px;
 
+    & .header-container {
+        margin: 10px 0px;
+    }
+    & .header-children-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
     & .page-links-container {
         display: flex;
         align-items: center;
         overflow-x: scroll;
     }
-`
 
-const Title = styled.h2`
-    color: ${p => p.theme.textPrimary};
-    margin: 10px 0px;
+    & .header-image {
+        height: 60px;
+        width: 60px;
+        border-radius: 50%;
+        border: 3px solid ${p => p.theme.bc};
+        margin-right: 15px;
+        margin-bottom: 10px;
+    }
+
+    & .header-icon-container {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        height: 60px;
+        width: 60px;
+        border-radius: 50%;
+        border: 3px solid ${p => p.theme.bc};
+        background-color: ${p => p.theme.tintTranslucent};
+        margin-right: 15px;
+        margin-bottom: 10px;
+    }
+    & .person-icon {
+        font-size: 40px;
+        color: ${p => p.theme.tint};
+    }
 `
 
 const PageLink = styled(Link)`

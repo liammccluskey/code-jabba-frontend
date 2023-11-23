@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux'
 
 import { getIsMobile, getIsSemiMobile } from '../../../../redux/theme'
 import {
+    getMongoUser,
     getHasAdminPrivileges,
     getIsPremiumUser,
     getIsRecruiterMode,
@@ -55,7 +56,7 @@ export const getMainPageLinks = (hasAdminPrivileges, isRecruiterMode) => [
     ),
 ]
 
-export const getMainMenuPageLinks = (isPremiumUser, isRecruiterMode) => [
+export const getMainMenuPageLinks = (isPremiumUser, isRecruiterMode, mongoUser) => [
     ...(isPremiumUser ?
         []
         : [
@@ -68,6 +69,18 @@ export const getMainMenuPageLinks = (isPremiumUser, isRecruiterMode) => [
             }
         ]
     ),
+    {
+        name: 'Profile',
+        url: `/users/${mongoUser._id}`,
+        id: 'profile',
+        icon: 'bi-person-circle'
+    },
+    {
+        name: 'Rewards',
+        url: `/rewards`,
+        id: 'rewards',
+        icon: 'bi-cash'
+    },
     ...(isRecruiterMode ?
         [
             {
@@ -119,7 +132,7 @@ export const MainHeaderComponent = props => {
     useEffect(() => {
         setLoadingPageLinks(true)
         setMainPageLinks(getMainPageLinks(props.hasAdminPrivileges, props.isRecruiterMode))
-        setMainMenuPageLinks(getMainMenuPageLinks(props.isPremiumUser, props.isRecruiterMode))
+        setMainMenuPageLinks(getMainMenuPageLinks(props.isPremiumUser, props.isRecruiterMode, props.mongoUser))
         setLoadingPageLinks(false)
     }, [props.hasAdminPrivileges, props.isPremiumUser, props.isRecruiterMode])
 
@@ -236,6 +249,7 @@ const PageLink = styled(Link)`
 const mapStateToProps = state => ({
     isMobile: getIsMobile(state),
     isSemiMobile: getIsSemiMobile(state),
+    mongoUser: getMongoUser(state),
     hasAdminPrivileges: getHasAdminPrivileges(state),
     isPremiumUser: getIsPremiumUser(state),
     isRecruiterMode: getIsRecruiterMode(state),

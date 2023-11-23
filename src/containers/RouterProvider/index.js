@@ -32,10 +32,13 @@ import { Job } from '../../views/pages/Job'
 import { CompanyGeneral } from '../../views/pages/company/CompanyGeneral'
 import { CreateJob } from '../../views/pages/CreateJob'
 import { CreateCompany } from '../../views/pages/CreateCompany'
-import { CompanyReviews } from '../../views/pages/company/CompanyReviews'
 import { CompanyJobs } from '../../views/pages/company/CompanyJobs'
 import { Applications } from '../../views/pages/Applications'
 import { EditJob } from '../../views/pages/EditJob'
+import { CandidateApplication } from '../../views/pages/CandidateApplication'
+import { Profile } from '../../views/pages/Profile'
+import { Rewards } from '../../views/pages/Rewards'
+import { AdminAnalytics } from '../../views/pages/admin/AdminAnalytics'
 
 const router = createBrowserRouter([
     {
@@ -46,6 +49,11 @@ const router = createBrowserRouter([
     {
       path: '/login',
       element: <SignedOutRoute element={<Login />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/register/:referralCode',
+      element: <SignedOutRoute element={<Register />} />,
       errorElement: <ErrorElement />
     },
     {
@@ -103,6 +111,11 @@ const router = createBrowserRouter([
     {
       path: '/admin',
       element: <AdminRoute element={<AdminGeneral />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/admin/analytics',
+      element: <AdminRoute element={<AdminAnalytics />} />,
       errorElement: <ErrorElement />
     },
     {
@@ -176,39 +189,49 @@ const router = createBrowserRouter([
     },
     {
       path: '/create-company',
-      element: <CreateCompany />,
+      element: <PrivateRoute element={<CreateCompany />} />,
       errorElement: <ErrorElement />
     },
     {
       path: '/create-job',
-      element: <CreateJob />,
+      element: <PrivateRoute element={<CreateJob />} />,
       errorElement: <ErrorElement />
     },
     {
       path: '/edit-job/:jobID',
-      element: <EditJob />,
+      element: <PrivateRoute element={<EditJob />} />,
       errorElement: <ErrorElement />
     },
     {
       path: '/applications/:jobID',
-      element: <Applications />,
+      element: <PrivateRoute element={<Applications />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/candidate-applications/:applicationID',
+      element: <PrivateRoute element={<CandidateApplication />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/users/:userID',
+      element: <PrivateRoute element={<Profile />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/rewards',
+      element: <PrivateRoute element={<Rewards />} />,
       errorElement: <ErrorElement />
     },
 
     // company
     {
       path: '/companies/:companyID',
-      element: <CompanyGeneral />,
-      errorElement: <ErrorElement />
-    },
-    {
-      path: '/companies/:companyID/reviews',
-      element: <CompanyReviews />,
+      element: <PrivateRoute element={<CompanyGeneral />} />,
       errorElement: <ErrorElement />
     },
     {
       path: '/companies/:companyID/jobs',
-      element: <CompanyJobs />,
+      element: <PrivateRoute element={<CompanyJobs />} />,
       errorElement: <ErrorElement />
     },
 ])

@@ -15,6 +15,7 @@ import {
     repostJob
 } from '../../../../redux/job'
 import { postApplication } from '../../../../redux/application'
+import { addMessage } from '../../../../redux/communication'
 import {
     JobTypes,
     SettingTypes,
@@ -54,11 +55,11 @@ export const JobCardComponent = props => {
         : []
 
     const userHasLanguage = language => {
-        return props.mongoUser.languages.filter( l => l.title === language).length > 0
+        return props.mongoUser.languages.includes(language)
     }
 
     const userHasSkill = skill => {
-        return props.mongoUser.skills.filter( s => s.title === skill ).length > 0
+        return props.mongoUser.skills.includes(skill)
     }
 
     useEffect(() => {
@@ -100,6 +101,9 @@ export const JobCardComponent = props => {
     ]
 
     const onClickApply = () => {
+        if (!props.mongoUser.canApplyToJobs) {
+            props.addMessage('You must complete the To Do items on the dashboard before you can apply to jobs', true, true)
+        }
         if (job.applicationType === 'custom') {
             props.postApplication(job._id, job.recruiter._id)
             window.open(job.applicationURL, '_blank')
@@ -144,19 +148,6 @@ export const JobCardComponent = props => {
                     url={`/companies/${job.company._id}`}
                 />
                 <p style={{marginRight: 5, marginLeft: 5}}>-</p>
-                {job.company.reviewCount > 0 ?
-                    <StarRating
-                        starsCount={job.company.rating}
-                        reviewCount={job.company.reviewCount}
-                        shortDisplay={true}
-                        style={{marginRight: 5}}
-                    />
-                    : null
-                }
-                {job.company.reviewCount > 0 ?
-                    <p style={{marginRight: 5}}>-</p> 
-                    : null
-                }
                 <p>{job.location || 'Remote'}</p>
             </div>
             <div className='section-2'>
@@ -357,7 +348,7 @@ const Root = styled.div`
         margin-bottom: 30px;
     }
     & .section-6 {
-        margin-bottom: 15px;
+        margin-bottom: 30px;
     }
 
     & .options-container {
@@ -397,7 +388,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     patchJob,
     fetchJob,
     postApplication,
-    repostJob
+    repostJob,
+    addMessage
 }, dispatch)
 
 export const JobCard = connect(mapStateToProps, mapDispatchToProps)(JobCardComponent)

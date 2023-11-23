@@ -27,7 +27,7 @@ export const NotificationCard = props => {
     return (
         <Root
             {...rest}
-            className={`notification-container oh-dark ${isActive && 'active'}`}
+            className={`notification-container oh-dark ${isActive && 'active'} ${props.className}`}
             onClick={onClick}
         >
             {isRead ?

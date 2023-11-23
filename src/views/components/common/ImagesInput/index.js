@@ -14,6 +14,8 @@ export const ImagesInput = props => {
         modified=false,
         hasError=false,
         locked=false,
+        allowMultiple=true,
+        accept='image/*',
 
         onChangeImageFiles, // e => void
         onClickRemoveImageFile, // imageIndex => void
@@ -62,7 +64,7 @@ export const ImagesInput = props => {
                 <input
                     type='file'
                     multiple='multiple'
-                    accept='image/*'
+                    accept={accept}
                     onChange={onChangeImageFiles}
                     disabled={locked}
                 />

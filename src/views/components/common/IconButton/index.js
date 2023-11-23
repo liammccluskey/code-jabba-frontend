@@ -39,7 +39,7 @@ const Root = styled.div`
         color: white;
     }
     &.tint .icon {
-        color: ${p => p.theme.tint};
+        color: ${p => p.theme.textSecondary};
     }
 
     &.s {

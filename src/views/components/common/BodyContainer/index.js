@@ -8,7 +8,7 @@ export const BodyContainer = styled.div`
     justify-content: flex-start;
     alignItems: flex-start;
     width: 100%;
-    height: 100%;
+    // height: 100%;
     box-sizing: border-box;
     overflow: scroll;
 `

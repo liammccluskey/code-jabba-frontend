@@ -7,9 +7,16 @@ import moment from 'moment'
 
 import { getIsMobile, getIsSemiMobile } from '../../../redux/theme'
 import { setThemeColor, setTintColor } from '../../../redux/theme'
+import { 
+    getUserStats,
+    getLoadingUserStats,
+
+    fetchUserStats 
+} from '../../../redux/user'
 import { PageContainer } from '../../components/common/PageContainer'
 import { LandingHeader } from '../../components/headers/LandingHeader'
 import { Button } from '../../components/common/Button'
+import { ValueDeltaSpread } from '../../components/common/ValueDeltaSpread'
 
 const Config = {
     heroTitle: 'The job board for software engineers',
@@ -67,9 +74,16 @@ export const LandingComponent = props => {
     const navigate = useNavigate()
     const [selectedWhyChooseUsOptionID, setSelectedWhyChooseUsOptionID] = useState(Config.whyChooseUs[0].id)
 
+    const userStatsValues = props.loadingUserStats ? []
+        : [
+            {title: 'Candidates', value: props.userStats.candidatesCount},
+            {title: 'Recruiters', value: props.userStats.recruitersCount}
+        ]
+
     useEffect(() => {
         props.setThemeColor(0)
         props.setTintColor(0)
+        props.fetchUserStats()
     }, [])
 
     const onClickGetStarted = () => {
@@ -118,7 +132,7 @@ export const LandingComponent = props => {
                     <img className='hero-image' src={Config.heroImageURL} />
                 </div>
                 <div className='why-choose-us-container'>
-                    <h1>Why Choose Us</h1>
+                    <h1 className='section-title'>Why Choose Us</h1>
                     <div className='why-choose-us-options-container'>
                         <div className='why-choose-us-grid-container'>
                             <div className='why-choose-us-image-container'>
@@ -144,6 +158,15 @@ export const LandingComponent = props => {
                             </div>
                         </div>
                     </div>
+                </div>
+                <div className='user-stats-container'>
+                    <h1 className='section-title'>Users</h1>
+                    <ValueDeltaSpread
+                        values={userStatsValues}
+                        showDelta={false}
+                        className='float-container value-delta-spread'
+                        blackLabels={true}
+                    />
                 </div>
                 <div className='pricing-container' id='pricing-container'>
                     <h1 className='title'>Pricing</h1>
@@ -178,18 +201,6 @@ export const LandingComponent = props => {
         </PageContainer>
     )
 }
-
-const mapStateToProps = state => ({
-    isMobile: getIsMobile(state),
-    isSemiMobile: getIsSemiMobile(state),
-})
-
-const mapDispatchToProps = dispatch => bindActionCreators({
-    setThemeColor,
-    setTintColor
-}, dispatch)
-
-export const Landing = connect(mapStateToProps, mapDispatchToProps)(LandingComponent)
 
 const Container = styled.div`
     display: flex;
@@ -248,6 +259,31 @@ const Container = styled.div`
         box-sizing: border-box;
     }
 
+    & .user-stats-container {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 50px;
+        background-color: ${p => p.theme.bgcLight};
+        border-bottom: 1px solid black;
+    }
+    &.semi-mobile .user-stats-container {
+        padding: 30px;
+    }
+    &.mobile .user-stats-container {
+        padding: 15px;
+    }
+
+    & .value-delta-spread {
+        padding: 30px;
+        width: min(90%, 500px);
+        align-self: center;
+        margin-right: 30px;
+        margin-left: 30px;
+        box-sizing: border-box;
+        background-color: ${p => p.theme.tint} !important;
+    }
+
     & .why-choose-us-container {
         display: flex;
         flex-direction: column;
@@ -263,7 +299,7 @@ const Container = styled.div`
         padding: 15px;
     }
 
-    & .why-choose-us-container h1 {
+    & .section-title {
         margin-bottom: 30px;
     }
 
@@ -292,14 +328,15 @@ const Container = styled.div`
     & .why-choose-us-option-container {
         display: flex;
         align-items: center;
-        padding: 20px 20px;
+        padding: 20px;
         cursor: pointer;
-        background-color: ${p => p.theme.tint};
-        border-top: 1px solid white;
+        border: 1px solid transparent;
+        border-radius: 20px;
+        box-sizing: border-box;
     }
     & .why-choose-us-option-container.selected {
         border-color: black;
-        border-width: 2px;
+        border-width: 1px;
     }
     & .why-choose-us-option-container i {
         font-size: 50px;
@@ -314,7 +351,7 @@ const Container = styled.div`
         margin-bottom: 15px;
     }
     & .why-choose-us-option-container * {
-        color: white !important;
+        color: black !important;
     }
     & .why-choose-us-option-container.selected *  {
        color: black !important;
@@ -404,3 +441,18 @@ const Container = styled.div`
         padding: 50px 0px;
     }
 `
+
+const mapStateToProps = state => ({
+    isMobile: getIsMobile(state),
+    isSemiMobile: getIsSemiMobile(state),
+    userStats: getUserStats(state),
+    loadingUserStats: getLoadingUserStats(state),
+})
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+    setThemeColor,
+    setTintColor,
+    fetchUserStats
+}, dispatch)
+
+export const Landing = connect(mapStateToProps, mapDispatchToProps)(LandingComponent)

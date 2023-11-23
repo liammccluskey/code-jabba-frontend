@@ -1,0 +1,16 @@
+export const getFormDataModified = (formData, workExperience) => ({
+    company: formData.company !== workExperience.company,
+    jobTitle: formData.jobTitle !== workExperience.jobTitle,
+    setting: formData.setting !== workExperience.setting,
+    type: formData.type !== workExperience.type, 
+    position: formData.position !== workExperience.position, 
+    languages: formData.languages !== workExperience.languages,
+    skills: formData.skills !== workExperience.skills,
+    description: formData.description !== workExperience.description,
+    fieldOfStudy: formData.fieldOfStudy !== workExperience.fieldOfStudy, 
+    startMonth: formData.startMonth !== workExperience.startMonth, 
+    startYear: formData.startYear !== workExperience.startYear, 
+    endMonth: formData.endMonth !== workExperience.endMonth,
+    endYear: formData.endYear !== workExperience.endYear,
+    isCurrent: formData.isCurrent !== workExperience.isCurrent,
+})

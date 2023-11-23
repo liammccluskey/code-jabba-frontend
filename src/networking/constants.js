@@ -58,6 +58,7 @@ export const FirebaseErrors = {
         "expired-action-code": "The action code has expired. ",
         "cancelled-popup-request": "This operation has been cancelled due to another conflicting popup being opened.",
         "internal-error": "An internal error has occurred.",
+        "invalid-login-credentials": "The login credentials you entered are invalid.",
         "invalid-app-credential": "The phone verification request contains an invalid application verifier. The reCAPTCHA token response is either invalid or expired.",
         "invalid-app-id": "The mobile app identifier is not registed for the current project.",
         "invalid-user-token": "This user's credential isn't valid for this project. This can happen if the user's token has been tampered with, or if the user isn't for the project associated with this API key.",

@@ -10,6 +10,7 @@ import { companyReducer } from './company'
 import { jobReducer } from './job'
 import { dashboardReducer } from './dashboard'
 import { applicationReducer } from './application'
+import { rewardsReducer } from './rewards/reducers'
 
 export const rootReducer = combineReducers({
     theme: themeReducer,
@@ -22,4 +23,5 @@ export const rootReducer = combineReducers({
     job: jobReducer,
     dashboard: dashboardReducer,
     application: applicationReducer,
+    rewards: rewardsReducer,
 })

@@ -54,6 +54,7 @@ export const SearchableInput = props => {
                 value={value}
                 onChange={onChangeValue}
                 ref={inputRef}
+                autoComplete='off'
             />
             {optionsVisible ?
                 <div className='options-container' ref={optionsRef}>

@@ -22,7 +22,7 @@ export const __fetchMongoUserBy_id = async _id => {
     }
 }
 
-export const __postMongoUser = async firebaseUser => {
+export const __postMongoUser = async (firebaseUser, referralCode=undefined) => {
     const {
         displayName,
         email,
@@ -32,10 +32,13 @@ export const __postMongoUser = async firebaseUser => {
 
     try {
         const res = await api.post('/users', {
-            displayName,
-            email,
-            photoURL,
-            uid
+            user: {
+                displayName,
+                email,
+                photoURL,
+                uid
+            },
+            referralCode,
         })
         return res
     } catch (error) {

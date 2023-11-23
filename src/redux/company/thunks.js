@@ -1,7 +1,8 @@
 import * as CompanyActions from './actions'
-import {api} from '../../networking'
+import {api, stringifyQuery, PageSizes} from '../../networking'
 import { addMessage } from '../communication'
 import { getMongoUser } from '../user'
+import { getCompanies } from './selectors'
 
 export const fetchCompany = (companyID) => async (dispatch, getState) => {
     dispatch(CompanyActions.setLoadingCompany(true))
@@ -37,4 +38,33 @@ export const postCompany = (company, onSuccess) => async (dispatch, getState) =>
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
     }
+}
+
+export const searchCompanies = (searchText, page) => async (dispatch, getState) => {
+    const state = getState()
+    const companies = getCompanies(state)
+    if (page != 1 && companies.length > (page - 1)*PageSizes.candidateApplicationSearch) return
+
+    dispatch(CompanyActions.setLoadingCompanies(true))
+
+    const queryString = stringifyQuery({
+        name: searchText,
+        page
+    })
+
+    try {
+        const res = await api.get('/companies/search' + queryString)
+
+        if (page == 1) {
+            dispatch(CompanyActions.setCompanies(res.data))
+        } else {
+            dispatch(CompanyActions.addCompanies(res.data))
+        }
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+    }
+
+    dispatch(CompanyActions.setLoadingCompanies(false))
 }

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import styled from 'styled-components'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import {
     signInWithPopup,
     createUserWithEmailAndPassword,
@@ -23,6 +23,7 @@ import { Button } from '../../components/common/Button'
 
 export const RegisterComponent = props => {
     const navigate = useNavigate()
+    const {referralCode} = useParams()
     const [email, setEmail] = useState('')
     const [name, setName] = useState('')
     const [password, setPassword] = useState('')
@@ -37,9 +38,14 @@ export const RegisterComponent = props => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password)
             if (userCredential) {
-                const {user} = userCredential
+                let {user} = userCredential
+                user = {
+                    ...user,
+                    displayName: name
+                }
                 props.postMongoUser(
                     user,
+                    referralCode,
                     () => props.fetchThisMongoUser(user, undefined, undefined, true)
                 )
             }
@@ -55,11 +61,10 @@ export const RegisterComponent = props => {
             const result = await signInWithPopup(auth, new GoogleAuthProvider())
             if (result) {
                 const {user} = result
-                console.log(JSON.stringify(
-                    {user}
-                , null, 4))
+
                 props.postMongoUser(
                     user,
+                    referralCode,
                     () => props.fetchThisMongoUser(user, undefined, undefined, true)
                 )
             }
@@ -82,7 +87,7 @@ export const RegisterComponent = props => {
     return (
         <PageContainer>
             <LandingHeader showButtons={false} />
-            <BodyContainer className='ai-center'>
+            <BodyContainer className='ai-center bgc-tt'>
                 <LoginCard className='d-flex fd-column ai-stretch'>
                     <h3>Create your account</h3>
                     <br /><br />

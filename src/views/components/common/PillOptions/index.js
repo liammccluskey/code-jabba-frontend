@@ -46,7 +46,7 @@ const Root = styled.div`
     display: inline-flex;
     align-items: center;
     border: 1px solid ${p => p.theme.bc};
-    border-radius: 15px;
+    border-radius: 20px;
     cursor: pointer;
     overflow: hidden;
 

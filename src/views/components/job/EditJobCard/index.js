@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
 import { getIsMobile } from '../../../../redux/theme'
+import { getMongoUser } from '../../../../redux/user'
 import {
     getCompanySearchResults,
     getLoadingCompanySearchResults,
@@ -15,6 +16,8 @@ import {
     repostJob,
 } from '../../../../redux/job'
 import { addMessage } from '../../../../redux/communication'
+import { addModal } from '../../../../redux/modal'
+import { ModalTypes } from '../../../../containers/ModalProvider'
 import {
     getFormData,
     getFormDataModified
@@ -30,7 +33,10 @@ import { Tooltip } from '../../common/Tooltip'
 export const PositionTypes = [
     {id: 'frontend', title: 'Frontend'},
     {id: 'backend', title: 'Backend'},
-    {id: 'full-stack', title: 'Full Stack'}
+    {id: 'full-stack', title: 'Full Stack'},
+    {id: 'embedded', title: 'Embedded'},
+    {id: 'qa', title: 'Quality Assurance'},
+    {id: 'test', title: 'Test'},
 ]
 
 export const JobTypes = [
@@ -125,8 +131,24 @@ export const Skills = [
     'Kubernetes',
     'iOS',
     'Android',
-    '.NET'
+    '.NET',
+    'Maven',
+    'JUnit',
+    'Jest',
+    'React Native',
+    'Redux',
+    'Kotlin',
 ].sort((a, b) => a.localeCompare(b))
+
+export const EducationLevels = [
+    {title: 'Highschool', id: 'hs'},
+    {title: 'Bootcamp', id: 'bc'},
+    {title: "Associate's", id: 'as'},
+    {title: "Bachelor's of Arts", id: 'bsa'},
+    {title: "Bachelor's of Science", id: 'bss'},
+    {title: "Master's", id: 'm'},
+    {title: "Phd", id: 'phd'},
+]
 
 export const Questions = [
     {
@@ -187,21 +209,14 @@ export const Questions = [
         title: 'What is the highest level of education you have completed?',
         id: 'education',
         inputType: 'select',
-        options: [
-            {title: 'Highschool', id: 'highschool'},
-            {title: 'Bootcamp', id: 'bootcamp'},
-            {title: "Associate's", id: 'associates'},
-            {title: "Bachelor's", id: 'bachelors'},
-            {title: "Master's", id: 'masters'},
-            {title: "Doctorate's", id: 'doctorates'},
-        ]
+        options: EducationLevels
     },
-    {
-        title: 'Why are you interested in working for us?',
-        id: 'interest',
-        inputType: 'textarea',
-        custom: true
-    },
+    // {
+    //     title: 'Why are you interested in working for us?',
+    //     id: 'interest',
+    //     inputType: 'textarea',
+    //     custom: true
+    // },
     {
         title: 'Are you authorized to work in the United States?',
         id: 'work-authorization',
@@ -227,7 +242,27 @@ export const Questions = [
         id: 'side-project',
         inputType: 'textarea',
         custom: false
-    }
+    },
+    {
+        title: 'Are you atleast 18 years of age or older?',
+        id: 'older-than-18',
+        inputType: 'select',
+        options: [
+            {title: 'Yes', id: 'older-than-18-yes'},
+            {title: 'No', id: 'older-than-18-no'},
+        ],
+        custom: false
+    },
+    {
+        title: 'Do you have a degree in Computer Science or a related field?',
+        id: 'computer-science-degree',
+        inputType: 'select',
+        options: [
+            {title: 'Yes', id: 'computer-science-degree-yes'},
+            {title: 'No', id: 'computer-science-degree8-no'},
+        ],
+        custom: false
+    },
 ].sort( (a, b) => a.title.localeCompare(b.title))
 
 export const SalaryTypes = [
@@ -331,6 +366,18 @@ export const EditJobCardComponent = props => {
         }))
     }
 
+    const addCantPostJobsModal = () => {
+        props.addModal(ModalTypes.CONFIRM, {
+            title: 'Job post requirements',
+            message: "You can't post jobs until you complete the To Do items on the Dashboard",
+            confirmButtonTitle: 'Go to dashboard',
+            onConfirm: onSuccess => {
+                navigate('/dashboard')
+                onSuccess()
+            }
+        })
+    }
+
     // For test
     // useEffect(() => {
     //     setFormData({
@@ -360,6 +407,12 @@ export const EditJobCardComponent = props => {
     //         questions: [],
     //     })
     // }, [])
+
+    useEffect(() => {
+        if (!props.mongoUser.canPostJobs) {
+            addCantPostJobsModal()
+        }
+    }, [])
 
     useEffect(() => {
         const activeExperienceLevels = [
@@ -682,6 +735,8 @@ export const EditJobCardComponent = props => {
             case 'work-authorization':
             case 'sponsorship':
             case 'side-project':
+            case 'older-than-18':
+            case 'computer-science-degree':
                 if (formData.questions.includes(optionID)) {
                     setFormData(curr => ({
                         ...curr,
@@ -698,6 +753,11 @@ export const EditJobCardComponent = props => {
     }
 
     const onClickSubmit = () => {
+        if (!props.mongoUser.canPostJobs) {
+            addCantPostJobsModal()
+            return
+        }
+
         const hasErrors = validateForm()
 
         if (hasErrors) {
@@ -761,17 +821,13 @@ export const EditJobCardComponent = props => {
             />
             <InputWithMessage
                 label='Position'
+                inputType='select'
                 modified={isEditMode && modified.position}
-                style={{marginBottom: 0}}
+                selectValue={formData.position}
+                selectValues={PositionTypes}
+                onChangeSelectValue={onChangeField}
+                fieldName='position'
             />
-            <div className='pills-row row'>
-                <PillOptions
-                    options={PositionTypes}
-                    activeOptionID={formData.position}
-                    onClickOption={onClickPill}
-                    className='pill-options'
-                />
-            </div>
             <InputWithMessage
                 label='Type'
                 modified={isEditMode && modified.type}
@@ -1112,6 +1168,7 @@ const Root = styled.div`
 `
 const mapStateToProps = state => ({
     isMobile: getIsMobile(state),
+    mongoUser: getMongoUser(state),
     companySearchResults: getCompanySearchResults(state),
     loadingCompanySearchResults: getLoadingCompanySearchResults(state),
 })
@@ -1122,6 +1179,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     postJob,
     patchJob,
     repostJob,
+    addModal
 }, dispatch)
 
 export const EditJobCard = connect(mapStateToProps, mapDispatchToProps)(EditJobCardComponent)

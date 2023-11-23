@@ -89,3 +89,27 @@ export const postApplication = (jobID, recruiterID, questions=undefined) => asyn
         dispatch(addMessage(errorMessage, true))
     }
 }
+
+export const fetchApplication = (applicationID) => async (dispatch, getState) => {
+    dispatch(ApplicationActions.setApplicationNotFound(false))
+    dispatch(ApplicationActions.setLoadingApplication(true))
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    const queryString = stringifyQuery({
+        userID: mongoUser._id
+    })
+
+    try {
+        const res = await api.get(`/applications/${applicationID}` + queryString)
+
+        dispatch(ApplicationActions.setApplication(res.data))
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        dispatch(ApplicationActions.setApplicationNotFound(true))
+    }
+
+    dispatch(ApplicationActions.setLoadingApplication(false))
+}

@@ -3,11 +3,17 @@ import {UserActionTypes as Types} from './types'
 const UserState = {
     mongoUser: null,
     loadingMongoUser: false,
-    loadingProfileUpdate: false,
     loadingLogout: false,
     loadingSignIn: false,
     loadingUserFetch: false,
     isRecruiterMode: false,
+    profileUser: null,
+    loadingProfileUser: false,
+    profileUserNotFound: false,
+    userStats: {
+        candidatesCount: 0,
+        recruitersCount: 0,
+    },
 
     // calculated
     firebaseUser: null,
@@ -42,11 +48,6 @@ export const userReducer = (state = UserState, action) => {
                 ...state,
                 loadingMongoUser: action.value
             }
-        case Types.SET_LOADING_PROFILE_UPDATE:
-            return {
-                ...state,
-                loadingProfileUpdate: action.value
-            }
         case Types.SET_LOADING_LOGOUT:
             return {
                 ...state,
@@ -61,6 +62,31 @@ export const userReducer = (state = UserState, action) => {
             return {
                 ...state,
                 isRecruiterMode: action.value
+            }
+        case Types.SET_PROFILE_USER:
+            return {
+                ...state,
+                profileUser: action.value
+            }
+        case Types.SET_LOADING_PROFILE_USER:
+            return {
+                ...state,
+                loadingProfileUser: action.value
+            }
+        case Types.SET_PROFILE_USER_NOT_FOUND:
+            return {
+                ...state,
+                profileUserNotFound: action.value
+            }
+        case Types.SET_USER_STATS:
+            return {
+                ...state,
+                userStats: action.value
+            }
+        case Types.SET_LOADING_USER_STATS:
+            return {
+                ...state,
+                loadingUserStats: action.value
             }
         default:
             return state

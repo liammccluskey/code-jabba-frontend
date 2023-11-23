@@ -9,7 +9,7 @@ export const SearchableSelectableInput = props => {
     const {
         options, // [string]
         selectedOptions, // [string]
-        value,
+        value='',
         fieldName,
 
         onChange, // e => void
@@ -21,7 +21,7 @@ export const SearchableSelectableInput = props => {
     const inputRef = useRef()
     const [optionsVisible, setOptionsVisible] = useState(false)
 
-    const parsedOptions = options.filter( option => option.toLowerCase().includes(value.toLowerCase()) )
+    const parsedOptions = options.filter( option => option.toLowerCase().includes(value.toLowerCase()))
 
     useEffect(() => {
         const handleClick = e => {
@@ -54,6 +54,7 @@ export const SearchableSelectableInput = props => {
                 value={value}
                 onChange={onChangeValue}
                 ref={inputRef}
+                autoComplete='off'
             />
             {optionsVisible ?
                 <div className='options-container' ref={optionsRef}>

@@ -50,7 +50,7 @@ export const ConfirmComponent = props => {
     }
 
     return (
-        <Root className={`modal-container-small animation-slide-up ${props.isMobile && 'mobile'}`}>
+        <Root className={`modal-container-small animation-slide-up ${props.isMobile && 'mobile'}`} {...rest}>
             <div className='header section'>
                 <i className='bi-check-circle' />
                 <h3 className='header-title'>{title}</h3>

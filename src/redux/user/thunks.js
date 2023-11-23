@@ -10,7 +10,7 @@ import {api, auth, storage, getFirebaseErrorMessage} from '../../networking'
 import { addMessage } from '../communication'
 
 export const fetchThisMongoUser = (
-    firebaseUser,
+    firebaseUser=getFirebaseUser(),
     onSuccess = () => {},
     onFailure = () => {},
     isInitialFetch = false
@@ -48,11 +48,12 @@ export const fetchThisMongoUser = (
 
 export const postMongoUser = (
     firebaseUser,
+    referralCode=undefined,
     onSuccess,
     onFailure
 ) => async (dispatch) => {
     try {
-        const res = await UserUtils.__postMongoUser(firebaseUser)
+        const res = await UserUtils.__postMongoUser(firebaseUser, referralCode)
         dispatch(addMessage(res.data.message))
         onSuccess()
     } catch (error) {
@@ -176,8 +177,8 @@ export const patchUserPhoto = (
         const storageRef = ref(storage, `/users/${_id}/photo`)
         let photoURL = null
         try {
-            photoURL = await getDownloadURL(storageRef)
             await uploadBytes(storageRef, photoFile)
+            photoURL = await getDownloadURL(storageRef)
             await updateProfile(firebaseUser, {photoURL})
         } catch (error) {
             const errorMessage = getFirebaseErrorMessage(error)
@@ -327,4 +328,83 @@ export const cancelSubscription = (onSuccess = () => {}, onFailure = () => {}) =
         dispatch(addMessage(errorMessage, true))
         onFailure()
     }
+}
+
+export const fetchProfileUser = userID => async (dispatch) => {
+    dispatch(UserActions.setLoadingProfileUser(true))
+    dispatch(UserActions.setProfileUserNotFound(false))
+
+    try {
+        const res = await api.get(`/users/_id/${userID}`)
+
+        dispatch(UserActions.setProfileUser(res.data))
+    } catch (error) {
+        const errorMessage = error.response ?
+            error.response.data.message
+            : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        dispatch(UserActions.setProfileUserNotFound(true))
+    }
+
+
+    dispatch(UserActions.setLoadingProfileUser(false))
+}
+
+export const patchUserResume = (
+    photoFile,
+    onSuccess = () => {},
+    onFailure = () => {}
+) => async (dispatch, getState) => {
+    const state = getState()
+    const {_id} = getMongoUser(state)
+    const firebaseUser = getFirebaseUser()
+
+    try {
+        const storageRef = ref(storage, `/users/${_id}/resume`)
+        let photoURL = null
+        try {
+            await uploadBytes(storageRef, photoFile)
+            photoURL = await getDownloadURL(storageRef)
+            await updateProfile(firebaseUser, {photoURL})
+        } catch (error) {
+            const errorMessage = getFirebaseErrorMessage(error)
+            throw Error(errorMessage)
+        }
+
+        const res = await UserUtils.__patchMongoUser({resumeURL: photoURL}, _id)
+        dispatch(fetchThisMongoUser(
+            firebaseUser,
+            () => {
+                dispatch(addMessage(res.data.message))
+                onSuccess()
+            },
+            onFailure
+        ))
+    } catch (error) {
+        const errorMessage = error.response ?
+            error.response.data.message
+            : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        onFailure()
+    }
+}
+
+export const fetchUserStats = () => async dispatch => {
+    dispatch(UserActions.setLoadingUserStats(true))
+
+    try {
+        const res = await api.get('/users/stats')
+
+        dispatch(UserActions.setUserStats(res.data))
+    } catch (error) {
+        const errorMessage = error.response ?
+            error.response.data.message
+            : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+    }
+
+    dispatch(UserActions.setLoadingUserStats(false))
 }

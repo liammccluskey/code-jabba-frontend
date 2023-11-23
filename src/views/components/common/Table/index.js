@@ -226,7 +226,6 @@ const Root = styled.div`
 
     & thead {
         width: 100%;
-        position: sticky;
     }
 
     & tbody {

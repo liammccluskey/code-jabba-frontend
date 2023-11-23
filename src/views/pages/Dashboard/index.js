@@ -38,6 +38,8 @@ import {
     fetchApplications,
 } from '../../../redux/dashboard'
 import { setApplicationsPage } from '../../../redux/application'
+import { addModal } from '../../../redux/modal'
+import { ModalTypes } from '../../../containers/ModalProvider'
 import { SortFilters } from '../admin/BugReports'
 import { capitalizeWords } from '../../../utils/misc'
 import { PageContainer } from '../../components/common/PageContainer'
@@ -127,6 +129,24 @@ export const DashboardComponent = props => {
         {title: 'Rejected', value: props.candidateApplicationStats.rejectedCount, percentDelta: props.candidateApplicationStats.rejectedPercentDelta},
         {title: 'Accepted', value: props.candidateApplicationStats.acceptedCount, percentDelta: props.candidateApplicationStats.acceptedPercentDelta},
     ]
+
+    useEffect(() => {
+        if (props.isRecruiterMode) {
+            !props.mongoUser.canPostJobs && props.addModal(ModalTypes.CONFIRM, {
+                title: 'Job post requirements',
+                message: 'You must complete the todo items before you can post jobs.',
+                confirmButtonTitle: 'Okay',
+                onConfirm: onSuccess => onSuccess()
+            })
+        } else {
+            !props.mongoUser.canApplyToJobs && props.addModal(ModalTypes.CONFIRM, {
+                title: 'Application requirements',
+                message: 'You must complete the todo items before you can apply to jobs.',
+                confirmButtonTitle: 'Okay',
+                onConfirm: onSuccess => onSuccess()
+            })
+        }
+    }, [])
 
     useEffect(() => {
         fetchCompaniesFirstPage()
@@ -305,7 +325,7 @@ export const DashboardComponent = props => {
     }
 
     const onClickApplicationRow = rowID => {
-        console.log(rowID)
+        navigate(`/candidate-applications/${rowID}`)
     }
 
     const onClickDecrementApplicationsPage = () => {
@@ -334,12 +354,128 @@ export const DashboardComponent = props => {
         }
     }
 
+    const onClickFindJobs = () => {
+        navigate('/jobs')
+    }
+
+    const onClickEditResume = () => {
+        props.addModal(ModalTypes.EDIT_RESUME)
+    }
+
+    const onClickEditGeneral = () => {
+        props.addModal(ModalTypes.EDIT_CONTACT)
+    }
+
+    const onClickEditSocials = () => {
+        props.addModal(ModalTypes.EDIT_SOCIALS)
+    }
+
+    const onClickEditLanguages = () => {
+        props.addModal(ModalTypes.EDIT_LANGUAGES)
+    }
+
+    const onClickEditSkills = () => {
+        props.addModal(ModalTypes.EDIT_SKILLS)
+    }
+
+    const onClickEditEducation = () => {
+        props.addModal(ModalTypes.EDIT_EDUCATION, {isEditMode: false})
+    }
+
+    const onClickEditProjects = () => {
+        props.addModal(ModalTypes.EDIT_PROJECT, {isEditMode: false})
+    }
+
+    const onClickEditQuestions = () => {
+        props.addModal(ModalTypes.EDIT_QUESTIONS)
+    }
+
+    const todoItems = props.isRecruiterMode ?
+        [
+            [
+                {number: 1, title: 'Complete general information', onClick: onClickEditGeneral, isComplete: props.mongoUser.generalCompleted},
+            ],
+            [
+                {number: 2, title: 'Complete socials information', onClick: onClickEditSocials, isComplete: props.mongoUser.socialsCompleted},
+            ]
+        ]
+        : props.isSemiMobile ?
+            [
+                [
+                    {number: 1, title: 'Upload resume', onClick: onClickEditResume, isComplete: props.mongoUser.resumeCompleted},
+                    {number: 3, title: 'Complete socials', onClick: onClickEditSocials, isComplete: props.mongoUser.socialsCompleted},
+                    {number: 5, title: 'Complete skills', onClick: onClickEditSkills, isComplete: props.mongoUser.skillsCompleted},
+                    {number: 7, title: 'Upload at least 1 project', onClick: onClickEditProjects, isComplete: props.mongoUser.projectsCompleted},
+                ],[
+                    {number: 2, title: 'Complete general information', onClick: onClickEditGeneral, isComplete: props.mongoUser.generalCompleted},
+                    {number: 4, title: 'Complete languages', onClick: onClickEditLanguages, isComplete: props.mongoUser.languagesCompleted},
+                    {number: 6, title: 'Upload at least 1 education', onClick: onClickEditEducation, isComplete: props.mongoUser.educationCompleted},
+                    {number: 8, title: 'Complete questions', onClick: onClickEditQuestions, isComplete: props.mongoUser.questionsCompleted},
+                ],
+            ]
+            : [
+                [
+                    {number: 1, title: 'Upload resume', onClick: onClickEditResume, isComplete: props.mongoUser.resumeCompleted},
+                    {number: 5, title: 'Complete skills', onClick: onClickEditSkills, isComplete: props.mongoUser.skillsCompleted},
+                ],
+                [
+                    {number: 2, title: 'Complete general information', onClick: onClickEditGeneral, isComplete: props.mongoUser.generalCompleted},
+                    {number: 6, title: 'Upload at least 1 education', onClick: onClickEditEducation, isComplete: props.mongoUser.educationCompleted},
+                ],
+                [
+                    {number: 3, title: 'Complete socials', onClick: onClickEditSocials, isComplete: props.mongoUser.socialsCompleted},
+                    {number: 7, title: 'Upload at least 1 project', onClick: onClickEditProjects, isComplete: props.mongoUser.projectsCompleted},
+                ],
+                [
+                    {number: 4, title: 'Complete languages', onClick: onClickEditLanguages, isComplete: props.mongoUser.languagesCompleted},
+                    {number: 8, title: 'Complete questions', onClick: onClickEditQuestions, isComplete: props.mongoUser.questionsCompleted},
+                ],
+            ]
+
     return (
         <PageContainer>
             <MainHeader hasSubheaderBelow={false}/>
             <BodyContainer style={{padding: '40px 5%'}}>
                 {props.isRecruiterMode ?
                     <Root className={`${props.isMobile && 'mobile'} ${props.isSemiMobile && 'semi-mobile'}`}>
+                        {!props.mongoUser.canPostJobs ?
+                            <div className='section-header'>
+                                <h3>To do</h3>
+                            </div>
+                            : null
+                        }
+                        {!props.mongoUser.canPostJobs ?
+                            <div className='float-container todos-container'>
+                                {todoItems.map( (todos, index) => (
+                                    <div className='todo-column' key={index}>
+                                        {todos.map( ({number, title, isComplete, onClick}) => (
+                                            <div className='todo-container' key={number}>
+                                                <div className='todo-header'>
+                                                    <div className={`number-container ${isComplete && 'complete'}`}>
+                                                        {isComplete ?
+                                                            <i className='bi-check check-icon' />
+                                                            : <p>{number}</p>
+                                                        }
+                                                    </div>
+                                                    <p>{title}</p>
+                                                </div>
+                                                {isComplete ?
+                                                    null
+                                                    : <Button
+                                                        title='Complete item'
+                                                        type='clear'
+                                                        priority={3}
+                                                        onClick={onClick}
+                                                        style={{marginLeft: 10, marginTop: 10}}
+                                                    />
+                                                }
+                                            </div>
+                                        ))}
+                                    </div>
+                                ))}
+                            </div>
+                            : null
+                        }
                         <div className='section-header '>
                             <h3>Application Metrics</h3>
                             <select
@@ -387,7 +523,6 @@ export const DashboardComponent = props => {
                                     onClickTableRow={onClickCompanyRow}
                                     onClickDecrementPage={onClickDecrementCompaniesPage}
                                     onClickIncrementPage={onClickIncrementCompaniesPage}
-                                    
                                 />
                             </div>
                             <div className='table-section-container'>
@@ -423,6 +558,44 @@ export const DashboardComponent = props => {
                         </div>
                     </Root>
                     : <Root className={`${props.isMobile && 'mobile'} ${props.isSemiMobile && 'semi-mobile'}`}>
+                        {!props.mongoUser.canApplyToJobs ?
+                            <div className='section-header'>
+                                <h3>To do</h3>
+                            </div>
+                            : null
+                        }
+                        {!props.mongoUser.canApplyToJobs ?
+                            <div className='float-container todos-container'>
+                            {todoItems.map( (todos, index) => (
+                                <div className='todo-column' key={index}>
+                                    {todos.map( ({number, title, isComplete, onClick}) => (
+                                        <div className='todo-container' key={number}>
+                                            <div className='todo-header'>
+                                                <div className={`number-container ${isComplete && 'complete'}`}>
+                                                    {isComplete ?
+                                                        <i className='bi-check check-icon' />
+                                                        : <p>{number}</p>
+                                                    }
+                                                </div>
+                                                <p>{title}</p>
+                                            </div>
+                                            {isComplete ?
+                                                null
+                                                : <Button
+                                                    title='Complete item'
+                                                    type='clear'
+                                                    priority={3}
+                                                    onClick={onClick}
+                                                    style={{marginLeft: 10, marginTop: 10}}
+                                                />
+                                            }
+                                        </div>
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
+                            : null
+                        }
                         <div className='section-header '>
                             <h3>Application Metrics</h3>
                             <select
@@ -446,6 +619,13 @@ export const DashboardComponent = props => {
                         }
                         <div className='section-header'>
                             <h3>My applications</h3>
+                            <Button
+                                title='Find jobs'
+                                icon='bi-search'
+                                priority={3}
+                                type='clear'
+                                onClick={onClickFindJobs}
+                            />
                         </div>
                         <SearchableTable
                             searchable={false}
@@ -474,6 +654,61 @@ const Root = styled.div`
     display: flex;
     flex-direction: column;
     align-items: stretch;
+
+    & .todos-container {
+        display: flex;
+        align-items: flex-start;
+        padding: 20px;
+        margin-bottom: 50px;
+    }
+
+    & .todo-column {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+        align-items: stretch;
+        flex: 1;
+        border-right: 1px solid ${p => p.theme.bc};
+        height: 100%;
+    }
+    & .todo-column:last-child {
+        border-right: none;
+    }
+
+    & .todo-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px;
+    }
+
+    & .todo-header {
+        display: flex;
+        align-items: center;
+    }
+
+    & .number-container {
+        min-height: 30px;
+        min-width: 30px;
+        max-height: 30px;
+        max-width: 30px;
+        border-radius: 50%;
+        border: 1px solid ${p => p.theme.tint};
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin-right: 10px;
+    }
+    & .number-container.complete {
+        background-color: ${p => p.theme.tint};
+    }
+    & .number-container .check-icon {
+        font-size: 25px;
+        color: white;
+    }
+    & .number-container p {
+        color: ${p => p.theme.tint};
+    }
 
     & .tables-container {
         display: grid;
@@ -536,7 +771,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     fetchRecruiterJobs,
     fetchApplicationStats,
     fetchApplications,
-    setApplicationsPage
+    setApplicationsPage,
+    addModal
 }, dispatch)
 
 export const Dashboard = connect(mapStateToProps, mapDispatchToProps)(DashboardComponent)

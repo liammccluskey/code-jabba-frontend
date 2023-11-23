@@ -32,6 +32,8 @@ export const InputWithMessageComponent = props => {
         verticalLabels=false,
         switchLabel='',
         switchID=null,
+        labelMessage='',
+        wrapLabel=false,
     
         onChangeText, // e => void
         onChangeSelectValue, // e => void
@@ -49,9 +51,13 @@ export const InputWithMessageComponent = props => {
                     className={`label-header ${verticalLabels && 'vertical'}`}
                     style={{marginBottom: labelMarginBottom}}
                 >
-                    <label>{label}</label>
+                    <label className={wrapLabel && 'wrap'}>{label}</label>
                     {optional ?
                         <h5 className='optional-text' style={{marginRight: 10}}>Optional</h5>
+                        : null
+                    }
+                    {labelMessage ?
+                        <h5 className='optional-text' style={{marginRight: 10}}>{labelMessage}</h5>
                         : null
                     }
                     {hasError ?
@@ -163,6 +169,13 @@ const Root = styled.div`
     display: flex;
     align-items: center;
     margin-bottom: 30px;
+
+    & label {
+        white-space: nowrap;
+    }
+    & label.wrap {
+        white-space: wrap;
+    }
     
     & .input-container {
         display: flex;

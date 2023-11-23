@@ -9,6 +9,11 @@ const PageLinks = [
         id: 'general'
     },
     {
+        name: 'Analytics',
+        url: '/analytics',
+        id: 'analytics'
+    },
+    {
         name: 'Bug Reports',
         url: '/bugreports',
         id: 'bug-reports'

@@ -29,7 +29,7 @@ export const MainMenuComponent = props => {
     const navigate = useNavigate()
 
     const onClickProfileContainer = () => {
-        navigate('/settings')
+        navigate(`/users/${props.user._id}`)
         setMenuHidden(true)
     }
 
