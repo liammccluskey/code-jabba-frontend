@@ -5,7 +5,7 @@ import { SubscriptionTiers } from './constants'
 import * as UserActions from './actions'
 import * as ThemeActions from '../theme'
 import * as UserUtils from './utils'
-import { getFirebaseUser, getMongoUser } from './selectors'
+import { getFirebaseUser, getIsRecruiterMode, getMongoUser } from './selectors'
 import {api, auth, storage, getFirebaseErrorMessage} from '../../networking'
 import { addMessage } from '../communication'
 
@@ -51,9 +51,12 @@ export const postMongoUser = (
     referralCode=undefined,
     onSuccess,
     onFailure
-) => async (dispatch) => {
+) => async (dispatch, getState) => {
+    const state = getState()
+    const isRecruiter = getIsRecruiterMode(state)
+    
     try {
-        const res = await UserUtils.__postMongoUser(firebaseUser, referralCode)
+        const res = await UserUtils.__postMongoUser(firebaseUser, referralCode, isRecruiter)
         dispatch(addMessage(res.data.message))
         onSuccess()
     } catch (error) {
@@ -241,8 +244,13 @@ export const patchUserThemeColor = (themeColor, onSuccess = () => {}) => async (
 }
 
 export const patchUserTintColor = (tintColor, onSuccess = () => {}) => async (dispatch, getState) => {
+    const onPatchSuccess = () => {
+        onSuccess()
+        dispatch(addMessage('Changes saved.'))
+    }
+    
     dispatch(ThemeActions.setTintColor(tintColor))
-    dispatch(patchUserSettings('theme.tintColor', tintColor, onSuccess, undefined, true))
+    dispatch(patchUserSettings('theme.tintColor', tintColor, onPatchSuccess, undefined, true))
 }
 
 export const signOutUser = onSuccess => async (dispatch, getState) => {
@@ -285,7 +293,7 @@ export const deleteUser = onSuccess => async (dispatch, getState) => {
     }
 }
 
-export const updateSubscription = (onSuccess = () => {}, onFailure = () => {}) => async (dispatch, getState) => {
+export const updateSubscription = (subscriptionTier, onSuccess = () => {}, onFailure = () => {}) => async (dispatch, getState) => {
     const state = getState()
     const mongoUser = getMongoUser(state)
 
@@ -293,7 +301,7 @@ export const updateSubscription = (onSuccess = () => {}, onFailure = () => {}) =
         const res = await api.patch('/membership/update-subscription', {
             userID: mongoUser._id,
             userEmail: mongoUser.email,
-            subscriptionTier: SubscriptionTiers.premium
+            subscriptionTier: SubscriptionTiers[subscriptionTier]
         })
 
         dispatch(addMessage(res.data.message))
@@ -308,14 +316,13 @@ export const updateSubscription = (onSuccess = () => {}, onFailure = () => {}) =
     }
 }
 
-export const cancelSubscription = (onSuccess = () => {}, onFailure = () => {}) => async (dispatch, getState) => {
+export const cancelSubscription = (onSuccess, onFailure) => async (dispatch, getState) => {
     const state = getState()
     const mongoUser = getMongoUser(state)
 
     try {
         const res = await api.patch('/membership/cancel-subscription', {
-            userID: mongoUser._id,
-            stripeID: mongoUser.stripeID
+            userID: mongoUser._id
         })
 
         dispatch(addMessage(res.data.message))

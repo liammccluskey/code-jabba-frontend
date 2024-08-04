@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
+import { useNavigate  } from 'react-router-dom'
 
 import { 
     getRewardsStats,
@@ -13,7 +14,10 @@ import {
     fetchRewards,
     fetchRewardsStats
 } from '../../../redux/rewards'
-import { getMongoUser } from '../../../redux/user'
+import { 
+    getMongoUser,
+    getIsRecruiterMode,
+} from '../../../redux/user'
 import { getIsMobile } from '../../../redux/theme'
 import { addMessage } from '../../../redux/communication'
 import { addModal } from '../../../redux/modal'
@@ -32,6 +36,7 @@ export const RewardsComponent = props => {
     const {
         
     } = props
+    const navigate = useNavigate()
     const [data, setData] = useState({
         unclaimedPillActive: false,
         activePillActive: false,
@@ -42,8 +47,8 @@ export const RewardsComponent = props => {
         []
         : [
         {title: 'Total referrals', value: props.stats.referralsCount},
-        {title: 'Claimed referrals', value: props.stats.claimedReferralsCount},
-        {title: 'Unclaimed referrals', value: props.stats.unclaimedReferralsCount},
+        {title: 'Claimed balance', value: '$ ' + (props.stats.claimedReferralsCount*5).toLocaleString()},
+        {title: 'Unclaimed balance', value: '$ ' + (props.stats.unclaimedReferralsCount*5).toLocaleString()},
     ]
 
     const headers = ['Referree', 'Ready for redemption', 'Premium signup', 'Claimed']
@@ -55,6 +60,28 @@ export const RewardsComponent = props => {
         {title: 'Unclaimed', id: 'unclaimed', active: data.unclaimedPillActive},
         {title: 'Ready for redemption', id: 'active', active: data.activePillActive},
     ]
+
+    const showRequirementsModal = () => props.addModal(ModalTypes.CONFIRM, {
+        title: props.isRecruiterMode ? 'Job post requirements' : 'Application requirements',
+        message: props.isRecruiterMode ? 'You must complete the todo items before you can post jobs.' : 'You must complete the todo items before you can apply to jobs.',
+        confirmButtonTitle: 'Go to dashboard',
+        onConfirm: onSuccess => {
+            navigate('/dashboard')
+            onSuccess()
+        }
+    })
+
+    const canPerformAction = () => {
+        if (props.isRecruiterMode) {
+            return props.mongoUser.canPostJobs
+        } else {
+            return props.mongoUser.canApplyToJobs
+        }
+    }
+
+    useEffect(() => {
+        !canPerformAction() && showRequirementsModal()
+    }, [])
 
     useEffect(() => {
         props.fetchRewardsStats()
@@ -86,6 +113,11 @@ export const RewardsComponent = props => {
     // Direct
 
     const onClickCopyReferralLink = () => {
+        if (!canPerformAction()) {
+            showRequirementsModal()
+            return
+        }
+
         const queryString = stringifyQuery({
             referralCode: props.mongoUser.referralCode
         })
@@ -95,6 +127,10 @@ export const RewardsComponent = props => {
     }
 
     const onClickShareReferralLink = () => {
+        if (!canPerformAction()) {
+            showRequirementsModal()
+            return
+        }
         props.addModal(ModalTypes.SHARE_REFERRAL)
     }
 
@@ -142,7 +178,7 @@ export const RewardsComponent = props => {
                     <h3 className='section-title'>Policy</h3>
                     <div className='float-container policy-container'>
                         <div className='policy-item-container'>
-                            <p>{`Receive one $5 amazon gift card for each person that signs up for ${process.env.REACT_APP_SITE_NAME} and buys a premium subscription.`}</p>
+                            <p>{`Receive one $5 amazon gift card for each person that signs up for ${process.env.REACT_APP_SITE_NAME} using your referral link and buys a premium subscription.`}</p>
                         </div>
                         <div className='policy-item-container' >
                             <Button
@@ -243,6 +279,7 @@ const mapStateToProps = state => ({
     rewards: getRewards(state),
     loadingRewards: getLoadingRewards(state),
     rewardsPagesCount: getRewardsPagesCount(state),
+    isRecruiterMode: getIsRecruiterMode(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

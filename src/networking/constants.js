@@ -34,7 +34,7 @@ export const PageSizes = {
     companySearch: 20,
     jobSearch: 20,
     candidateApplicationSearch: 20,
-    recruiterApplicationSearch: 50,
+    recruiterApplicationSearch: 20,
 }
 
 // Errors

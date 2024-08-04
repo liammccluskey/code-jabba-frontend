@@ -27,6 +27,9 @@ const Root = styled.div`
     h4, h5, h6 {
         color: ${p => p.theme.textPrimary};
     }
+    .h7 {
+        font-size: 10px;
+    }
 
     p {
         color: ${p => p.theme.textMain};

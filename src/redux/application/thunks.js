@@ -30,37 +30,22 @@ export const fetchApplicationStats = (timeframe, jobID) => async (dispatch, getS
     dispatch(ApplicationActions.setLoadingApplicationStats(false))
 }
 
-export const fetchApplications = (filters, _page=undefined) => async (dispatch, getState) => {
+export const fetchApplications = (filters) => async (dispatch, getState) => {
     const state = getState()
     const mongoUser = getMongoUser(state)
     const applications = getApplications(state)
 
-    let page
-    if (_page !== undefined) {
-        page = _page
-        dispatch(ApplicationActions.setApplicationsPage(_page))
-    } else {
-        page = getApplicationsPage(state)
-    }
-
-
-    if (page != 1 && applications.length > (page - 1)*PageSizes.recruiterApplicationSearch) return
     dispatch(ApplicationActions.setLoadingApplications(true))
 
     const queryString = stringifyQuery({
         ...filters,
-        page,
         userID: mongoUser._id
     })
 
     try {
         const res = await api.get('/applications/recruiter-search' + queryString)
 
-        if (page == 1) {
-            dispatch(ApplicationActions.setApplications(res.data))
-        } else {
-            dispatch(ApplicationActions.addApplications(res.data))
-        }
+        dispatch(ApplicationActions.setApplications(res.data))
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
@@ -70,7 +55,7 @@ export const fetchApplications = (filters, _page=undefined) => async (dispatch, 
     dispatch(ApplicationActions.setLoadingApplications(false))
 }
 
-export const postApplication = (jobID, recruiterID, questions=undefined) => async (dispatch, getState) => {
+export const postApplication = (jobID, recruiterID, onSuccess) => async (dispatch, getState) => {
     const state = getState()
     const mongoUser = getMongoUser(state)
 
@@ -79,10 +64,10 @@ export const postApplication = (jobID, recruiterID, questions=undefined) => asyn
             candidate: mongoUser._id,
             job: jobID,
             recruiter: recruiterID,
-            ...(questions === undefined ? {} : {questions})
         })
 
         dispatch(addMessage(res.data.message))
+        onSuccess()
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)

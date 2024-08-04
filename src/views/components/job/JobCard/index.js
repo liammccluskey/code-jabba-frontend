@@ -7,12 +7,14 @@ import { useNavigate } from 'react-router-dom'
 import {
     getMongoUser,
     getIsRecruiterMode,
+    getIsCandidatePremiumUser,
 } from '../../../../redux/user'
 import { getIsMobile } from '../../../../redux/theme'
 import {
     patchJob,
     fetchJob,
-    repostJob
+    repostJob,
+    fetchCanApplyToJob
 } from '../../../../redux/job'
 import { postApplication } from '../../../../redux/application'
 import { addMessage } from '../../../../redux/communication'
@@ -21,7 +23,8 @@ import {
     SettingTypes,
     PositionTypes,
     ExperienceLevels,
-    ExperienceYears
+    ExperienceYears,
+    VisaSponsorshipOptions
 } from '../EditJobCard'
 import {
     formatSalary,
@@ -32,7 +35,7 @@ import { PageLink } from '../../common/PageLink'
 import { PillLabel } from '../../common/PillLabel'
 import { Tooltip } from '../../common/Tooltip'
 import { Button } from '../../common/Button'
-import { StarRating } from '../../common/StarRating'
+import { PendingMessage } from '../../common/PendingMessage'
 
 export const JobCardComponent = props => {
     const {
@@ -46,6 +49,7 @@ export const JobCardComponent = props => {
     const [isRecruiter, setIsRecruiter] = useState(false)
     const [optionsMenuHidden, setOptionsMenuHidden] = useState(true)
     const [expanded, setExpanded] = useState(!hideable)
+    const [loadingPostApplication, setLoadingPostApplication] = useState(false)
 
     const sortedJobLanguages = !props.loadingJob && job ?
         [...job.languages].sort((a, b) => a.localeCompare(b))
@@ -101,16 +105,26 @@ export const JobCardComponent = props => {
     ]
 
     const onClickApply = () => {
+        const postApplication = (job) => {
+            props.postApplication(job._id, job.recruiter._id, () => {
+                props.fetchJob(job._id)
+                setLoadingPostApplication(false)
+            })
+            job.applicationType === 'custom' && window.open(job.applicationURL, '_blank')
+        }
         if (!props.mongoUser.canApplyToJobs) {
             props.addMessage('You must complete the To Do items on the dashboard before you can apply to jobs', true, true)
         }
-        if (job.applicationType === 'custom') {
-            props.postApplication(job._id, job.recruiter._id)
-            window.open(job.applicationURL, '_blank')
+        else if (props.isCandidatePremiumUser) {
+            setLoadingPostApplication(true)
+            postApplication(job)
+        } else {
+            setLoadingPostApplication(true)
+            props.fetchCanApplyToJob(() => postApplication(job))
         }
     }
 
-    return ( 
+    return (
         <Root className={`float-container ${props.isMobile && 'mobile'}`} {...rest}>
             <div className='job-header'>
                 <div className='left-job-header'>
@@ -198,10 +212,7 @@ export const JobCardComponent = props => {
                     style={{marginRight: 5}}
                 />
             </div>
-            <div
-                className='section-3' 
-                style={{marginBottom: props.isRecruiterMode && expanded || job.applied && expanded ? 30 : 10}}
-            >
+            <div className='section-2' >
                 <PillLabel
                     title={job.minExperienceLevel === job.maxExperienceLevel ? 
                         ExperienceLevels.find(level => level.id === job.minExperienceLevel).title
@@ -226,16 +237,41 @@ export const JobCardComponent = props => {
                     style={{marginRight: 5}}
                 />
             </div>
+            <div className='section-3'
+                style={{marginBottom: props.isRecruiterMode && expanded || job.applied && expanded ? 30 : 10}}
+            >
+                {job.requiresClearance ?
+                    <PillLabel
+                        title={'Requires clearance'}
+                        color='green'
+                        size='m'
+                        style={{marginRight: 5}}
+                    />
+                    : null
+                }
+                <PillLabel
+                    title={'Sponsors visa: ' + VisaSponsorshipOptions.find( option => option.id === job.sponsorsVisa).title}
+                    color='green'
+                    size='m'
+                    style={{marginRight: 5}}
+                />
+            </div>
             {props.isRecruiterMode || job.applied ?
                 null
-                : <Button
-                    title={job.applicationType === 'easy-apply' ? 'Easy apply' : 'Apply'}
-                    icon={job.applicationType === 'easy-apply' ? null : 'bi-link-45deg'}
-                    priority={2}
-                    type='solid'
-                    onClick={onClickApply}
-                    style={{alignSelf: 'flex-start', marginBottom: 30}}
-                />
+                : <div className='apply-button-container'>
+                    <Button
+                        title={job.applicationType === 'easy-apply' ? 'Easy apply' : 'Apply'}
+                        icon={job.applicationType === 'easy-apply' ? null : 'bi-link-45deg'}
+                        priority={2}
+                        type='solid'
+                        onClick={onClickApply}
+                        style={{alignSelf: 'flex-start', marginRight: 10}}
+                    />
+                    {loadingPostApplication ?
+                        <PendingMessage />
+                        : null
+                    }
+                </div>
             }
             {hideable && !expanded ?
                 <Button
@@ -273,6 +309,13 @@ export const JobCardComponent = props => {
                     <div className='section-6'>
                         <h3>About the job</h3>
                         <p className='description-text'>{job.description}</p>
+                    </div>
+                    <div className='section-7'>
+                        <h3>Meet the recruiter</h3>
+                        <PageLink
+                            title={job.recruiter.displayName}
+                            url={`/users/${job.recruiter._id}`}
+                        />
                     </div>
                 </div>
                 : null
@@ -350,6 +393,9 @@ const Root = styled.div`
     & .section-6 {
         margin-bottom: 30px;
     }
+    & .section-7 {
+        margin-bottom: 30px;
+    }
 
     & .options-container {
         display: flex;
@@ -377,11 +423,17 @@ const Root = styled.div`
         white-space: pre-wrap;
     }
 
+    & .apply-button-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 30px;
+    }
 `
 const mapStateToProps = state => ({
     isMobile: getIsMobile(state),
     mongoUser: getMongoUser(state),
     isRecruiterMode: getIsRecruiterMode(state),
+    isCandidatePremiumUser: getIsCandidatePremiumUser(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -389,6 +441,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     fetchJob,
     postApplication,
     repostJob,
+    fetchCanApplyToJob,
     addMessage
 }, dispatch)
 

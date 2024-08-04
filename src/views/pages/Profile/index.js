@@ -104,6 +104,7 @@ export const ProfileComponent = props => {
             props.fetchProfileUser(props.mongoUser._id)
             props.fetchThisMongoUser(undefined, undefined, undefined, true)
         }
+
         switch (pillID) {
             case 'candidate':
                 props.patchUser({isRecruiter: false}, onPatchSuccess)
@@ -111,7 +112,6 @@ export const ProfileComponent = props => {
             case 'recruiter':
                 props.patchUser({isRecruiter: true}, onPatchSuccess)
                 break
-
         }
     }
 
@@ -147,7 +147,20 @@ export const ProfileComponent = props => {
                 {!props.loadingProfileUser && props.profileUser ?
                     props.profileUser.isRecruiter ?
                         <Recruiter className={`${props.isMobile && 'mobile'}`}>
-
+                            <div className='right-section'>
+                                <SocialsCard
+                                    linkedInURL={props.profileUser.linkedInURL}
+                                    isEditable={isThisUser}
+                                    showCandidateProfiles={false}
+                                    onClickEdit={onClickEditSocials}
+                                    style={{marginBottom: 30}}
+                                />
+                            </div>
+                            <EducationCard
+                                educations={props.profileUser.educations}
+                                isEditable={isThisUser}
+                                style={{marginBottom: 30}}
+                            />
                         </Recruiter>
                         : <Candidate className={`${props.isMobile && 'mobile'}`}>
                             <div className='right-section'>
@@ -249,9 +262,43 @@ const Candidate = styled.div`
         flex-direction: column;
         align-items: stretch;
     }
+
+    & .recruits-section {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
 `
 
 const Recruiter = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+
+    &.mobile {
+        grid-template-columns: 1fr;
+    }
+
+    & .right-section {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        margin-right: 30px;
+    }
+    &.mobile .right-section {
+        margin-right: 0px;
+    }
+    
+    & .left-section {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    & .section-title {
+        margin-bottom: 20px;
+    }
 `
 
 const Subtitle = styled.p`

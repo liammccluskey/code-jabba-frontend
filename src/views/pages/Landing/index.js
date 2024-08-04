@@ -5,85 +5,154 @@ import { bindActionCreators } from '@reduxjs/toolkit'
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment'
 
+import { 
+    getLandingStats,
+
+    fetchLandingStats
+} from '../../../redux/landing'
+import {
+    Events,
+
+    logEvent
+} from '../../../redux/events'
+import { getIsRecruiterMode, setIsRecruiterMode } from '../../../redux/user'
 import { getIsMobile, getIsSemiMobile } from '../../../redux/theme'
 import { setThemeColor, setTintColor } from '../../../redux/theme'
-import { 
-    getUserStats,
-    getLoadingUserStats,
-
-    fetchUserStats 
-} from '../../../redux/user'
+import { SubscriptionTiersFormatted, SubscriptionPrices } from '../../../redux/user'
 import { PageContainer } from '../../components/common/PageContainer'
 import { LandingHeader } from '../../components/headers/LandingHeader'
 import { Button } from '../../components/common/Button'
 import { ValueDeltaSpread } from '../../components/common/ValueDeltaSpread'
 
 const Config = {
-    heroTitle: 'The job board for software engineers',
-    heroMessage: "Forget job titles. Search by language, skill, and experience level instead.",
-    heroImageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_bug_reports.png?alt=media&token=706ccd87-b9b6-4225-adf8-c07f45cf97bd',
-    whyChooseUs: [
-        {
-            id: 0,
-            imageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_general.png?alt=media&token=727861ea-e064-46ed-9f15-8e386243d39f',
-            title: 'Pre-built admin console',
-            message: "With our pre-built admin console, you'll be able to send announcements to users, track user-submitted bug reports, and view site analytics.",
-            icon: 'bi-person-circle'
-        },
-        {
-            id: 1,
-            imageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fnotifications.png?alt=media&token=378ef367-26ec-4968-bd6f-d549e2895076',
-            title: 'Pre-built notification system',
-            message: "With our pre-built notification system, you'll be able to reach out to users with important updates about your site.",
-            icon: 'bi-mailbox'
-        },
-        {
-            id: 2,
-            imageURL: '',
-            title: 'Stripe integration',
-            message: "If your site uses a subscription model we've got you covered. Our webapps come with Stripe pre-integrated.",
-            icon: 'bi-credit-card'
-        }
-    ],
-    pricing: [
-        {
-            title: 'Basic Plan',
-            price: 'Free',
-            formatCurrency: false,
-            features: [
-                {title: 'Unlimited job applications', included: true},
-                {title: 'Message recruiters / candidates', included: true},
-                {title: '1 job posting', included: true}
-            ],
-            id: 's'
-        },
-        {
-            title: 'Premium Plan',
-            price: '30 / month',
-            formatCurrency: true,
-            features: [
-                {title: 'All free plan benefits', included: true},
-                {title: 'Unlimited job postings', included: true}
-            ],
-            id: 'm'
-        }
-    ]
+    candidate: {
+        heroTitle: 'The job board for software engineers',
+        heroMessage: "Forget job titles. Save hours searching for jobs by searching by coding language, skill, and experience level instead.",
+        whyChooseUs: [
+            {
+                id: 0,
+                imageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_general.png?alt=media&token=727861ea-e064-46ed-9f15-8e386243d39f',
+                title: 'Easier job search',
+                message: "With our search search filters, you can save time in your job search by searching for jobs by coding language, skill, and experience level.",
+            },
+            {
+                id: 1,
+                imageURL: 'https://firebasestorage.googleapis.com/v0/b/code-jabba.appspot.com/o/landing%2FScreen%20Shot%202023-11-25%20at%2011.45.47%20AM.png?alt=media&token=22db5b8e-75b4-4968-9830-4f8de210e090',
+                title: 'Reward for referrals',
+                message: "With our referral program, you will receive one $5 Amazon gift card for each person you refer that signs up for a premium subscription.",
+                icon: 'bi-mailbox'
+            },
+            {
+                id: 2,
+                imageURL: '',
+                title: 'Application Stats',
+                message: "With our site, you can track the statistics of how many of your applications have been viewed, accepted, and rejected.",
+                icon: 'bi-credit-card'
+            }
+        ],
+        pricing: [
+            {
+                title: 'Basic Plan',
+                price: 'Free',
+                formatCurrency: false,
+                features: [
+                    {title: 'Unlimited job applications per day'},
+                    {title: 'Track application stats'},
+                    {title: 'Message recruiters'},
+                    {title: 'Schedule interviews'}
+                ],
+                id: 's'
+            },
+            // {
+            //     title: `${SubscriptionTiersFormatted.candidatePremium} Plan`,
+            //     price: `${SubscriptionPrices.candidatePremium} / month`,
+            //     formatCurrency: true,
+            //     features: [
+            //         {title: 'All basic plan benefits'},
+            //         {title: 'Unlimited job postings'}
+            //     ],
+            //     id: 'm'
+            // }
+        ]
+    },
+    recruiter: {
+        heroTitle: 'The job board for software engineers',
+        heroMessage: "Forget resume parsers. Save hours reviewing candidates by sorting applications by years of experience and skill.",
+        whyChooseUs: [
+            {
+                id: 0,
+                imageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_general.png?alt=media&token=727861ea-e064-46ed-9f15-8e386243d39f',
+                title: 'Easier application review',
+                message: "With our application review process, you'll be able to save hours searching through applications by sorting by years of experience and skill.",
+                icon: 'bi-person-circle'
+            },
+            {
+                id: 1,
+                imageURL: 'https://firebasestorage.googleapis.com/v0/b/code-jabba.appspot.com/o/landing%2FScreen%20Shot%202023-11-25%20at%2011.45.47%20AM.png?alt=media&token=22db5b8e-75b4-4968-9830-4f8de210e090',
+                title: 'Reward for referrals',
+                message: "With our referral program, you will receive one $5 Amazon gift card for each person you refer that signs up for a premium subscription.",
+                icon: 'bi-mailbox'
+            },
+            {
+                id: 2,
+                imageURL: '',
+                title: 'Application stats',
+                message: "With our site, you can track the number of applications you receive, view, reject and accept.",
+                icon: 'bi-credit-card'
+            }
+        ],
+        pricing: [
+            {
+                title: 'Basic Plan',
+                price: 'Free',
+                formatCurrency: false,
+                features: [
+                    {title: '2 active job posts at a time'},
+                    {title: 'Track job post stats'},
+                    {title: 'Review applications'}
+                ],
+                id: 's'
+            },
+            {
+                title: `${SubscriptionTiersFormatted.recruiterPremium} Plan`,
+                price: `${SubscriptionPrices.recruiterPremium} / month`,
+                formatCurrency: true,
+                features: [
+                    {title: 'All basic plan benefits'},
+                    {title: 'Unlimited job postings'},
+                    {title: 'Message candidates'},
+                    {title: 'Schedule interviews'}
+                ],
+                id: 'm'
+            }
+        ]
+    }
 }
 
 export const LandingComponent = props => {
     const navigate = useNavigate()
-    const [selectedWhyChooseUsOptionID, setSelectedWhyChooseUsOptionID] = useState(Config.whyChooseUs[0].id)
+    const userMode = props.isRecruiterMode ? 'recruiter' : 'candidate'
+    const config = Config[userMode]
+    const [selectedWhyChooseUsOptionID, setSelectedWhyChooseUsOptionID] = useState(1)
 
-    const userStatsValues = props.loadingUserStats ? []
+    const siteStatsValues = props.isMobile ?
+        [
+            {title: 'Applications submitted', value: props.siteStats.applicationsCount},
+            {title: 'Active job posts', value: props.siteStats.jobsCount},
+        ]
         : [
-            {title: 'Candidates', value: props.userStats.candidatesCount},
-            {title: 'Recruiters', value: props.userStats.recruitersCount}
+            {title: 'Applications submitted', value: props.siteStats.applicationsCount},
+            {title: 'Active job posts', value: props.siteStats.jobsCount},
+            {title: 'Candidates', value: props.siteStats.candidatesCount},
+            {title: 'Recruiters', value: props.siteStats.recruitersCount},
         ]
 
     useEffect(() => {
         props.setThemeColor(0)
         props.setTintColor(0)
-        props.fetchUserStats()
+        props.fetchLandingStats()
+        
+        props.logEvent(Events.landingPageVisit)
     }, [])
 
     const onClickGetStarted = () => {
@@ -103,15 +172,47 @@ export const LandingComponent = props => {
         navigate(`/register`)
     }
 
-    return (
-        <PageContainer>
+    const onClickContactUs = () => {
+        navigate('/contact-us')
+    }
+
+    const onClickIsRecruiter = () => {
+        props.setIsRecruiterMode(true)
+    }
+
+    const onClickIsCandidate = () => {
+        props.setIsRecruiterMode(false)
+    }
+
+    return (props.isRecruiterMode === null ?
+        <FullscreenContainer>
+            <div className='mode-container'>
+                <h1 className='mode-title'>I am a</h1>
+                <div className='mode-buttons-container'>
+                    <Button
+                        title='Candidate'
+                        type='solid'
+                        priority={1}
+                        onClick={onClickIsCandidate}
+                        style={{marginRight: 20}}
+                    />
+                    <Button
+                        title='Recruiter'
+                        type='clear'
+                        priority={1}
+                        onClick={onClickIsRecruiter}
+                    />
+                </div>
+            </div>
+        </FullscreenContainer>
+        : <PageContainer>
             <LandingHeader showButtons={true} />
             <Container className={`${props.isMobile && 'mobile'} ${props.isSemiMobile && 'semi-mobile'}`}>
                 <div className='hero-container'>
                     <div className='hero-message-container'>
                         <div className='d-flex fd-column ai-flex-start'>
-                            <h1 className='hero-title'>{Config.heroTitle}</h1>
-                            <h3 className='hero-message'>{Config.heroMessage}</h3>
+                            <h1 className='hero-title'>{config.heroTitle}</h1>
+                            <h3 className='hero-message'>{config.heroMessage}</h3>
                             <div className='d-flex jc-flex-start ai-center'>
                                 <Button
                                     title='Get started'
@@ -129,7 +230,14 @@ export const LandingComponent = props => {
                             </div>
                         </div>
                     </div>
-                    <img className='hero-image' src={Config.heroImageURL} />
+                    <img className='hero-image' src={props.isRecruiterMode ? require('../../../assets/recruiter_dashboard.png') : require('../../../assets/candidate_dashboard.png')} />
+                </div>
+                <div className='stats-container'>
+                    <ValueDeltaSpread
+                        values={siteStatsValues}
+                        showDelta={false}
+                        className='float-container value-delta-spread'
+                    />
                 </div>
                 <div className='why-choose-us-container'>
                     <h1 className='section-title'>Why Choose Us</h1>
@@ -138,48 +246,62 @@ export const LandingComponent = props => {
                             <div className='why-choose-us-image-container'>
                                 <img
                                     className='why-choose-us-image'
-                                    src={Config.whyChooseUs[selectedWhyChooseUsOptionID].imageURL}
+                                    src={config.whyChooseUs[selectedWhyChooseUsOptionID].imageURL}
+                                    style={{
+                                        marginBottom: props.isSemiMobile && selectedWhyChooseUsOptionID !== 1 ? -300 : 0,
+                                        borderWidth: selectedWhyChooseUsOptionID === 1 ? 0 : 5,
+                                    }}
+                        
                                 />
                             </div>
                             <div className='d-flex fd-column jc-space-between ai-stretch'>
-                                {Config.whyChooseUs.map( ({title, message, icon, id}) => (
+                                {config.whyChooseUs.map( ({title, message, id}) => (
                                     <div
                                         onClick={() => onClickWhyChooseUsOption(id)}
                                         className={`why-choose-us-option-container ${id == selectedWhyChooseUsOptionID && 'selected'}`}
                                         key={title}
                                     >
-                                        <i className={icon} />
-                                        <div className='d-flex fd-column ai-flex-start'>
-                                            <h2 className='title'>{title}</h2>
-                                            <h3 className='message'>{message}</h3>
-                                        </div>
+                                        <h2 className='title'>{title}</h2>
+                                        <h3 className='message'>{message}</h3>
                                     </div>
                                 ))}
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className='user-stats-container'>
-                    <h1 className='section-title'>Users</h1>
-                    <ValueDeltaSpread
-                        values={userStatsValues}
-                        showDelta={false}
-                        className='float-container value-delta-spread'
-                        blackLabels={true}
-                    />
-                </div>
                 <div className='pricing-container' id='pricing-container'>
-                    <h1 className='title'>Pricing</h1>
-                    <div className='pricing-options-container'>
-                        {Config.pricing.map(({title, price, formatCurrency, features, id}) => (
-                            <div className='pricing-option-container float-container' key={title}>
+                    <div className='section-header'>
+                        <h1 className='title'>Pricing</h1>
+                        <Button
+                            title='Contact us'
+                            priority={2}
+                            type='solid'
+                            onClick={onClickContactUs}
+                        />
+                    </div>
+                    <div
+                        className='pricing-options-container'
+                        style={{
+                            display: props.isRecruiterMode ? 'grid' : 'flex',
+                            justifyContent: 'space-around'
+                        }}
+                    >
+                        {config.pricing.map(({title, price, formatCurrency, features, id}) => (
+                            <div
+                                className='pricing-option-container float-container'
+                                key={title}
+                                style={{
+                                    maxWidth: props.isRecruiterMode ? 'auto' : 'min(600px, 100%)',
+                                    minWidth: props.isRecruiterMode ? 'auto' : 'min(600px, 100%)'
+                                }}
+                            >
                                 <div className='header'>
                                     <h3>{title}</h3>
                                     <h3 className='price'>{`${formatCurrency ? '$' : '' } ${price}`}</h3>
                                 </div>
-                                {features.map( ({title, included}, i) => (
+                                {features.map( ({title}, i) => (
                                     <div className={`feature-list-item ${!i && 'bold'}`} key={title}>
-                                        <i className={`bi-check-circle-fill ${!included && 'not-included'}`} />
+                                        <i className={`bi-check-circle-fill check-icon`} />
                                         <h3>{title}</h3>
                                     </div>
                                 ))}
@@ -199,8 +321,32 @@ export const LandingComponent = props => {
                 </div>
             </Container>
         </PageContainer>
+
     )
 }
+
+const FullscreenContainer = styled.div`
+    postition: fixed;
+    z-index: 20;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: ${p => p.theme.bgcLight};
+    & .mode-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    & .mode-title {
+        margin-bottom: 20px;
+    }
+    & .mode-buttons-container {
+        display: flex;
+        align-items: center;
+    }
+`
 
 const Container = styled.div`
     display: flex;
@@ -214,7 +360,6 @@ const Container = styled.div`
         grid-template-columns: 1fr 2fr;
         padding: 50px;
         box-sizing: border-box;
-        border-bottom: 1px solid black;
         background-color: ${p => p.theme.bgcSettings};
     }
     &.semi-mobile .hero-container {
@@ -259,29 +404,21 @@ const Container = styled.div`
         box-sizing: border-box;
     }
 
-    & .user-stats-container {
+    & .stats-container {
         display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        padding: 50px;
+        justify-content: space-around;
+        align-items: center;
+        height: 300px;
         background-color: ${p => p.theme.bgcLight};
-        border-bottom: 1px solid black;
-    }
-    &.semi-mobile .user-stats-container {
-        padding: 30px;
-    }
-    &.mobile .user-stats-container {
-        padding: 15px;
     }
 
     & .value-delta-spread {
         padding: 30px;
-        width: min(90%, 500px);
+        width: min(90%, 1000px);
         align-self: center;
         margin-right: 30px;
         margin-left: 30px;
         box-sizing: border-box;
-        background-color: ${p => p.theme.tint} !important;
     }
 
     & .why-choose-us-container {
@@ -315,37 +452,33 @@ const Container = styled.div`
         display: flex;
         justify-content: space-around;
         align-items: center;
-    }
-    & .why-choose-us-image {
         height: 550px;
-        border: 5px solid ${p => p.theme.bc};
-        border-radius: 20px;
+    }
+    &.semi-mobile .why-choose-us-image-container {
+        height: 300px;
     }
     &.semi-mobile .why-choose-us-image {
-        margin-bottom: -300px;
+        max-width: 275px;
+    }
+    & .why-choose-us-image {
+        max-height: 550px;
+        border: 5px solid ${p => p.theme.bc};
+        border-radius: 20px;
+        max-width: 500px;
     }
 
     & .why-choose-us-option-container {
         display: flex;
-        align-items: center;
-        padding: 20px;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 30px;
         cursor: pointer;
-        border: 1px solid transparent;
         border-radius: 20px;
         box-sizing: border-box;
+        background-color: ${p => p.theme.tint};
     }
     & .why-choose-us-option-container.selected {
-        border-color: black;
-        border-width: 1px;
-    }
-    & .why-choose-us-option-container i {
-        font-size: 50px;
-        color: black;
-        margin-right: 30px;
-    }
-    &.semi-mobile .why-choose-us-option-container i {
-        margin-right: 15px;
-        margin-left: -15px;
+        background-color: ${p => p.theme.bgcLight};
     }
     & .why-choose-us-option-container .title {
         margin-bottom: 15px;
@@ -363,8 +496,7 @@ const Container = styled.div`
         align-items: stretch;
         padding: 50px;
         border-bottom: 1px solid black;
-        background-color: ${p => p.theme.bgcSettings};
-        background-color: ${p => p.theme.bgc};
+        background-color: ${p => p.theme.bgcLight};
     }
     &.semi-mobile .pricing-container {
         padding: 30px;
@@ -372,7 +504,9 @@ const Container = styled.div`
     &.mobile .pricing-container {
         padding: 15px;
     }
-    & .pricing-container .title {
+    & .section-header {
+        display: flex;
+        justify-content: space-between;
         margin-bottom: 30px;
     }
 
@@ -419,13 +553,11 @@ const Container = styled.div`
         justify-content: space-between;
         align-items: center;
         margin-bottom: 10px;
+        text-align: right;
     }
     & .feature-list-item i {
         font-size: 20px;
         color: ${p => p.theme.tint};
-    }
-    & .feature-list-item i.not-included {
-        color: ${p => p.theme.textSecondary};
     }
     & .feature-list-item h3 {
         font-weight: 500;
@@ -440,19 +572,25 @@ const Container = styled.div`
         align-items: center;
         padding: 50px 0px;
     }
+
+    & .check-icon {
+        margin-right: 30px;
+    }
 `
 
 const mapStateToProps = state => ({
     isMobile: getIsMobile(state),
     isSemiMobile: getIsSemiMobile(state),
-    userStats: getUserStats(state),
-    loadingUserStats: getLoadingUserStats(state),
+    isRecruiterMode: getIsRecruiterMode(state),
+    siteStats: getLandingStats(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     setThemeColor,
     setTintColor,
-    fetchUserStats
+    setIsRecruiterMode,
+    fetchLandingStats,
+    logEvent
 }, dispatch)
 
 export const Landing = connect(mapStateToProps, mapDispatchToProps)(LandingComponent)

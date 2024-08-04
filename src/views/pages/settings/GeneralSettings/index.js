@@ -15,6 +15,8 @@ import {
     getUser,
     getFirebaseUser,
     getIsPremiumUser,
+    getIsCandidatePremiumUser,
+    getIsRecruiterPremiumUser,
     patchUserDisplayName,
     patchUserPhoto,
     patchUserThemeColor,
@@ -26,6 +28,7 @@ import {
 } from '../../../../redux/user'
 import { addModal } from '../../../../redux/modal'
 import { ModalTypes } from '../../../../containers/ModalProvider'
+import { SubscriptionTiersFormatted } from '../../../../redux/user'
 import {
     getTintColor,
     getThemeColor,
@@ -46,7 +49,11 @@ export const GeneralSettingsComponent = props => {
     const formInitialValues = {
         membership: {
             memberSince: moment(props.user.createdAt).format('LL'),
-            membership: props.user.subscriptionTier ? props.user.subscriptionTier : 'None'
+            membership: props.isCandidatePremiumUser ?
+                SubscriptionTiersFormatted.candidatePremium
+                : props.isRecruiterPremiumUser ?
+                    SubscriptionTiersFormatted.recruiterPremium
+                    : 'None'
         },
         account: {
             email: props.user.email
@@ -103,13 +110,11 @@ export const GeneralSettingsComponent = props => {
     }
 
     const submitDisplayName = (val, onSuccess) => {
-        if (val === props.user.displayName) return
+        if (val === props.user.displayName) {
+            onSuccess()
+            return
+        }
         props.patchUserDisplayName(val, onSuccess)
-    }
-
-    const submitEmail = (val, onSuccess) => {
-        if (val === props.user.email) return
-        props.patchUserEmail(val, onSuccess)
     }
 
     const submitThemeColor = (val, onSuccess) => {
@@ -283,6 +288,8 @@ const mapStateToProps = state => ({
     user: getUser(state),
     firebaseUser: getFirebaseUser(),
     isPremiumUser: getIsPremiumUser(state),
+    isCandidatePremiumUser: getIsCandidatePremiumUser(state),
+    isRecruiterPremiumUser: getIsRecruiterPremiumUser(state),
     tintColor: getTintColor(state),
     themeColor: getThemeColor(state),
 })

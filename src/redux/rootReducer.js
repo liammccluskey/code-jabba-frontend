@@ -11,6 +11,8 @@ import { jobReducer } from './job'
 import { dashboardReducer } from './dashboard'
 import { applicationReducer } from './application'
 import { rewardsReducer } from './rewards/reducers'
+import { landingReducer } from './landing'
+import { eventsReducer } from './events/reducers'
 
 export const rootReducer = combineReducers({
     theme: themeReducer,
@@ -24,4 +26,6 @@ export const rootReducer = combineReducers({
     dashboard: dashboardReducer,
     application: applicationReducer,
     rewards: rewardsReducer,
+    landing: landingReducer,
+    events: eventsReducer
 })

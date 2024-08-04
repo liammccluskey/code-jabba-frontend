@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 
 import {
     getUser,
-    getIsPremiumUser,
+
     patchUserTintColor,
     patchUserThemeColor,
     signOutUser
@@ -125,7 +125,7 @@ export const MainMenuComponent = props => {
                                 })}
                             </div>
                         </div>
-                        {/* <div className='row-container jc-space-between'>
+                        <div className='row-container jc-space-between'>
                             <div className='d-flex ai-center'>
                                 <i className='bi-paint-bucket' />
                                 <p>Tint Color</p>
@@ -149,7 +149,7 @@ export const MainMenuComponent = props => {
                                     )
                                 })}
                             </div>
-                        </div> */}
+                        </div>
                     </div>
                     <div 
                         className='logout-row-container row-container'
@@ -245,7 +245,6 @@ const MenuContainer = styled.div`
 `
 const mapStateToProps = state => ({
     user: getUser(state),
-    isPremiumUser: getIsPremiumUser(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

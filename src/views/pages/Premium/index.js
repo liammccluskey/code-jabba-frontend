@@ -4,41 +4,54 @@ import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
-import { api } from '../../../networking'
+import { 
+    getIsRecruiterMode,
+
+    SubscriptionTiers,
+    SubscriptionTiersFormatted,
+    SubscriptionPrices
+} from '../../../redux/user'
 import { PageContainer } from '../../components/common/PageContainer'
 import { BodyContainer } from '../../components/common/BodyContainer'
 import { MainHeader } from '../../components/headers/MainHeader'
 import { Button } from '../../components/common/Button'
 
-export const PremiumPricePerMonth = 10
-export const Features = [
-    {
-        title: 'Feature 1',
-        description: 'This is a description of feature 1. You get this feature with premium',
-        icon: 'bi-scissors',
-    },
-    {
-        title: 'Feature 2',
-        description: 'This is a description of feature 2. You get this feature with premium',
-        icon: 'bi-plus-circle',
-    },
-    {
-        title: 'Feature 3',
-        description: 'This is a description of feature 3. You get this feature with premium',
-        icon: 'bi-check-circle'
-    },
-    {
-        title: 'Feature 4',
-        description: 'This is a description of feature 4. You get this feature with premium',
-        icon: 'bi-archive',
-    },
-]
+export const Features = {
+    candidatePremium: [
+        {
+            title: 'Free tier items',
+            description: 'With Candidate Premium, you get all the items in the free tier',
+            icon: 'bi-check',
+        },
+        {
+            title: 'Unlimited Job Applications',
+            description: 'With Candidate Premium, you get to submit unlimited applications per day',
+            icon: 'bi-briefcase',
+        },
+    ],
+    recruiterPremium: [
+        {
+            title: 'Free tier items',
+            description: 'With Recruiter Premium, you get all the items in the free tier',
+            icon: 'bi-check',
+        },
+        {
+            title: 'Unlimited Job Posts',
+            description: 'With Recruiter Premium, you get to post unlimited job applications per day',
+            icon: 'bi-briefcase',
+        },
+    ]
+}
 
 export const PremiumComponent = props => {
     const {
         
     } = props
-    const navigate = useNavigate('')
+    const navigate = useNavigate()
+
+    const features = props.isRecruiterMode ? Features.recruiterPremium : Features.candidatePremium
+    const subscriptionTierFormatted = props.isRecruiterMode ? SubscriptionTiersFormatted.recruiterPremium : SubscriptionTiersFormatted.candidatePremium
+    const subscriptionTierPricePerMonth = props.isRecruiterMode ? SubscriptionPrices.recruiterPremium : SubscriptionPrices.candidatePremium
 
     // Direct
 
@@ -56,10 +69,13 @@ export const PremiumComponent = props => {
                 <Container>
                     <h2>Ready to go Premium?</h2>
                     <div className='d-flex ai-center'>
-                        <p>With premium you'll get access to the following features.</p>
+                        <p>{`With ${subscriptionTierFormatted} you'll get access to the following features.`}</p>
                     </div>
                     <div className='premium-container float-container'>
-                        <h4>{`$${PremiumPricePerMonth} per month`}</h4>
+                        <div className='premium-price-container'>
+                            <label>{subscriptionTierFormatted}</label>
+                            <p className='price-text'>{`$${subscriptionTierPricePerMonth} per month`}</p>
+                        </div>
                         <div className='divider' />
                         <Button
                             title='Continue'
@@ -69,7 +85,7 @@ export const PremiumComponent = props => {
                         />
                     </div>
                     <div className='features-container'>
-                        {Features.map( ({title, description, icon}, i) => (
+                        {features.map( ({title, description, icon}, i) => (
                             <div
                                 className='feature-container'
                                 style={{marginRight: i % 2 == 0 ? 40 : 0, marginBottom: i <= 1 ? 40 : 0}}
@@ -123,6 +139,17 @@ const Container = styled.div`
         margin-top: 30px;
         margin-bottom: 50px;
     }
+
+    & .premium-price-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-around;
+    }
+    & .premium-price-container label {
+        margin-bottom: 20px;
+    }
+
     & .divider {
         width: 1px;
         height: 50px;
@@ -159,7 +186,7 @@ const Container = styled.div`
     }
 `
 const mapStateToProps = state => ({
-    
+    isRecruiterMode: getIsRecruiterMode(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

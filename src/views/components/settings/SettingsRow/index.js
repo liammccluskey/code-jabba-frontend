@@ -16,15 +16,15 @@ export const SettingsRow = props => {
         rightChild=null,
         // isLastRow=false,
 
-        onSubmit,   // (val, onSuccess) => void
+        onSubmit,   // (val, onSuccess, closeForm=true) => void
 
         ...rest
     } = props
+    const [loadingUpdate, setLoadingUpdate] = useState(false)
     const [isEditing, setIsEditing] = useState(false)
     const [imageFile, setImageFile] = useState(null)
     const [inputText, setInputText] = useState(initialValue)
     const [selectValue, setSelectValue] = useState(initialValue)
-    const [loadingUpdate, setLoadingUpdate] = useState(false)
 
     useEffect(() => {
         setInputText(initialValue)
@@ -33,7 +33,13 @@ export const SettingsRow = props => {
 
     // Utils
 
-    const closeEditForm = () => setIsEditing(false)
+    const submitForm = (val, closeForm=true) => {
+        setLoadingUpdate(true)
+        onSubmit(val, () => {
+            setLoadingUpdate(false)
+            closeForm && setIsEditing(false)
+        })
+    }
     
     const openEditForm = () => setIsEditing(true)
     
@@ -42,23 +48,12 @@ export const SettingsRow = props => {
         setSelectValue(initialValue)
     }
 
-    const submitForm = val => onSubmit(
-        val,
-        () => {
-            setTimeout(() => {
-                closeEditForm()
-                setLoadingUpdate(false)
-            }, 3*1000)
-        },
-        () => setLoadingUpdate(false)
-    )
-
     // Direct
 
     const onClickRowContainer = () => isEditable && openEditForm()
 
     const onClickClose = () => {
-        closeEditForm()
+        setIsEditing(false)
         resetEditForm()
     }
 
@@ -77,23 +72,21 @@ export const SettingsRow = props => {
                 submitForm(selectValue)
                 break
         }
-        setLoadingUpdate(true)
     }
 
     const onChangeInputText = e => {
         setInputText(e.target.value)
-        autoSave && submitForm(e.target.value)
     }
 
     const onChangeImageFile = e => {
         if (!e.target.files.length) return
         setImageFile(e.target.files[0])
-        autoSave && submitForm(e.target.files[0])
+        submitForm(e.target.files[0], false)
     }
 
     const onChangeSelectValue = e => {
         setSelectValue(e.target.value)
-        autoSave && submitForm(e.target.value)
+        autoSave && submitForm(e.target.value, false)
     }
 
     return !isEditing ?
@@ -220,7 +213,6 @@ const EditForm = styled.form`
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
-    border: ${p => p.theme.floatBorder};
     border-radius: var(--br-container);
     padding: 0px 14px;
     margin-bottom: 15px;

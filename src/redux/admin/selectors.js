@@ -30,3 +30,11 @@ export const getFAQsTotalCount = state => state.admin.faqs.payload.totalCount
 export const getFAQ = state => state.admin.faq
 export const getLoadingFAQ = state => state.admin.loadingFAQ
 export const getFAQNotFound = state => state.admin.faqNotFound
+
+export const getAdminUserStats = state => state.admin.userStats
+export const getLoadingAdminUserStats = state => state.admin.loadingUserStats
+export const getSiteStats = state => state.admin.siteStats
+export const getLoadingSiteStats = state => state.admin.loadingSiteStats
+export const getEvents = state => state.admin.events
+export const getLoadingEvents = state => state.admin.loadingEvents
+

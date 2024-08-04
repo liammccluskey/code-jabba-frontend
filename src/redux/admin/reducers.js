@@ -40,7 +40,21 @@ const AdminState = {
     faq: null,
     loadingFAQ: false,
     faqNotFound: false,
-
+    userStats: {
+        candidatesCount: 0,
+        recruitersCount: 0,
+        premiumCandidatesCount: 0,
+        premiumRecruitersCount: 0,
+    },
+    loadingUserStats: false,
+    siteStats: {
+        applicationsCount: 0,
+        companiesCount: 0,
+        jobsCount: 0,
+    },
+    loadingSiteStats: false,
+    events: [],
+    loadingEvents: [],
 }
 
 export const adminReducer = (state = AdminState, action) => {
@@ -245,6 +259,36 @@ export const adminReducer = (state = AdminState, action) => {
             return {
                 ...state,
                 faqNotFound: action.value
+            }
+        case Types.SET_USER_STATS:
+            return {
+                ...state,
+                userStats: action.value
+            }
+        case Types.SET_LOADING_USER_STATS:
+            return {
+                ...state,
+                loadingUserStats: action.value
+            }
+        case Types.SET_SITE_STATS:
+            return {
+                ...state,
+                siteStats: action.value
+            }
+        case Types.SET_LOADING_SITE_STATS:
+            return {
+                ...state,
+                loadingSiteStats: action.value
+            }
+        case Types.SET_EVENTS:
+            return {
+                ...state,
+                events: action.value
+            }
+        case Types.SET_LOADING_EVENTS:
+            return {
+                ...state,
+                loadingEvents: action.value
             }
         default:
             return state

@@ -25,6 +25,10 @@ export const EditJobComponent = props => {
     } = props
     const {jobID} = useParams()
 
+    useEffect(() => {
+        props.fetchJob(jobID)
+    }, [])
+
     return ( props.jobNotFound ?
         <ErrorElement />
         : <PageContainer>
@@ -37,7 +41,7 @@ export const EditJobComponent = props => {
                         job={props.job}
                         style={{marginTop: 40, marginBottom: 40}}
                     />
-                    : <Loading />
+                    : <Loading style={{height: 200}} />
                 }
             </BodyContainer>
         </PageContainer>

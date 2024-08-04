@@ -467,3 +467,73 @@ export const deleteFAQs = (faqIDs, onSuccess, onFailure) => async (dispatch, get
         onFailure()
     }
 }
+
+export const fetchAdminUserStats = () => async (dispatch, getState) => {
+    dispatch(AdminActions.setLoadingUserStats(true))
+
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        const res = await api.get(
+            '/admin/users/user-stats',
+            AdminUtils.getAdminRequestConfig(mongoUser)
+        )
+        
+        dispatch(AdminActions.setUserStats(res.data))
+    }  catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+    }
+
+    dispatch(AdminActions.setLoadingUserStats(false))
+}
+
+export const fetchSiteStats = () => async (dispatch, getState) => {
+    dispatch(AdminActions.setLoadingSiteStats(true))
+
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        const res = await api.get(
+            '/admin/stats/site-stats',
+            AdminUtils.getAdminRequestConfig(mongoUser),
+        )
+        
+        dispatch(AdminActions.setSiteStats(res.data))
+    }  catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+    }
+
+    dispatch(AdminActions.setLoadingSiteStats(false))
+}
+
+export const fetchEvents = timeframe => async (dispatch, getState) => {
+    dispatch(AdminActions.setLoadingEvents(true))
+
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    const queryString = stringifyQuery({
+        timeframe
+    })
+
+    try {
+        const res = await api.get(
+            '/admin/stats/events' + queryString,
+            AdminUtils.getAdminRequestConfig(mongoUser),
+        )
+        
+        dispatch(AdminActions.setEvents(res.data))
+    }  catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+    }
+
+    dispatch(AdminActions.setLoadingEvents(false))
+}

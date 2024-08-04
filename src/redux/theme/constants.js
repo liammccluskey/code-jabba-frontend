@@ -28,7 +28,7 @@ export const Colors = {
 
 const LightTheme = {
     bgc: 'rgb(244, 246, 248)',
-    //bgc: 'white',
+    // bgc: 'white',
     bgcLight: 'white',
     bgcSemilight: 'rgb(248, 250, 252)',
     bgcHover: 'rgb(245, 247, 249)',
@@ -36,17 +36,18 @@ const LightTheme = {
     bgcSettings: 'white',
     bgcInput: 'rgb(235, 238, 240)',
     bc: 'rgb(218,220,224)',
+    bcChart: 'rgb(218,220,224)',
     textMain: 'rgb(60,64,67)',
     textPrimary: 'rgb(10, 12, 14)',
     textSecondary: 'rgb(135, 138, 140)',
     textTertiary: 'rgb(102, 102, 102)',
     textYellow: '#85681d',
     boxShadow: '0 0 20px rgba(0, 0, 0, 0.05)',
-    floatBorder: 'none',
+    floatBorder: '1px solid rgb(218,220,224)',
     navBorder: '1px solid rgb(215, 222, 226)',
     boxShadowDark: '0 3px 20px rgb(89 105 129 / 30%), 0 1px 2px rgb(0 0 0 / 5%), 0 0 0 1px rgb(89 105 129 / 10%)',
 
-    floatBorder: '1px solid rgb(218, 220, 224)',
+    // floatBorder: 'none',
     boxShadow: 'none',
 }
 
@@ -59,6 +60,7 @@ const DarkTheme = {
     bgcSettings: 'black',
     bgcInput: 'rgb(38, 41, 45)',
     bc: 'rgb(48, 54, 58)',
+    bcChart: 'rgba(249, 252, 255, 0.08)',
     textMain: 'rgb(205,205,205)',
     textPrimary: 'rgb(235, 235, 235)',
     textSecondary: 'rgb(147, 151, 156)',
@@ -80,6 +82,7 @@ const BlueTheme = {
     bgcSettings: '#0e2439',
     bgcInput: '#284059',
     bc: '#325070',
+    bcChart: '#325070',
     textMain: 'rgb(225,225,225)',
     textPrimary: 'rgb(245, 245, 245)',
     textSecondary: '#9cb3c9',

@@ -46,6 +46,7 @@ export const RegisterComponent = props => {
                 props.postMongoUser(
                     user,
                     referralCode,
+                    
                     () => props.fetchThisMongoUser(user, undefined, undefined, true)
                 )
             }

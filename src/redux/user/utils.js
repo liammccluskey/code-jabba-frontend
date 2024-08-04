@@ -22,7 +22,7 @@ export const __fetchMongoUserBy_id = async _id => {
     }
 }
 
-export const __postMongoUser = async (firebaseUser, referralCode=undefined) => {
+export const __postMongoUser = async (firebaseUser, referralCode=undefined, isRecruiter) => {
     const {
         displayName,
         email,
@@ -36,7 +36,8 @@ export const __postMongoUser = async (firebaseUser, referralCode=undefined) => {
                 displayName,
                 email,
                 photoURL,
-                uid
+                uid,
+                isRecruiter
             },
             referralCode,
         })
@@ -92,8 +93,4 @@ export const isSuperAdmin = user => {
 export const isAdmin = user => {
     const {adminKey} = user
     return user.isAdmin && adminKey === process.env.REACT_APP_ADMIN_KEY
-}
-
-export const isPremiumUser = user => {
-    return user.subscriptionTier === SubscriptionTiers.premium
 }

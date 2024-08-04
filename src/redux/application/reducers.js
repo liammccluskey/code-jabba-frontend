@@ -35,17 +35,6 @@ export const applicationReducer = (state = ApplicationState, action) => {
                     payload: action.value
                 }
             }
-        case Types.addApplications:
-            return {
-                ...state,
-                applications: {
-                    ...state.applications,
-                    payload: {
-                        ...action.value,
-                        applications: [...state.applications.payload.applications, ...action.value.applications]
-                    }
-                }
-            }
         case Types.setLoadingApplications:
             return {
                 ...state,

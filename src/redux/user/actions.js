@@ -50,11 +50,11 @@ export const setProfileUserNotFound = notFound => ({
 })
 
 export const setUserStats = stats => ({
-    type: Types.SET_User_STATS,
+    type: Types.SET_USER_STATS,
     value: stats
 })
 
 export const setLoadingUserStats = loading => ({
-    type: Types.SET_LOADING_User_STATS,
+    type: Types.SET_LOADING_USER_STATS,
     value: loading
 })

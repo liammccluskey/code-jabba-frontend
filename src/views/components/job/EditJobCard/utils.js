@@ -23,6 +23,8 @@ export const getFormData = job => ({
     description: job.description,
     includeQuestions: job.applicationType === 'easy-apply', // temp
     questions: job.questions,
+    requiresClearance: job.requiresClearance,
+    sponsorsVisa: job.sponsorsVisa,
 })
 
 
@@ -47,4 +49,6 @@ export const getFormDataModified = (formData, job={}) => ({
     archive: job.archive !== formData.archive,
     description: job.description !== formData.description,
     questions: job.questions !== formData.questions,
+    requiresClearance: job.requiresClearance !== formData.requiresClearance,
+    sponsorsVisa: job.sponsorsVisa !== formData.sponsorsVisa,
 })

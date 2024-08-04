@@ -6,7 +6,7 @@ const UserState = {
     loadingLogout: false,
     loadingSignIn: false,
     loadingUserFetch: false,
-    isRecruiterMode: false,
+    isRecruiterMode: null,
     profileUser: null,
     loadingProfileUser: false,
     profileUserNotFound: false,

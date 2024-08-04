@@ -276,6 +276,12 @@ export const SalaryFrequencies = [
     {id: 'hour', title: 'Per hour'},
 ]
 
+export const VisaSponsorshipOptions = [
+    {title: 'Yes', id: 'visa-yes'},
+    {title: 'No', id: 'visa-no'},
+    {title: 'Possibly', id: 'visa-possibly'},
+]
+
 export const EditJobCardComponent = props => {
     const {
         isEditMode=false,
@@ -311,6 +317,8 @@ export const EditJobCardComponent = props => {
             description: '',
             includeQuestions: true, // temp
             questions: [],
+            requiresClearance: false,
+            sponsorsVisa: 'visa-possibly',
         }
     )
     const [modified, setModified] = useState(getFormDataModified(formData, job))
@@ -405,6 +413,8 @@ export const EditJobCardComponent = props => {
     //         description: 'test',
     //         includeQuestions: true,
     //         questions: [],
+    //         requiresClearance: false,
+    //         sponsorsVisa: 'visa-possibly'
     //     })
     // }, [])
 
@@ -473,6 +483,13 @@ export const EditJobCardComponent = props => {
     useEffect(() => {
         setModified(getFormDataModified(formData, job))
     }, [formData])
+
+    useEffect(() => {
+        setFormData( curr => ({
+            ...curr,
+            company: '',
+        }))
+    }, [formData.companyText])
 
     // Utils
 
@@ -621,6 +638,14 @@ export const EditJobCardComponent = props => {
                     salaryType: pillID
                 }))
                 break
+            case 'visa-yes':
+            case 'visa-no':
+            case 'visa-possibly':
+                setFormData(curr => ({
+                    ...curr,
+                    sponsorsVisa: pillID
+                }))
+                break
             default:
                 break
         }
@@ -718,6 +743,12 @@ export const EditJobCardComponent = props => {
                 setFormData(curr => ({
                     ...curr,
                     includeQuestions: !curr.includeQuestions
+                }))
+                break
+            case 'requires-clearance':
+                setFormData(curr => ({
+                    ...curr,
+                    requiresClearance: !curr.requiresClearance
                 }))
                 break
         }
@@ -1065,6 +1096,28 @@ export const EditJobCardComponent = props => {
                 />
                 : null
             }
+            <InputWithMessage
+                label='Security Clearance'
+                inputType='switch'
+                switchEnabled={formData.requiresClearance}
+                switchLabel='Requires security clearance'
+                onClickSwitch={onClickSwitch}
+                switchID='requires-clearance'
+                modified={isEditMode && modified.requiresClearance}
+            />
+            <InputWithMessage
+                label='Sponsors Visa'
+                style={{marginBottom: 0}}
+                modified={isEditMode && modified.sponsorsVisa}
+            />
+            <div className='pills-row row'>
+                <PillOptions
+                    options={VisaSponsorshipOptions}
+                    activeOptionID={formData.sponsorsVisa}
+                    onClickOption={onClickPill}
+                    className='pill-options'
+                />
+            </div>
             <InputWithMessage
                 label='Visibility'
                 inputType='switch'

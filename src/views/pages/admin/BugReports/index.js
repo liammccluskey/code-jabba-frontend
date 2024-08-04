@@ -32,7 +32,7 @@ import { Button } from '../../../components/common/Button'
 import { SearchableTable } from '../../../components/common/SearchableTable'
 import { Loading } from '../../../components/common/Loading'
 
-const Timeframes = ['Week', 'Month', 'Year']
+export const Timeframes = ['Week', 'Month', 'Year']
 export const SortFilters = [
     {title: 'Most Recent', filter: '-createdAt'},
     {title: 'Least Recent', filter: '+createdAt'}

@@ -24,6 +24,7 @@ export const SearchableTableComponent = props => {
         page,
         pagesCount,
         searchable=true,
+        paginated=true,
 
         onChangeSearchText, // e => void
         onSubmitSearch,
@@ -80,13 +81,16 @@ export const SearchableTableComponent = props => {
                         clearSelectedRows={clearSelectedRows}
                         className='float-container'
                     />
-                    <Paginator
-                        page={page}
-                        pagesCount={pagesCount}
-                        onClickDecrementPage={onClickDecrementPage}
-                        onClickIncrementPage={onClickIncrementPage}
-                        className='paginator'
-                    />
+                    {paginated ?
+                        <Paginator
+                            page={page}
+                            pagesCount={pagesCount}
+                            onClickDecrementPage={onClickDecrementPage}
+                            onClickIncrementPage={onClickIncrementPage}
+                            className='paginator'
+                        />
+                        : null
+                    }
                 </div>
             }
         </Root>

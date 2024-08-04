@@ -39,6 +39,7 @@ import { CandidateApplication } from '../../views/pages/CandidateApplication'
 import { Profile } from '../../views/pages/Profile'
 import { Rewards } from '../../views/pages/Rewards'
 import { AdminAnalytics } from '../../views/pages/admin/AdminAnalytics'
+import { ContactUs } from '../../views/pages/ContactUs'
 
 const router = createBrowserRouter([
     {
@@ -64,6 +65,11 @@ const router = createBrowserRouter([
     {
       path: '/reset',
       element: <SignedOutRoute element={<ResetPassword />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/contact-us',
+      element: <SignedOutRoute element={<ContactUs />} />,
       errorElement: <ErrorElement />
     },
     {
@@ -156,7 +162,7 @@ const router = createBrowserRouter([
       errorElement: <ErrorElement />
     },
     {
-      path: '/membership/checkoutsuccess',
+      path: '/membership/checkoutsuccess/:subscriptionTier',
       element: <PrivateRoute element={<CheckoutSuccess />} />,
       errorElement: <ErrorElement />
     },

@@ -2,10 +2,18 @@ import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
 import {useNavigate, Link} from 'react-router-dom'
 import { connect } from 'react-redux'
+import { bindActionCreators } from '@reduxjs/toolkit'
 
+import { 
+    getIsRecruiterMode,
+
+    setIsRecruiterMode
+} from '../../../../redux/user'
 import { getIsSemiMobile } from '../../../../redux/theme'
 import { Button } from '../../common/Button'
 import { LinksMenu } from '../../landing/menus/LinksMenu'
+import { Tooltip } from '../../common/Tooltip'
+import { Pill } from '../../common/Pill'
 
 const PageLinks = [
     {
@@ -19,6 +27,12 @@ const PageLinks = [
         url: '/support',
         icon: 'bi-question-circle',
         id: 'support'
+    },
+    {
+        name: 'Contact Us',
+        url: '/contact-us',
+        icon: 'bi-mailbox',
+        id: 'contact-us'
     },
 ]
 
@@ -45,6 +59,10 @@ export const LandingHeaderComponent = props => {
 
     const onClickSignUp = () => navigate('/register')
 
+    const onClickSwitchModePill = () => {
+        props.setIsRecruiterMode(!props.isRecruiterMode)
+    }
+
     return (
         <Root {...rest} className={`${!hasSubheaderBelow && 'no-subheader'}`}>
             <div
@@ -61,53 +79,60 @@ export const LandingHeaderComponent = props => {
                     {process.env.REACT_APP_SITE_NAME}
                 </h3>
             </div>
-            {props.isSemiMobile ?
-                <LinksMenu
-                    menuHidden={linksMenuHidden}
-                    setMenuHidden={setLinksMenuHidden}
-                    pageLinks={PageLinks}
+            <div className='right-container'>
+                <Tooltip
+                    title={props.isRecruiterMode ? 'Switch to candidate mode' : 'Switch to recruiter mode'}
+                    marginTop={35}
                     style={{marginRight: 15}}
-                />
-                : <div className='links-container'>
-                    {PageLinks.map( ({name, url, id}) => (
-                        <PageLink
-                            key={id}
-                            to={url}
-                            className={id === activeLinkID ? 'active' : ''}
-                        >
-                            {name}
-                        </PageLink>
-                    ))}
-                    {showButtons ?
-                        <div className='d-flex jc-flex-end ai-center'>
-                            <Button
-                                type='clear'
-                                priority={1}
-                                onClick={onClickLogIn}
-                                title='Log In'
-                                style={{marginRight: 15}}
-                            />
-                            <Button
-                                type='solid'
-                                priority={1}
-                                onClick={onClickSignUp}
-                                title='Sign Up'
-                            />
-                        </div>
-                        : null
-                    }
-                </div>
-            }
-            
+                >
+                    <Pill
+                        title={props.isRecruiterMode ? 'Recruiter' : 'Candidate'}
+                        active={true}
+                        
+                        onClick={onClickSwitchModePill}
+                    />
+                </Tooltip> 
+                {props.isSemiMobile ?
+                    <LinksMenu
+                        menuHidden={linksMenuHidden}
+                        setMenuHidden={setLinksMenuHidden}
+                        pageLinks={PageLinks}
+                        style={{marginRight: 15}}
+                    />
+                    : <div className='links-container'>
+                        {PageLinks.map( ({name, url, id}) => (
+                            <PageLink
+                                key={id}
+                                to={url}
+                                className={id === activeLinkID ? 'active' : ''}
+                            >
+                                {name}
+                            </PageLink>
+                        ))}
+                        {showButtons ?
+                            <div className='d-flex jc-flex-end ai-center'>
+                                <Button
+                                    type='clear'
+                                    priority={1}
+                                    onClick={onClickLogIn}
+                                    title='Log In'
+                                    style={{marginRight: 15}}
+                                />
+                                <Button
+                                    type='solid'
+                                    priority={1}
+                                    onClick={onClickSignUp}
+                                    title='Sign Up'
+                                />
+                            </div>
+                            : null
+                        }
+                    </div>
+                }
+            </div>
         </Root>
     )
 }
-
-const mapStateToProps = state => ({
-    isSemiMobile: getIsSemiMobile(state),
-})
-
-export const LandingHeader = connect(mapStateToProps)(LandingHeaderComponent)
 
 const Root = styled.div`
     display: flex;
@@ -141,6 +166,11 @@ const Root = styled.div`
         justify-content: flex-end;
         align-items: center;
     }
+
+    & .right-container {
+        display: flex;
+        align-items: center;
+    }
 `
 
 const PageLink = styled(Link)`
@@ -148,10 +178,21 @@ const PageLink = styled(Link)`
     font-weight: 400;
     font-size: 15px;
     text-decoration: none;
-    margin-right: 25px;
+    margin-right: 15px;
 
     &:hover,
     &.active {
         color: ${p => p.theme.tint};
     }
 `
+
+const mapStateToProps = state => ({
+    isSemiMobile: getIsSemiMobile(state),
+    isRecruiterMode: getIsRecruiterMode(state),
+})
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+    setIsRecruiterMode
+}, dispatch)
+
+export const LandingHeader = connect(mapStateToProps, mapDispatchToProps)(LandingHeaderComponent)

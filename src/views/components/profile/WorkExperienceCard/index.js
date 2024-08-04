@@ -18,7 +18,7 @@ import {
 } from '../../job/EditJobCard'
 import { ModalTypes } from '../../../../containers/ModalProvider'
 import { Months } from '../modals/EditEducationModal'
-import { capitalizeWords } from '../../../../utils/misc'
+import { capitalizeWords } from '../../../../utils'
 import { IconButton } from '../../common/IconButton'
 import { PillLabel } from '../../common/PillLabel'
 

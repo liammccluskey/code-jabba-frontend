@@ -190,17 +190,7 @@ export const EditContactModalComponent = props => {
                 <div className='inputs-container'>
                     <InputWithMessage
                         inputType='select'
-                        label='Day'
-                        fieldName='birthdayDay'
-                        selectValue={formData.birthdayDay}
-                        selectValues={days}
-                        modified={modified.birthdayDay}
-                        onChangeSelectValue={onChangeField}
-                        style={{flex: 1, marginRight: 5}}
-                    />
-                    <InputWithMessage
-                        inputType='select'
-                        label='Day'
+                        label='Month'
                         fieldName='birthdayMonth'
                         selectValue={formData.birthdayMonth}
                         selectValues={Months}
@@ -211,6 +201,16 @@ export const EditContactModalComponent = props => {
                     <InputWithMessage
                         inputType='select'
                         label='Day'
+                        fieldName='birthdayDay'
+                        selectValue={formData.birthdayDay}
+                        selectValues={days}
+                        modified={modified.birthdayDay}
+                        onChangeSelectValue={onChangeField}
+                        style={{flex: 1, marginRight: 5}}
+                    />
+                    <InputWithMessage
+                        inputType='select'
+                        label='Year'
                         fieldName='birthdayYear'
                         selectValue={formData.birthdayYear}
                         selectValues={years}

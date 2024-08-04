@@ -105,3 +105,25 @@ export const repostJob = (jobID, onSuccess) => async (dispatch, getState) => {
         dispatch(addMessage(errorMessage, true))
     }
 }
+
+export const fetchCanApplyToJob = (onSuccess) => async (dispatch, getState) => {
+    dispatch(JobActions.setCanApplyToJob(false))
+
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    const queryString = stringifyQuery({
+        userID: mongoUser._id
+    })
+
+    try {
+        const res = await api.get('/applications/can-apply-to-job' + queryString)
+
+        dispatch(JobActions.setCanApplyToJob(res.data.canApply))
+        onSuccess()
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+    }
+}

@@ -18,6 +18,7 @@ import { CompanyHeader } from '../../../components/company/CompanyHeader'
 import { ErrorElement } from '../../ErrorElement'
 import { Loading } from '../../../components/common/Loading'
 import { PageLink } from '../../../components/common/PageLink'
+import { Tooltip } from '../../../components/common/Tooltip'
 
 export const CompanyGeneralComponent = props => {
     const {
@@ -53,10 +54,12 @@ export const CompanyGeneralComponent = props => {
                             <div className='float-container info-container socials-container'>
                                 <h3 className='section-title'>Socials</h3>
                                     <div className='social-container'>
-                                        <img
-                                            src='/images/linkedin_logo.png'
-                                            className='social-logo'
-                                        />
+                                        <Tooltip title='Linkedin'>
+                                            <img
+                                                src='/images/linkedin_logo.png'
+                                                className='social-logo'
+                                            />
+                                        </Tooltip>
                                         {props.company.linkedInURL ?
                                             <PageLink
                                                 title={'LinkedIn'}
@@ -67,10 +70,12 @@ export const CompanyGeneralComponent = props => {
                                         }
                                     </div>
                                     <div className='social-container'>
-                                        <img
-                                            src='/images/glassdoor_logo.svg'
-                                            className='social-logo'
-                                        />
+                                        <Tooltip title='Glassdoor'>
+                                            <img
+                                                src='/images/glassdoor_logo.svg'
+                                                className='social-logo'
+                                            />
+                                        </Tooltip>
                                         {props.company.glassDoorURL ?
                                             <PageLink
                                                 title={'Glassdoor'}

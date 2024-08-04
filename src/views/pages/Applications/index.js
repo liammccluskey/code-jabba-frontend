@@ -26,7 +26,7 @@ import {
 } from '../../../redux/application'
 import { Timeframes } from '../Dashboard'
 import { SortFilters } from '../admin/BugReports'
-import { capitalizeWords } from '../../../utils/misc'
+import { capitalizeWords } from '../../../utils'
 import { getPaginatedDataForCurrentPage, PageSizes } from '../../../networking'
 import { MainHeader } from '../../components/headers/MainHeader'
 import { Subheader } from '../../components/headers/Subheader'
@@ -54,7 +54,6 @@ export const ApplicationsComponent = props => {
         acceptedPillActive: false,
     })
     const [applicationsSortFilter, setApplicationsSortFilter] = useState(ApplicationsSortFilters[0].filter)
-    const [forceFetch, setForceFetch] = useState(false)
 
     const applicationMetrics = [
         {title: 'Submitted', value: props.applicationStats.submittedCount, percentDelta: props.applicationStats.submittedPercentDelta},
@@ -86,19 +85,12 @@ export const ApplicationsComponent = props => {
     }, [data.applicationStatsTimeframe])
 
     useEffect(() => {
-        props.applicationsPage == 1 && fetchApplicationsFirstPage()
+        !props.applications.length && fetchApplicationsFirstPage()
     }, [])
 
     useEffect(() => {
-        setForceFetch(true)
+        fetchApplicationsFirstPage()
     }, [data.appliedPillActive, data.viewedPillActive, data.rejectedPillActive, data.acceptedPillActive, applicationsSortFilter])
-
-    useEffect(() => {
-        if (forceFetch) {
-            fetchApplicationsFirstPage()
-            setForceFetch(false)
-        }
-    }, [forceFetch])
     
     // Utils
 
@@ -123,7 +115,8 @@ export const ApplicationsComponent = props => {
     }
 
     const fetchApplicationsFirstPage = () => {
-        props.fetchApplications(getApplicationsFilters(), 1)
+        props.fetchApplications(getApplicationsFilters())
+        props.setApplicationsPage(1)
     }
 
     // Direct
@@ -199,6 +192,9 @@ export const ApplicationsComponent = props => {
             <Subheader title='Applications' />
             <BodyContainer>
                 <Root>
+                    <div className='section-header'>
+                        <h3>Job Post</h3>
+                    </div>
                     {!props.loadingJob && props.job ?
                         <JobCard
                             job={props.job}

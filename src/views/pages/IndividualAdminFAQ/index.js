@@ -202,7 +202,7 @@ export const IndividualAdminFAQComponent = props => {
                                     />
                                 </div>
                                 <label>Section</label>
-                                <p>{props.faq.section}</p>
+                                <p>{FAQSections.find( section => section.id === props.faq.section ).title}</p>
                                 <label>Answer</label>
                                 <p>{props.faq.answer}</p>
                             </div>

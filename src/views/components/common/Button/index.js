@@ -129,7 +129,7 @@ const Root = styled.div`
     &.tgold {
         background-color: black;
         color: ${p => p.theme.gold};
-        border: 1px solid ${p => p.theme.bc};
+        border: 1px solid black;
     }
 
     &:hover {

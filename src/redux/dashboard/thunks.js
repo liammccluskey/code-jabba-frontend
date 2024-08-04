@@ -22,7 +22,7 @@ export const fetchApplicationStats = (isRecruiter, timeframe) => async (dispatch
     })
 
     try {
-        const res = await api.get('applications/stats' + queryString)
+        const res = await api.get('applications/dashboard-stats' + queryString)
 
         if (isRecruiter) {
             dispatch(DashboardActions.setRecruiterApplicationStats(res.data))

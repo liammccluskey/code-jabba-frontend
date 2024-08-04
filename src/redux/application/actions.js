@@ -5,11 +5,6 @@ export const setApplications = applications => ({
     value: applications
 })
 
-export const addApplications = applications => ({
-    type: Types.addApplications,
-    value: applications
-})
-
 export const setLoadingApplications = loading => ({
     type: Types.setLoadingApplications,
     value: loading

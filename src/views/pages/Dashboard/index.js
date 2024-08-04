@@ -37,11 +37,12 @@ import {
     fetchApplicationStats,
     fetchApplications,
 } from '../../../redux/dashboard'
+import { formatNumber } from '../../../utils'
 import { setApplicationsPage } from '../../../redux/application'
 import { addModal } from '../../../redux/modal'
 import { ModalTypes } from '../../../containers/ModalProvider'
 import { SortFilters } from '../admin/BugReports'
-import { capitalizeWords } from '../../../utils/misc'
+import { capitalizeWords } from '../../../utils'
 import { PageContainer } from '../../components/common/PageContainer'
 import { BodyContainer } from '../../components/common/BodyContainer'
 import { MainHeader } from '../../components/headers/MainHeader'
@@ -49,6 +50,8 @@ import { Button } from '../../components/common/Button'
 import { SearchableTable } from '../../components/common/SearchableTable'
 import { Loading } from '../../components/common/Loading'
 import { ValueDeltaSpread } from '../../components/common/ValueDeltaSpread'
+import { EducationCard } from '../../components/profile/EducationCard'
+import { YearHeatmap } from '../../components/common/YearHeatmap'
 
 export const Timeframes = ['Week', 'Month', 'Year']
 const JobsSortFilters = SortFilters
@@ -117,10 +120,10 @@ export const DashboardComponent = props => {
     ]
 
     const recruiterApplicationMetrics = [
-        {title: 'Submitted', value: props.recruiterApplicationStats.submittedCount, percentDelta: props.recruiterApplicationStats.submittedPercentDelta},
-        {title: 'Viewed', value: props.recruiterApplicationStats.viewedCount, percentDelta: props.recruiterApplicationStats.viewedPercentDelta},
-        {title: 'Rejected', value: props.recruiterApplicationStats.rejectedCount, percentDelta: props.recruiterApplicationStats.rejectedPercentDelta},
-        {title: 'Accepted', value: props.recruiterApplicationStats.acceptedCount, percentDelta: props.recruiterApplicationStats.acceptedPercentDelta},
+        {title: 'Applications submitted', value: props.recruiterApplicationStats.submittedCount, percentDelta: props.recruiterApplicationStats.submittedPercentDelta},
+        {title: 'Applications viewed', value: props.recruiterApplicationStats.viewedCount, percentDelta: props.recruiterApplicationStats.viewedPercentDelta},
+        {title: 'Applications rejected', value: props.recruiterApplicationStats.rejectedCount, percentDelta: props.recruiterApplicationStats.rejectedPercentDelta},
+        {title: 'Applications accepted', value: props.recruiterApplicationStats.acceptedCount, percentDelta: props.recruiterApplicationStats.acceptedPercentDelta},
     ]
 
     const candidateApplicationMetrics = [
@@ -130,22 +133,26 @@ export const DashboardComponent = props => {
         {title: 'Accepted', value: props.candidateApplicationStats.acceptedCount, percentDelta: props.candidateApplicationStats.acceptedPercentDelta},
     ]
 
-    useEffect(() => {
-        if (props.isRecruiterMode) {
-            !props.mongoUser.canPostJobs && props.addModal(ModalTypes.CONFIRM, {
-                title: 'Job post requirements',
-                message: 'You must complete the todo items before you can post jobs.',
-                confirmButtonTitle: 'Okay',
-                onConfirm: onSuccess => onSuccess()
-            })
-        } else {
-            !props.mongoUser.canApplyToJobs && props.addModal(ModalTypes.CONFIRM, {
-                title: 'Application requirements',
-                message: 'You must complete the todo items before you can apply to jobs.',
-                confirmButtonTitle: 'Okay',
-                onConfirm: onSuccess => onSuccess()
-            })
+    const showRequirementsModal = () => props.addModal(ModalTypes.CONFIRM, {
+        title: props.isRecruiterMode ? 'Job post requirements' : 'Application requirements',
+        message: props.isRecruiterMode ? 'You must complete the todo items before you can post jobs.' : 'You must complete the todo items before you can apply to jobs.',
+        confirmButtonTitle: 'Go to dashboard',
+        onConfirm: onSuccess => {
+            navigate('/dashboard')
+            onSuccess()
         }
+    })
+
+    const canPerformAction = () => {
+        if (props.isRecruiterMode) {
+            return props.mongoUser.canPostJobs
+        } else {
+            return props.mongoUser.canApplyToJobs
+        }
+    }
+
+    useEffect(() => {
+        !canPerformAction() && showRequirementsModal()
     }, [])
 
     useEffect(() => {
@@ -394,6 +401,7 @@ export const DashboardComponent = props => {
         [
             [
                 {number: 1, title: 'Complete general information', onClick: onClickEditGeneral, isComplete: props.mongoUser.generalCompleted},
+                {number: 3, title: 'Upload at least 1 education', onClick: onClickEditEducation, isComplete: props.mongoUser.educationCompleted}
             ],
             [
                 {number: 2, title: 'Complete socials information', onClick: onClickEditSocials, isComplete: props.mongoUser.socialsCompleted},
@@ -477,7 +485,7 @@ export const DashboardComponent = props => {
                             : null
                         }
                         <div className='section-header '>
-                            <h3>Application Metrics</h3>
+                            <h3>Job posts metrics</h3>
                             <select
                                 value={data.recruiterApplicationTimeframe}
                                 onChange={onChangeField}
@@ -496,6 +504,25 @@ export const DashboardComponent = props => {
                                 values={recruiterApplicationMetrics}
                                 className='float-container value-delta-spread'
                             />
+                        }
+                        {props.isMobile ? null :
+                            <div className='float-container heatmap-container'>
+                                <p>
+                                    {props.isRecruiterMode ?
+                                        `You have received ${formatNumber(1345)} applications this year`
+                                        : `You have submitted ${formatNumber(1234)} applications this year`
+                                    }
+                                </p>
+                                <YearHeatmap
+                                    dataUnit='application'
+                                    inputData={{
+                                        min: 0,
+                                        max: 1000,
+                                        data: {0: 5000, 1: 20, 30: 50, 40: 40, 50: 500, 200: 1000}
+                                    }}
+                                    style={{marginTop: 15}}
+                                />
+                            </div>
                         }
                         <div className='tables-container'>
                             <div className='table-section-container'>
@@ -597,7 +624,7 @@ export const DashboardComponent = props => {
                             : null
                         }
                         <div className='section-header '>
-                            <h3>Application Metrics</h3>
+                            <h3>Applications metrics</h3>
                             <select
                                 value={data.candidateApplicationTimeframe}
                                 onChange={onChangeField}
@@ -659,7 +686,7 @@ const Root = styled.div`
         display: flex;
         align-items: flex-start;
         padding: 20px;
-        margin-bottom: 50px;
+        margin-bottom: 30px;
     }
 
     & .todo-column {
@@ -743,6 +770,14 @@ const Root = styled.div`
     & .value-delta-spread {
         padding: 15px 0px;
         margin-bottom: 60px;
+    }
+
+    & .heatmap-container {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 30px;
+        margin-bottom: 50px;
     }
 `
 

@@ -125,3 +125,33 @@ export const setFAQNotFound = notFound => ({
     type: Types.SET_FAQ_NOT_FOUND,
     value: notFound
 })
+
+export const setUserStats = stats => ({
+    type: Types.SET_USER_STATS,
+    value: stats
+})
+
+export const setLoadingUserStats = loading => ({
+    type: Types.SET_LOADING_USER_STATS,
+    value: loading
+})
+
+export const setSiteStats = stats => ({
+    type: Types.SET_SITE_STATS,
+    value: stats
+})
+
+export const setLoadingSiteStats = loading => ({
+    type: Types.SET_LOADING_SITE_STATS,
+    value: loading
+})
+
+export const setEvents = events => ({
+    type: Types.SET_EVENTS,
+    value: events
+})
+
+export const setLoadingEvents = loading => ({
+    type: Types.SET_LOADING_EVENTS,
+    value: loading
+})

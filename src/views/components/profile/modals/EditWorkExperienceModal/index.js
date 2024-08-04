@@ -84,7 +84,7 @@ export const EditWorkExperienceModalComponent = props => {
     const [modified, setModified] = useState(isEditMode ? getFormDataModified(formData, workExperience) : {})
 
     const checklistOptions = [{
-        title: 'I am still at this role.',
+        title: 'I am still at this role',
         id: 'is-current',
         selected: formData.isCurrent
     }]

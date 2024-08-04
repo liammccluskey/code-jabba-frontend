@@ -6,6 +6,7 @@ const JobState = {
     job: null,
     loadingJob: false,
     jobNotFound: false,
+    canApplyToJob: false,
 }
 
 export const jobReducer = (state = JobState, action) => {
@@ -34,6 +35,11 @@ export const jobReducer = (state = JobState, action) => {
             return {
                 ...state,
                 jobNotFound: action.value
+            }
+        case Types.setCanApplyToJob:
+            return {
+                ...state,
+                canApplyToJob: action.value
             }
         default:
             return state

@@ -10,6 +10,7 @@ import {
     getHasAdminPrivileges,
     getIsPremiumUser,
     getIsRecruiterMode,
+
     setIsRecruiterMode
 } from '../../../../redux/user'
 import { MainMenu } from '../MainMenu'
@@ -134,7 +135,7 @@ export const MainHeaderComponent = props => {
         setMainPageLinks(getMainPageLinks(props.hasAdminPrivileges, props.isRecruiterMode))
         setMainMenuPageLinks(getMainMenuPageLinks(props.isPremiumUser, props.isRecruiterMode, props.mongoUser))
         setLoadingPageLinks(false)
-    }, [props.hasAdminPrivileges, props.isPremiumUser, props.isRecruiterMode])
+    }, [props.hasAdminPrivileges, props.isCna, props.isRecruiterMode])
 
     const onClickLogo = () => navigate('/')
 

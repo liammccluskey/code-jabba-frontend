@@ -14,7 +14,6 @@ import {
 import { addModal } from '../../../../redux/modal'
 import { ModalTypes } from '../../../../containers/ModalProvider'
 import { getIsMobile } from '../../../../redux/theme'
-import { capitalizeWords } from '../../../../utils/misc'
 import { PageSizes, getPaginatedDataForCurrentPage } from '../../../../networking'
 import { PageContainer } from '../../../components/common/PageContainer'
 import { MainHeader } from '../../../components/headers/MainHeader'
@@ -26,7 +25,23 @@ import { SearchableTable } from '../../../components/common/SearchableTable'
 export const FAQSections = [
     {
         title: 'Account',
-        id: 'Account'
+        id: 'account'
+    },
+    {
+        title: 'Premium Subscription',
+        id: 'premium-subscription',
+    },
+    {
+        title: 'Company',
+        id: 'company'
+    },
+    {
+        title: 'Applications',
+        id: 'applications'
+    },
+    {
+        title: 'Job Posts',
+        id: 'job-posts'
     }
 ]
 
@@ -43,11 +58,19 @@ export const FAQComponent = props => {
     const [faqsPage, setFAQsPage] = useState(1)
     const [faqsSortFilter, setFAQsSortFilter] = useState(FAQsSortFilters[0].filter)
     const [accountPillActive, setAccountPillActive] = useState(false)
+    const [premiumSubscriptionPillActive, setPremiumSubscriptionPillActive] = useState(false)
+    const [applicationsPillActive, setApplicationsPillActive] = useState(false)
+    const [companyPillActive, setCompanyPillActive] = useState(false)
+    const [jobPostsPillActive, setJobPostsPillActive] = useState(false)
     const [searchText, setSearchText] = useState('')
     const [clearSelectedRows, setClearSelectedRows] = useState(false)
 
     const pills = [
-        {title: 'Account', id: 'account', active: accountPillActive}
+        {title: 'Account', id: 'account', active: accountPillActive},
+        {title: 'Premium Subscription', id: 'premiumSubscription', active: premiumSubscriptionPillActive},
+        {title: 'Applications', id: 'applications', active: applicationsPillActive},
+        {title: 'Company', id: 'company', active: companyPillActive},
+        {title: 'Job Posts', id: 'jobPosts', active: jobPostsPillActive},
     ]
 
     const faqsForCurrentPage = getPaginatedDataForCurrentPage(
@@ -59,7 +82,7 @@ export const FAQComponent = props => {
     const tableRows = props.loadingFAQs ? []
         : faqsForCurrentPage.map( ({_id, title, section, createdAt}) => ({
             id: _id,
-            cells: [title, capitalizeWords(section)]
+            cells: [title, FAQSections.find( section => section.id === section ).title]
         }))
 
     useEffect(() => {
@@ -98,6 +121,38 @@ export const FAQComponent = props => {
         switch (pillID) {
             case 'account':
                 setAccountPillActive(curr => !curr)
+                setPremiumSubscriptionPillActive(false)
+                setApplicationsPillActive(false)
+                setCompanyPillActive(false)
+                setJobPostsPillActive(false)
+                break
+            case 'premiumSubscription':
+                setAccountPillActive(false)
+                setPremiumSubscriptionPillActive(curr => !curr)
+                setApplicationsPillActive(false)
+                setCompanyPillActive(false)
+                setJobPostsPillActive(false)
+                break
+            case 'applications':
+                setAccountPillActive(false)
+                setPremiumSubscriptionPillActive(false)
+                setApplicationsPillActive(curr => !curr)
+                setCompanyPillActive(false)
+                setJobPostsPillActive(false)
+                break
+            case 'company':
+                setAccountPillActive(false)
+                setPremiumSubscriptionPillActive(false)
+                setApplicationsPillActive(false)
+                setCompanyPillActive(curr => !curr)
+                setJobPostsPillActive(false)
+                break
+            case 'jobPosts':
+                setAccountPillActive(false)
+                setPremiumSubscriptionPillActive(false)
+                setApplicationsPillActive(false)
+                setCompanyPillActive(false)
+                setJobPostsPillActive(curr => !curr)
                 break
         }
     }

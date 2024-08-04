@@ -5,7 +5,6 @@ import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
 import {
-    getFirebaseUser,
     cancelSubscription,
     fetchThisMongoUser
 } from '../../../../redux/user'
@@ -31,7 +30,7 @@ export const CancelMembershipComponent = props => {
             onConfirm: (onSuccess, onFailure) => props.cancelSubscription(
                 () => {
                     props.fetchThisMongoUser(
-                        props.firebaseUser,
+                        undefined,
                         () => {
                             navigate('/dashboard')
                             onSuccess()
@@ -39,7 +38,10 @@ export const CancelMembershipComponent = props => {
                         onFailure
                     )
                 },
-                () => props.fetchThisMongoUser(props.firebaseUser)
+                () => {
+                    props.fetchThisMongoUser()
+                    onFailure()
+                }
             ),
             isDanger: true
         })
@@ -135,7 +137,7 @@ const Container = styled.div`
     }
 `
 const mapStateToProps = state => ({
-    firebaseUser: getFirebaseUser(),
+    
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

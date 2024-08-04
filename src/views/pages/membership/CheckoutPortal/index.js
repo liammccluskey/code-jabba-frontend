@@ -2,12 +2,18 @@ import React, {useEffect} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+
 
 import { addMessage } from '../../../../redux/communication'
-import { getIsPremiumUser, isPremiumUser } from '../../../../redux/user'
+import { 
+    getIsPremiumUser,
+    getIsRecruiterMode,
+
+    SubscriptionPrices,
+    SubscriptionTiersFormatted
+} from '../../../../redux/user'
 import { api } from '../../../../networking'
-import { PremiumPricePerMonth } from '../../Premium'
 import { PageContainer } from '../../../components/common/PageContainer'
 import { BodyContainer } from '../../../components/common/BodyContainer'
 import { MainHeader } from '../../../components/headers/MainHeader'
@@ -19,17 +25,23 @@ export const CheckoutPortalComponent = props => {
         
     } = props
     const navigate = useNavigate()
+    const {subscriptionTier} = useParams()
+    
+    const subscriptionTierFormatted = props.isRecruiterMode ? SubscriptionTiersFormatted.recruiterPremium : SubscriptionTiersFormatted.candidatePremium
+    const subscriptionTierPricePerMonth = props.isRecruiterMode ? SubscriptionPrices.recruiterPremium : SubscriptionPrices.candidatePremium
 
     useEffect(() => {
         if (props.isPremiumUser) {
             navigate('/dashboard')
-            props.addMessage('You are already a premium user.')
+            props.addMessage('You are already a premium user.', false, true)
         }
     }, [])
 
     const onClickPurchase = async () => {
         try {
-            const res = await api.post('/membership/create-checkout-session')
+            const res = await api.post('/membership/create-checkout-session', {
+                subscriptionTier
+            })
             const {sessionURL} = res.data
             window.location.href = sessionURL
         } catch (error) {
@@ -50,10 +62,10 @@ export const CheckoutPortalComponent = props => {
                         <div className='purchase-container'>
                             <div className='d-inline-flex jc-flex-start ai-center'>
                                 <i className='bi-trophy-fill trophy-icon' />
-                                <h4 className='premium-text'>Premium</h4> 
+                                <h4 className='premium-text'>{subscriptionTierFormatted}</h4> 
                             </div>
                             <div className='divider' />
-                            <h4>{`$${PremiumPricePerMonth} per month`}</h4>
+                            <h4>{`$${subscriptionTierPricePerMonth} per month`}</h4>
                         </div>
                         <Button
                             title='Purchase'
@@ -113,6 +125,7 @@ const Container = styled.div`
 `
 const mapStateToProps = state => ({
     isPremiumUser: getIsPremiumUser(state),
+    isRecruiterMode: getIsRecruiterMode(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

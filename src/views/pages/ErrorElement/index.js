@@ -65,9 +65,9 @@ export const ErrorElementComponent = props => {
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
-    height: 50%;
+    height: 100%;
 
     & h1 {
         margin-bottom: 60px;

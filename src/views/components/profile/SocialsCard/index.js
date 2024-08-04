@@ -11,6 +11,7 @@ export const SocialsCard = props => {
         portfolioURL=null,
         leetcodeURL=null,
         isEditable,
+        showCandidateProfiles=true,
 
         onClickEdit,
 
@@ -42,39 +43,48 @@ export const SocialsCard = props => {
                     : <p>LinkedIn not provided</p>
                 }
             </div>
-            <div className='social-container'>
-                <i className='bi-github social-icon' />
-                {githubURL ?
-                    <PageLink
-                        title='Github Profile'
-                        url={githubURL}
-                        openInNewTab={true}
-                    />
-                    : <p>Github not provided</p>
-                }
-            </div>
-            <div className='social-container'>
-                <i className='bi-code-square social-icon' />
-                {leetcodeURL ?
-                    <PageLink
-                        title='Leetcode Profile'
-                        url={leetcodeURL}
-                        openInNewTab={true}
-                    />
-                    : <p>Leetcode not provided</p>
-                }
-            </div>
-            <div className='social-container'>
-                <i className='bi-person-circle social-icon' />
-                {portfolioURL ?
-                    <PageLink
-                        title='Portfolio'
-                        url={portfolioURL}
-                        openInNewTab={true}
-                    />
-                    : <p>Portfolio not provided</p>
-                }
-            </div>
+            {showCandidateProfiles ?
+                <div className='social-container'>
+                    <i className='bi-github social-icon' />
+                    {githubURL ?
+                        <PageLink
+                            title='Github Profile'
+                            url={githubURL}
+                            openInNewTab={true}
+                        />
+                        : <p>Github not provided</p>
+                    }
+                </div>
+                : null
+            }
+            {showCandidateProfiles ?
+                <div className='social-container'>
+                    <i className='bi-code-square social-icon' />
+                    {leetcodeURL ?
+                        <PageLink
+                            title='Leetcode Profile'
+                            url={leetcodeURL}
+                            openInNewTab={true}
+                        />
+                        : <p>Leetcode not provided</p>
+                    }
+                </div>
+                : null
+            }
+            {showCandidateProfiles ?
+                <div className='social-container'>
+                    <i className='bi-person-circle social-icon' />
+                    {portfolioURL ?
+                        <PageLink
+                            title='Portfolio'
+                            url={portfolioURL}
+                            openInNewTab={true}
+                        />
+                        : <p>Portfolio not provided</p>
+                    }
+                </div>
+                : null
+            }
         </Root>
     )
 }
