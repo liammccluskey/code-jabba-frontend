@@ -55,7 +55,6 @@ import { Button } from '../../components/common/Button'
 import { SearchableTable } from '../../components/common/SearchableTable'
 import { Loading } from '../../components/common/Loading'
 import { ValueDeltaSpread } from '../../components/common/ValueDeltaSpread'
-import { EducationCard } from '../../components/profile/EducationCard'
 import { YearHeatmap } from '../../components/common/YearHeatmap'
 
 export const Timeframes = ['Week', 'Month', 'Year']
