@@ -118,7 +118,7 @@ export const MainMenuComponent = props => {
                                             <i
                                                 className={`bi-${icon} oh-c-t`}
                                                 onClick={() => onClickThemeColor(value)}
-                                                style={{marginRight}}
+                                                style={{marginRight, cursor: 'pointer'}}
                                             />
                                         </Tooltip>
                                     )
@@ -141,7 +141,8 @@ export const MainMenuComponent = props => {
                                                     height: 17, width: 17,
                                                     borderRadius: '50%',
                                                     backgroundColor: tint,
-                                                    marginRight
+                                                    marginRight,
+                                                    cursor: 'pointer'
                                                 }}
                                                 onClick={() => onClickTintColor(value)}
                                             />

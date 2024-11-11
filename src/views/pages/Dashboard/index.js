@@ -31,11 +31,16 @@ import {
     getApplications,
     getLoadingApplications,
     getApplicationsPagesCount,
+    getLoadingCandidateApplicationsHeatmap,
+    getLoadingRecruiterApplicationsHeatmap,
+    getCandidateApplicationsHeatmap,
+    getRecruiterApplicationsHeatmap,
 
     fetchRecruiterCompanies,
     fetchRecruiterJobs,
     fetchApplicationStats,
     fetchApplications,
+    fetchApplicationsHeatmap,
 } from '../../../redux/dashboard'
 import { formatNumber } from '../../../utils'
 import { setApplicationsPage } from '../../../redux/application'
@@ -75,10 +80,12 @@ export const DashboardComponent = props => {
         // recruiter
         recruiterApplicationTimeframe: Timeframes[1],
         companyAdminPillActive: false,
+        jobActivePillActive: true,
         jobArchivedPillActive: false,
 
         // candidate
         candidateApplicationTimeframe: Timeframes[1],
+        applicationAppliedPillActive: false,
         applicationViewedPillActive: false,
         applicationRejectedPillActive: false,
         applicationAcceptedPillActive: false,
@@ -110,9 +117,11 @@ export const DashboardComponent = props => {
         {title: 'Admin', id: 'companyAdmin', active: data.companyAdminPillActive},
     ]
     const jobPills = [
+        {title: 'Active', id: 'jobActive', active: data.jobActivePillActive},
         {title: 'Archived', id: 'jobArchived', active: data.jobArchivedPillActive},
     ]
     const applicationPills = [
+        {title: 'Applied', id: 'applicationApplied', active: data.applicationAppliedPillActive},
         {title: 'Viewed', id: 'applicationViewed', active: data.applicationViewedPillActive},
         {title: 'Rejected', id: 'applicationRejected', active: data.applicationRejectedPillActive},
         {title: 'Accepted', id: 'applicationAccepted', active: data.applicationAcceptedPillActive},
@@ -156,16 +165,21 @@ export const DashboardComponent = props => {
     }, [])
 
     useEffect(() => {
+        props.fetchApplicationsHeatmap()
+    }, [props.isRecruiterMode])
+
+    useEffect(() => {
         fetchCompaniesFirstPage()
     }, [data.companyAdminPillActive, props.isRecruiterMode])
 
     useEffect(() => {
         fetchJobsFirstPage()
-    }, [data.jobArchivedPillActive, jobsSortFilter, props.isRecruiterMode])
+    }, [data.jobActivePillActive, data.jobArchivedPillActive, jobsSortFilter, props.isRecruiterMode])
 
     useEffect(() => {
         !props.isRecruiterMode && fetchApplicationsFirstPage()
     }, [
+        data.applicationAppliedPillActive,
         data.applicationViewedPillActive, 
         data.applicationRejectedPillActive, 
         data.applicationAcceptedPillActive,
@@ -176,7 +190,6 @@ export const DashboardComponent = props => {
 
     useEffect(() => {
         props.fetchApplicationStats(
-            props.isRecruiterMode,
             props.isRecruiterMode ? data.recruiterApplicationTimeframe : data.candidateApplicationTimeframe
         )
     }, [props.isRecruiterMode, data.recruiterApplicationTimeframe, data.candidateApplicationTimeframe])
@@ -205,6 +218,7 @@ export const DashboardComponent = props => {
 
     const getJobsFilters = () => {
         return{
+            ...(data.jobActivePillActive ? {archived: false} : {}),
             ...(data.jobArchivedPillActive ? {archived: true} : {}),
             sortBy: jobsSortFilter
         }
@@ -217,6 +231,7 @@ export const DashboardComponent = props => {
 
     const getApplicationsFilters = () => {
         return {
+            ...(data.applicationAppliedPillActive ? {status: 'applied'} : {}),
             ...(data.applicationViewedPillActive ? {status: 'viewed'} : {}),
             ...(data.applicationRejectedPillActive ? {status: 'rejected'} : {}),
             ...(data.applicationAcceptedPillActive ? {status: 'accepted'} : {}),
@@ -253,22 +268,38 @@ export const DashboardComponent = props => {
     const onClickPill = pillID => {
         switch (pillID) {
             case 'companyAdmin':
-            case 'jobArchived':
             case 'applicationArchived':
                 updatePill(pillID)
                 break
+            case 'jobActive':
+                updatePill(pillID)
+                updatePill('jobArchived', false)
+                break
+            case 'jobArchived':
+                updatePill(pillID)
+                updatePill('jobActive', false)
+                break
+            case 'applicationApplied':
+                updatePill(pillID)
+                updatePill('applicationViewed', false)
+                updatePill('applicationRejected', false)
+                updatePill('applicationAccepted', false)
+                break
             case 'applicationViewed':
                 updatePill(pillID)
+                updatePill('applicationApplied', false)
                 updatePill('applicationRejected', false)
                 updatePill('applicationAccepted', false)
                 break
             case 'applicationRejected':
                 updatePill(pillID)
+                updatePill('applicationApplied', false)
                 updatePill('applicationViewed', false)
                 updatePill('applicationAccepted', false)
                 break
             case 'applicationAccepted':
                 updatePill(pillID)
+                updatePill('applicationApplied', false)
                 updatePill('applicationViewed', false)
                 updatePill('applicationRejected', false)
                 break
@@ -370,7 +401,7 @@ export const DashboardComponent = props => {
     }
 
     const onClickEditGeneral = () => {
-        props.addModal(ModalTypes.EDIT_CONTACT)
+        props.addModal(ModalTypes.EDIT_GENERAL)
     }
 
     const onClickEditSocials = () => {
@@ -505,24 +536,19 @@ export const DashboardComponent = props => {
                                 className='float-container value-delta-spread'
                             />
                         }
-                        {props.isMobile ? null :
-                            <div className='float-container heatmap-container'>
-                                <p>
-                                    {props.isRecruiterMode ?
-                                        `You have received ${formatNumber(1345)} applications this year`
-                                        : `You have submitted ${formatNumber(1234)} applications this year`
-                                    }
-                                </p>
-                                <YearHeatmap
-                                    dataUnit='application'
-                                    inputData={{
-                                        min: 0,
-                                        max: 1000,
-                                        data: {0: 5000, 1: 20, 30: 50, 40: 40, 50: 500, 200: 1000}
-                                    }}
-                                    style={{marginTop: 15}}
-                                />
-                            </div>
+                        {props.isMobile ? null
+                            : props.loadingRecruiterApplicationsHeatmap ?
+                                <Loading style={{height: 50}} />
+                                : <div className='float-container heatmap-container'>
+                                    <p>
+                                        {`You have received ${formatNumber(props.recruiterApplicationsHeatmap.count)} applications this year`}
+                                    </p>
+                                    <YearHeatmap
+                                        dataUnit='application'
+                                        inputData={props.recruiterApplicationsHeatmap}
+                                        style={{marginTop: 15}}
+                                    />
+                                </div>
                         }
                         <div className='tables-container'>
                             <div className='table-section-container'>
@@ -643,6 +669,20 @@ export const DashboardComponent = props => {
                                 values={candidateApplicationMetrics}
                                 className='float-container value-delta-spread'
                             />
+                        }
+                        {props.isMobile ? null
+                            : props.loadingCandidateApplicationsHeatmap ?
+                                <Loading style={{height: 50}} />
+                                : <div className='float-container heatmap-container'>
+                                    <p>
+                                        {`You have submitted ${formatNumber(props.candidateApplicationsHeatmap.count)} applications this year`}
+                                    </p>
+                                    <YearHeatmap
+                                        dataUnit='application'
+                                        inputData={props.candidateApplicationsHeatmap}
+                                        style={{marginTop: 15}}
+                                    />
+                                </div>
                         }
                         <div className='section-header'>
                             <h3>My applications</h3>
@@ -799,6 +839,10 @@ const mapStateToProps = state => ({
     applications: getApplications(state),
     loadingApplications: getLoadingApplications(state),
     applicationsPagesCount: getApplicationsPagesCount(state),
+    loadingCandidateApplicationsHeatmap: getLoadingCandidateApplicationsHeatmap(state),
+    candidateApplicationsHeatmap: getCandidateApplicationsHeatmap(state),
+    loadingRecruiterApplicationsHeatmap: getLoadingRecruiterApplicationsHeatmap(state),
+    recruiterApplicationsHeatmap: getRecruiterApplicationsHeatmap(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -806,6 +850,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     fetchRecruiterJobs,
     fetchApplicationStats,
     fetchApplications,
+    fetchApplicationsHeatmap,
     setApplicationsPage,
     addModal
 }, dispatch)

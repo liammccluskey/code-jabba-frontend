@@ -43,10 +43,12 @@ export const JobCardComponent = props => {
         hideable=false,
         isForApplications=false,
 
+        onJobUpdate, // () => {}
+
         ...rest
     } = props
     const navigate = useNavigate()
-    const [isRecruiter, setIsRecruiter] = useState(false)
+    const [isJobRecruiter, setIsJobRecruiter] = useState(false)
     const [optionsMenuHidden, setOptionsMenuHidden] = useState(true)
     const [expanded, setExpanded] = useState(!hideable)
     const [loadingPostApplication, setLoadingPostApplication] = useState(false)
@@ -67,7 +69,7 @@ export const JobCardComponent = props => {
     }
 
     useEffect(() => {
-        job && setIsRecruiter(props.mongoUser._id === job.recruiter._id)
+        job && setIsJobRecruiter(props.mongoUser._id === job.recruiter._id)
     }, [job])
 
     const onClickEdit = () => {
@@ -77,10 +79,11 @@ export const JobCardComponent = props => {
     const onClickEditArchived = () => {
         props.patchJob(
             job._id, 
-            { archived: !props.job.archived },
+            { archived: !job.archived },
             () => {
                 props.fetchJob(job._id, isForApplications)
                 setOptionsMenuHidden(true)
+                onJobUpdate()
             }
         )
     }
@@ -93,15 +96,17 @@ export const JobCardComponent = props => {
         props.repostJob(job._id, () => {
             props.fetchJob(job._id)
             setOptionsMenuHidden(true)
+            onJobUpdate()
         })
 
     }
 
     const menuOptions = [
         {title: 'Edit', icon: 'bi-pencil', onClick: onClickEdit},
-        {title: job.archived ? 'De-archive' : 'Archive', icon: 'bi-archive', onClick: onClickEditArchived},
         {title: 'View applications', icon: 'bi-file-earmark-person', onClick: onClickViewApplications},
-        {title: 'Repost job', icon: 'bi-signpost', onClick: onClickRepost},
+        job.archived ? 
+            {title: 'Repost job', icon: 'bi-signpost', onClick: onClickRepost}
+            : {title: 'Archive', icon: 'bi-archive', onClick: onClickEditArchived},
     ]
 
     const onClickApply = () => {
@@ -147,7 +152,7 @@ export const JobCardComponent = props => {
                         : null
                     }
                 </div>
-                {isRecruiter ?
+                {props.isRecruiterMode && isJobRecruiter ?
                     <OptionsMenu
                         menuHidden={optionsMenuHidden}
                         setMenuHidden={setOptionsMenuHidden}

@@ -204,7 +204,7 @@ export const ApplicationsComponent = props => {
                         : <Loading />
                     }
                     <div className='section-header '>
-                        <h3>Application Metrics</h3>
+                        <h3>Applications Metrics</h3>
                         <select
                             value={data.applicationStatsTimeframe}
                             onChange={onChangeField}

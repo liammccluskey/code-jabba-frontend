@@ -28,7 +28,7 @@ import { Subheader } from '../../components/headers/Subheader'
 import { ErrorElement } from '../ErrorElement'
 import { Loading } from '../../components/common/Loading'
 import { ItemsCard } from '../../components/profile/ItemsCard'
-import { ContactCard } from '../../components/profile/ContactCard'
+import { GeneralCard } from '../../components/profile/GeneralCard'
 import { SocialsCard } from '../../components/profile/SocialsCard'
 import { EducationCard } from '../../components/profile/EducationCard'
 import { WorkExperienceCard } from '../../components/profile/WorkExperienceCard'
@@ -83,8 +83,8 @@ export const ProfileComponent = props => {
         window.open(props.profileUser.resumeURL, '_blank')
     }
 
-    const onClickEditContact = () => {
-        props.addModal(ModalTypes.EDIT_CONTACT)
+    const onClickEditGeneral = () => {
+        props.addModal(ModalTypes.EDIT_GENERAL)
     }
 
     const onClickEditSocials = () => {
@@ -171,7 +171,7 @@ export const ProfileComponent = props => {
                                     onClickEdit={onClickEditResume}
                                     style={{marginBottom: 30}}
                                 />
-                                <ContactCard
+                                <GeneralCard
                                     email={props.profileUser.email}
                                     phoneNumber={props.profileUser.phoneNumber}
                                     address={props.profileUser.address}
@@ -180,7 +180,7 @@ export const ProfileComponent = props => {
                                     birthdayYear={props.profileUser.birthdayYear}
                                     isEditable={isThisUser}
                                     showSensitiveInformation={isThisUser}
-                                    onClickEdit={onClickEditContact}
+                                    onClickEdit={onClickEditGeneral}
                                     style={{marginBottom: 30}}
                                 />
                                 <SocialsCard

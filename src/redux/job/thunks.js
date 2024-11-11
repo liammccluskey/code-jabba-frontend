@@ -39,8 +39,9 @@ export const fetchJob = (jobID, isForApplications=false) => async (dispatch, get
     try {
         const res = await api.get(`/jobs/${jobID}` + queryString)
 
-        if (!isForApplications || isForApplications && res.data.recruiter._id === mongoUser._id)
+        if (!isForApplications || isForApplications && res.data.recruiter._id === mongoUser._id) {
             dispatch(JobActions.setJob(res.data))
+        }
         else dispatch(JobActions.setJobNotFound(true))
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message

@@ -484,12 +484,12 @@ export const EditJobCardComponent = props => {
         setModified(getFormDataModified(formData, job))
     }, [formData])
 
-    useEffect(() => {
-        setFormData( curr => ({
-            ...curr,
-            company: '',
-        }))
-    }, [formData.companyText])
+    // useEffect(() => {
+    //     setFormData( curr => ({
+    //         ...curr,
+    //         company: '',
+    //     }))
+    // }, [formData.companyText])
 
     // Utils
 
@@ -886,6 +886,24 @@ export const EditJobCardComponent = props => {
                 />
             </div>
             <InputWithMessage
+                inputType='location'
+                label='Location'
+                labelRightChild={
+                    <Tooltip
+                        title={`Don't see your location? Enter somewhere close.`}
+                    >
+                        <i className='bi-question-circle help-icon' />
+                    </Tooltip>
+                }
+                text={formData.location}
+                fieldName='location'
+                onChangeText={onChangeField}
+                onChangeLocation={onChangeLocation}
+                optional={formData.setting === 'remote'}
+                hasError={errors.location}
+                modified={isEditMode && modified.location}
+            />
+            <InputWithMessage
                 label='Experience Level'
                 hasError={errors.experienceLevels}
                 style={{marginBottom: 0}}
@@ -943,24 +961,6 @@ export const EditJobCardComponent = props => {
                 />
                 : null
             }
-            <InputWithMessage
-                inputType='location'
-                label='Location'
-                labelRightChild={
-                    <Tooltip
-                        title={`Don't see your location? Enter somewhere close.`}
-                    >
-                        <i className='bi-question-circle help-icon' />
-                    </Tooltip>
-                }
-                text={formData.location}
-                fieldName='location'
-                onChangeText={onChangeField}
-                onChangeLocation={onChangeLocation}
-                optional={formData.setting === 'remote'}
-                hasError={errors.location}
-                modified={isEditMode && modified.location}
-            />
             <InputWithMessage
                 label='Languages'
                 hasError={errors.languages}

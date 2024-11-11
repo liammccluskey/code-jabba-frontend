@@ -31,7 +31,7 @@ export const Days = () => {
     return days
 }
 
-export const EditContactModalComponent = props => {
+export const EditGeneralModalComponent = props => {
     const {
         modalID,
     } = props
@@ -168,7 +168,7 @@ export const EditContactModalComponent = props => {
                     onChangeText={onChangeField}
                     hasError={errors.phoneNumber}
                     modified={modified.phoneNumber}
-                    labelMessage='Your phone number will not be shown on your public profile'
+                    labelMessage='Your phone number will only be visible to you on your public profile. It can also be seen by recruiters on job applications.'
                     style={{marginBottom: 20}}
                 />
                 <InputWithMessage
@@ -179,12 +179,12 @@ export const EditContactModalComponent = props => {
                     onChangeText={onChangeField}
                     hasError={errors.address}
                     modified={modified.address}
-                    labelMessage='Your address will not be shown on your public profile'
+                    labelMessage='Your address will only be visible to you on your public profile. It can also be seen by recruiters on job applications.'
                     style={{marginBottom: 20}}
                 />
                 <InputWithMessage
                     label='Birthday'
-                    labelMessage='Your birthday will not be shown on your public profile'
+                    labelMessage='Your birthday will only be visible to you on your public profile. It can also be seen by recruiters on job applications.'
                     style={{marginBottom: 5}}
                 />
                 <div className='inputs-container'>
@@ -247,4 +247,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     addMessage
 }, dispatch)
 
-export const EditContactModal = connect(mapStateToProps, mapDispatchToProps)(EditContactModalComponent)
+export const EditGeneralModal = connect(mapStateToProps, mapDispatchToProps)(EditGeneralModalComponent)

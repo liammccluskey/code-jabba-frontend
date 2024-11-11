@@ -13,3 +13,7 @@ export const getRecruiterJobsPagesCount = state => state.dashboard.recruiter.job
 export const getApplications = state => state.dashboard.candidate.applications.payload.applications
 export const getLoadingApplications = state => state.dashboard.candidate.applications.loading 
 export const getApplicationsPagesCount = state => state.dashboard.candidate.applications.payload.pagesCount
+export const getLoadingCandidateApplicationsHeatmap = state => state.dashboard.candidate.loadingApplicationsHeatmap
+export const getCandidateApplicationsHeatmap = state => state.dashboard.candidate.applicationsHeatmap
+export const getLoadingRecruiterApplicationsHeatmap = state => state.dashboard.recruiter.loadingApplicationsHeatmap
+export const getRecruiterApplicationsHeatmap = state => state.dashboard.recruiter.applicationsHeatmap

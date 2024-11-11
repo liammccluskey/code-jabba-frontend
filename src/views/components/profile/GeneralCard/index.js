@@ -4,7 +4,7 @@ import moment from 'moment'
 
 import { IconButton } from '../../common/IconButton'
 
-export const ContactCard = props => {
+export const GeneralCard = props => {
     const {
         email=null,
         phoneNumber=null,

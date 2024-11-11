@@ -64,3 +64,23 @@ export const setLoadingApplications = loading => ({
     type: Types.setLoadingApplications,
     value: loading
 })
+
+export const setLoadingCandidateApplicationsHeatmap = loading => ({
+    type: Types.setLoadingCandidateApplicationsHeatmap,
+    value: loading
+})
+
+export const setCandidateApplicationsHeatmap = heatmap => ({
+    type: Types.setCandidateApplicationsHeatmap,
+    value: heatmap
+})
+
+export const setLoadingRecruiterApplicationsHeatmap = loading => ({
+    type: Types.setLoadingRecruiterApplicationsHeatmap,
+    value: loading
+})
+
+export const setRecruiterApplicationsHeatmap = heatmap => ({
+    type: Types.setRecruiterApplicationsHeatmap,
+    value: heatmap
+})

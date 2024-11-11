@@ -13,6 +13,12 @@ const DashboardState = {
             rejectedPercentDelta: 0,
             acceptedPercentDelta: 0,
         },
+        loadingApplicationsHeatmap: false,
+        applicationsHeatmap: {
+            count: 0,
+            max: 0,
+            data: {},
+        },
         companies: {
             loading: false,
             payload: {
@@ -39,6 +45,12 @@ const DashboardState = {
             viewedPercentDelta: 0,
             rejectedPercentDelta: 0,
             acceptedPercentDelta: 0,
+        },
+        loadingApplicationsHeatmap: false,
+        applicationsHeatmap: {
+            count: 0,
+            max: 0,
+            data: {},
         },
         applications: {
             loading: false,
@@ -192,6 +204,42 @@ export const dashboardReducer = (state = DashboardState, action) => {
                     }
                 }
             }
+        case Types.setLoadingCandidateApplicationsHeatmap: {
+            return {
+                ...state,
+                candidate: {
+                    ...state.candidate,
+                    loadingApplicationsHeatmap: action.value
+                }
+            }
+        }
+        case Types.setCandidateApplicationsHeatmap: {
+            return {
+                ...state,
+                candidate: {
+                    ...state.candidate,
+                    applicationsHeatmap: action.value
+                }
+            }
+        }
+        case Types.setLoadingRecruiterApplicationsHeatmap: {
+            return {
+                ...state,
+                recruiter: {
+                    ...state.recruiter,
+                    loadingApplicationsHeatmap: action.value
+                }
+            }
+        }
+        case Types.setRecruiterApplicationsHeatmap: {
+            return {
+                ...state,
+                recruiter: {
+                    ...state.recruiter,
+                    applicationsHeatmap: action.value
+                }
+            }
+        }
         default:
             return state
     }

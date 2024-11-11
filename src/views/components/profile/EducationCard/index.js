@@ -61,8 +61,8 @@ export const EducationCardComponent = props => {
                 <h3>Education</h3>
                 {isEditable ?
                     <IconButton
-                        icon='bi-pencil'
-                        size='s'
+                        icon='bi-plus'
+                        size='m'
                         color='tint'
                         onClick={onClickAdd}
                         style={{marginRight: 10}}

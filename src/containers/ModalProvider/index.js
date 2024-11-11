@@ -8,7 +8,7 @@ import { Confirm } from '../../views/components/modals/Confirm'
 import { CreateNewAdminModal } from '../../views/components/admin/modals/CreateNewAdminModal'
 import { CreateBugReportModal } from '../../views/components/admin/modals/CreateBugReportModal'
 import { CreateFAQModal } from '../../views/components/admin/modals/CreateFAQModal'
-import { EditContactModal } from '../../views/components/profile/modals/EditContactModal'
+import { EditGeneralModal } from '../../views/components/profile/modals/EditGeneralModal'
 import { EditSocialsModal } from '../../views/components/profile/modals/EditSocialsModal'
 import { EditResumeModal } from '../../views/components/profile/modals/EditResumeModal'
 import { EditLanguagesModal } from '../../views/components/profile/modals/EditLanguagesModal'
@@ -27,7 +27,7 @@ export const ModalTypes = {
     CREATE_FAQ: 'create-faq',
     EDIT_PROFILE: 'edit-profile',
     EDIT_RESUME: 'edit-resume',
-    EDIT_CONTACT: 'edit-contact',
+    EDIT_GENERAL: 'edit-general',
     EDIT_SOCIALS: 'edit-socials',
     EDIT_LANGUAGES: 'edit-languages',
     EDIT_SKILLS: 'edit-skills',
@@ -58,8 +58,8 @@ export const ModalProviderComponent = props => {
                 return <CreateFAQModal {...modalProps} key={modalID} />
             case ModalTypes.EDIT_RESUME:
                 return <EditResumeModal {...modalProps} key={modalID} />
-            case ModalTypes.EDIT_CONTACT:
-                return <EditContactModal {...modalProps} key={modalID} />
+            case ModalTypes.EDIT_GENERAL:
+                return <EditGeneralModal {...modalProps} key={modalID} />
             case ModalTypes.EDIT_SOCIALS:
                 return <EditSocialsModal {...modalProps} key={modalID} />
             case ModalTypes.EDIT_LANGUAGES:

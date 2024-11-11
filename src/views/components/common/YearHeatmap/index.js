@@ -44,7 +44,7 @@ export const YearHeatmapComponent = props => {
 
     function getPalette() {
         const tint = Tints[props.tintColor].tint
-        const palette = generate(tint, {theme: props.theme > 0 ? 'dark' : 'default'})
+        const palette = generate(tint, {theme: props.themeColor > 0 ? 'dark' : 'default'})
             .filter( (c, idx) => idx!== 0 && idx % 2 === 0)
         return [Themes[props.themeColor].bgcLight, ...palette ]
     }

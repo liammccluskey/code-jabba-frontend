@@ -41,7 +41,7 @@ export const LoginComponent = props => {
                 props.fetchThisMongoUser(user, undefined, undefined, true)
             }
         } catch (error) {
-            const errorMessage = getFirebaseErrorMessage(error)
+            const errorMessage = getFirebaseErrorMessage(error) || 'The email and password you entered are incorrect.'
             props.addMessage(errorMessage, true)
         }
     }

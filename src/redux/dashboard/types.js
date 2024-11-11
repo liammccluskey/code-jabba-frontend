@@ -12,4 +12,8 @@ export const ActionTypes = {
     setApplications: 'dashboard/SET_APPLICATIONS',
     addApplications: 'dashboard/ADD_APPLICATIONS',
     setLoadingApplications: 'dashboard/SET_LOADING_APPLICATIONS',
+    setLoadingCandidateApplicationsHeatmap: 'dashboard/SET_LOADING_CANDIDATE_APPLICATIONS_HEATMAP',
+    setCandidateApplicationsHeatmap: 'dashboard/SET_CANDIDATE_APPLICATIONS_HEATMAP',
+    setLoadingRecruiterApplicationsHeatmap: 'dashboard/SET_LOADING_RECRUITER_APPLICATIONS_HEATMAP',
+    setRecruiterApplicationsHeatmap: 'dashboard/SET_RECRUITER_APPLICATIONS_HEATMAP',
 }   

@@ -14,11 +14,11 @@ export const fetchApplicationStats = (timeframe, jobID) => async (dispatch, getS
         userID: mongoUser._id,
         timeframe,
         jobID,
-        isRecruiter: 1
+        userType: 'recruiter'
     })
 
     try {
-        const res = await api.get('/applications/stats' + queryString)
+        const res = await api.get('/applications/value-delta-stats' + queryString)
 
         dispatch(ApplicationActions.setApplicationStats(res.data))
     } catch (error) {

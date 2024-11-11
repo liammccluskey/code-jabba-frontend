@@ -18,7 +18,7 @@ import { PendingMessage } from '../../components/common/PendingMessage'
 
 const ContactInfo = [
     ['Email', 'liammccluskey@codejabba.com'],
-    ['Address', '3 Germay Drive, Unit 4, Wilmington, Delaware, 19804']
+    //['Address', '3 Germay Drive, Unit 4, Wilmington, Delaware, 19804']
 ]
 
 export const ContactUsComponent = props => {

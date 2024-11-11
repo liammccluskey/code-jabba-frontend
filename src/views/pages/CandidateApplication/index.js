@@ -28,8 +28,14 @@ export const CandidateApplicationComponent = props => {
     const {applicationID} = useParams()
 
     useEffect(() => {
-        props.fetchApplication(applicationID)
+        fetchApplication()
     }, [applicationID])
+
+    // Utils
+
+    const fetchApplication = () => {
+        props.fetchApplication(applicationID)
+    }
 
     return (props.applicationNotFound ?
         <ErrorElement />
@@ -43,6 +49,7 @@ export const CandidateApplicationComponent = props => {
                             job={props.application.job}
                             hideable={true}
                             style={{marginBottom: 40}}
+                            onJobUpdate={fetchApplication}
                         />
                         <div className='float-container activity-container'>
                             <div className='section-header'>
