@@ -476,6 +476,44 @@ export const DashboardComponent = props => {
             <BodyContainer style={{padding: '40px 5%'}}>
                 {props.isRecruiterMode ?
                     <Root className={`${props.isMobile && 'mobile'} ${props.isSemiMobile && 'semi-mobile'}`}>
+                        {!props.mongoUser.canPostJobs ?
+                            <div className='section-header'>
+                                <h3>To do</h3>
+                            </div>
+                            : null
+                        }
+                        {!props.mongoUser.canPostJobs ?
+                            <div className='float-container todos-container'>
+                                {todoItems.map( (todos, index) => (
+                                    <div className='todo-column' key={index}>
+                                        {todos.map( ({number, title, isComplete, onClick}) => (
+                                            <div className='todo-container' key={number}>
+                                                <div className='todo-header'>
+                                                    <div className={`number-container ${isComplete && 'complete'}`}>
+                                                        {isComplete ?
+                                                            <i className='bi-check check-icon' />
+                                                            : <p>{number}</p>
+                                                        }
+                                                    </div>
+                                                    <p>{title}</p>
+                                                </div>
+                                                {isComplete ?
+                                                    null
+                                                    : <Button
+                                                        title='Complete item'
+                                                        type='clear'
+                                                        priority={3}
+                                                        onClick={onClick}
+                                                        style={{marginLeft: 10, marginTop: 10}}
+                                                    />
+                                                }
+                                            </div>
+                                        ))}
+                                    </div>
+                                ))}
+                            </div>
+                            : null
+                        }
                         <div className='tables-container'>
                             <div className='table-section-container'>
                                 <div className='section-header'>
@@ -535,44 +573,6 @@ export const DashboardComponent = props => {
                                 />
                             </div>
                         </div>
-                        {!props.mongoUser.canPostJobs ?
-                            <div className='section-header'>
-                                <h3>To do</h3>
-                            </div>
-                            : null
-                        }
-                        {!props.mongoUser.canPostJobs ?
-                            <div className='float-container todos-container'>
-                                {todoItems.map( (todos, index) => (
-                                    <div className='todo-column' key={index}>
-                                        {todos.map( ({number, title, isComplete, onClick}) => (
-                                            <div className='todo-container' key={number}>
-                                                <div className='todo-header'>
-                                                    <div className={`number-container ${isComplete && 'complete'}`}>
-                                                        {isComplete ?
-                                                            <i className='bi-check check-icon' />
-                                                            : <p>{number}</p>
-                                                        }
-                                                    </div>
-                                                    <p>{title}</p>
-                                                </div>
-                                                {isComplete ?
-                                                    null
-                                                    : <Button
-                                                        title='Complete item'
-                                                        type='clear'
-                                                        priority={3}
-                                                        onClick={onClick}
-                                                        style={{marginLeft: 10, marginTop: 10}}
-                                                    />
-                                                }
-                                            </div>
-                                        ))}
-                                    </div>
-                                ))}
-                            </div>
-                            : null
-                        }
                         <div className='section-header '>
                             <h3>Job posts metrics</h3>
                             <select

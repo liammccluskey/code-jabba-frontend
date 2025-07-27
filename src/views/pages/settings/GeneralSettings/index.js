@@ -149,7 +149,7 @@ export const GeneralSettingsComponent = props => {
                                 <p>{formInitialValues.membership.memberSince}</p>
                             }
                         />
-                        <SettingsRow
+                        {/* <SettingsRow
                             title='Memberhsip'
                             isEditable={false}
                             middleChild={
@@ -169,7 +169,7 @@ export const GeneralSettingsComponent = props => {
                                     onClick={onClickGoPremium}
                                 />
                             }
-                        />
+                        /> */}
                     </div>
 
                     <h3 className='settings-title'>

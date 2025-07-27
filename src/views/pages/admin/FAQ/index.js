@@ -27,10 +27,10 @@ export const FAQSections = [
         title: 'Account',
         id: 'account'
     },
-    {
-        title: 'Premium Subscription',
-        id: 'premium-subscription',
-    },
+    // {
+    //     title: 'Premium Subscription',
+    //     id: 'premium-subscription',
+    // },
     {
         title: 'Company',
         id: 'company'

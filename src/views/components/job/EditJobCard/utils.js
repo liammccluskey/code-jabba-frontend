@@ -8,6 +8,7 @@ export const getFormData = job => ({
     experienceLevels: job.experienceLevels,
     experienceYears: job.experienceYears,
     location: job.location,
+    locationText: job.location,
     applicationType: job.applicationType,
     applicationURL: job.applicationURL,
     language: '', // temp

@@ -10,7 +10,6 @@ import { companyReducer } from './company'
 import { jobReducer } from './job'
 import { dashboardReducer } from './dashboard'
 import { applicationReducer } from './application'
-import { rewardsReducer } from './rewards/reducers'
 import { landingReducer } from './landing'
 import { eventsReducer } from './events/reducers'
 
@@ -25,7 +24,6 @@ export const rootReducer = combineReducers({
     job: jobReducer,
     dashboard: dashboardReducer,
     application: applicationReducer,
-    rewards: rewardsReducer,
     landing: landingReducer,
     events: eventsReducer
 })

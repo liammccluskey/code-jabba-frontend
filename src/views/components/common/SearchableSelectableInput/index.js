@@ -22,6 +22,7 @@ export const SearchableSelectableInput = props => {
     const [optionsVisible, setOptionsVisible] = useState(false)
 
     const parsedOptions = options.filter( option => option.toLowerCase().includes(value.toLowerCase()))
+    const parsedSelectedOptions = selectedOptions.filter(option => option !== '')
 
     useEffect(() => {
         const handleClick = e => {
@@ -66,7 +67,7 @@ export const SearchableSelectableInput = props => {
                                 key={option}
                             >
                                 <Checkbox
-                                    selected={selectedOptions.includes(option)}
+                                    selected={parsedSelectedOptions.includes(option)}
                                     style={{marginRight: 10}}
                                 />
                                 <p>{option}</p>
@@ -78,7 +79,7 @@ export const SearchableSelectableInput = props => {
                 : null
             }
             <div className='pills-row'>
-                {selectedOptions.map( option => (
+                {parsedSelectedOptions.map( option => (
                     <Pill
                         title={option}
                         id={option}

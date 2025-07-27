@@ -4,6 +4,7 @@ import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
+import { CitiesUSA } from './constants'
 import { getIsMobile } from '../../../../redux/theme'
 import { getMongoUser } from '../../../../redux/user'
 import {
@@ -302,6 +303,7 @@ export const EditJobCardComponent = props => {
             experienceLevels: [],
             experienceYears: [],
             location: '',
+            locationText: '',
             applicationType: 'easy-apply',
             applicationURL: '',
             language: '', // temp
@@ -397,7 +399,8 @@ export const EditJobCardComponent = props => {
     //         setting: 'on-site',
     //         experienceLevels: [],
     //         experienceYears: [],
-    //         location: 'New York, NY, USA',
+    //         location: 'New York, NY',
+    //         locationText: 'New York, NY',
     //         applicationType: 'easy-apply',
     //         applicationURL: 'https://www.linkedin.com/jobs/collections/recommended/?currentJobId=3728717720',
     //         language: '', // temp
@@ -483,13 +486,6 @@ export const EditJobCardComponent = props => {
     useEffect(() => {
         setModified(getFormDataModified(formData, job))
     }, [formData])
-
-    // useEffect(() => {
-    //     setFormData( curr => ({
-    //         ...curr,
-    //         company: '',
-    //     }))
-    // }, [formData.companyText])
 
     // Utils
 
@@ -583,7 +579,9 @@ export const EditJobCardComponent = props => {
             case 'remote':
                 setFormData(curr => ({
                     ...curr,
-                    setting: pillID
+                    setting: pillID,
+                    location: '',
+                    locationText: ''
                 }))
                 removeError('location')
                 break
@@ -665,6 +663,15 @@ export const EditJobCardComponent = props => {
             ...curr,
             location: location.formatted_address
         }))
+    }
+
+    const onClickLocationOption = option => {
+        setFormData(curr => ({
+            ...curr,
+            location: option,
+            locationText: option
+        }))
+        removeError('location')
     }
 
     const onClickSkillOption = option => {
@@ -876,6 +883,13 @@ export const EditJobCardComponent = props => {
                 label='Setting'
                 modified={isEditMode && modified.setting}
                 style={{marginBottom: 0}}
+                labelRightChild={
+                    <Tooltip
+                        title={`Want to enter the job's location? Unselect "Remote" as the setting.`}
+                    >
+                        <i className='bi-question-circle help-icon' />
+                    </Tooltip>
+                }
             />
             <div className='pills-row row'>
                 <PillOptions
@@ -885,24 +899,28 @@ export const EditJobCardComponent = props => {
                     className='pill-options'
                 />
             </div>
-            <InputWithMessage
-                inputType='location'
-                label='Location'
-                labelRightChild={
-                    <Tooltip
-                        title={`Don't see your location? Enter somewhere close.`}
-                    >
-                        <i className='bi-question-circle help-icon' />
-                    </Tooltip>
-                }
-                text={formData.location}
-                fieldName='location'
-                onChangeText={onChangeField}
-                onChangeLocation={onChangeLocation}
-                optional={formData.setting === 'remote'}
-                hasError={errors.location}
-                modified={isEditMode && modified.location}
-            />
+            {formData.setting === 'remote' ? 
+                null
+                : <InputWithMessage
+                    label='Location'
+                    hasError={errors.location}
+                    style={{marginBottom: 0}}
+                    modified={isEditMode && modified.location}
+                />
+            }
+            {formData.setting === 'remote' ? 
+                null
+                :
+                <SearchableSelectableInput
+                    options={CitiesUSA}
+                    selectedOptions={[formData.location]}
+                    value={formData.locationText}
+                    fieldName='locationText'
+                    onChange={onChangeField}
+                    onClickOption={onClickLocationOption}
+                    className='row'
+                />
+            }
             <InputWithMessage
                 label='Experience Level'
                 hasError={errors.experienceLevels}

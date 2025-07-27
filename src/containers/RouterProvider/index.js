@@ -20,7 +20,7 @@ import { Support } from '../../views/pages/Support'
 import { FAQ } from '../../views/pages/admin/FAQ'
 import { IndividualAdminFAQ } from '../../views/pages/IndividualAdminFAQ'
 import { IndividualFAQ } from '../../views/pages/IndividualFAQ'
-import { Premium } from '../../views/pages/Premium'
+// import { Premium } from '../../views/pages/Premium'
 import { CheckoutPortal } from '../../views/pages/membership/CheckoutPortal'
 import { CheckoutSuccess } from '../../views/pages/membership/CheckoutSuccess'
 import { CheckoutCancel } from '../../views/pages/membership/CheckoutCancel'
@@ -37,7 +37,6 @@ import { Applications } from '../../views/pages/Applications'
 import { EditJob } from '../../views/pages/EditJob'
 import { CandidateApplication } from '../../views/pages/CandidateApplication'
 import { Profile } from '../../views/pages/Profile'
-import { Rewards } from '../../views/pages/Rewards'
 import { AdminAnalytics } from '../../views/pages/admin/AdminAnalytics'
 import { ContactUs } from '../../views/pages/ContactUs'
 
@@ -151,31 +150,31 @@ const router = createBrowserRouter([
     },
 
     // membership
-    {
-      path: '/membership/premium',
-      element: <PrivateRoute element={<Premium />} />,
-      errorElement: <ErrorElement />
-    },
-    {
-      path: '/membership/checkoutportal',
-      element: <PrivateRoute element={<CheckoutPortal />} />,
-      errorElement: <ErrorElement />
-    },
-    {
-      path: '/membership/checkoutsuccess/:subscriptionTier',
-      element: <PrivateRoute element={<CheckoutSuccess />} />,
-      errorElement: <ErrorElement />
-    },
-    {
-      path: '/membership/checkoutcancel',
-      element: <PrivateRoute element={<CheckoutCancel />} />,
-      errorElement: <ErrorElement />
-    },
-    {
-      path: '/membership/cancel',
-      element: <PrivateRoute element={<CancelMembership />} />,
-      errorElement: <ErrorElement />
-    },
+    // {
+    //   path: '/membership/premium',
+    //   element: <PrivateRoute element={<Premium />} />,
+    //   errorElement: <ErrorElement />
+    // },
+    // {
+    //   path: '/membership/checkoutportal',
+    //   element: <PrivateRoute element={<CheckoutPortal />} />,
+    //   errorElement: <ErrorElement />
+    // },
+    // {
+    //   path: '/membership/checkoutsuccess/:subscriptionTier',
+    //   element: <PrivateRoute element={<CheckoutSuccess />} />,
+    //   errorElement: <ErrorElement />
+    // },
+    // {
+    //   path: '/membership/checkoutcancel',
+    //   element: <PrivateRoute element={<CheckoutCancel />} />,
+    //   errorElement: <ErrorElement />
+    // },
+    // {
+    //   path: '/membership/cancel',
+    //   element: <PrivateRoute element={<CancelMembership />} />,
+    //   errorElement: <ErrorElement />
+    // },
 
     // main
     {
@@ -221,11 +220,6 @@ const router = createBrowserRouter([
     {
       path: '/users/:userID',
       element: <PrivateRoute element={<Profile />} />,
-      errorElement: <ErrorElement />
-    },
-    {
-      path: '/rewards',
-      element: <PrivateRoute element={<Rewards />} />,
       errorElement: <ErrorElement />
     },
 

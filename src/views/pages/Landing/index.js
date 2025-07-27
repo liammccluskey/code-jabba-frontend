@@ -250,7 +250,6 @@ export const LandingComponent = props => {
                         </div>
                     </div>
                 </div>
-                {/* feature: subscriptions */}
                 {/* <div className='pricing-container' id='pricing-container'>
                     <div className='section-header'>
                         <h1 className='title'>Pricing</h1>

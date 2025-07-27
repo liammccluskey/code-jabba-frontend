@@ -4,7 +4,6 @@ import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 
 import { getMongoUser } from '../../../../../redux/user'
-import { sendReferralEmail } from '../../../../../redux/rewards'
 import { Confirm } from '../../../modals/Confirm'
 import { InputWithMessage } from '../../../common/InputWithMessage'
 

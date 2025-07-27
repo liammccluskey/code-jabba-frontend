@@ -31,6 +31,10 @@ export const CandidateApplicationComponent = props => {
         fetchApplication()
     }, [applicationID])
 
+    useEffect(() => {
+        console.log(JSON.stringify(props.application, null, 4))
+    }, [props.application])
+
     // Utils
 
     const fetchApplication = () => {

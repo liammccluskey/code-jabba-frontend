@@ -8,7 +8,7 @@ import { getIsMobile, getIsSemiMobile } from '../../../../redux/theme'
 import {
     getMongoUser,
     getHasAdminPrivileges,
-    getIsPremiumUser,
+    // getIsPremiumUser,
     getIsRecruiterMode,
 
     setIsRecruiterMode
@@ -58,29 +58,23 @@ export const getMainPageLinks = (hasAdminPrivileges, isRecruiterMode) => [
 ]
 
 export const getMainMenuPageLinks = (isPremiumUser, isRecruiterMode, mongoUser) => [
-    ...(isPremiumUser ?
-        []
-        : [
-            {
-                name: 'Go Premium',
-                url: '/membership/premium',
-                id: 'premium',
-                icon: 'bi-trophy-fill',
-                color: 'gold'
-            }
-        ]
-    ),
+    // ...(isPremiumUser ?
+    //     []
+    //     : [
+    //         {
+    //             name: 'Go Premium',
+    //             url: '/membership/premium',
+    //             id: 'premium',
+    //             icon: 'bi-trophy-fill',
+    //             color: 'gold'
+    //         }
+    //     ]
+    // ),
     {
         name: 'Profile',
         url: `/users/${mongoUser._id}`,
         id: 'profile',
         icon: 'bi-person-circle'
-    },
-    {
-        name: 'Rewards',
-        url: `/rewards`,
-        id: 'rewards',
-        icon: 'bi-cash'
     },
     ...(isRecruiterMode ?
         [
@@ -133,7 +127,7 @@ export const MainHeaderComponent = props => {
     useEffect(() => {
         setLoadingPageLinks(true)
         setMainPageLinks(getMainPageLinks(props.hasAdminPrivileges, props.isRecruiterMode))
-        setMainMenuPageLinks(getMainMenuPageLinks(props.isPremiumUser, props.isRecruiterMode, props.mongoUser))
+        setMainMenuPageLinks(getMainMenuPageLinks(/*props.isPremiumUser*/false, props.isRecruiterMode, props.mongoUser))
         setLoadingPageLinks(false)
     }, [props.hasAdminPrivileges, props.isCna, props.isRecruiterMode])
 
@@ -252,7 +246,7 @@ const mapStateToProps = state => ({
     isSemiMobile: getIsSemiMobile(state),
     mongoUser: getMongoUser(state),
     hasAdminPrivileges: getHasAdminPrivileges(state),
-    isPremiumUser: getIsPremiumUser(state),
+    // isPremiumUser: getIsPremiumUser(state),
     isRecruiterMode: getIsRecruiterMode(state),
 })
 

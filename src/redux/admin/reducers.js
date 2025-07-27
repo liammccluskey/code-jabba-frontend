@@ -43,8 +43,8 @@ const AdminState = {
     userStats: {
         candidatesCount: 0,
         recruitersCount: 0,
-        premiumCandidatesCount: 0,
-        premiumRecruitersCount: 0,
+        // premiumCandidatesCount: 0,
+        // premiumRecruitersCount: 0,
     },
     loadingUserStats: false,
     siteStats: {

@@ -14,7 +14,6 @@ import {
     patchJob,
     fetchJob,
     repostJob,
-    fetchCanApplyToJob
 } from '../../../../redux/job'
 import { postApplication } from '../../../../redux/application'
 import { addMessage } from '../../../../redux/communication'
@@ -110,22 +109,15 @@ export const JobCardComponent = props => {
     ]
 
     const onClickApply = () => {
-        const postApplication = (job) => {
+        if (!props.mongoUser.canApplyToJobs && job.applicationType === 'easy-apply') {
+            props.addMessage('You must complete the To Do items on the dashboard before you can apply to jobs', true, true)
+        } else {
+            setLoadingPostApplication(true)
             props.postApplication(job._id, job.recruiter._id, () => {
                 props.fetchJob(job._id)
                 setLoadingPostApplication(false)
             })
             job.applicationType === 'custom' && window.open(job.applicationURL, '_blank')
-        }
-        if (!props.mongoUser.canApplyToJobs) {
-            props.addMessage('You must complete the To Do items on the dashboard before you can apply to jobs', true, true)
-        }
-        else if (props.isCandidatePremiumUser) {
-            setLoadingPostApplication(true)
-            postApplication(job)
-        } else {
-            setLoadingPostApplication(true)
-            props.fetchCanApplyToJob(() => postApplication(job))
         }
     }
 
@@ -220,10 +212,10 @@ export const JobCardComponent = props => {
             <div className='section-2' >
                 <PillLabel
                     title={job.minExperienceLevel === job.maxExperienceLevel ? 
-                        ExperienceLevels.find(level => level.id === job.minExperienceLevel).title
+                        ExperienceLevels.find(level => level.id === job.minExperienceLevel).title + ' level'
                         : `${ExperienceLevels.find(level => level.id === job.minExperienceLevel).title}
                             - 
-                        ${ExperienceLevels.find(level => level.id === job.maxExperienceLevel).title}`
+                        ${ExperienceLevels.find(level => level.id === job.maxExperienceLevel).title} level`
                     }
                     color='yellow'
                     size='m'
@@ -231,7 +223,7 @@ export const JobCardComponent = props => {
                 />
                 <PillLabel
                     title={job.minExperienceYears == job.maxExperienceYears ? 
-                        ExperienceYears.find(years => years.id == job.minExperienceYears).title
+                        ExperienceYears.find(years => years.id == job.minExperienceYears).title + ' years'
                         : `${ExperienceYears.find(years => years.id == job.minExperienceYears).min}
                             - 
                         ${ExperienceYears.find(years => years.id == job.maxExperienceYears).max}
@@ -295,7 +287,7 @@ export const JobCardComponent = props => {
                         <label>Languages</label>
                         <div className='options-container'>
                             {sortedJobLanguages.map( language => (
-                                <div className={`option-container ${userHasLanguage(language) && 'included'}`}>
+                                <div key={language} className={`option-container ${userHasLanguage(language) && 'included'}`}>
                                     <i className={`status-icon ${userHasLanguage(language) ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}`} />
                                     <p>{language}</p>
                                 </div>
@@ -305,7 +297,7 @@ export const JobCardComponent = props => {
                     <div className='section-5'>
                         <label>Skills</label>
                         {sortedJobSkills.map( skill => (
-                            <div className={`option-container ${userHasSkill(skill) && 'included'}`}>
+                            <div key={skill} className={`option-container ${userHasSkill(skill) && 'included'}`}>
                                 <i className={`status-icon ${userHasSkill(skill) ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}`} />
                                 <p>{skill}</p>
                             </div>
@@ -446,7 +438,6 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     fetchJob,
     postApplication,
     repostJob,
-    fetchCanApplyToJob,
     addMessage
 }, dispatch)
 

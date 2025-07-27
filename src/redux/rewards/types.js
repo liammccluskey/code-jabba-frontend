@@ -1,6 +1,0 @@
-export const ActionTypes = {
-    SET_REWARDS_STATS: 'rewards/SET_REWARDS_STATS',
-    SET_LOADING_REWARDS_STATS: 'rewards/SET_LOADING_REWARDS_STATS',
-    SET_REWARDS: 'rewards/SET_REWARDS',
-    SET_LOADING_REWARDS: 'rewards/SET_LOADING_REWARDS',
-}

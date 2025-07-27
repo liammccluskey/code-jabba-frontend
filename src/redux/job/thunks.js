@@ -25,7 +25,7 @@ export const searchCompanies = companySearch => async (dispatch) => {
     dispatch(JobActions.setLoadingCompanySearchResults(false))
 }
 
-export const fetchJob = (jobID, isForApplications=false) => async (dispatch, getState) => {
+export const fetchJob = (jobID, isForApplications=false, isForJobsFeed=false) => async (dispatch, getState) => {
     dispatch(JobActions.setLoadingJob(true))
     dispatch(JobActions.setJobNotFound(false))
 
@@ -39,7 +39,11 @@ export const fetchJob = (jobID, isForApplications=false) => async (dispatch, get
     try {
         const res = await api.get(`/jobs/${jobID}` + queryString)
 
-        if (!isForApplications || isForApplications && res.data.recruiter._id === mongoUser._id) {
+        if (
+            !isForApplications 
+            || isForApplications && res.data.recruiter._id === mongoUser._id
+            || isForJobsFeed
+        ) {
             dispatch(JobActions.setJob(res.data))
         }
         else dispatch(JobActions.setJobNotFound(true))
@@ -99,28 +103,6 @@ export const repostJob = (jobID, onSuccess) => async (dispatch, getState) => {
         })
 
         dispatch(addMessage(res.data.message))
-        onSuccess()
-    } catch (error) {
-        const errorMessage = error.response ? error.response.data.message : error.message
-        console.log(errorMessage)
-        dispatch(addMessage(errorMessage, true))
-    }
-}
-
-export const fetchCanApplyToJob = (onSuccess) => async (dispatch, getState) => {
-    dispatch(JobActions.setCanApplyToJob(false))
-
-    const state = getState()
-    const mongoUser = getMongoUser(state)
-
-    const queryString = stringifyQuery({
-        userID: mongoUser._id
-    })
-
-    try {
-        const res = await api.get('/applications/can-apply-to-job' + queryString)
-
-        dispatch(JobActions.setCanApplyToJob(res.data.canApply))
         onSuccess()
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message

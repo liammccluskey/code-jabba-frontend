@@ -45,5 +45,6 @@ const Root = styled.div`
     & i {
         font-size: 24px;
         color: white;
+        margin-left: -3px;
     }
 `

@@ -17,8 +17,6 @@ import { EditEducationModal } from '../../views/components/profile/modals/EditEd
 import { EditWorkExperienceModal } from '../../views/components/profile/modals/EditWorkExperienceModal'
 import { EditProjectModal } from '../../views/components/profile/modals/EditProjectModal'
 import { EditQuestionsModal } from '../../views/components/profile/modals/EditQuestionsModal'
-import { ViewRewardsModal } from '../../views/components/rewards/modals/ViewRewardsModal'
-import { ShareReferralModal } from '../../views/components/rewards/modals/ShareReferralModal'
 
 export const ModalTypes = {
     CONFIRM: 'confirm',
@@ -35,8 +33,6 @@ export const ModalTypes = {
     EDIT_WORK_EXPERIENCE: 'edit-work-experience',
     EDIT_PROJECT: 'edit-project',
     EDIT_QUESTIONS: 'edit-questions',
-    VIEW_REWARD: 'view-reward',
-    SHARE_REFERRAL: 'share-referral',
 }
 
 export const ModalProviderComponent = props => {
@@ -74,10 +70,6 @@ export const ModalProviderComponent = props => {
                 return <EditProjectModal {...modalProps} key={modalID} />
             case ModalTypes.EDIT_QUESTIONS:
                 return <EditQuestionsModal {...modalProps} key={modalID} />
-            case ModalTypes.VIEW_REWARD:
-                return <ViewRewardsModal {...modalProps} key={modalID} />
-            case ModalTypes.SHARE_REFERRAL:
-                return <ShareReferralModal {...modalProps} key={modalID} />
             default:
                 return null
         }

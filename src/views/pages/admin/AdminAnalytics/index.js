@@ -41,17 +41,17 @@ export const AdminAnalyticsComponent = props => {
     const userStatsValues = props.loadingUserStats ?
         {
             users: [],
-            premiumUsers: []
+            // premiumUsers: []
         } 
         : {
             users: [
                 {title: 'Candidates', value: props.userStats.candidatesCount.toLocaleString()},
                 {title: 'Recruiters', value: props.userStats.recruitersCount.toLocaleString()}
             ],
-            premiumUsers: [
-                {title: 'Premium Candidates', value: props.userStats.premiumCandidatesCount.toLocaleString()},
-                {title: 'Premium Recruiters', value: props.userStats.premiumRecruitersCount.toLocaleString()}
-            ]
+            // premiumUsers: [
+            //     {title: 'Premium Candidates', value: props.userStats.premiumCandidatesCount.toLocaleString()},
+            //     {title: 'Premium Recruiters', value: props.userStats.premiumRecruitersCount.toLocaleString()}
+            // ]
         }
 
     const siteStatsValues = props.loadingSiteStats ? []
@@ -107,12 +107,12 @@ export const AdminAnalyticsComponent = props => {
                                 showDelta={false}
                                 className='value-delta-spread'
                             />
-                            <ValueDeltaSpread
+                            {/* <ValueDeltaSpread
                                 values={userStatsValues.premiumUsers}
                                 showDelta={false}
                                 className='value-delta-spread'
                                 style={{borderBottom: 'none'}}
-                            />
+                            /> */}
                         </div>
                     }
                     {props.loadingSiteStats ?
