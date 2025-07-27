@@ -476,6 +476,65 @@ export const DashboardComponent = props => {
             <BodyContainer style={{padding: '40px 5%'}}>
                 {props.isRecruiterMode ?
                     <Root className={`${props.isMobile && 'mobile'} ${props.isSemiMobile && 'semi-mobile'}`}>
+                        <div className='tables-container'>
+                            <div className='table-section-container'>
+                                <div className='section-header'>
+                                    <h3>My companies</h3>
+                                    <Button
+                                        title='Create a company'
+                                        icon='bi-plus'
+                                        priority={3}
+                                        type='clear'
+                                        onClick={onClickCreateCompany}
+                                    />
+                                </div>
+                                <SearchableTable
+                                    loading={props.loadingRecruiterCompanies}
+                                    searchText={companySearchText}
+                                    onChangeSearchText={onChangeCompanySearchText}
+                                    tableHeaders={companyHeaders}
+                                    tableRows={companyRows}
+                                    pills={companyPills}
+                                    onClickPill={onClickPill}
+                                    page={companiesPage}
+                                    pagesCount={props.recruiterCompaniesPagesCount}
+                                    onSubmitSearch={onSubmitCompanySearch}
+                                    onClickTableRow={onClickCompanyRow}
+                                    onClickDecrementPage={onClickDecrementCompaniesPage}
+                                    onClickIncrementPage={onClickIncrementCompaniesPage}
+                                />
+                            </div>
+                            <div className='table-section-container'>
+                            <div className='section-header'>
+                                    <h3>My job posts</h3>
+                                    <Button
+                                        title='Create a job'
+                                        icon='bi-plus'
+                                        priority={3}
+                                        type='clear'
+                                        onClick={onClickCreateJob}
+                                    />
+                                </div>
+                                <SearchableTable
+                                    searchText={jobSearchText}
+                                    loading={props.loadingRecruiterJobs}
+                                    onChangeSearchText={onChangeJobSearchText}
+                                    tableHeaders={jobHeaders}
+                                    tableRows={jobRows}
+                                    pills={jobPills}
+                                    onClickPill={onClickPill}
+                                    page={jobsPage}
+                                    pagesCount={props.recruiterJobsPagesCount}
+                                    onSubmitSearch={onSubmitJobSearch}
+                                    onClickTableRow={onClickJobRow}
+                                    onClickDecrementPage={onClickDecrementJobsPage}
+                                    onClickIncrementPage={onClickIncrementJobsPage}
+                                    sortFilter={jobsSortFilter}
+                                    sortFilters={JobsSortFilters}
+                                    onChangeSortFilter={e => onChangeSortFilter(e, 'jobs')}
+                                />
+                            </div>
+                        </div>
                         {!props.mongoUser.canPostJobs ?
                             <div className='section-header'>
                                 <h3>To do</h3>
@@ -549,65 +608,7 @@ export const DashboardComponent = props => {
                                     />
                                 </div>
                         }
-                        <div className='tables-container'>
-                            <div className='table-section-container'>
-                                <div className='section-header'>
-                                    <h3>My companies</h3>
-                                    <Button
-                                        title='Create a company'
-                                        icon='bi-plus'
-                                        priority={3}
-                                        type='clear'
-                                        onClick={onClickCreateCompany}
-                                    />
-                                </div>
-                                <SearchableTable
-                                    loading={props.loadingRecruiterCompanies}
-                                    searchText={companySearchText}
-                                    onChangeSearchText={onChangeCompanySearchText}
-                                    tableHeaders={companyHeaders}
-                                    tableRows={companyRows}
-                                    pills={companyPills}
-                                    onClickPill={onClickPill}
-                                    page={companiesPage}
-                                    pagesCount={props.recruiterCompaniesPagesCount}
-                                    onSubmitSearch={onSubmitCompanySearch}
-                                    onClickTableRow={onClickCompanyRow}
-                                    onClickDecrementPage={onClickDecrementCompaniesPage}
-                                    onClickIncrementPage={onClickIncrementCompaniesPage}
-                                />
-                            </div>
-                            <div className='table-section-container'>
-                            <div className='section-header'>
-                                    <h3>My job posts</h3>
-                                    <Button
-                                        title='Create a job'
-                                        icon='bi-plus'
-                                        priority={3}
-                                        type='clear'
-                                        onClick={onClickCreateJob}
-                                    />
-                                </div>
-                                <SearchableTable
-                                    searchText={jobSearchText}
-                                    loading={props.loadingRecruiterJobs}
-                                    onChangeSearchText={onChangeJobSearchText}
-                                    tableHeaders={jobHeaders}
-                                    tableRows={jobRows}
-                                    pills={jobPills}
-                                    onClickPill={onClickPill}
-                                    page={jobsPage}
-                                    pagesCount={props.recruiterJobsPagesCount}
-                                    onSubmitSearch={onSubmitJobSearch}
-                                    onClickTableRow={onClickJobRow}
-                                    onClickDecrementPage={onClickDecrementJobsPage}
-                                    onClickIncrementPage={onClickIncrementJobsPage}
-                                    sortFilter={jobsSortFilter}
-                                    sortFilters={JobsSortFilters}
-                                    onChangeSortFilter={e => onChangeSortFilter(e, 'jobs')}
-                                />
-                            </div>
-                        </div>
+                        
                     </Root>
                     : <Root className={`${props.isMobile && 'mobile'} ${props.isSemiMobile && 'semi-mobile'}`}>
                         {!props.mongoUser.canApplyToJobs ?
@@ -648,6 +649,32 @@ export const DashboardComponent = props => {
                         </div>
                             : null
                         }
+                        <div className='section-header'>
+                            <h3>My applications</h3>
+                            <Button
+                                title='Find jobs'
+                                icon='bi-search'
+                                priority={3}
+                                type='clear'
+                                onClick={onClickFindJobs}
+                            />
+                        </div>
+                        <SearchableTable
+                            searchable={false}
+                            loading={props.loadingApplications}
+                            tableHeaders={applicationHeaders}
+                            tableRows={applicationsRows}
+                            pills={applicationPills}
+                            onClickPill={onClickPill}
+                            page={applicationsPage}
+                            pagesCount={props.applicationsPagesCount}
+                            onClickTableRow={onClickApplicationRow}
+                            onClickDecrementPage={onClickDecrementApplicationsPage}
+                            onClickIncrementPage={onClickIncrementApplicationsPage}
+                            sortFilter={applicationsSortFilter}
+                            sortFilters={ApplicationsSortFilters}
+                            onChangeSortFilter={e => onChangeSortFilter(e, 'applications')}
+                        />
                         <div className='section-header '>
                             <h3>Applications metrics</h3>
                             <select
@@ -683,32 +710,7 @@ export const DashboardComponent = props => {
                                     />
                                 </div>
                         }
-                        <div className='section-header'>
-                            <h3>My applications</h3>
-                            <Button
-                                title='Find jobs'
-                                icon='bi-search'
-                                priority={3}
-                                type='clear'
-                                onClick={onClickFindJobs}
-                            />
-                        </div>
-                        <SearchableTable
-                            searchable={false}
-                            loading={props.loadingApplications}
-                            tableHeaders={applicationHeaders}
-                            tableRows={applicationsRows}
-                            pills={applicationPills}
-                            onClickPill={onClickPill}
-                            page={applicationsPage}
-                            pagesCount={props.applicationsPagesCount}
-                            onClickTableRow={onClickApplicationRow}
-                            onClickDecrementPage={onClickDecrementApplicationsPage}
-                            onClickIncrementPage={onClickIncrementApplicationsPage}
-                            sortFilter={applicationsSortFilter}
-                            sortFilters={ApplicationsSortFilters}
-                            onChangeSortFilter={e => onChangeSortFilter(e, 'applications')}
-                        />
+                        
                     </Root>
                 }
             </BodyContainer>

@@ -30,24 +30,14 @@ const Config = {
         heroMessage: "Forget job titles. Save hours searching for jobs by searching by coding language, skill, and experience level instead.",
         whyChooseUs: [
             {
-                id: 0,
                 imageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_general.png?alt=media&token=727861ea-e064-46ed-9f15-8e386243d39f',
                 title: 'Easier job search',
                 message: "With our search search filters, you can save time in your job search by searching for jobs by coding language, skill, and experience level.",
             },
             {
-                id: 1,
-                imageURL: 'https://firebasestorage.googleapis.com/v0/b/code-jabba.appspot.com/o/landing%2FScreen%20Shot%202023-11-25%20at%2011.45.47%20AM.png?alt=media&token=22db5b8e-75b4-4968-9830-4f8de210e090',
-                title: 'Reward for referrals',
-                message: "With our referral program, you will receive one $5 Amazon gift card for each person you refer that signs up for a premium subscription.",
-                icon: 'bi-mailbox'
-            },
-            {
-                id: 2,
-                imageURL: '',
+                imageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_general.png?alt=media&token=727861ea-e064-46ed-9f15-8e386243d39f',
                 title: 'Application Stats',
                 message: "With our site, you can track the statistics of how many of your applications have been viewed, accepted, and rejected.",
-                icon: 'bi-credit-card'
             }
         ],
         pricing: [
@@ -63,16 +53,16 @@ const Config = {
                 ],
                 id: 's'
             },
-            // {
-            //     title: `${SubscriptionTiersFormatted.candidatePremium} Plan`,
-            //     price: `${SubscriptionPrices.candidatePremium} / month`,
-            //     formatCurrency: true,
-            //     features: [
-            //         {title: 'All basic plan benefits'},
-            //         {title: 'Unlimited job postings'}
-            //     ],
-            //     id: 'm'
-            // }
+            {
+                title: `${SubscriptionTiersFormatted.candidatePremium} Plan`,
+                price: `${SubscriptionPrices.candidatePremium} / month`,
+                formatCurrency: true,
+                features: [
+                    {title: 'All basic plan benefits'},
+                    {title: 'Unlimited job postings'}
+                ],
+                id: 'm'
+            }
         ]
     },
     recruiter: {
@@ -80,25 +70,15 @@ const Config = {
         heroMessage: "Forget resume parsers. Save hours reviewing candidates by sorting applications by years of experience and skill.",
         whyChooseUs: [
             {
-                id: 0,
                 imageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_general.png?alt=media&token=727861ea-e064-46ed-9f15-8e386243d39f',
                 title: 'Easier application review',
                 message: "With our application review process, you'll be able to save hours searching through applications by sorting by years of experience and skill.",
                 icon: 'bi-person-circle'
             },
             {
-                id: 1,
-                imageURL: 'https://firebasestorage.googleapis.com/v0/b/code-jabba.appspot.com/o/landing%2FScreen%20Shot%202023-11-25%20at%2011.45.47%20AM.png?alt=media&token=22db5b8e-75b4-4968-9830-4f8de210e090',
-                title: 'Reward for referrals',
-                message: "With our referral program, you will receive one $5 Amazon gift card for each person you refer that signs up for a premium subscription.",
-                icon: 'bi-mailbox'
-            },
-            {
-                id: 2,
-                imageURL: '',
+                imageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_general.png?alt=media&token=727861ea-e064-46ed-9f15-8e386243d39f',
                 title: 'Application stats',
                 message: "With our site, you can track the number of applications you receive, view, reject and accept.",
-                icon: 'bi-credit-card'
             }
         ],
         pricing: [
@@ -133,24 +113,24 @@ export const LandingComponent = props => {
     const navigate = useNavigate()
     const userMode = props.isRecruiterMode ? 'recruiter' : 'candidate'
     const config = Config[userMode]
-    const [selectedWhyChooseUsOptionID, setSelectedWhyChooseUsOptionID] = useState(1)
+    const [selectedWhyChooseUsOptionID, setSelectedWhyChooseUsOptionID] = useState(0)
 
-    const siteStatsValues = props.isMobile ?
-        [
-            {title: 'Applications submitted', value: props.siteStats.applicationsCount},
-            {title: 'Active job posts', value: props.siteStats.jobsCount},
-        ]
-        : [
-            {title: 'Applications submitted', value: props.siteStats.applicationsCount},
-            {title: 'Active job posts', value: props.siteStats.jobsCount},
-            {title: 'Candidates', value: props.siteStats.candidatesCount},
-            {title: 'Recruiters', value: props.siteStats.recruitersCount},
-        ]
+    // const siteStatsValues = props.isMobile ?
+    //     [
+    //         {title: 'Applications submitted', value: props.siteStats.applicationsCount},
+    //         {title: 'Active job posts', value: props.siteStats.jobsCount},
+    //     ]
+    //     : [
+    //         {title: 'Applications submitted', value: props.siteStats.applicationsCount},
+    //         {title: 'Active job posts', value: props.siteStats.jobsCount},
+    //         {title: 'Candidates', value: props.siteStats.candidatesCount},
+    //         {title: 'Recruiters', value: props.siteStats.recruitersCount},
+    //     ]
 
     useEffect(() => {
         props.setThemeColor(0)
         props.setTintColor(0)
-        props.fetchLandingStats()
+        // props.fetchLandingStats()
         
         props.logEvent(Events.landingPageVisit)
     }, [])
@@ -221,24 +201,25 @@ export const LandingComponent = props => {
                                     onClick={onClickGetStarted}
                                     style={{marginRight: 15}}
                                 />
-                                <Button
+                                {/* feature: pricing*/}
+                                {/* <Button
                                     title='View pricing'
                                     type='clear'
                                     priority={1}
                                     onClick={onClickViewPricing}
-                                />
+                                /> */}
                             </div>
                         </div>
                     </div>
                     <img className='hero-image' src={props.isRecruiterMode ? require('../../../assets/recruiter_dashboard.png') : require('../../../assets/candidate_dashboard.png')} />
                 </div>
-                <div className='stats-container'>
+                {/* <div className='stats-container'>
                     <ValueDeltaSpread
                         values={siteStatsValues}
                         showDelta={false}
                         className='float-container value-delta-spread'
                     />
-                </div>
+                </div> */}
                 <div className='why-choose-us-container'>
                     <h1 className='section-title'>Why Choose Us</h1>
                     <div className='why-choose-us-options-container'>
@@ -254,11 +235,11 @@ export const LandingComponent = props => {
                         
                                 />
                             </div>
-                            <div className='d-flex fd-column jc-space-between ai-stretch'>
-                                {config.whyChooseUs.map( ({title, message, id}) => (
+                            <div className='d-flex fd-column jc-space-around ai-stretch'>
+                                {config.whyChooseUs.map( ({title, message}, i) => (
                                     <div
-                                        onClick={() => onClickWhyChooseUsOption(id)}
-                                        className={`why-choose-us-option-container ${id == selectedWhyChooseUsOptionID && 'selected'}`}
+                                        onClick={() => onClickWhyChooseUsOption(i)}
+                                        className={`why-choose-us-option-container ${i == selectedWhyChooseUsOptionID && 'selected'}`}
                                         key={title}
                                     >
                                         <h2 className='title'>{title}</h2>
@@ -269,7 +250,8 @@ export const LandingComponent = props => {
                         </div>
                     </div>
                 </div>
-                <div className='pricing-container' id='pricing-container'>
+                {/* feature: subscriptions */}
+                {/* <div className='pricing-container' id='pricing-container'>
                     <div className='section-header'>
                         <h1 className='title'>Pricing</h1>
                         <Button
@@ -315,7 +297,7 @@ export const LandingComponent = props => {
                             </div>
                         ))}
                     </div>
-                </div>
+                </div> */}
                 <div className='copyright-container'>
                     <p>© {moment().year()} {process.env.REACT_APP_SITE_NAME}. All rights reserved.</p>
                 </div>
