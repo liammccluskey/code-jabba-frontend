@@ -4,5 +4,7 @@ export const ActionTypes = {
     setJob: 'job/SET_JOB',
     setLoadingJob: 'job/SET_LOADING_JOB',
     setJobNotFound: 'job/SET_JOB_NOT_FOUND',
-    setCanApplyToJob: 'job/SET_CAN_APPLY_TO_JOB',
+    setJobs: 'dashboard/SET_JOBS',
+    addJobs: 'dashobard/ADD_JOBS',
+    setLoadingJobs: 'dashboard/SET_LOADING_JOBS',
 }

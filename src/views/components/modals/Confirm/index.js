@@ -14,6 +14,7 @@ export const ConfirmComponent = props => {
         message,
         confirmButtonTitle='Yes',
         confirmButtonDisabled=false,
+        cancelButtonTitle='Cancel',
         isDanger=false,
         children=[],
         pendingMessage='Operation in progress',
@@ -72,7 +73,7 @@ export const ConfirmComponent = props => {
                         <Button
                             type='tint'
                             priority={2}
-                            title='Cancel'
+                            title={cancelButtonTitle}
                             onClick={onClickCancel}
                             style={{marginRight: 15}}
                         />

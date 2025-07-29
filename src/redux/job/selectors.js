@@ -5,4 +5,6 @@ export const getLoadingCompanySearchResults = state => state.job.loadingCompanyS
 export const getJob = state => state.job.job
 export const getLoadingJob = state => state.job.loadingJob
 export const getJobNotFound = state => state.job.jobNotFound
-export const getCanApplyToJobs = state => state.job.canApplyToJobs
+export const getJobs = state => state.dashboard.jobs.payload.jobs
+export const getLoadingJobs = state => state.dashboard.jobs.loading
+export const getJobsPagesCount = state => state.dashboard.jobs.payload.pagesCount

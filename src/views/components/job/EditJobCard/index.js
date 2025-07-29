@@ -139,6 +139,8 @@ export const Skills = [
     'React Native',
     'Redux',
     'Kotlin',
+    'Redis',
+    'Pandas'
 ].sort((a, b) => a.localeCompare(b))
 
 export const EducationLevels = [
@@ -392,7 +394,7 @@ export const EditJobCardComponent = props => {
     // useEffect(() => {
     //     setFormData({
     //         title: 'Senior Software Engineer',
-    //         company: '653eefe71c9b992da3f83059',
+    //         company: '656026eabc5f3e710b5aa0ef',
     //         companyText: 'glassdoor', // temp
     //         position: 'frontend',
     //         type: 'full-time',

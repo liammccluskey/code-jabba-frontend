@@ -6,7 +6,13 @@ const JobState = {
     job: null,
     loadingJob: false,
     jobNotFound: false,
-    canApplyToJob: false,
+    jobs: {
+        loading: false,
+        payload: {
+            jobs: [],
+            pagesCount: 0
+        }
+    }
 }
 
 export const jobReducer = (state = JobState, action) => {
@@ -36,10 +42,32 @@ export const jobReducer = (state = JobState, action) => {
                 ...state,
                 jobNotFound: action.value
             }
-        case Types.setCanApplyToJob:
+        case Types.setJobs:
             return {
                 ...state,
-                canApplyToJob: action.value
+                jobs: {
+                    ...state.recruiter.jobs,
+                    payload: action.value
+                }
+            }
+        case Types.addJobs:
+            return {
+                ...state,
+                jobs: {
+                    ...state.recruiter.jobs,
+                    payload: {
+                        pagesCount: action.value.pagesCount,
+                        jobs: [...state.recruiter.jobs.payload.jobs, ...action.value.jobs]
+                    }
+                }
+            }
+        case Types.setLoadingJobs:
+            return {
+                ...state,
+                jobs: {
+                    ...state.recruiter.jobs,
+                    loading: action.value
+                }
             }
         default:
             return state

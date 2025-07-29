@@ -25,7 +25,17 @@ export const setJobNotFound = notFound => ({
     value: notFound
 })
 
-export const setCanApplyToJob = canApply => ({
-    type: Types.setCanApplyToJob,
-    value: canApply
+export const setJobs = jobs => ({
+    type: Types.setJobs,
+    value: jobs
+})
+
+export const addJobs = jobs => ({
+    type: Types.addJobs,
+    value: jobs
+})
+
+export const setLoadingJobs = loading => ({
+    type: Types.setLoadingJobs,
+    value: loading
 })

@@ -5,6 +5,8 @@ import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 import moment from 'moment'
 
+import { getMongoUser } from '../../../redux/user'
+import { getIsRecruiterMode } from '../../../redux/user'
 import {
     getJob,
     getLoadingJob,
@@ -185,7 +187,7 @@ export const ApplicationsComponent = props => {
         }
     }
 
-    return ( props.jobNotFound ?
+    return ( props.jobNotFound || !props.isRecruiterMode || props.job.recruiter._id !== props.mongoUser._id ?
         <ErrorElement />
         : <PageContainer>
             <MainHeader />
@@ -279,6 +281,8 @@ const mapStateToProps = state => ({
     loadingApplications: getLoadingApplications(state),
     applicationsPage: getApplicationsPage(state),
     applicationsPagesCount: getApplicationsPagesCount(state),
+    isRecruiterMode: getIsRecruiterMode(state),
+    mongoUser: getMongoUser(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

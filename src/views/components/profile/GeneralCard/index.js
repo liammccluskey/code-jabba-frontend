@@ -20,6 +20,12 @@ export const GeneralCard = props => {
         ...rest
     } = props
 
+    const now = moment()
+    let age = now.year() - birthdayYear
+    if (now.isBefore(moment({year: now.year(), month: birthdayMonth, day: birthdayDay}))) {
+        age -= 1
+    }
+
     return (
         <Root className='float-container' {...rest}>
             <div className='contact-header'>
@@ -54,8 +60,8 @@ export const GeneralCard = props => {
             }
             {showSensitiveInformation ?
                 <div className='contact-container'>
-                    <label>Birthday: </label>
-                    <p>{`${moment({year: Number(birthdayYear), month: Number(birthdayMonth), day: Number(birthdayDay)}).format('L')}` }</p>
+                    <label>Age: </label>
+                    <p>{age}</p>
                 </div>
                 : null
             }

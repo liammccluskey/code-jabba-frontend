@@ -1,8 +1,9 @@
 import * as JobActions from './actions'
 import {api} from '../../networking'
 import { addMessage } from '../communication'
-import { stringifyQuery } from '../../networking'
+import { stringifyQuery, PageSizes } from '../../networking'
 import { getMongoUser } from '../user'
+import { getJobs } from './selectors'
 
 export const searchCompanies = companySearch => async (dispatch) => {
     dispatch(JobActions.setLoadingCompanySearchResults(true))
@@ -25,7 +26,7 @@ export const searchCompanies = companySearch => async (dispatch) => {
     dispatch(JobActions.setLoadingCompanySearchResults(false))
 }
 
-export const fetchJob = (jobID, isForApplications=false, isForJobsFeed=false) => async (dispatch, getState) => {
+export const fetchJob = (jobID) => async (dispatch, getState) => {
     dispatch(JobActions.setLoadingJob(true))
     dispatch(JobActions.setJobNotFound(false))
 
@@ -39,14 +40,7 @@ export const fetchJob = (jobID, isForApplications=false, isForJobsFeed=false) =>
     try {
         const res = await api.get(`/jobs/${jobID}` + queryString)
 
-        if (
-            !isForApplications 
-            || isForApplications && res.data.recruiter._id === mongoUser._id
-            || isForJobsFeed
-        ) {
-            dispatch(JobActions.setJob(res.data))
-        }
-        else dispatch(JobActions.setJobNotFound(true))
+        dispatch(JobActions.setJob(res.data))
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
@@ -109,4 +103,37 @@ export const repostJob = (jobID, onSuccess) => async (dispatch, getState) => {
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
     }
+}
+
+export const fetchJobs = (filters, page, onSuccess, onFailure) => async (dispatch, getState) => {
+    const state = getState()
+    const jobs = getJobs(state)
+    const mongoUser = getMongoUser(state)
+    if (page != 1 && jobs.length > (page - 1)*PageSizes.jobSearch) return
+
+    dispatch(JobActions.setLoadingJobs(true))
+
+    const queryString = stringifyQuery({
+        userID: mongoUser._id,
+        page,
+        ...filters,
+    })
+
+    try {
+        const res = await api.get('/jobs/candidate-search' + queryString)
+
+        if (page === 1) {
+            dispatch(JobActions.setJobs(res.data))
+        } else {
+            dispatch(JobActions.addJobs(res.data))
+        }
+        onSuccess()
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        onFailure()
+    }
+
+    dispatch(JobActions.setLoadingJobs(false))
 }

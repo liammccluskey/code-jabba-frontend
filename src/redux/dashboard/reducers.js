@@ -152,7 +152,7 @@ export const dashboardReducer = (state = DashboardState, action) => {
                         ...state.recruiter.jobs,
                         payload: {
                             ...action.value,
-                            companies: [...state.recruiter.jobs.payload.jobs, ...action.value.jobs]
+                            jobs: [...state.recruiter.jobs.payload.jobs, ...action.value.jobs]
                         }
                     }
                 }

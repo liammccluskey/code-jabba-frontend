@@ -55,7 +55,7 @@ export const fetchApplications = (filters) => async (dispatch, getState) => {
     dispatch(ApplicationActions.setLoadingApplications(false))
 }
 
-export const postApplication = (jobID, recruiterID, onSuccess) => async (dispatch, getState) => {
+export const postApplication = (jobID, recruiterID, onSuccess, onFailure) => async (dispatch, getState) => {
     const state = getState()
     const mongoUser = getMongoUser(state)
 
@@ -72,6 +72,7 @@ export const postApplication = (jobID, recruiterID, onSuccess) => async (dispatc
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
+        onFailure()
     }
 }
 

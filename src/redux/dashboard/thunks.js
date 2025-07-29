@@ -95,7 +95,6 @@ export const fetchRecruiterJobs = (filters, searchText='', page) => async (dispa
             {title: searchText}
             : {}
         ),
-
     })
 
     try {

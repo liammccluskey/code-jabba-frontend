@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, { useEffect} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
@@ -18,50 +18,13 @@ import { ErrorElement } from '../ErrorElement'
 import { JobCard } from '../../components/job/JobCard'
 import { Loading } from '../../components/common/Loading'
 
-export const JobComponent = props => {
-    const {
-        
-    } = props
+export const JobComponent = () => {
     const {jobID} = useParams()
-    const [isRecruiter, setIsRecruiter] = useState(false)
-    const [optionsMenuHidden, setOptionsMenuHidden] = useState(true)
-    const [editing, setEditing] = useState(false)
-
-    const sortedJobLanguages = !props.loadingJob && props.job ?
-        [...props.job.languages].sort((a, b) => a.localeCompare(b))
-        : []
-    const sortedJobSkills = !props.loadingJob && props.job ?
-        [...props.job.skills].sort((a, b) => a.localeCompare(b))
-        : []
-
-    const userHasLanguage = language => {
-        return props.mongoUser.languages.filter( l => l.title === language).length > 0
-    }
-
-    const userHasSkill = skill => {
-        return props.mongoUser.skills.filter( s => s.title === skill ).length > 0
-    }
 
     useEffect(() => {
         props.fetchJob(jobID)
     }, [jobID])
 
-    const onClickEdit = () => {
-        setEditing(true)
-    }
-
-    const onClickEditArchived = () => {
-
-    }
-
-    const menuOptions = [
-        {title: 'Edit', icon: 'bi-pencil', onClick: onClickEdit},
-        {title: 'Archive', icon: 'bi-archive', onClick: onClickEditArchived},
-    ]
-
-    const onClickApply = () => {
-
-    }
 
     return (props.jobNotFound ?
         <ErrorElement />

@@ -52,7 +52,7 @@ const router = createBrowserRouter([
       errorElement: <ErrorElement />
     },
     {
-      path: '/register/:referralCode',
+      path: '/register',
       element: <SignedOutRoute element={<Register />} />,
       errorElement: <ErrorElement />
     },

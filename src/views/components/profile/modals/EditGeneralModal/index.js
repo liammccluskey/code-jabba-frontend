@@ -184,7 +184,7 @@ export const EditGeneralModalComponent = props => {
                 />
                 <InputWithMessage
                     label='Birthday'
-                    labelMessage='Your birthday will only be visible to you on your public profile. It can also be seen by recruiters on job applications.'
+                    labelMessage='Only your age will be visible on your public profile.'
                     style={{marginBottom: 5}}
                 />
                 <div className='inputs-container'>

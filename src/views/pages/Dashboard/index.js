@@ -102,14 +102,14 @@ export const DashboardComponent = props => {
     const jobRows = !props.loadingRecruiterJobs ?
         getPaginatedDataForCurrentPage(props.recruiterJobs, jobsPage, PageSizes.jobSearch).map(({title, archived, company, createdAt, _id}) =>({
             id: _id,
-            cells: [title, company.name, archived ? 'Archived' : 'Active', moment(createdAt).format('ll')]
+            cells: [title,company ?  company.name : 'no name', archived ? 'Archived' : 'Active', moment(createdAt).format('ll')]
         })) : []
 
     const applicationHeaders = ['Title', 'Company', 'Status', 'Date Submitted']
     const applicationsRows = !props.loadingApplications ?
         getPaginatedDataForCurrentPage(props.applications, applicationsPage, PageSizes.candidateApplicationSearch).map(({job, status, createdAt, archived, _id}) =>({
             id: _id,
-            cells: [job.title, job.company.name, archived ? 'Archived' : capitalizeWords(status), moment(createdAt).format('ll')]
+            cells: [job.title, job.company ? job.company.name : 'no name', archived ? 'Archived' : capitalizeWords(status), moment(createdAt).format('ll')]
         })) : []
 
     const companyPills = [
