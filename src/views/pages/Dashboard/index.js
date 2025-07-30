@@ -392,7 +392,7 @@ export const DashboardComponent = props => {
     }
 
     const onClickFindJobs = () => {
-        navigate('/jobs')
+        navigate('/jobs-feed')
     }
 
     const onClickEditResume = () => {

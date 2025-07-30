@@ -178,7 +178,7 @@ const router = createBrowserRouter([
 
     // main
     {
-      path: '/jobs',
+      path: '/jobs-feed',
       element: <PrivateRoute element={<Jobs />} />,
       errorElement: <ErrorElement />
     },

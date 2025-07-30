@@ -105,7 +105,7 @@ export const repostJob = (jobID, onSuccess) => async (dispatch, getState) => {
     }
 }
 
-export const fetchJobs = (filters, page, onSuccess, onFailure) => async (dispatch, getState) => {
+export const fetchJobs = (filters, page, onSuccess) => async (dispatch, getState) => {
     const state = getState()
     const jobs = getJobs(state)
     const mongoUser = getMongoUser(state)
@@ -132,7 +132,6 @@ export const fetchJobs = (filters, page, onSuccess, onFailure) => async (dispatc
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
-        onFailure()
     }
 
     dispatch(JobActions.setLoadingJobs(false))

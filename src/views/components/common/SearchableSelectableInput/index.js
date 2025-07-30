@@ -11,6 +11,7 @@ export const SearchableSelectableInput = props => {
         selectedOptions, // [string]
         value='',
         fieldName,
+        closeOnSelectOption=false,
 
         onChange, // e => void
         onClickOption, // optionID => void
@@ -29,8 +30,10 @@ export const SearchableSelectableInput = props => {
             if (
                 optionsRef.current &&
                 optionsRef.current.contains(e.target)
-            ) return
-            else if (
+            ) {
+                if (closeOnSelectOption) setOptionsVisible(false)
+                else return
+            } else if (
                 inputRef.current &&
                 inputRef.current.contains(e.target)
             ) setOptionsVisible(curr => !curr)

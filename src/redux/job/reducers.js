@@ -46,7 +46,7 @@ export const jobReducer = (state = JobState, action) => {
             return {
                 ...state,
                 jobs: {
-                    ...state.recruiter.jobs,
+                    ...state.jobs,
                     payload: action.value
                 }
             }
@@ -54,10 +54,10 @@ export const jobReducer = (state = JobState, action) => {
             return {
                 ...state,
                 jobs: {
-                    ...state.recruiter.jobs,
+                    ...state.jobs,
                     payload: {
                         pagesCount: action.value.pagesCount,
-                        jobs: [...state.recruiter.jobs.payload.jobs, ...action.value.jobs]
+                        jobs: [...state.jobs.payload.jobs, ...action.value.jobs]
                     }
                 }
             }
@@ -65,7 +65,7 @@ export const jobReducer = (state = JobState, action) => {
             return {
                 ...state,
                 jobs: {
-                    ...state.recruiter.jobs,
+                    ...state.jobs,
                     loading: action.value
                 }
             }

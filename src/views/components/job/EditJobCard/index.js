@@ -138,9 +138,9 @@ export const Skills = [
     'Jest',
     'React Native',
     'Redux',
-    'Kotlin',
     'Redis',
-    'Pandas'
+    'Pandas',
+    'Hibernate',
 ].sort((a, b) => a.localeCompare(b))
 
 export const EducationLevels = [
@@ -559,14 +559,6 @@ export const EditJobCardComponent = props => {
 
     const onClickPill = pillID => {
         switch (pillID) {
-            case 'frontend':
-            case 'backend':
-            case 'full-stack':
-                setFormData(curr => ({
-                    ...curr,
-                    position: pillID
-                }))
-                break
             case 'internship':
             case 'part-time':
             case 'contract':
@@ -668,11 +660,12 @@ export const EditJobCardComponent = props => {
     }
 
     const onClickLocationOption = option => {
-        setFormData(curr => ({
+        setFormData( curr => ({
             ...curr,
-            location: option,
-            locationText: option
+            location: curr.location === option ? '' : option,
+            locationText: curr.location === option ? '' : option,
         }))
+
         removeError('location')
     }
 
@@ -886,11 +879,11 @@ export const EditJobCardComponent = props => {
                 modified={isEditMode && modified.setting}
                 style={{marginBottom: 0}}
                 labelRightChild={
-                    <Tooltip
-                        title={`Want to enter the job's location? Unselect "Remote" as the setting.`}
-                    >
-                        <i className='bi-question-circle help-icon' />
-                    </Tooltip>
+                    formData.setting === 'remote' ? 
+                        <Tooltip title={`Want to enter the job's location? Unselect "Remote" as the setting.`}>
+                            <i className='bi-question-circle help-icon' />
+                        </Tooltip>
+                        : null
                 }
             />
             <div className='pills-row row'>
@@ -908,6 +901,11 @@ export const EditJobCardComponent = props => {
                     hasError={errors.location}
                     style={{marginBottom: 0}}
                     modified={isEditMode && modified.location}
+                    labelRightChild={
+                        <Tooltip title={`Don't see your city or location? Enter a major city nearby.`}>
+                            <i className='bi-question-circle help-icon' />
+                        </Tooltip>
+                    }
                 />
             }
             {formData.setting === 'remote' ? 
@@ -921,6 +919,7 @@ export const EditJobCardComponent = props => {
                     onChange={onChangeField}
                     onClickOption={onClickLocationOption}
                     className='row'
+                    closeOnSelectOption={true}
                 />
             }
             <InputWithMessage

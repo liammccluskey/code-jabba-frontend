@@ -32,8 +32,8 @@ export const getMainPageLinks = (hasAdminPrivileges, isRecruiterMode) => [
         : [
             {
                 name: 'Jobs',
-                url: '/jobs',
-                id: 'jobs',
+                url: '/jobs-feed',
+                id: 'jobs-feed',
                 icon: 'bi-briefcase'
             },
         ]

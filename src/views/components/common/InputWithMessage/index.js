@@ -107,44 +107,35 @@ export const InputWithMessageComponent = props => {
                         placeholder={placeholder}
                         style={{height: 150}}
                     />
-                : inputType === 'select' ?
-                    <select
-                        name={fieldName}
-                        value={selectValue}
-                        onChange={locked ? () => {} : onChangeSelectValue}
-                    >
-                        {selectValues.map( ({title, id}) => (
-                            <option value={id} key={id}>{title}</option>
-                        ))}
-                    </select>
-                : inputType === 'switch' ?
-                    <div className='switch-container'>
-                        <Switch
-                            enabled={switchEnabled}
-                            onClick={locked ?
-                                () => {}
-                                : () => onClickSwitch(switchID)
-                            }
-                            className='switch'
+                    : inputType === 'select' ?
+                        <select
+                            name={fieldName}
+                            value={selectValue}
+                            onChange={locked ? () => {} : onChangeSelectValue}
+                        >
+                            {selectValues.map( ({title, id}) => (
+                                <option value={id} key={id}>{title}</option>
+                            ))}
+                        </select>
+                    : inputType === 'switch' ?
+                        <div className='switch-container'>
+                            <Switch
+                                enabled={switchEnabled}
+                                onClick={locked ?
+                                    () => {}
+                                    : () => onClickSwitch(switchID)
+                                }
+                                className='switch'
+                            />
+                            <p>{switchLabel}</p>
+                        </div>
+                    : inputType === 'checklist' ?
+                        <ChecklistOptions
+                            options={checklistOptions}
+                            onClickCheckbox={locked ? () => {} : onClickCheckbox}
+                            className='checklist'
                         />
-                        <p>{switchLabel}</p>
-                    </div>
-                : inputType === 'checklist' ?
-                    <ChecklistOptions
-                        options={checklistOptions}
-                        onClickCheckbox={locked ? () => {} : onClickCheckbox}
-                        className='checklist'
-                    />
-                : inputType === 'location' ?
-                    <AutoComplete
-                        apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-                        onPlaceSelected={location => onChangeLocation(location, fieldName)}
-                        onChange={onChangeText}
-                        value={text}
-                        name={fieldName}
-                        className='location-input'
-                    />
-                : null
+                    : null
                 }
             </div>
             {message ? 

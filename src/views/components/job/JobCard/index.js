@@ -152,7 +152,10 @@ export const JobCardComponent = props => {
     }
 
     return (
-        <Root className={`float-container ${props.isMobile && 'mobile'}`} {...rest}>
+        <Root 
+            {...rest}
+            className={`float-container ${props.isMobile && 'mobile'} ${props.className && props.className}`} 
+        >
             <div className='job-header'>
                 <div className='left-job-header'>
                     <h3 className='title'>{job.title}</h3>

@@ -179,14 +179,6 @@ export const ApplicationsComponent = props => {
         }
     }
 
-    const onChangeSortFilter = (e, table) => {
-        switch (table) {
-            case 'applications':
-                setApplicationsSortFilter(e.target.value)
-                break
-        }
-    }
-
     return ( props.jobNotFound || !props.isRecruiterMode || props.job.recruiter._id !== props.mongoUser._id ?
         <ErrorElement />
         : <PageContainer>
@@ -241,7 +233,7 @@ export const ApplicationsComponent = props => {
                         onClickIncrementPage={onClickIncrementApplicationsPage}
                         sortFilter={applicationsSortFilter}
                         sortFilters={ApplicationsSortFilters}
-                        onChangeSortFilter={e => onChangeSortFilter(e, 'applications')}
+                        onChangeSortFilter={e => setApplicationsSortFilter(e.target.value)}
                     />
                 </Root>
             </BodyContainer>

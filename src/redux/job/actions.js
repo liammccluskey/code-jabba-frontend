@@ -25,14 +25,14 @@ export const setJobNotFound = notFound => ({
     value: notFound
 })
 
-export const setJobs = jobs => ({
+export const setJobs = jobsPayload => ({
     type: Types.setJobs,
-    value: jobs
+    value: jobsPayload
 })
 
-export const addJobs = jobs => ({
+export const addJobs = jobsPayload => ({
     type: Types.addJobs,
-    value: jobs
+    value: jobsPayload
 })
 
 export const setLoadingJobs = loading => ({

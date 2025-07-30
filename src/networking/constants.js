@@ -32,7 +32,7 @@ export const PageSizes = {
     bugReports: 10,
     faqs: 10,
     companySearch: 20,
-    jobSearch: 20,
+    jobSearch: 2,
     candidateApplicationSearch: 20,
     recruiterApplicationSearch: 20,
 }
