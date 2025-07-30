@@ -86,6 +86,9 @@ export const JobsFeedComponent = props => {
     }
 
     const onClickIncrementJobsPage = () => {
+        console.log(JSON.stringify(
+            {jobsPage, pagesCount: props.jobsPagesCount}
+        , null, 4))
         if (jobsPage == props.jobsPagesCount || props.jobsPagesCount == 0) return
         else {
             props.fetchJobs(
@@ -191,7 +194,7 @@ const Root = styled.div`
         display: flex;
         height: 100%;
         box-sizing: border-box;
-        overflow: scroll;
+        overflow: scroll !important;
         flex: 1 !important;
     }
 

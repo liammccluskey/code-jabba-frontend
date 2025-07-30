@@ -109,7 +109,10 @@ export const fetchJobs = (filters, page, onSuccess) => async (dispatch, getState
     const state = getState()
     const jobs = getJobs(state)
     const mongoUser = getMongoUser(state)
-    if (page != 1 && jobs.length > (page - 1)*PageSizes.jobSearch) return
+    if (page != 1 && jobs.length > (page - 1)*PageSizes.jobSearch) {
+        onSuccess()
+        return
+    }
 
     dispatch(JobActions.setLoadingJobs(true))
 
