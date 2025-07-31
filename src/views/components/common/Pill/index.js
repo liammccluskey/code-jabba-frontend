@@ -7,8 +7,9 @@ export const Pill = props => {
         id,
         active,
         closeable=false,
+        fieldName='', // string : name for the group of pills
 
-        onClick, // pillID => void
+        onClick, // (pillID, fieldName='') => void
 
         ...rest
     } = props
@@ -16,7 +17,7 @@ export const Pill = props => {
     return (
         <Root
             {...rest}
-            onClick={() => onClick(id)}
+            onClick={() => onClick(id, fieldName)}
             className={`${(active || closeable) && 'active'} ${props.className} no-select`}
             key={id}
         >

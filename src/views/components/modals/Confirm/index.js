@@ -18,8 +18,9 @@ export const ConfirmComponent = props => {
         isDanger=false,
         children=[],
         pendingMessage='Operation in progress',
+        onConfirmExtraArg=undefined,
 
-        onConfirm, // (onSuccess, onFailure) => void
+        onConfirm, // (onSuccess, onFailure, extraArg) => void
         onCancel = () => {},
 
         modalID, // automatically provided
@@ -41,7 +42,8 @@ export const ConfirmComponent = props => {
                 setLoading(false)
                 removeModal()
             },
-            () => setLoading(false)
+            () => setLoading(false),
+            onConfirmExtraArg
         )
     }
 

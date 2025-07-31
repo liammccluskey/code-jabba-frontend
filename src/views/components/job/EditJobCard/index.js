@@ -652,13 +652,6 @@ export const EditJobCardComponent = props => {
         removeError('company')
     }
 
-    const onChangeLocation = location => {
-        setFormData(curr => ({
-            ...curr,
-            location: location.formatted_address
-        }))
-    }
-
     const onClickLocationOption = option => {
         setFormData( curr => ({
             ...curr,
@@ -853,7 +846,7 @@ export const EditJobCardComponent = props => {
                 className='row'
             />
             <InputWithMessage
-                label='Position'
+                label='Position type'
                 inputType='select'
                 modified={isEditMode && modified.position}
                 selectValue={formData.position}
@@ -862,7 +855,7 @@ export const EditJobCardComponent = props => {
                 fieldName='position'
             />
             <InputWithMessage
-                label='Type'
+                label='Employment type'
                 modified={isEditMode && modified.type}
                 style={{marginBottom: 0}}
             />

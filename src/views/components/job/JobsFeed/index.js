@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useMemo} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
@@ -7,72 +7,102 @@ import {
     getJobs,
     getJobsPagesCount,
     getLoadingJobs,
+    getJob,
+    getLoadingJob,
     
     fetchJobs,
+    fetchJob,
 } from '../../../../redux/job'
 import { SortFilters } from '../../../pages/admin/BugReports'
 import { 
     PageSizes,
     getPaginatedDataForCurrentPage
 } from '../../../../networking'
+import { ModalTypes } from '../../../../containers/ModalProvider'
+import { addModal } from '../../../../redux/modal'
 
 import {JobCard} from '../JobCard'
 import { Paginator } from '../../common/Paginator'
 import { Loading } from '../../common/Loading'
+import { JobFeedCard } from '../JobFeedCard'
+import { Button } from '../../common/Button'
 
 export const JobsFeedComponent = props => {
     const {
         ...rest
     } = props
 
+    // State
+
     const [jobsPage, setJobsPage] = useState(1)
     const [selectedJobID, setSelectedJobID] = useState('')
-    const [selectedJobIndex, setSelectedJobIndex] = useState(0)
     const [filters, setFilters] = useState({
-        positions: [],
-        types: [],
         settings: [],
         locations: [],
+        types: [],
+        positions: [],
+        experienceLevels: [],
+        experienceYears: [],
         includedSkills: [],
         excludedSkills: [],
         includedLanguages: [],
         excludedLanguages: [],
-        experienceLevels: [],
-        experienceYears: [],
     })
     const [jobsSortFilter, setJobsSortFilter] = useState(SortFilters[0].filter)
+    const jobsForCurrentPage = useMemo(() => {
+        return props.loadingJobs ? [] :
+            getPaginatedDataForCurrentPage(props.jobs, jobsPage, PageSizes.jobSearch)
+    }, [props.jobs, jobsPage])
 
-    const jobsForCurrentPage = props.loadingJobs ? [] :
-        getPaginatedDataForCurrentPage(props.jobs, jobsPage, PageSizes.jobSearch)
+    const filtersCount = Object.entries(filters)
+        .filter(([key, value]) => value.length > 0 && key !== 'sortBy')
+        .length
 
     useEffect(() => {
         fetchJobsFirstPage()
-    }, [])
+    }, [jobsSortFilter])
 
     useEffect(() => {
-        setSelectedJobIndex(props.jobs.findIndex(job => job._id === selectedJobID))
-    }, [selectedJobID])
+        selectedJobID && props.fetchJob(selectedJobID)
+    }, [selectedJobID, props.jobs])
 
     useEffect(() => {
-        setSelectedJobIndex(PageSizes.jobSearch * (jobsPage - 1))
-    }, [jobsPage])
+        setSelectedJobID(jobsForCurrentPage.length ? jobsForCurrentPage[0]._id : '')
+    }, [props.jobs, jobsPage])
 
     // Utils
 
-    const getJobsFilters = () => ({
-        sortBy: jobsSortFilter,
+    const getJobsFilters = (updatedFilters = {}) => ({
         ...filters,
+        ...updatedFilters,
+        sortBy: jobsSortFilter,
     })
 
-    const fetchJobsFirstPage = () => {
+    const fetchJobsFirstPage = (onSuccess = () => {}, onFailure = () => {}, updatedFilters=getJobsFilters()) => {
         props.fetchJobs(
-            getJobsFilters(), 
+            getJobsFilters(updatedFilters), 
             1, 
-            () => setJobsPage(1)
+            () => {
+                onSuccess()
+                setJobsPage(1)
+            },
+            onFailure
         )
+        setFilters(updatedFilters)
     }
 
     // Direct
+
+    const onClickAddFilters = () => {
+        props.addModal(ModalTypes.JOB_FILTERS, {
+            initialFilters: filters,
+            onClickSave: fetchJobsFirstPage,
+        })
+    }
+
+    const onChangeSortFilter = e => {
+        setJobsSortFilter(e.target.value)
+    }
 
     const onClickJob = rowID => {
         setSelectedJobID(rowID)
@@ -86,9 +116,6 @@ export const JobsFeedComponent = props => {
     }
 
     const onClickIncrementJobsPage = () => {
-        console.log(JSON.stringify(
-            {jobsPage, pagesCount: props.jobsPagesCount}
-        , null, 4))
         if (jobsPage == props.jobsPagesCount || props.jobsPagesCount == 0) return
         else {
             props.fetchJobs(
@@ -99,26 +126,46 @@ export const JobsFeedComponent = props => {
         }   
     }
 
-    const onClickApplyFilters = (onSuccess, onFailure) => {
-        fetchJobsFirstPage(onSuccess, onFailure)
-    }
-
     return (
         <Root {...rest}>
-            <div className='filters-container'>
+            <div className='search-container'>
+                <div className='search-left-container'>
+                    <div className='filters-container'>
+                        <Button
+                            title='Add filters'
+                            onClick={onClickAddFilters}
+                            priority={3}
+                            type='clear'
+                        />
+                        <p className='filter-text'>
+                            {`${filtersCount} filter${filtersCount == 1 ? '' : 's'} selected`}
+                        </p>
+                    </div>
+                    <Button
+                        title='Search'
+                        onClick={() => fetchJobsFirstPage()}
+                        priority={2}
+                        type='solid'
+                        style={{marginLeft: 15}}
+                    />
+                </div>
 
+                <select value={jobsSortFilter} onChange={onChangeSortFilter}>
+                    {SortFilters.map(({title, filter}) => (
+                        <option value={filter} key={filter}>{title}</option>
+                    ))}
+                </select>
             </div>
             <div className='jobs-feed-container'>
                 <div className='feed-container'>
                     <div className='jobs-container float-container'>
                         {jobsForCurrentPage.map( job => (
-                            <div 
-                                className='job-container oh-dark' 
-                                key={job._id}
+                            <JobFeedCard
+                                job={job}
                                 onClick={() => onClickJob(job._id)}
-                            >
-                                <p>{job.title}</p>
-                            </div>
+                                key={job._id}
+                                selected={selectedJobID === job._id}
+                            />
                         ))}
                     </div>
                     <Paginator
@@ -129,13 +176,17 @@ export const JobsFeedComponent = props => {
                         className='paginator'
                     />
                 </div>
-                {!props.loadingJobs && props.jobs[selectedJobIndex] ? 
+                {!props.loadingJob && props.job && selectedJobID ? 
                     <JobCard 
-                        job={props.jobs[selectedJobIndex]}
+                        job={props.job}
                         className='job-card'
                     />
-                    : <div className='loading-jobs-container'>
-                        <Loading style={{height: 50}} />
+                    : selectedJobID ? 
+                        <div className='loading-jobs-container'>
+                            <Loading style={{height: 50}} />
+                        </div>
+                    : <div className='no-results-container'>
+                        <h3>No results</h3>
                     </div>
                 }
             </div>
@@ -146,19 +197,48 @@ export const JobsFeedComponent = props => {
 const Root = styled.div`
     height: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
 
+    & .search-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        box-sizing: border-box;
+        height: 50px;
+    }
+
+    & .search-left-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
     & .filters-container {
-        
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 10px;
+        border: 1px solid ${p => p.theme.bc};
+        border-radius: 5px;
+    }
+
+    & .filter-text {
+        margin-left: 10px;
     }
 
     & .jobs-feed-container {
-        height: 100%;
         width: 100%;
+        min-height: calc(100% - 70px);
+        max-height: calc(100% - 70px);
         display: flex;
         justify-content: flex-start;
         align-items: stretch;
+        flex: 1;
     }
 
     & .feed-container {
@@ -166,7 +246,7 @@ const Root = styled.div`
         flex-direction :column;
         justify-content: flex-start;
         align-items: stretch;
-        overflow: scroll !important;
+        overflow: hidden !important;
         width: 350px;
         min-width: 350px;
         margin-right: 30px;
@@ -208,16 +288,27 @@ const Root = styled.div`
         algn-items: center;
         justify-content: space-around;
     }
-    
+
+    & .no-results-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        flex: 1;
+    }
 `
 const mapStateToProps = state => ({
     jobs: getJobs(state),
     jobsPagesCount: getJobsPagesCount(state),
     loadingJobs: getLoadingJobs(state),
+    job: getJob(state),
+    loadingJob: getLoadingJob(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     fetchJobs,
+    fetchJob,
+    addModal
 }, dispatch)
 
 export const JobsFeed = connect(mapStateToProps, mapDispatchToProps)(JobsFeedComponent)

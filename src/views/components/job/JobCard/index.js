@@ -162,7 +162,7 @@ export const JobCardComponent = props => {
                     {job.applied ?
                         <PillLabel
                             title='Applied'
-                            size='m'
+                            size='l'
                             color='clear'
                             style={{marginRight: 10}}
                         />
@@ -171,7 +171,7 @@ export const JobCardComponent = props => {
                     {job.archived ?
                         <PillLabel
                             title='Archived'
-                            size='m'
+                            size='l'
                             color='clear'
                         />
                         : null
@@ -205,6 +205,7 @@ export const JobCardComponent = props => {
                 <PageLink
                     title={job.company.name}
                     url={`/companies/${job.company._id}`}
+                    openInNewTab={true}
                 />
                 <p style={{marginRight: 5, marginLeft: 5}}>-</p>
                 <p>{job.location || 'Remote'}</p>
@@ -287,7 +288,7 @@ export const JobCardComponent = props => {
             >
                 {job.requiresClearance ?
                     <PillLabel
-                        title={'Requires clearance'}
+                        title={'Secruity Clearance required'}
                         color='green'
                         size='m'
                         style={{marginRight: 5}}

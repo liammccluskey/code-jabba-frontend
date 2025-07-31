@@ -1,183 +1,308 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 
+import { CitiesUSA } from '../../EditJobCard/constants'
+import { 
+    SettingTypes,
+    JobTypes,
+    PositionTypes,
+    ExperienceLevels,
+    ExperienceYears,
+    Languages,
+    Skills,
+} from '../../EditJobCard'
+
 import { Confirm } from '../../../modals/Confirm'
+import { SearchableSelectableInput } from '../../../common/SearchableSelectableInput'
+import { Pill } from '../../../common/Pill'
+import { FilterRow } from '../../FilterRow'
 
 export const JobFiltersModalComponent = props => {
     const {
         modalID,
-        filters, // [key: []]
-        setFilters, // curr => void
+        initialFilters, // [key: []]
         
-        onClickSave, // (onSuccess, onFailure) => void
+        onClickSave, // (filters, onSuccess, onFailure) => void
     } = props
-    const [jobsSortFilter, setJobsSortFilter] = useState(SortFilters[0].filter)
-    const [entryPillActive, setEntryPillActive] = useState(filters.experienceLevels.includes('entry'))
-    const [midPillActive, setMidPillActive] = useState(filters.experienceLevels.includes('mid'))
-    const [seniorPillActive, setSeniorPillActive] = useState(filters.experienceLevels.includes('senior'))
-    const [staffPillActive, setStaffPillActive] = useState(filters.experienceLevels.includes('staff'))
-    const [principalPillActive, setPrincipalPillActive] = useState(filters.experienceLevels.includes('principal'))
-    const [level0PillActive, setLevel0PillActive] = useState(filters.experienceYears.includes('0'))
-    const [level1PillActive, setLevel1PillActive] = useState(filters.experienceYears.includes('1'))
-    const [level2PillActive, setLevel2PillActive] = useState(filters.experienceYears.includes('2'))
-    const [level3PillActive, setLevel3PillActive] = useState(filters.experienceYears.includes('3'))
-    const [level4PillActive, setLevel4PillActive] = useState(filters.experienceYears.includes('4'))
-    const [level5PillActive, setLevel5PillActive] = useState(filters.experienceYears.includes('5'))
-    const [level6PillActive, setLevel6PillActive] = useState(filters.experienceYears.includes('6'))
 
-    useEffect(() => {
-        const activeExperienceLevels = [
-            [entryPillActive, 'entry'],
-            [midPillActive, 'mid'],
-            [seniorPillActive, 'senior'],
-            [staffPillActive, 'staff'],
-            [principalPillActive, 'principal']
-        ].filter( ([active]) => active)
-        .map(([_, experienceLevelID]) => experienceLevelID)
-        setFilters(curr => ({
-            ...curr,
-            experienceLevels: activeExperienceLevels
-        }))
-    }, [entryPillActive, midPillActive, seniorPillActive, staffPillActive, principalPillActive])
+    // State
 
-    useEffect(() => {
-        const activeExperienceYears = [
-            [level0PillActive, '0'],
-            [level1PillActive, '1'],
-            [level2PillActive, '2'],
-            [level3PillActive, '3'],
-            [level4PillActive, '4'],
-            [level5PillActive, '5'],
-            [level6PillActive, '6']
-        ].filter( ([active]) => active)
-        .map(([_, experienceYearsID]) => experienceYearsID)
-        setFilters(curr => ({
-            ...curr,
-            experienceYears: activeExperienceYears
-        }))
-    }, [level0PillActive, level1PillActive, level2PillActive, level3PillActive, level4PillActive, level5PillActive, level6PillActive])
+    const containerRef = useRef(null)
+    const [filters, setFilters] = useState(initialFilters)
+    const [formData, setFormData] = useState({
+        setting: '',
+        location: '',
+        includedSkill: '',
+        excludedSkill: '',
+        includedLanguage: '',
+        exlcudedLanguage: '',
+    })
 
-   
     // Utils
+
+    // Direct
+
+    const onChangeField = e => {
+        const {name, value} = e.target
+        
+        setFormData(curr => ({
+            ...curr,
+            [name]: value
+        }))
+    }
+
+    const onClickOption = (option, fieldName) => {
+        const filterName = fieldName + 's'
+
+        setFilters( curr => ({
+            ...curr,
+            [filterName]: curr[filterName].includes(option) ?
+                curr[filterName].filter(item => item !== option)
+                : [...curr[filterName], option]
+            ,
+        }))
+    }
+
+    const onClickClearFilter = (filterName) => {
+        switch(filterName) {
+            case 'settings':
+            case 'locations':
+            case 'types':
+            case 'positions':
+            case 'experienceLevels':
+            case 'experienceYears':
+            case 'includedLanguages':
+            case 'excludedLanguages':
+            case 'includedSkills':
+            case 'excludedSkills':
+                setFilters(curr => ({
+                    ...curr,
+                    [filterName]: []
+                }))
+                break
+            default:
+                break
+        }
+    }
+
+    // Render
 
     return (
         <Confirm
             title='Job Filters'
             confirmButtonTitle='Apply filters'
-            confirmButtonDisabled={false}
             onConfirm={onClickSave}
             modalID={modalID}
+            onConfirmExtraArg={filters}
         >
-            <Container>
-                <InputWithMessage
-                    label='School'
-                    inputType='text'
-                    fieldName='school'
-                    text={formData.school}
-                    onChangeText={onChangeField}
-                    modified={isEditMode && modified.school}
-                    hasError={errors.school}
-                    style={{marginBottom: 20}}
-                />
-                <InputWithMessage
-                    label='Degree'
-                    inputType='select'
-                    fieldName='degree'
-                    selectValue={formData.degree}
-                    selectValues={EducationLevels}
-                    onChangeText={onChangeField}
-                    modified={isEditMode && modified.degree}
-                    style={{marginBottom: 20}}
-                />
-                <InputWithMessage
-                    label='Field of Study'
-                    inputType='text'
-                    fieldName='fieldOfStudy'
-                    text={formData.fieldOfStudy}
-                    onChangeText={onChangeField}
-                    modified={isEditMode && modified.fieldOfStudy}
-                    hasError={errors.fieldOfStudy}
-                    style={{marginBottom: 20}}
-                />
-                <InputWithMessage
-                    inputType='checklist'
-                    label='Is current'
-                    checklistOptions={checklistOptions}
-                    onClickCheckbox={onClickCheckbox}
-                    modified={isEditMode && modified.isCurrent}
-                    style={{marginBottom: 20}}
-                />
-                <div className='inputs-container'>
-                    <InputWithMessage
-                        label='Start month'
-                        inputType='select'
-                        fieldName='startMonth'
-                        selectValue={formData.startMonth}
-                        selectValues={Months}
-                        onChangeSelectValue={onChangeField}
-                        modified={isEditMode && modified.startMonth}
-                        style={{marginBottom: 0, flex: 1, marginRight: 10}}
-                    />
-                    <InputWithMessage
-                        label='Start year'
-                        inputType='select'
-                        fieldName='startYear'
-                        selectValue={formData.startYear}
-                        selectValues={years}
-                        onChangeSelectValue={onChangeField}
-                        modified={isEditMode && modified.startYear}
-                        style={{marginBottom: 0, flex: 1}}
-                    />
-                </div>
-                {!formData.isCurrent ?
-                    <div className='inputs-container'>
-                        <InputWithMessage
-                            label='End month'
-                            inputType='select'
-                            fieldName='endMonth'
-                            selectValue={formData.endMonth}
-                            selectValues={Months}
-                            onChangeSelectValue={onChangeField}
-                            modified={isEditMode && modified.endMonth}
-                            style={{marginBottom: 0, flex: 1, marginRight: 10}}
-                        />
-                        <InputWithMessage
-                            label='End year'
-                            inputType='select'
-                            fieldName='endYear'
-                            selectValue={formData.endYear}
-                            selectValues={years}
-                            onChangeSelectValue={onChangeField}
-                            modified={isEditMode && modified.endYear}
-                            style={{marginBottom: 0, flex: 1}}
-                        />
+            <Root ref={containerRef}>
+                <FilterRow
+                    title='Settings'
+                    filterName='settings'
+                    selectionText={filters.settings.length ? `${filters.settings.length} selected` : 'any'}
+                    filterActive={filters.settings.length > 0}
+                    onClickClear={onClickClearFilter}
+                >
+                    <div className='pills-row row'>
+                        {SettingTypes.map(({id, title}) => (
+                            <Pill
+                                title={title}
+                                active={filters.settings.includes(id)}
+                                id={id}
+                                onClick={onClickOption}
+                                fieldName='setting'
+                                className='pill-option'
+                            />
+                        ))}
                     </div>
-                    : null
-                }
-            </Container>
+                </FilterRow>
+                <FilterRow
+                    title='Locations'
+                    filterName='locations'
+                    selectionText={filters.locations.length ? `${filters.locations.length} selected` : 'any'}
+                    filterActive={filters.locations.length > 0}
+                    onClickClear={onClickClearFilter}
+                >
+                    <SearchableSelectableInput
+                        options={CitiesUSA}
+                        selectedOptions={filters.locations}
+                        value={formData.location}
+                        fieldName='location'
+                        onChange={onChangeField}
+                        onClickOption={onClickOption}
+                        className='row'
+                    />
+                </FilterRow>
+                <FilterRow
+                    title='Employment types'
+                    filterName='types'
+                    selectionText={filters.types.length ? `${filters.types.length} selected` : 'any'}
+                    filterActive={filters.types.length > 0}
+                    onClickClear={onClickClearFilter}
+                >
+                    <div className='pills-row row'>
+                        {JobTypes.map(({id, title}) => (
+                            <Pill
+                                title={title}
+                                active={filters.types.includes(id)}
+                                id={id}
+                                onClick={onClickOption}
+                                fieldName='type'
+                                className='pill-option'
+                            />
+                        ))}
+                    </div>
+                </FilterRow>
+                <FilterRow
+                    title='Position types'
+                    filterName='positions'
+                    selectionText={filters.positions.length ? `${filters.positions.length} selected` : 'any'}
+                    onClickClear={onClickClearFilter}
+                    filterActive={filters.positions.length > 0}
+                >
+                    <div className='pills-row row'>
+                        {PositionTypes.map(({id, title}) => (
+                            <Pill
+                                title={title}
+                                active={filters.positions.includes(id)}
+                                id={id}
+                                onClick={onClickOption}
+                                fieldName='position'
+                                className='pill-option'
+                            />
+                        ))}
+                    </div>
+                </FilterRow>
+                <FilterRow
+                    title='Experience levels'
+                    filterName='experienceLevels'
+                    selectionText={filters.experienceLevels.length ? `${filters.experienceLevels.length} selected` : 'any'}
+                    filterActive={filters.experienceLevels.length > 0}
+                    onClickClear={onClickClearFilter}
+                >
+                    <div className='pills-row row'>
+                        {ExperienceLevels.map(({id, title}) => (
+                            <Pill
+                                title={title}
+                                active={filters.experienceLevels.includes(id)}
+                                id={id}
+                                onClick={onClickOption}
+                                fieldName='experienceLevel'
+                                className='pill-option'
+                            />
+                        ))}
+                    </div>
+                </FilterRow>
+                <FilterRow
+                    title='Years of experience'
+                    filterName='experienceYears'
+                    selectionText={filters.experienceYears.length ? `${filters.experienceYears.length} selected` : 'any'}
+                    filterActive={filters.experienceYears.length > 0}
+                    onClickClear={onClickClearFilter}
+                >
+                    <div className='pills-row row'>
+                        {ExperienceYears.map(({id, title}) => (
+                            <Pill
+                                title={title}
+                                active={filters.experienceYears.includes(id)}
+                                id={id}
+                                onClick={onClickOption}
+                                fieldName='experienceYear'
+                                className='pill-option'
+                            />
+                        ))}
+                    </div>
+                </FilterRow>
+                <FilterRow
+                    title='Included langauges'
+                    filterName='includedLanguages'
+                    selectionText={filters.includedLanguages.length ? `${filters.includedLanguages.length} selected` : 'any'}
+                    filterActive={filters.includedLanguages.length > 0}
+                    onClickClear={onClickClearFilter}
+                >
+                    <SearchableSelectableInput
+                        options={Languages}
+                        selectedOptions={filters.includedLanguages}
+                        value={formData.includedLanguage}
+                        fieldName='includedLanguage'
+                        onChange={onChangeField}
+                        onClickOption={onClickOption}
+                        className='row'
+                    />
+                </FilterRow>
+                <FilterRow
+                    title='Excluded langauges'
+                    filterName='excludedLanguages'
+                    selectionText={filters.excludedLanguages.length ? `${filters.excludedLanguages.length} selected` : 'none'}
+                    filterActive={filters.excludedLanguages.length > 0}
+                    onClickClear={onClickClearFilter}
+                >
+                    <SearchableSelectableInput
+                        options={Languages}
+                        selectedOptions={filters.excludedLanguages}
+                        value={formData.excludedLanguage}
+                        fieldName='excludedLanguage'
+                        onChange={onChangeField}
+                        onClickOption={onClickOption}
+                        className='row'
+                    />
+                </FilterRow>
+                <FilterRow
+                    title='Included skills'
+                    filterName='includedSkills'
+                    selectionText={filters.includedSkills.length ? `${filters.includedSkills.length} selected` : 'any'}
+                    filterActive={filters.includedSkills.length > 0}
+                    onClickClear={onClickClearFilter}
+                >
+                    <SearchableSelectableInput
+                        options={Skills}
+                        selectedOptions={filters.includedSkills}
+                        value={formData.includedSkill}
+                        fieldName='includedSkill'
+                        onChange={onChangeField}
+                        onClickOption={onClickOption}
+                        className='row'
+                    />
+                </FilterRow>
+                <FilterRow
+                    title='Excluded skills'
+                    filterName='excludedSkills'
+                    selectionText={filters.excludedSkills.length ? `${filters.excludedSkills.length} selected` : 'none'}
+                    filterActive={filters.excludedSkills.length > 0}
+                    onClickClear={onClickClearFilter}
+                >
+                    <SearchableSelectableInput
+                        options={Skills}
+                        selectedOptions={filters.excludedSkills}
+                        value={formData.excludedSkill}
+                        fieldName='excludedSkill'
+                        onChange={onChangeField}
+                        onClickOption={onClickOption}
+                        className='row'
+                    />
+                </FilterRow>
+            </Root>
         </Confirm>
     )
 }
 
-const Container = styled.div`
+const Root = styled.div`
     display: flex;
     flex-direction: column;
     align-items: stretch;
-
-    & .inputs-container {
-        display: flex;
-        align-items: flex-start;
-        margin-bottom: 20px;
-    }
+    border: 1px solid ${p => p.theme.bc};
+    border-radius: 15px;
+    overflow: scroll;
+    max-height: 500px;
 `
 
 const mapStateToProps = state => ({
 
 })
 
-const mapDispatchToProps = dispatch => bindActionCreators({d
+const mapDispatchToProps = dispatch => bindActionCreators({
 
 }, dispatch)
 

@@ -27,15 +27,16 @@ export const Colors = {
 }
 
 const LightTheme = {
-    bgc: 'rgb(244, 246, 248)',
-    // bgc: 'white',
+    // bgc: 'rgb(244, 246, 248)',
+    bgc: 'rgb(242, 244, 246)',
     bgcLight: 'white',
     bgcSemilight: 'rgb(248, 250, 252)',
     bgcHover: 'rgb(245, 247, 249)',
     bgcNav: 'white',
     bgcSettings: 'white',
     bgcInput: 'rgb(235, 238, 240)',
-    bc: 'rgb(218,220,224)',
+    // bc: 'rgb(218,220,224)',
+    bc: 'rgb(202,204,206)',
     bcChart: 'rgb(218,220,224)',
     textMain: 'rgb(60,64,67)',
     textPrimary: 'rgb(10, 12, 14)',

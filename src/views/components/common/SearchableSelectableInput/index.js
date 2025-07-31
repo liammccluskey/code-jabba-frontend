@@ -10,11 +10,11 @@ export const SearchableSelectableInput = props => {
         options, // [string]
         selectedOptions, // [string]
         value='',
-        fieldName,
+        fieldName='',
         closeOnSelectOption=false,
 
         onChange, // e => void
-        onClickOption, // optionID => void
+        onClickOption, // optionID, fieldName => void
 
         ...rest
     } = props
@@ -66,7 +66,7 @@ export const SearchableSelectableInput = props => {
                         parsedOptions.map(option => (
                             <div
                                 className='option-container'
-                                onClick={() => onClickOption(option)}
+                                onClick={() => onClickOption(option, fieldName)}
                                 key={option}
                             >
                                 <Checkbox
@@ -88,6 +88,7 @@ export const SearchableSelectableInput = props => {
                         id={option}
                         onClick={onClickOption}
                         closeable={true}
+                        fieldName={fieldName}
                         className='pill-option'
                     />
                 ))}

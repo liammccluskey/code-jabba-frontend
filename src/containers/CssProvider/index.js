@@ -65,6 +65,7 @@ const Root = styled.div`
     }
     select {
         height: 43px;
+        background-color: ${p => p.theme.bgcLight};
     }
 
     input:focus, input:active,
@@ -391,7 +392,7 @@ const Root = styled.div`
         border-radius: var(--br-container);
         border: ${p => p.theme.floatBorder};
         padding: none;
-        overflow: visible;
+        overflow: hidden;
         background-color: ${p => p.theme.bgcLight};
         box-shadow: ${p => p.theme.boxShadow};
     }

@@ -7,7 +7,7 @@ import { getIsMobile } from '../../../../redux/theme'
 
 export const ButtonComponent = props => {
     const {
-        priority, // 0 : big | 1 : medium | 2 : small
+        priority, // 1 : big | 2 : medium | 3 : small
         type, // 'solid' | 'clear' | 'tint' | 'error' | 'danger' | 'gold'
         title,
         imageURL=null,
