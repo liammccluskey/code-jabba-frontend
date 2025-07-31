@@ -141,6 +141,7 @@ export const Skills = [
     'Redis',
     'Pandas',
     'Hibernate',
+    'Selenium',
 ].sort((a, b) => a.localeCompare(b))
 
 export const EducationLevels = [
@@ -810,7 +811,7 @@ export const EditJobCardComponent = props => {
     }
 
     return (
-        <Root className={`float-container ${props.isMobile && 'mobile'}`} {...rest}>
+        <Root className={`of-visible-float-container ${props.isMobile && 'mobile'}`} {...rest}>
             <InputWithMessage
                 label='Title'
                 fieldName='title'

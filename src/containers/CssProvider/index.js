@@ -65,6 +65,9 @@ const Root = styled.div`
     }
     select {
         height: 43px;
+    }
+    select.solid {
+        height: 43px;
         background-color: ${p => p.theme.bgcLight};
     }
 
@@ -393,6 +396,14 @@ const Root = styled.div`
         border: ${p => p.theme.floatBorder};
         padding: none;
         overflow: hidden;
+        background-color: ${p => p.theme.bgcLight};
+        box-shadow: ${p => p.theme.boxShadow};
+    }
+    .of-visible-float-container {
+        border-radius: var(--br-container);
+        border: ${p => p.theme.floatBorder};
+        padding: none;
+        overflow: visible;
         background-color: ${p => p.theme.bgcLight};
         box-shadow: ${p => p.theme.boxShadow};
     }

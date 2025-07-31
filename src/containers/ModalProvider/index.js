@@ -18,6 +18,7 @@ import { EditWorkExperienceModal } from '../../views/components/profile/modals/E
 import { EditProjectModal } from '../../views/components/profile/modals/EditProjectModal'
 import { EditQuestionsModal } from '../../views/components/profile/modals/EditQuestionsModal'
 import { JobFiltersModal } from '../../views/components/job/modals/JobFiltersModal'
+import { SaveFilterModal } from '../../views/components/job/modals/SaveFilterModal'
 
 export const ModalTypes = {
     CONFIRM: 'confirm',
@@ -35,6 +36,7 @@ export const ModalTypes = {
     EDIT_PROJECT: 'edit-project',
     EDIT_QUESTIONS: 'edit-questions',
     JOB_FILTERS: 'job-filters',
+    SAVE_FILTER: 'save-filter',
 
 }
 
@@ -74,7 +76,9 @@ export const ModalProviderComponent = props => {
             case ModalTypes.EDIT_QUESTIONS:
                 return <EditQuestionsModal {...modalProps} key={modalID} />
             case ModalTypes.JOB_FILTERS:
-                return <JobFiltersModal {...modalProps} key = {modalID} />
+                return <JobFiltersModal {...modalProps} key={modalID} />
+            case ModalTypes.SAVE_FILTER:
+                return <SaveFilterModal {...modalProps} key={modalID} />
             default:
                 return null
         }

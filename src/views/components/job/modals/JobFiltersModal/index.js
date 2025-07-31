@@ -288,6 +288,16 @@ export const JobFiltersModalComponent = props => {
     )
 }
 
+const SavedFiltersRoot = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    border: 1px solid ${p => p.theme.bc};
+    border-radius: 15px;
+    overflow: scroll;
+    max-height: 200px;
+`
+
 const Root = styled.div`
     display: flex;
     flex-direction: column;

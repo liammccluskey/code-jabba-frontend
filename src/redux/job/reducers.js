@@ -12,7 +12,9 @@ const JobState = {
             jobs: [],
             pagesCount: 0
         }
-    }
+    },
+    savedFilters: [],
+    savedFilterID: null,
 }
 
 export const jobReducer = (state = JobState, action) => {
@@ -68,6 +70,16 @@ export const jobReducer = (state = JobState, action) => {
                     ...state.jobs,
                     loading: action.value
                 }
+            }
+        case Types.setSavedFilters:
+            return {
+                ...state,
+                savedFilters: action.value
+            }
+        case Types.setSavedFilterID: 
+            return {
+                ...state,
+                savedFilterID: action.value
             }
         default:
             return state
