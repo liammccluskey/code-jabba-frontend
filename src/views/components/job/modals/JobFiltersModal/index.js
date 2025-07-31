@@ -13,6 +13,7 @@ import {
     Languages,
     Skills,
 } from '../../EditJobCard'
+import { getSavedFilters } from '../../../../../redux/job'
 
 import { Confirm } from '../../../modals/Confirm'
 import { SearchableSelectableInput } from '../../../common/SearchableSelectableInput'
@@ -24,13 +25,15 @@ export const JobFiltersModalComponent = props => {
         modalID,
         initialFilters, // [key: []]
         
-        onClickSave, // (filters, onSuccess, onFailure) => void
+        onClickApply, // (onSuccess, onFailure, filters, savedFilterID) => void
+        onClickDeleteFilter, // filterID => void
     } = props
 
     // State
 
     const containerRef = useRef(null)
     const [filters, setFilters] = useState(initialFilters)
+    const [selectedSavedFilterID, setSelectedSavedFilterID] = useState(undefined)
     const [formData, setFormData] = useState({
         setting: '',
         location: '',
@@ -40,7 +43,56 @@ export const JobFiltersModalComponent = props => {
         exlcudedLanguage: '',
     })
 
+    // useEffect(() => {
+    //     setSelectedSavedFilterID(undefined)
+    // }, [filters])
+
     // Utils
+
+    function prettyPrintObject(obj, level = 0) {
+        const indent = ' '.repeat(level * 4)
+        const nextIndent = ' '.repeat((level + 1) * 4)
+    
+        if (Array.isArray(obj)) {
+            const isScalar = obj.every(v => typeof v !== 'object' || v === null)
+    
+            if (isScalar) {
+                return `[${obj.map(v => JSON.stringify(v)).join(', ')}]`
+            }
+    
+            const items = obj.map(v => `${nextIndent}${prettyPrintObject(v, level + 1)}`)
+            return `[\n${items.join(',\n')}\n${indent}]`
+        }
+    
+        if (typeof obj === 'object' && obj !== null) {
+            const entries = Object.entries(obj).map(
+                ([key, val]) => `${nextIndent}"${key}": ${prettyPrintObject(val, level + 1)}`
+            )
+            return `{\n${entries.join(',\n')}\n${indent}}`
+        }
+    
+        return JSON.stringify(obj)
+    }
+      
+
+    const getSelectionText = filterName => {
+        switch (filterName) {
+            case 'settings':
+            case 'locations':
+            case 'types':
+            case 'positions':
+            case 'experienceLevels':
+            case 'experienceYears':
+            case 'includedLanguages':
+            case 'includedSkills':
+                return filters[filterName].length ? `${filters[filterName].length} selected` : 'any'
+            case 'excludedLanguages':
+            case 'excludedSkills':
+                return filters[filterName].length ? `${filters[filterName].length} selected` : 'none'
+            default:
+                break
+        }
+    }
 
     // Direct
 
@@ -87,23 +139,46 @@ export const JobFiltersModalComponent = props => {
         }
     }
 
+    const onClickApplyFilter = (filterID) => {
+        const savedFilter = props.savedFilters.find(filter => filter._id === filterID)
+        setFilters(savedFilter)
+        setSelectedSavedFilterID(filterID)
+    }
+
     // Render
 
     return (
         <Confirm
             title='Job Filters'
             confirmButtonTitle='Apply filters'
-            onConfirm={onClickSave}
+            onConfirm={onClickApply}
             modalID={modalID}
-            onConfirmExtraArg={filters}
+            onConfirmExtraArg={{updatedFilters: filters, savedFilterID: selectedSavedFilterID}}
         >
             <Root ref={containerRef}>
+                <h4 className='section-title'>Saved filter combinations</h4>
+                {props.savedFilters.map(({title, _id, ...filter}) => (
+                    <FilterRow
+                        title={title}
+                        selectionText={''}
+                        actionButtonTitle='Apply'
+                        dangerButtonTitle='Delete'
+                        onlyShowButtonsOnHover={true}
+                        onClickActionButton={() => onClickApplyFilter(_id)}
+                        onClickDangerButton={() => onClickDeleteFilter(_id)}
+                        key={_id}
+                    >
+                        <pre>Filter: {prettyPrintObject(filter.asMongoFilter)}</pre>
+                    </FilterRow>
+                ))}
+                <h4 className='section-title' style={{marginTop: 25}}>Custom filters</h4>
                 <FilterRow
                     title='Settings'
                     filterName='settings'
-                    selectionText={filters.settings.length ? `${filters.settings.length} selected` : 'any'}
+                    selectionText={getSelectionText('settings')}
                     filterActive={filters.settings.length > 0}
-                    onClickClear={onClickClearFilter}
+                    onClickActionButton={() => onClickClearFilter('settings')}
+
                 >
                     <div className='pills-row row'>
                         {SettingTypes.map(({id, title}) => (
@@ -121,9 +196,9 @@ export const JobFiltersModalComponent = props => {
                 <FilterRow
                     title='Locations'
                     filterName='locations'
-                    selectionText={filters.locations.length ? `${filters.locations.length} selected` : 'any'}
+                    selectionText={getSelectionText('locations')}
                     filterActive={filters.locations.length > 0}
-                    onClickClear={onClickClearFilter}
+                    onClickActionButton={() => onClickClearFilter('locations')}
                 >
                     <SearchableSelectableInput
                         options={CitiesUSA}
@@ -138,9 +213,9 @@ export const JobFiltersModalComponent = props => {
                 <FilterRow
                     title='Employment types'
                     filterName='types'
-                    selectionText={filters.types.length ? `${filters.types.length} selected` : 'any'}
+                    selectionText={getSelectionText('types')}
                     filterActive={filters.types.length > 0}
-                    onClickClear={onClickClearFilter}
+                    onClickActionButton={() => onClickClearFilter('types')}
                 >
                     <div className='pills-row row'>
                         {JobTypes.map(({id, title}) => (
@@ -158,8 +233,8 @@ export const JobFiltersModalComponent = props => {
                 <FilterRow
                     title='Position types'
                     filterName='positions'
-                    selectionText={filters.positions.length ? `${filters.positions.length} selected` : 'any'}
-                    onClickClear={onClickClearFilter}
+                    selectionText={getSelectionText('positions')}
+                    onClickActionButton={() => onClickClearFilter('positions')}
                     filterActive={filters.positions.length > 0}
                 >
                     <div className='pills-row row'>
@@ -178,9 +253,9 @@ export const JobFiltersModalComponent = props => {
                 <FilterRow
                     title='Experience levels'
                     filterName='experienceLevels'
-                    selectionText={filters.experienceLevels.length ? `${filters.experienceLevels.length} selected` : 'any'}
+                    selectionText={getSelectionText('experienceLevels')}
                     filterActive={filters.experienceLevels.length > 0}
-                    onClickClear={onClickClearFilter}
+                    onClickActionButton={() => onClickClearFilter('experienceLevels')}
                 >
                     <div className='pills-row row'>
                         {ExperienceLevels.map(({id, title}) => (
@@ -198,9 +273,9 @@ export const JobFiltersModalComponent = props => {
                 <FilterRow
                     title='Years of experience'
                     filterName='experienceYears'
-                    selectionText={filters.experienceYears.length ? `${filters.experienceYears.length} selected` : 'any'}
+                    selectionText={getSelectionText('experienceYears')}
                     filterActive={filters.experienceYears.length > 0}
-                    onClickClear={onClickClearFilter}
+                    onClickActionButton={() => onClickClearFilter('experienceYears')}
                 >
                     <div className='pills-row row'>
                         {ExperienceYears.map(({id, title}) => (
@@ -218,9 +293,9 @@ export const JobFiltersModalComponent = props => {
                 <FilterRow
                     title='Included langauges'
                     filterName='includedLanguages'
-                    selectionText={filters.includedLanguages.length ? `${filters.includedLanguages.length} selected` : 'any'}
+                    selectionText={getSelectionText('includedLanguages')}
                     filterActive={filters.includedLanguages.length > 0}
-                    onClickClear={onClickClearFilter}
+                    onClickActionButton={() => onClickClearFilter('includedLanguages')}
                 >
                     <SearchableSelectableInput
                         options={Languages}
@@ -235,9 +310,9 @@ export const JobFiltersModalComponent = props => {
                 <FilterRow
                     title='Excluded langauges'
                     filterName='excludedLanguages'
-                    selectionText={filters.excludedLanguages.length ? `${filters.excludedLanguages.length} selected` : 'none'}
+                    selectionText={getSelectionText('excludedLanguages')}
                     filterActive={filters.excludedLanguages.length > 0}
-                    onClickClear={onClickClearFilter}
+                    onClickActionButton={() => onClickClearFilter('excludedLanguages')}
                 >
                     <SearchableSelectableInput
                         options={Languages}
@@ -252,9 +327,9 @@ export const JobFiltersModalComponent = props => {
                 <FilterRow
                     title='Included skills'
                     filterName='includedSkills'
-                    selectionText={filters.includedSkills.length ? `${filters.includedSkills.length} selected` : 'any'}
+                    selectionText={getSelectionText('includedSkills')}
                     filterActive={filters.includedSkills.length > 0}
-                    onClickClear={onClickClearFilter}
+                    onClickActionButton={() => onClickClearFilter('includedSkills')}
                 >
                     <SearchableSelectableInput
                         options={Skills}
@@ -269,9 +344,9 @@ export const JobFiltersModalComponent = props => {
                 <FilterRow
                     title='Excluded skills'
                     filterName='excludedSkills'
-                    selectionText={filters.excludedSkills.length ? `${filters.excludedSkills.length} selected` : 'none'}
+                    selectionText={getSelectionText('excludedSkills')}
                     filterActive={filters.excludedSkills.length > 0}
-                    onClickClear={onClickClearFilter}
+                    onClickActionButton={() => onClickClearFilter('excludedSkills')}
                 >
                     <SearchableSelectableInput
                         options={Skills}
@@ -288,16 +363,6 @@ export const JobFiltersModalComponent = props => {
     )
 }
 
-const SavedFiltersRoot = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    border: 1px solid ${p => p.theme.bc};
-    border-radius: 15px;
-    overflow: scroll;
-    max-height: 200px;
-`
-
 const Root = styled.div`
     display: flex;
     flex-direction: column;
@@ -306,10 +371,16 @@ const Root = styled.div`
     border-radius: 15px;
     overflow: scroll;
     max-height: 500px;
+    padding-top: 15px;
+
+    & .section-title {
+        margin-bottom: 20px;
+        margin-left: 15px;
+    }
 `
 
 const mapStateToProps = state => ({
-
+    savedFilters: getSavedFilters(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

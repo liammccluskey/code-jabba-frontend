@@ -2,17 +2,21 @@ import React, {useState} from 'react'
 import styled from 'styled-components'
 
 import { Button } from '../../common/Button'
+import { IconButton } from '../../common/IconButton'
 
 export const FilterRow = props => {
     const {
         title, // string
         filterName, // string
         selectionText, // string
-        filterActive, // bool
+        filterActive=undefined, // bool
+        actionButtonTitle='Clear', // string
+        dangerButtonTitle='', // string
+        onlyShowButtonsOnHover=false, // bool
         children,
 
-        onClick, // () => void
-        onClickClear, // filterName => void
+        onClickActionButton, // () => void
+        onClickDangerButton = () => {}, // () => void
         
         ...rest
     } = props
@@ -20,28 +24,66 @@ export const FilterRow = props => {
 
     const onClickClearFilter = e => {
         e.stopPropagation()
-        onClickClear(filterName)
+        onClickActionButton()
+    }
+
+    const onClickDanger = e => {
+        e.stopPropagation()
+        onClickDangerButton()
     }
 
     return (
         <Root {...rest}>
             <div className='collapsible-row oh-dark' onClick={() => setExpanded(curr => !curr)}>
-                <h4>{title}</h4>
+                <p>{title}</p>
                 <div className='expansion-container'>
-                    {filterActive ? 
-                        <Button
-                            title='Clear'
-                            priority={3}
-                            type='clear'
-                            onClick={onClickClearFilter}
+                    {dangerButtonTitle ? 
+                        // <Button
+                        //     title={dangerButtonTitle}
+                        //     priority={3}
+                        //     type='danger'
+                        //     onClick={onClickDanger}
+                        //     style={{marginRight: 10}}
+                        //     className='hidden-button'
+                        // />
+                        <IconButton
+                            size='s'
+                            icon='bi-trash'
+                            onClick={onClickDanger}
+                            className='hidden-button'
+                            style={{marginRight: 10}}
                         />
                         : null
                     }
-                    {filterActive ?
+                    {filterActive ? 
+                        <Button
+                            title={actionButtonTitle}
+                            priority={3}
+                            type='clear'
+                            onClick={onClickClearFilter}
+                            style={{marginRight: 10}}
+                        />
+                        : null
+                    }
+                    {filterActive === undefined && onlyShowButtonsOnHover ? 
+                        <Button
+                            title={actionButtonTitle}
+                            priority={3}
+                            type='clear'
+                            onClick={onClickClearFilter}
+                            style={{marginRight: 10}}
+                            className='hidden-button'
+                        />
+                        : null
+                    }
+                    {filterActive && selectionText?
                         <div className='seperator' />
                         : null
                     }
-                    <p className='selection-text'>{selectionText}</p>
+                    {selectionText ? 
+                        <p className='selection-text'>{selectionText}</p>
+                        : null
+                    }
                     {expanded ?
                         <i className='bi-chevron-up expand-arrow' />
                         : <i className='bi-chevron-down expand-arrow' />
@@ -59,10 +101,7 @@ const Root = styled.div`
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    border-bottom: 1px solid ${p => p.theme.bc};
-    &:last-child {
-        border-bottom: none;
-    }
+    border-top: 1px solid ${p => p.theme.bc};
 
     & .collapsible-row {
         display: flex;
@@ -72,6 +111,13 @@ const Root = styled.div`
         padding: 15px;
         box-sizing: border-box;
         max-height: 50px;
+    }
+
+    & .hidden-button {
+        display: none;
+    }
+    & .collapsible-row:hover .hidden-button {
+        display: flex;
     }
 
     & .expansion-container {
@@ -114,7 +160,6 @@ const Root = styled.div`
         height: 15px;
         width: 1px;
         background-color: ${p => p.theme.textSecondary};
-        margin-left: 10px;
         margin-right: 10px;
     }
 `

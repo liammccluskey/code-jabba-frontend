@@ -31,8 +31,13 @@ const Root = styled.div`
         font-size: 10px;
     }
 
-    p {
+    p, pre {
+        font-size: 14px;
         color: ${p => p.theme.textMain};
+    }
+    pre {
+        font-size: 12px;
+        color: ${p => p.theme.textSecondary};
     }
 
     label {

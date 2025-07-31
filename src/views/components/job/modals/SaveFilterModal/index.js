@@ -43,7 +43,7 @@ export const SaveFilterModalComponent = props => {
 
     return (
         <Confirm
-            title='Save filter'
+            title='Save filter combination'
             confirmButtonTitle='Save'
             confirmButtonDisabled={false}
             onConfirm={onClickSave}

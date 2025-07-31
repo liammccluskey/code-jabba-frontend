@@ -151,7 +151,7 @@ export const fetchSavedJobFilters = (onSuccess) => async (dispatch, getState) =>
         onSuccess()
     } catch (error) {
         const errorMessage = 'Error fetching saved filters: ' + 
-            error.response ? error.response.data.message : error.message
+            error.response ? error.response.data?.message : error.message
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
     }
