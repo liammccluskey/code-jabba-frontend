@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React, {useState, useMemo, useRef} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
@@ -14,11 +14,13 @@ import {
     Skills,
 } from '../../EditJobCard'
 import { getSavedFilters } from '../../../../../redux/job'
+import { deepObjectEqual } from './utils'
 
 import { Confirm } from '../../../modals/Confirm'
 import { SearchableSelectableInput } from '../../../common/SearchableSelectableInput'
 import { Pill } from '../../../common/Pill'
 import { FilterRow } from '../../FilterRow'
+import { PillLabel } from '../../../common/PillLabel'
 
 export const JobFiltersModalComponent = props => {
     const {
@@ -33,7 +35,6 @@ export const JobFiltersModalComponent = props => {
 
     const containerRef = useRef(null)
     const [filters, setFilters] = useState(initialFilters)
-    const [selectedSavedFilterID, setSelectedSavedFilterID] = useState(undefined)
     const [formData, setFormData] = useState({
         setting: '',
         location: '',
@@ -42,10 +43,17 @@ export const JobFiltersModalComponent = props => {
         includedLanguage: '',
         exlcudedLanguage: '',
     })
+    const selectedSavedFilterID = useMemo(() => {
+        let filterID = undefined
 
-    // useEffect(() => {
-    //     setSelectedSavedFilterID(undefined)
-    // }, [filters])
+        for (let i = 0; i < props.savedFilters.length; i++) {
+            const filter = props.savedFilters[i]
+
+            if (deepObjectEqual(filter, filters)) return filter._id
+        }
+
+        return filterID
+    }, [filters, props.savedFilters])
 
     // Utils
 
@@ -142,7 +150,6 @@ export const JobFiltersModalComponent = props => {
     const onClickApplyFilter = (filterID) => {
         const savedFilter = props.savedFilters.find(filter => filter._id === filterID)
         setFilters(savedFilter)
-        setSelectedSavedFilterID(filterID)
     }
 
     // Render
@@ -156,7 +163,7 @@ export const JobFiltersModalComponent = props => {
             onConfirmExtraArg={{updatedFilters: filters, savedFilterID: selectedSavedFilterID}}
         >
             <Root ref={containerRef}>
-                <h4 className='section-title'>Saved filter combinations</h4>
+                <h4 className='section-title'>Saved filters</h4>
                 {props.savedFilters.map(({title, _id, ...filter}) => (
                     <FilterRow
                         title={title}
@@ -166,6 +173,15 @@ export const JobFiltersModalComponent = props => {
                         onlyShowButtonsOnHover={true}
                         onClickActionButton={() => onClickApplyFilter(_id)}
                         onClickDangerButton={() => onClickDeleteFilter(_id)}
+                        titleRightChild={_id === selectedSavedFilterID ?
+                            <PillLabel
+                                title='Active'
+                                color='green'
+                                size='s'
+                                style={{marginLeft: 10}}
+                            />
+                            : null
+                        }
                         key={_id}
                     >
                         <pre>Filter: {prettyPrintObject(filter.asMongoFilter)}</pre>

@@ -140,7 +140,7 @@ export const fetchJobs = (filters, page, onSuccess) => async (dispatch, getState
     dispatch(JobActions.setLoadingJobs(false))
 }
 
-export const fetchSavedJobFilters = (onSuccess) => async (dispatch, getState) => {
+export const fetchSavedJobFilters = (onSuccess = () => {}) => async (dispatch, getState) => {
     const state = getState()
     const mongoUser = getMongoUser(state)
 
@@ -151,7 +151,7 @@ export const fetchSavedJobFilters = (onSuccess) => async (dispatch, getState) =>
         onSuccess()
     } catch (error) {
         const errorMessage = 'Error fetching saved filters: ' + 
-            error.response ? error.response.data?.message : error.message
+            (error.response ? error.response?.data?.message : error.message)
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
     }
@@ -189,7 +189,7 @@ export const deleteSavedJobFilter = (filterID, onSuccess, onFailure) => async (d
         onSuccess()
     } catch (error) {
         const errorMessage = 'Error deleting saved filter: ' +
-            error.response ? error.response?.data?.message : error.message
+            (error.response ? error.response?.data?.message : error.message)
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
         onFailure()

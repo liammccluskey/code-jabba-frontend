@@ -13,7 +13,8 @@ export const FilterRow = props => {
         actionButtonTitle='Clear', // string
         dangerButtonTitle='', // string
         onlyShowButtonsOnHover=false, // bool
-        children,
+        titleRightChild=undefined, // Node
+        children, // [Node]
 
         onClickActionButton, // () => void
         onClickDangerButton = () => {}, // () => void
@@ -35,17 +36,12 @@ export const FilterRow = props => {
     return (
         <Root {...rest}>
             <div className='collapsible-row oh-dark' onClick={() => setExpanded(curr => !curr)}>
-                <p>{title}</p>
+                <div className='title-container'>
+                    <p>{title}</p>
+                    {titleRightChild}
+                </div>
                 <div className='expansion-container'>
-                    {dangerButtonTitle ? 
-                        // <Button
-                        //     title={dangerButtonTitle}
-                        //     priority={3}
-                        //     type='danger'
-                        //     onClick={onClickDanger}
-                        //     style={{marginRight: 10}}
-                        //     className='hidden-button'
-                        // />
+                    {dangerButtonTitle ?
                         <IconButton
                             size='s'
                             icon='bi-trash'
@@ -111,6 +107,13 @@ const Root = styled.div`
         padding: 15px;
         box-sizing: border-box;
         max-height: 50px;
+    }
+
+    & .title-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
     }
 
     & .hidden-button {

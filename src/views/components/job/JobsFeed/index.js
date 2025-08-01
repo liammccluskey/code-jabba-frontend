@@ -81,10 +81,6 @@ export const JobsFeedComponent = props => {
         setSelectedJobID(jobsForCurrentPage.length ? jobsForCurrentPage[0]._id : '')
     }, [props.jobs, jobsPage])
 
-    // useEffect(() => {
-    //     setSelectedSavedFilterID(null)
-    // }, [filters])
-
     // Utils
 
     const getJobsFilters = (updatedFilters = {}) => ({
@@ -108,11 +104,7 @@ export const JobsFeedComponent = props => {
             onFailure
         )
         setFilters(updatedFilters)
-        savedFilterID && setSelectedSavedFilterID(savedFilterID)
-
-        console.log(JSON.stringify(
-            {savedFilterID: savedFilterID || 'no filterID', updatedFilters}
-        , null, 4))
+        setSelectedSavedFilterID(savedFilterID)
     }
 
     const getFiltersCount = () => {
@@ -123,10 +115,6 @@ export const JobsFeedComponent = props => {
 
     const getFilterDescriptionText = () => {
         const savedFilter = props.savedFilters.find(filter => filter._id === selectedSavedFilterID)
-
-        console.log(JSON.stringify(
-            {selectedSavedFilterID: selectedSavedFilterID || 'no filterID', savedFilter: savedFilter || 'no savedFilter'}
-        , null, 4))
 
         if (selectedSavedFilterID) {
             return savedFilter?.title
@@ -139,8 +127,8 @@ export const JobsFeedComponent = props => {
 
     const addDeleteFilterModal = filterID => {
         props.addModal(ModalTypes.CONFIRM, {
-            title: 'Unsave filter combination',
-            message: 'Are you sure you want to unsave this filter combination?',
+            title: 'Unsave filter',
+            message: 'Are you sure you want to unsave this filter?',
             confirmButtonTitle: 'Unsave',
             isDanger: true,
             extraArg: filterID,
@@ -239,7 +227,7 @@ export const JobsFeedComponent = props => {
                             {getFilterDescriptionText()}
                         </p>
                         <Tooltip
-                            title={selectedSavedFilterID ? 'Unsave this filter combination' : 'Save this filter combination'}
+                            title={selectedSavedFilterID ? 'Unsave this filter' : 'Save this filter'}
                         >
                             <i 
                                 className={selectedSavedFilterID ? 'bi-star-fill save-icon' : 'bi-star save-icon'} 
