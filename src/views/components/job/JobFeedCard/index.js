@@ -97,10 +97,12 @@ const Root = styled.div`
     flex-direction: column;
     align-items: stretch;
     padding: 15px;
+    padding-left: 12px;
     border-bottom: 1px solid ${p => p.theme.bc};
+    border-left: 3px solid transparent;
 
     &.selected {
-        border-left: 2px solid ${p => p.theme.tint};
+        border-left: 3px solid ${p => p.theme.tint};
     }
 
     & .header {

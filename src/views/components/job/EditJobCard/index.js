@@ -142,6 +142,8 @@ export const Skills = [
     'Pandas',
     'Hibernate',
     'Selenium',
+    'VSCode',
+    'REST APIs',
 ].sort((a, b) => a.localeCompare(b))
 
 export const EducationLevels = [

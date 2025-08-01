@@ -13,8 +13,9 @@ import {
     Languages,
     Skills,
 } from '../../EditJobCard'
-import { getSavedFilters } from '../../../../../redux/job'
+import { getSavedFilters, setSavedFilterID } from '../../../../../redux/job'
 import { deepObjectEqual } from './utils'
+import { removeMiscFilterKeys } from '../../JobsFeed/utils'
 
 import { Confirm } from '../../../modals/Confirm'
 import { SearchableSelectableInput } from '../../../common/SearchableSelectableInput'
@@ -28,7 +29,7 @@ export const JobFiltersModalComponent = props => {
         initialFilters, // [key: []]
         
         onClickApply, // (onSuccess, onFailure, filters, savedFilterID) => void
-        onClickDeleteFilter, // filterID => void
+        onClickDeleteFilter, // (filterID, onDeleteSuccess) => void
     } = props
 
     // State
@@ -44,15 +45,15 @@ export const JobFiltersModalComponent = props => {
         exlcudedLanguage: '',
     })
     const selectedSavedFilterID = useMemo(() => {
-        let filterID = undefined
-
         for (let i = 0; i < props.savedFilters.length; i++) {
             const filter = props.savedFilters[i]
+            const strippedFilterA = removeMiscFilterKeys(filter)
+            const strippedFilterB = removeMiscFilterKeys(filters)
 
-            if (deepObjectEqual(filter, filters)) return filter._id
+            if (deepObjectEqual(strippedFilterA, strippedFilterB)) return filter._id
         }
 
-        return filterID
+        return undefined
     }, [filters, props.savedFilters])
 
     // Utils
@@ -164,29 +165,34 @@ export const JobFiltersModalComponent = props => {
         >
             <Root ref={containerRef}>
                 <h4 className='section-title'>Saved filters</h4>
-                {props.savedFilters.map(({title, _id, ...filter}) => (
-                    <FilterRow
-                        title={title}
-                        selectionText={''}
-                        actionButtonTitle='Apply'
-                        dangerButtonTitle='Delete'
-                        onlyShowButtonsOnHover={true}
-                        onClickActionButton={() => onClickApplyFilter(_id)}
-                        onClickDangerButton={() => onClickDeleteFilter(_id)}
-                        titleRightChild={_id === selectedSavedFilterID ?
-                            <PillLabel
-                                title='Active'
-                                color='green'
-                                size='s'
-                                style={{marginLeft: 10}}
-                            />
-                            : null
-                        }
-                        key={_id}
-                    >
-                        <pre>Filter: {prettyPrintObject(filter.asMongoFilter)}</pre>
-                    </FilterRow>
-                ))}
+                {props.savedFilters.length ? 
+                    props.savedFilters.map(({title, _id, ...filter}) => (
+                        <FilterRow
+                            title={title}
+                            selectionText={''}
+                            actionButtonTitle='Apply'
+                            dangerButtonTitle='Delete'
+                            onlyShowButtonsOnHover={true}
+                            onClickActionButton={() => onClickApplyFilter(_id)}
+                            onClickDangerButton={() => onClickDeleteFilter(_id)}
+                            titleRightChild={_id === selectedSavedFilterID ?
+                                <PillLabel
+                                    title='Active'
+                                    color='green'
+                                    size='s'
+                                    style={{marginLeft: 10}}
+                                />
+                                : null
+                            }
+                            key={_id}
+                        >
+                            <pre>Filter: {prettyPrintObject(filter.asMongoFilter)}</pre>
+                        </FilterRow>
+                    ))
+                    : <div className='no-saved-filters-container'>
+                        <p>You have no saved filters</p>
+                    </div>
+                }
                 <h4 className='section-title' style={{marginTop: 25}}>Custom filters</h4>
                 <FilterRow
                     title='Settings'
@@ -392,6 +398,12 @@ const Root = styled.div`
     & .section-title {
         margin-bottom: 20px;
         margin-left: 15px;
+    }
+    & .no-saved-filters-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-around;
     }
 `
 

@@ -27,6 +27,7 @@ import {
 import { ModalTypes } from '../../../../containers/ModalProvider'
 import { addModal } from '../../../../redux/modal'
 import { addMessage } from '../../../../redux/communication'
+import { removeMiscFilterKeys } from './utils'
 
 import {JobCard} from '../JobCard'
 import { Paginator } from '../../common/Paginator'
@@ -70,8 +71,8 @@ export const JobsFeedComponent = props => {
     }, [])
 
     useEffect(() => {
-        fetchJobsFirstPage()
-    }, [jobsSortFilter])
+        fetchJobsFirstPage(undefined, undefined, undefined, false)
+    }, [jobsSortFilter, filters])
 
     useEffect(() => {
         selectedJobID && props.fetchJob(selectedJobID)
@@ -92,7 +93,8 @@ export const JobsFeedComponent = props => {
     const fetchJobsFirstPage = (
         onSuccess = () => {}, 
         onFailure = () => {}, 
-        {updatedFilters=getJobsFilters(), savedFilterID=undefined} = {}
+        {updatedFilters=getJobsFilters(), savedFilterID=selectedSavedFilterID} = {},
+        updateFilters=true
     ) => {
         props.fetchJobs(
             getJobsFilters(updatedFilters), 
@@ -103,13 +105,15 @@ export const JobsFeedComponent = props => {
             },
             onFailure
         )
-        setFilters(updatedFilters)
-        setSelectedSavedFilterID(savedFilterID)
+        updateFilters && setFilters(updatedFilters)
+        updateFilters && setSelectedSavedFilterID(savedFilterID)
     }
 
     const getFiltersCount = () => {
-        return Object.entries(filters)
-            .filter(([key, value]) => value.length > 0 && key !== 'sortBy')
+        const currentFilter = removeMiscFilterKeys(filters)
+
+        return Object.entries(currentFilter)
+            .filter(([key, value]) => value.length > 0)
             .length
     }
 
@@ -125,17 +129,17 @@ export const JobsFeedComponent = props => {
         }
     }
 
-    const addDeleteFilterModal = filterID => {
+    const addDeleteFilterModal = (filterID, updateFilters=false) => {
         props.addModal(ModalTypes.CONFIRM, {
             title: 'Unsave filter',
             message: 'Are you sure you want to unsave this filter?',
             confirmButtonTitle: 'Unsave',
             isDanger: true,
-            extraArg: filterID,
             onConfirm: (onSuccess, onFailure) => {
                 const onDeleteSuccess = () => {
-                    setFilters(InitialJobFilters)
+                    updateFilters && setFilters(InitialJobFilters)
                     props.fetchSavedJobFilters(onSuccess)
+                    setSelectedSavedFilterID(undefined)
                 }
                 
                 props.deleteSavedJobFilter(filterID, onDeleteSuccess, onFailure)
@@ -148,13 +152,8 @@ export const JobsFeedComponent = props => {
     const onClickAddFilters = () => {
         props.addModal(ModalTypes.JOB_FILTERS, {
             initialFilters: filters,
-            onClickApply: fetchJobsFirstPage,
-            onClickDeleteFilter: filterID => {
-                console.log(JSON.stringify(
-                    {filterID: filterID || 'no filterID'}
-                , null, 4))
-                addDeleteFilterModal(filterID)
-            }
+            onClickApply: onClickApplyFilters,
+            onClickDeleteFilter: addDeleteFilterModal
         })
     }
 
@@ -190,8 +189,8 @@ export const JobsFeedComponent = props => {
             return
         }
 
-        if (selectedSavedFilterID !== null) {
-            addDeleteFilterModal(selectedSavedFilterID)
+        if (selectedSavedFilterID) {
+            addDeleteFilterModal(selectedSavedFilterID, true)
         } else {
             props.addModal(ModalTypes.SAVE_FILTER, {
                 onSave: (onSuccess, onFailure, filterTitle) => {
@@ -210,6 +209,16 @@ export const JobsFeedComponent = props => {
                 }
             })
         }
+    }
+
+    const onClickApplyFilters = (
+        onSuccess,
+        onFailure = () => {},
+        {updatedFilters=getJobsFilters(), savedFilterID=selectedSavedFilterID} = {}
+    ) => {
+        setFilters(updatedFilters)
+        setSelectedSavedFilterID(savedFilterID)
+        onSuccess()
     }
 
     return (
@@ -244,7 +253,6 @@ export const JobsFeedComponent = props => {
                         style={{marginLeft: 15}}
                     />
                 </div>
-
                 <select value={jobsSortFilter} onChange={onChangeSortFilter} className='select-solid'>
                     {SortFilters.map(({title, filter}) => (
                         <option value={filter} key={filter}>{title}</option>
