@@ -3,10 +3,11 @@ import { FirebaseErrors } from "./constants"
 export const stringifyQuery = queryParams => {
     return '?' + Object
         .entries(queryParams)
-        .map( ([key, value]) => Array.isArray(value) && value.length ?
-            value.map(item => `${key}=${item}`).join('&')
+        .map( ([key, value]) => Array.isArray(value) ?
+            value.map(item => `${key}[]=${item}`).join('&')
             : `${key}=${value}`
         )
+        .filter(item => item.length > 0)
         .join('&')
 }
 
