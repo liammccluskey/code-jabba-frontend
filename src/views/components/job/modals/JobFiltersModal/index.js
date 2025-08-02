@@ -13,9 +13,8 @@ import {
     Languages,
     Skills,
 } from '../../EditJobCard'
-import { getSavedFilters, setSavedFilterID } from '../../../../../redux/job'
-import { deepObjectEqual } from './utils'
-import { removeMiscFilterKeys } from '../../JobsFeed/utils'
+import { getSavedFilters } from '../../../../../redux/job'
+import { getSelectedFilter } from './utils'
 
 import { Confirm } from '../../../modals/Confirm'
 import { SearchableSelectableInput } from '../../../common/SearchableSelectableInput'
@@ -45,15 +44,8 @@ export const JobFiltersModalComponent = props => {
         exlcudedLanguage: '',
     })
     const selectedSavedFilterID = useMemo(() => {
-        for (let i = 0; i < props.savedFilters.length; i++) {
-            const filter = props.savedFilters[i]
-            const strippedFilterA = removeMiscFilterKeys(filter)
-            const strippedFilterB = removeMiscFilterKeys(filters)
-
-            if (deepObjectEqual(strippedFilterA, strippedFilterB)) return filter._id
-        }
-
-        return undefined
+        const selectedFilter = getSelectedFilter(filters, props.savedFilters)
+        return selectedFilter ? selectedFilter._id : undefined
     }, [filters, props.savedFilters])
 
     // Utils

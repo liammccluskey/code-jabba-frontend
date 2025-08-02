@@ -1,4 +1,4 @@
-export const deepObjectEqual = (obj1, obj2) => {
+const deepObjectEqual = (obj1, obj2) => {
     if (obj1 === obj2) return true
 
     if (typeof obj1 !== 'object' || obj1 === null ||
@@ -30,4 +30,27 @@ export const deepObjectEqual = (obj1, obj2) => {
     }
 
     return true
+}
+
+export const removeMiscFilterKeys = (filter) => {
+    const updatedFilter = {...filter}
+
+    const excludedFilterKeys = ['_id', 'title', 'user', 'createdAt', 'updatedAt', '__v', 'asMongoFilter', 'sortBy']
+    excludedFilterKeys.forEach(excludedKey => {
+        delete updatedFilter[excludedKey]
+    })
+
+    return updatedFilter
+}
+
+export const getSelectedFilter = (currentFilter, filters) => {
+    for (let i = 0; i < filters.length; i++) {
+        const filter = filters[i]
+        const strippedFilterA = removeMiscFilterKeys(filter)
+        const strippedFilterB = removeMiscFilterKeys(currentFilter)
+
+        if (deepObjectEqual(strippedFilterA, strippedFilterB)) return filter
+    }
+
+    return undefined
 }

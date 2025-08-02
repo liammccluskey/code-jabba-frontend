@@ -157,7 +157,7 @@ export const fetchSavedJobFilters = (onSuccess = () => {}) => async (dispatch, g
     }
 }
 
-export const postJobFilter = (filterTitle, filters, onSuccess = filterID => {}, onFailure) => async (dispatch, getState) => {
+export const postJobFilter = (filterTitle, filters, onSuccess, onFailure) => async (dispatch, getState) => {
     const state = getState()
     const mongoUser = getMongoUser(state)
 
@@ -169,7 +169,7 @@ export const postJobFilter = (filterTitle, filters, onSuccess = filterID => {}, 
         })
 
         dispatch(addMessage(res.data.message))
-        onSuccess(res.data.filterID)
+        onSuccess()
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
@@ -178,14 +178,14 @@ export const postJobFilter = (filterTitle, filters, onSuccess = filterID => {}, 
     }
 }
 
-export const deleteSavedJobFilter = (filterID, onSuccess, onFailure) => async (dispatch, getState) => {
+export const deleteSavedJobFilter = (filterID, onSuccess, onFailure, showSuccessMessage=true) => async (dispatch, getState) => {
     const state = getState()
     const mongoUser = getMongoUser(state)
 
     try {
         const res = await api.delete(`/job-filters/${filterID}`)
 
-        dispatch(addMessage(res.data.message))
+        showSuccessMessage && dispatch(addMessage(res.data.message))
         onSuccess()
     } catch (error) {
         const errorMessage = 'Error deleting saved filter: ' +

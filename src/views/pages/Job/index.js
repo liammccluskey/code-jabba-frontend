@@ -18,7 +18,7 @@ import { ErrorElement } from '../ErrorElement'
 import { JobCard } from '../../components/job/JobCard'
 import { Loading } from '../../components/common/Loading'
 
-export const JobComponent = () => {
+export const JobComponent = props => {
     const {jobID} = useParams()
 
     useEffect(() => {
