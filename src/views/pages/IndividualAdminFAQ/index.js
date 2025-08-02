@@ -158,7 +158,11 @@ export const IndividualAdminFAQComponent = props => {
                                         : null
                                     }
                                 </div>
-                                <select value={sectionID} onChange={onChangeSectionID} >
+                                <select
+                                    value={sectionID} 
+                                    onChange={onChangeSectionID} 
+                                    className='solid'
+                                >
                                     {FAQSections.map( ({title, id}) => (
                                         <option value={id} key={id}>{title}</option>
                                     ))}

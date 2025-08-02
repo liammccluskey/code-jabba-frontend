@@ -68,8 +68,6 @@ const Container = styled.div`
     }
 
     & select {
-        background-color: transparent !important;
-        border: 1px solid ${p => p.theme.bc} !important;
         margin-bottom: 20px;
     }
 

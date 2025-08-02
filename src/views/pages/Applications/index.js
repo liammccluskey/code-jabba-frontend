@@ -203,7 +203,7 @@ export const ApplicationsComponent = props => {
                             value={data.applicationStatsTimeframe}
                             onChange={onChangeField}
                             name='applicationStatsTimeframe'
-                            className='clear'
+                            className='solid'
                         >
                             {Timeframes.map(timePeriod => (
                                 <option value={timePeriod} key={timePeriod}>This {timePeriod}</option>

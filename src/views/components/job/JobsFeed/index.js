@@ -241,7 +241,11 @@ export const JobsFeedComponent = props => {
                         style={{marginLeft: 15}}
                     />
                 </div>
-                <select value={jobsSortFilter} onChange={onChangeSortFilter} className='select-solid'>
+                <select 
+                    value={jobsSortFilter} 
+                    onChange={onChangeSortFilter} 
+                    className='solid'
+                >
                     {SortFilters.map(({title, filter}) => (
                         <option value={filter} key={filter}>{title}</option>
                     ))}

@@ -221,7 +221,11 @@ export const BugReportsComponent = props => {
                 <Container className={`${props.isMobile && 'mobile'}`}>
                     <div className='section-header '>
                         <h3>Metrics</h3>
-                        <select value={selectedTimeframe} onChange={onChangeSelectedTimeframe}>
+                        <select 
+                            value={selectedTimeframe} 
+                            onChange={onChangeSelectedTimeframe}
+                            className='solid'
+                        >
                             {Timeframes.map(timePeriod => (
                                 <option value={timePeriod} key={timePeriod}>This {timePeriod}</option>
                             ))}
@@ -287,8 +291,6 @@ const Container = styled.div`
     & select {
         padding-top: 5px !important;
         padding-bottom: 5px !important;
-        background-color: transparent !important;
-        border: 1px solid ${p => p.theme.bc} !important;
         margin-top: 0px !important;
     }
 

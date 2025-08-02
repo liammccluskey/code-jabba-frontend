@@ -62,7 +62,11 @@ export const SearchableTableComponent = props => {
                     ))}
                 </div>
                 {sortFilters.length ?
-                    <select value={sortFilter} onChange={onChangeSortFilter}>
+                    <select 
+                        value={sortFilter} 
+                        onChange={onChangeSortFilter}
+                        className='solid'
+                    >
                         {sortFilters.map(({title, filter}) => (
                             <option value={filter} key={filter}>{title}</option>
                         ))}
@@ -101,8 +105,6 @@ const Root = styled.div`
     & select {
         padding-top: 5px !important;
         padding-bottom: 5px !important;
-        background-color: transparent !important;
-        border: 1px solid ${p => p.theme.bc} !important;
         margin-top: 0px !important;
     }
 

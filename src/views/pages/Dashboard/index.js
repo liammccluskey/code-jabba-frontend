@@ -579,7 +579,7 @@ export const DashboardComponent = props => {
                                 value={data.recruiterApplicationTimeframe}
                                 onChange={onChangeField}
                                 name='recruiterApplicationTimeframe'
-                                className='clear'
+                                className='solid'
                             >
                                 {Timeframes.map(timePeriod => (
                                     <option value={timePeriod} key={timePeriod}>This {timePeriod}</option>
@@ -681,7 +681,7 @@ export const DashboardComponent = props => {
                                 value={data.candidateApplicationTimeframe}
                                 onChange={onChangeField}
                                 name='candidateApplicationTimeframe'
-                                className='clear'
+                                className='solid'
                             >
                                 {Timeframes.map(timePeriod => (
                                     <option value={timePeriod} key={timePeriod}>This {timePeriod}</option>
