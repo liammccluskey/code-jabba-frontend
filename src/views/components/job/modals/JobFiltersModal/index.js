@@ -27,7 +27,7 @@ export const JobFiltersModalComponent = props => {
         modalID,
         initialFilters, // [key: []]
         
-        onClickApply, // (onSuccess, onFailure, filters, savedFilterID) => void
+        onClickApply, // (onSuccess, onFailure, filters) => void
         onClickDeleteFilter, // (filterID, onDeleteSuccess) => void
     } = props
 
@@ -172,7 +172,7 @@ export const JobFiltersModalComponent = props => {
                                     title='Active'
                                     color='green'
                                     size='s'
-                                    style={{marginLeft: 10}}
+                                    style={{marginLeft: 10, marginRight: 10}}
                                 />
                                 : null
                             }
@@ -390,6 +390,7 @@ const Root = styled.div`
     & .section-title {
         margin-bottom: 20px;
         margin-left: 15px;
+        color: ${p => p.theme.tint};
     }
     & .no-saved-filters-container {
         display: flex;

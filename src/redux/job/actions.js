@@ -44,8 +44,3 @@ export const setSavedFilters = filters => ({
     type: Types.setSavedFilters,
     value: filters
 })
-
-export const setSavedFilterID = filterID => ({
-    type: Types.setSavedFilterID,
-    value: filterID
-})

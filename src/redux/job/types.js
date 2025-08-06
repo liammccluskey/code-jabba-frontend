@@ -8,5 +8,4 @@ export const ActionTypes = {
     addJobs: 'job/ADD_JOBS',
     setLoadingJobs: 'job/SET_LOADING_JOBS',
     setSavedFilters: 'job/SET_SAVED_FILTERS',
-    setSavedFilterID: 'job/SET_SAVED_FILTER_ID',
 }

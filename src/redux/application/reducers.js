@@ -7,6 +7,7 @@ const ApplicationState = {
     applications: {
         page: 1,
         loading: false,
+        filters: undefined,
         payload: {
             applications: [],
             pagesCount: 0
@@ -33,6 +34,17 @@ export const applicationReducer = (state = ApplicationState, action) => {
                 applications: {
                     ...state.applications,
                     payload: action.value
+                }
+            }
+        case Types.addApplications: 
+            return {
+                ...state,
+                applications: {
+                    ...state.applications,
+                    payload: {
+                        ...action.value,
+                        applications: [...state.applications.payload.applications, ...action.value.applications]
+                    }
                 }
             }
         case Types.setLoadingApplications:
@@ -76,6 +88,15 @@ export const applicationReducer = (state = ApplicationState, action) => {
                 ...state,
                 loadingApplicationStats: action.value
             }
+        case Types.setApplicationsFilters: {
+            return {
+                ...state,
+                applications: {
+                    ...state.applications,
+                    filters: action.value
+                }
+            }
+        }
         default:
             return state
     }

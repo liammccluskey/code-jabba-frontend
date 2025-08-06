@@ -1,8 +1,13 @@
 import { ActionTypes as Types } from "./types"
 
-export const setApplications = applications => ({
+export const setApplications = applicationsPayload => ({
     type: Types.setApplications,
-    value: applications
+    value: applicationsPayload
+})
+
+export const addApplications = applicationsPayload => ({
+    type: Types.setApplications,
+    value: applicationsPayload
 })
 
 export const setLoadingApplications = loading => ({
@@ -38,4 +43,9 @@ export const setApplicationStats = stats => ({
 export const setLoadingApplicationStats = loading => ({
     type: Types.setLoadingApplicationStats,
     value: loading
+})
+
+export const setApplicationsFilters = filters => ({
+    type: Types.setApplicationsFilters,
+    value: filters
 })

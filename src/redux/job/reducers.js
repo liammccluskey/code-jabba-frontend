@@ -14,7 +14,6 @@ const JobState = {
         }
     },
     savedFilters: [],
-    savedFilterID: null,
 }
 
 export const jobReducer = (state = JobState, action) => {
@@ -75,11 +74,6 @@ export const jobReducer = (state = JobState, action) => {
             return {
                 ...state,
                 savedFilters: action.value
-            }
-        case Types.setSavedFilterID: 
-            return {
-                ...state,
-                savedFilterID: action.value
             }
         default:
             return state

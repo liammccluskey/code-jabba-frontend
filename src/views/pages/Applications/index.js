@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useMemo} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
@@ -21,6 +21,7 @@ import {
     getLoadingApplications,
     getApplicationsPage,
     getApplicationsPagesCount,
+    getApplicationsFilters,
 
     fetchApplicationStats,
     fetchApplications,
@@ -50,12 +51,22 @@ export const ApplicationsComponent = props => {
     const [data, setData] = useState({
         applicationStatsTimeframe: Timeframes[1],
 
-        appliedPillActive: true,
-        viewedPillActive: false,
-        rejectedPillActive: false,
-        acceptedPillActive: false,
+        appliedPillActive: props.applicationsFilters === 'applied',
+        viewedPillActive: props.applicationsFilters === 'viewed',
+        rejectedPillActive: props.applicationsFilters === 'rejected',
+        acceptedPillActive: props.applicationsFilters === 'accepted',
     })
-    const [applicationsSortFilter, setApplicationsSortFilter] = useState(ApplicationsSortFilters[0].filter)
+    const [applicationsSortFilter, setApplicationsSortFilter] = useState(
+        props.applicationsFilters ? props.applicationsFilters.sortBy : ApplicationsSortFilters[0].filter
+    )
+    const filters = useMemo(() => ({
+            ...(data.appliedPillActive ? {status: 'applied'} : {}),
+            ...(data.viewedPillActive ? {status: 'viewed'} : {}),
+            ...(data.rejectedPillActive ? {status: 'rejected'} : {}),
+            ...(data.acceptedPillActive ? {status: 'accepted'} : {}),
+            sortBy: applicationsSortFilter,
+            jobID,
+    }), [data.appliedPillActive, data.viewedPillActive, data.rejectedPillActive, data.acceptedPillActive, applicationsSortFilter])
 
     const applicationMetrics = [
         {title: 'Submitted', value: props.applicationStats.submittedCount, percentDelta: props.applicationStats.submittedPercentDelta},
@@ -79,12 +90,12 @@ export const ApplicationsComponent = props => {
     ]
 
     useEffect(() => {
-        props.fetchJob(jobID, true)
+        props.fetchJob(jobID)
     }, [jobID])
 
     useEffect(() => {
         props.fetchApplicationStats(data.applicationStatsTimeframe.toLowerCase(), jobID)
-    }, [data.applicationStatsTimeframe])
+    }, [data.applicationStatsTimeframe, jobID])
 
     useEffect(() => {
         !props.applications.length && fetchApplicationsFirstPage()
@@ -92,7 +103,7 @@ export const ApplicationsComponent = props => {
 
     useEffect(() => {
         fetchApplicationsFirstPage()
-    }, [data.appliedPillActive, data.viewedPillActive, data.rejectedPillActive, data.acceptedPillActive, applicationsSortFilter])
+    }, [filters, jobID])
     
     // Utils
 
@@ -105,20 +116,8 @@ export const ApplicationsComponent = props => {
         }))
     }
 
-    const getApplicationsFilters = () => {
-        return {
-            ...(data.appliedPillActive ? {status: 'applied'} : {}),
-            ...(data.viewedPillActive ? {status: 'viewed'} : {}),
-            ...(data.rejectedPillActive ? {status: 'rejected'} : {}),
-            ...(data.acceptedPillActive ? {status: 'accepted'} : {}),
-            sortBy: applicationsSortFilter,
-            jobID,
-        }
-    }
-
     const fetchApplicationsFirstPage = () => {
-        props.fetchApplications(getApplicationsFilters())
-        props.setApplicationsPage(1)
+        props.fetchApplications(filters, 1)
     }
 
     // Direct
@@ -175,12 +174,16 @@ export const ApplicationsComponent = props => {
     const onClickIncrementApplicationsPage = () => {
         if (props.applicationsPage == props.applicationsPagesCount || props.applicationsPagesCount == 0) return
         else {
-            props.fetchApplications(getApplicationsFilters(), props.applicationsPage + 1)
+            props.fetchApplications(filters, props.applicationsPage + 1)
         }
     }
-
-    return ( props.jobNotFound || !props.isRecruiterMode || props.job.recruiter._id !== props.mongoUser._id ?
-        <ErrorElement />
+    return (
+        !props.loadingJob && 
+        props.job && 
+        ( !props.isRecruiterMode || 
+        props.job.recruiter._id !== props.mongoUser._id) ||
+        props.jobNotFound ? 
+            <ErrorElement />
         : <PageContainer>
             <MainHeader />
             <Subheader title='Applications' />
@@ -275,6 +278,7 @@ const mapStateToProps = state => ({
     applicationsPagesCount: getApplicationsPagesCount(state),
     isRecruiterMode: getIsRecruiterMode(state),
     mongoUser: getMongoUser(state),
+    applicationsFilters: getApplicationsFilters(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

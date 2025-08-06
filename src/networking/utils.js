@@ -24,3 +24,7 @@ export const getFirebaseErrorMessage = error => {
 export const getPaginatedDataForCurrentPage = (data, page, pageSize) => {
     return data.slice((page - 1)*pageSize, page*pageSize)
 }
+
+export const hasLoadedPageResults = (page, pageSize, results) => {
+    return (page != 1 && results.length > (page - 1)*pageSize)
+}

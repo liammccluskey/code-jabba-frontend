@@ -1,8 +1,9 @@
 import * as ApplicationActions from './actions'
-import {api, PageSizes, stringifyQuery} from '../../networking'
+import {api, PageSizes, stringifyQuery, hasLoadedPageResults} from '../../networking'
 import { getMongoUser } from '../user'
 import { addMessage } from '../communication'
-import { getApplications, getApplicationsPage } from './selectors'
+import { getApplications, getApplicationsFilters, getApplicationsPage } from './selectors'
+import { deepObjectEqual } from '../../views/components/job/modals/JobFiltersModal/utils'
 
 export const fetchApplicationStats = (timeframe, jobID) => async (dispatch, getState) => {
     dispatch(ApplicationActions.setLoadingApplicationStats(true))
@@ -30,15 +31,27 @@ export const fetchApplicationStats = (timeframe, jobID) => async (dispatch, getS
     dispatch(ApplicationActions.setLoadingApplicationStats(false))
 }
 
-export const fetchApplications = (filters) => async (dispatch, getState) => {
+export const fetchApplications = (filters, page, onSuccess = () => {}) => async (dispatch, getState) => {
     const state = getState()
     const mongoUser = getMongoUser(state)
     const applications = getApplications(state)
+    const applicationsPage = getApplicationsPage(state)
+    const applicationsFilters = getApplicationsFilters(state)
+
+    if (
+        hasLoadedPageResults(applicationsPage, applications, PageSizes.recruiterApplicationSearch) ||
+        deepObjectEqual(filters, applicationsFilters)
+    ) {
+        dispatch(ApplicationActions.setApplicationsPage(page))
+        onSuccess()
+        return
+    }
 
     dispatch(ApplicationActions.setLoadingApplications(true))
 
     const queryString = stringifyQuery({
         ...filters,
+        page: applicationsPage,
         userID: mongoUser._id
     })
 
@@ -46,6 +59,15 @@ export const fetchApplications = (filters) => async (dispatch, getState) => {
         const res = await api.get('/applications/recruiter-search' + queryString)
 
         dispatch(ApplicationActions.setApplications(res.data))
+
+        if (applicationsPage == 1) {
+            dispatch(ApplicationActions.setApplications(res.data))
+        } else {
+            dispatch(ApplicationActions.addApplications(res.data))
+        }
+        dispatch(ApplicationActions.setApplicationsPage(page))
+        dispatch(ApplicationActions.setApplicationsFilters(filters))
+        onSuccess()
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)

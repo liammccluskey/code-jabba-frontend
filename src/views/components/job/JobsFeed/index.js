@@ -251,40 +251,45 @@ export const JobsFeedComponent = props => {
                     ))}
                 </select>
             </div>
-            <div className='jobs-feed-container'>
-                <div className='feed-container'>
-                    <div className='jobs-container float-container'>
-                        {jobsForCurrentPage.map( job => (
-                            <JobFeedCard
-                                job={job}
-                                onClick={() => onClickJob(job._id)}
-                                key={job._id}
-                                selected={selectedJobID === job._id}
-                            />
-                        ))}
-                    </div>
-                    <Paginator
-                        page={jobsPage}
-                        pagesCount={props.jobsPagesCount}
-                        onClickDecrementPage={onClickDecrementJobsPage}
-                        onClickIncrementPage={onClickIncrementJobsPage}
-                        className='paginator'
-                    />
-                </div>
-                {!props.loadingJob && props.job && selectedJobID ? 
-                    <JobCard 
-                        job={props.job}
-                        className='job-card'
-                    />
-                    : selectedJobID ? 
-                        <div className='loading-jobs-container'>
-                            <Loading style={{height: 50}} />
+            {!props.loadingJobs ? 
+                <div className='jobs-feed-container'>
+                    <div className='feed-container'>
+                        <div className='jobs-container float-container'>
+                            {jobsForCurrentPage.map( job => (
+                                <JobFeedCard
+                                    job={job}
+                                    onClick={() => onClickJob(job._id)}
+                                    key={job._id}
+                                    selected={selectedJobID === job._id}
+                                />
+                            ))}
                         </div>
-                    : <div className='no-results-container'>
-                        <h3>No results</h3>
+                        <Paginator
+                            page={jobsPage}
+                            pagesCount={props.jobsPagesCount}
+                            onClickDecrementPage={onClickDecrementJobsPage}
+                            onClickIncrementPage={onClickIncrementJobsPage}
+                            className='paginator'
+                        />
                     </div>
-                }
-            </div>
+                    {!props.loadingJob && props.job && selectedJobID ? 
+                        <JobCard
+                            job={props.job}
+                            className='job-card'
+                        />
+                        : selectedJobID ? 
+                            <div className='loading-jobs-container'>
+                                <Loading style={{height: 50}} />
+                            </div>
+                        : <div className='no-results-container'>
+                            <h3>No results</h3>
+                        </div>
+                    }
+                </div>
+                : <div className='loading-jobs-container'>
+                    <Loading style={{height: 50}} />
+                </div>
+            }
         </Root>
     )
 }

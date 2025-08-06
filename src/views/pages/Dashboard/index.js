@@ -98,11 +98,11 @@ export const DashboardComponent = props => {
             cells: [name, admins.includes(props.mongoUser._id )? 'Admin' : 'Recruiter']
         })) : []
 
-    const jobHeaders = ['Title', 'Company', 'Status', 'Date Posted']
+    const jobHeaders = ['Title', 'Company', 'Date Posted']
     const jobRows = !props.loadingRecruiterJobs ?
-        getPaginatedDataForCurrentPage(props.recruiterJobs, jobsPage, PageSizes.jobSearch).map(({title, archived, company, createdAt, _id}) =>({
+        getPaginatedDataForCurrentPage(props.recruiterJobs, jobsPage, PageSizes.jobSearch).map(({title, company, createdAt, _id}) =>({
             id: _id,
-            cells: [title,company ?  company.name : 'no name', archived ? 'Archived' : 'Active', moment(createdAt).format('ll')]
+            cells: [title,company ?  company.name : 'no name', moment(createdAt).format('ll')]
         })) : []
 
     const applicationHeaders = ['Title', 'Company', 'Status', 'Date Submitted']

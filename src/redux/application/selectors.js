@@ -9,3 +9,4 @@ export const getApplicationsPagesCount = state => state.application.applications
 export const getApplicationsPage = state => state.application.applications.page
 export const getApplicationStats = state => state.application.applicationStats
 export const getLoadingApplicationStats = state => state.application.loadingApplicationStats
+export const getApplicationsFilters = state => state.application.applications.filters
