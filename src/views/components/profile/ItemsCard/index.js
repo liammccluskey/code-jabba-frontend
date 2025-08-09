@@ -17,7 +17,7 @@ export const ItemsCard = props => {
     } = props
 
     const sortedItems = {
-        incldued: [...includedItems].sort((a, b) => a.localeCompare(b)),
+        included: [...includedItems].sort((a, b) => a.localeCompare(b)),
         excluded: [...excludedItems].sort((a, b) => a.localeCompare(b)),
         extra: [...extraItems].sort((a, b) => a.localeCompare(b)),
     }
@@ -36,7 +36,7 @@ export const ItemsCard = props => {
                     : null
                 }
             </div>
-            {sortedItems.incldued.map( item => (
+            {sortedItems.included.map( item => (
                 <div className='item-container' key={item}>
                     <i className='bi-check-circle-fill included-icon' />
                     <p>{item}</p>

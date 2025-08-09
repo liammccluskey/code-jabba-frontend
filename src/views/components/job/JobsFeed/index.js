@@ -362,14 +362,6 @@ const Root = styled.div`
         margin-bottom: 20px;
     }
 
-    & .job-container {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        padding: 15px;
-        border-bottom: 1px solid ${p => p.theme.bc};
-    }
-
     & .job-card {
         display: flex;
         height: 100%;

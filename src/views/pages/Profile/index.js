@@ -79,10 +79,6 @@ export const ProfileComponent = props => {
         props.addModal(ModalTypes.EDIT_RESUME)
     }
 
-    const onClickViewResume = () => {
-        window.open(props.profileUser.resumeURL, '_blank')
-    }
-
     const onClickEditGeneral = () => {
         props.addModal(ModalTypes.EDIT_GENERAL)
     }
@@ -167,7 +163,6 @@ export const ProfileComponent = props => {
                                 <ResumeCard 
                                     isEditable={isThisUser}
                                     resumeURL={props.profileUser.resumeURL}
-                                    onClickViewResume={onClickViewResume}
                                     onClickEdit={onClickEditResume}
                                     style={{marginBottom: 30}}
                                 />

@@ -4,6 +4,7 @@ import { getMongoUser } from '../user'
 import { addMessage } from '../communication'
 import { getApplications, getApplicationsFilters, getApplicationsPage } from './selectors'
 import { deepObjectEqual } from '../../views/components/job/modals/JobFiltersModal/utils'
+import { getJob } from '../job'
 
 export const fetchApplicationStats = (timeframe, jobID) => async (dispatch, getState) => {
     dispatch(ApplicationActions.setLoadingApplicationStats(true))
@@ -39,9 +40,10 @@ export const fetchApplications = (filters, page, onSuccess = () => {}) => async 
     const applicationsFilters = getApplicationsFilters(state)
 
     if (
-        hasLoadedPageResults(applicationsPage, applications, PageSizes.recruiterApplicationSearch) ||
+        hasLoadedPageResults(page, applications, PageSizes.recruiterApplicationSearch) &&
         deepObjectEqual(filters, applicationsFilters)
     ) {
+        console.log('failed to fetch applications')
         dispatch(ApplicationActions.setApplicationsPage(page))
         onSuccess()
         return
@@ -52,7 +54,7 @@ export const fetchApplications = (filters, page, onSuccess = () => {}) => async 
     const queryString = stringifyQuery({
         ...filters,
         page: applicationsPage,
-        userID: mongoUser._id
+        userID: mongoUser._id,
     })
 
     try {
@@ -68,6 +70,8 @@ export const fetchApplications = (filters, page, onSuccess = () => {}) => async 
         dispatch(ApplicationActions.setApplicationsPage(page))
         dispatch(ApplicationActions.setApplicationsFilters(filters))
         onSuccess()
+
+        console.log('did fetch applications')
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
@@ -84,6 +88,7 @@ export const postApplication = (jobID, recruiterID, onSuccess, onFailure) => asy
     try {
         const res = await api.post('/applications', {
             candidate: mongoUser._id,
+            candidateName: mongoUser.displayName,
             job: jobID,
             recruiter: recruiterID,
         })

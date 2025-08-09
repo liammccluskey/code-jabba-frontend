@@ -52,7 +52,7 @@ export const SaveFilterModalComponent = props => {
             <InputWithMessage
                 inputType='text'
                 label='Filter title'
-                placeholder='Remote software engineer'
+                placeholder='ex. "Remote software engineer"'
                 fieldName='linkedInURL'
                 text={filterTitle}
                 onChangeText={onChangeText}

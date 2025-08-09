@@ -25,12 +25,13 @@ export const SearchableTableComponent = props => {
         pagesCount,
         searchable=true,
         paginated=true,
+        placeholder='Search by title',
 
         onChangeSearchText, // e => void
         onSubmitSearch,
         onClickPill, // pillID => void
         onChangeSortFilter, // e => void
-        onClickTableRow, // rowID => void
+        onClickTableRow = () => {}, // rowID => void
         onClickDecrementPage,
         onClickIncrementPage,
         
@@ -42,7 +43,7 @@ export const SearchableTableComponent = props => {
             {searchable ?
                 <SearchBar
                     value={searchText}
-                    placeholder='Search by title'
+                    placeholder={placeholder}
                     onChange={onChangeSearchText}
                     onSubmit={onSubmitSearch}
                     className='search-bar'

@@ -2,7 +2,7 @@ import React, {useState, useEffect, useMemo} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import moment from 'moment'
 
 import { getMongoUser } from '../../../redux/user'
@@ -31,6 +31,9 @@ import { Timeframes } from '../Dashboard'
 import { SortFilters } from '../admin/BugReports'
 import { capitalizeWords } from '../../../utils'
 import { getPaginatedDataForCurrentPage, PageSizes } from '../../../networking'
+import { ModalTypes } from '../../../containers/ModalProvider'
+import { addModal } from '../../../redux/modal'
+
 import { MainHeader } from '../../components/headers/MainHeader'
 import { Subheader } from '../../components/headers/Subheader'
 import { PageContainer } from '../../components/common/PageContainer'
@@ -40,6 +43,7 @@ import { Loading } from '../../components/common/Loading'
 import { JobCard } from '../../components/job/JobCard'
 import { ValueDeltaSpread } from '../../components/common/ValueDeltaSpread'
 import { SearchableTable } from '../../components/common/SearchableTable'
+import { Button } from '../../components/common/Button'
 
 const ApplicationsSortFilters = SortFilters
 
@@ -47,14 +51,19 @@ export const ApplicationsComponent = props => {
     const {
         
     } = props
+    const navigate = useNavigate()
     const {jobID} = useParams()
     const [data, setData] = useState({
         applicationStatsTimeframe: Timeframes[1],
 
-        appliedPillActive: props.applicationsFilters === 'applied',
-        viewedPillActive: props.applicationsFilters === 'viewed',
-        rejectedPillActive: props.applicationsFilters === 'rejected',
-        acceptedPillActive: props.applicationsFilters === 'accepted',
+        appliedPillActive: props.applicationsFilters && props.applicationsFilters.status === 'applied',
+        viewedPillActive: props.applicationsFilters && props.applicationsFilters.status === 'viewed',
+        rejectedPillActive: props.applicationsFilters && props.applicationsFilters.status === 'rejected',
+        acceptedPillActive: props.applicationsFilters && props.applicationsFilters.status === 'accepted',
+
+        searchText: props.applicationsFilters && props.applicationsFilters.searchText ? 
+            props.applicationsFilters.searchText : ''
+        ,
     })
     const [applicationsSortFilter, setApplicationsSortFilter] = useState(
         props.applicationsFilters ? props.applicationsFilters.sortBy : ApplicationsSortFilters[0].filter
@@ -65,8 +74,14 @@ export const ApplicationsComponent = props => {
             ...(data.rejectedPillActive ? {status: 'rejected'} : {}),
             ...(data.acceptedPillActive ? {status: 'accepted'} : {}),
             sortBy: applicationsSortFilter,
-            jobID,
-    }), [data.appliedPillActive, data.viewedPillActive, data.rejectedPillActive, data.acceptedPillActive, applicationsSortFilter])
+            jobID
+    }), [
+        data.appliedPillActive, 
+        data.viewedPillActive, 
+        data.rejectedPillActive, 
+        data.acceptedPillActive, 
+        applicationsSortFilter
+    ])
 
     const applicationMetrics = [
         {title: 'Submitted', value: props.applicationStats.submittedCount, percentDelta: props.applicationStats.submittedPercentDelta},
@@ -107,6 +122,11 @@ export const ApplicationsComponent = props => {
     
     // Utils
 
+    const getFilters = () => ({
+        ...filters,
+        ...(data.searchText ? {candidateName: data.searchText}: {})
+    })
+
     const updatePill = (pillID, pillActive) => {
         const fieldName = pillID + 'PillActive'
 
@@ -117,7 +137,7 @@ export const ApplicationsComponent = props => {
     }
 
     const fetchApplicationsFirstPage = () => {
-        props.fetchApplications(filters, 1)
+        props.fetchApplications(getFilters(), 1)
     }
 
     // Direct
@@ -160,8 +180,18 @@ export const ApplicationsComponent = props => {
         }
     }
 
-    const onClickApplicationRow = rowID => {
-        console.log(rowID)
+    const onClickReviewApplications = () => {
+        // if (props.job && props.job.applicationType !== 'easy-apply') {
+        //     props.addModal(ModalTypes.CONFIRM, {
+        //         title: 'Application review',
+        //         message: "Only jobs whose application type is 'Easy apply' are eligible for application review.",
+        //         confirmButtonTitle: 'Okay',
+        //         onConfirm: onSuccess => onSuccess()
+        //     })
+        // }
+        // else navigate(`/review-applications/${jobID}`)
+
+        navigate(`/review-applications/${jobID}`)
     }
 
     const onClickDecrementApplicationsPage = () => {
@@ -174,9 +204,22 @@ export const ApplicationsComponent = props => {
     const onClickIncrementApplicationsPage = () => {
         if (props.applicationsPage == props.applicationsPagesCount || props.applicationsPagesCount == 0) return
         else {
-            props.fetchApplications(filters, props.applicationsPage + 1)
+            props.fetchApplications(getFilters(), props.applicationsPage + 1)
         }
     }
+
+    const onSubmitCandidateNameSearch = e => {
+        e.preventDefault()
+        fetchApplicationsFirstPage()
+    }
+
+    const onChangeSearchText = e => {
+        setData(curr => ({
+            ...curr,
+            searchText: e.target.value
+        }))
+    }
+    
     return (
         !props.loadingJob && 
         props.job && 
@@ -221,9 +264,21 @@ export const ApplicationsComponent = props => {
                             className='float-container value-delta-spread'
                         />
                     }
-                    <h3 className='section-title'>Applications</h3>
+                    <div className='section-header'>
+                        <h3 className='section-title'>Applications</h3>
+                        <Button
+                            title='Review applications'
+                            onClick={onClickReviewApplications}
+                            type='solid'
+                            priority={2}
+                        />
+                    </div>
                     <SearchableTable
-                        searchable={false}
+                        placeholder='Search by applicant name'
+                        searchable={true}
+                        searchText={data.searchText}
+                        onChangeSearchText={onChangeSearchText}
+                        onSubmitSearch={onSubmitCandidateNameSearch}
                         loading={props.loadingApplications}
                         tableHeaders={applicationHeaders}
                         tableRows={applicationsRows}
@@ -231,7 +286,6 @@ export const ApplicationsComponent = props => {
                         onClickPill={onClickPill}
                         page={props.applicationsPage}
                         pagesCount={props.applicationsPagesCount}
-                        onClickTableRow={onClickApplicationRow}
                         onClickDecrementPage={onClickDecrementApplicationsPage}
                         onClickIncrementPage={onClickIncrementApplicationsPage}
                         sortFilter={applicationsSortFilter}
@@ -286,6 +340,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     fetchApplicationStats,
     fetchApplications,
     setApplicationsPage,
+    addModal
 }, dispatch)
 
 export const Applications = connect(mapStateToProps, mapDispatchToProps)(ApplicationsComponent)

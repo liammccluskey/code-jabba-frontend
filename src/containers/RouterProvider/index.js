@@ -39,6 +39,7 @@ import { CandidateApplication } from '../../views/pages/CandidateApplication'
 import { Profile } from '../../views/pages/Profile'
 import { AdminAnalytics } from '../../views/pages/admin/AdminAnalytics'
 import { ContactUs } from '../../views/pages/ContactUs'
+import { ReviewApplications } from '../../views/pages/ReviewApplications'
 
 const router = createBrowserRouter([
     {
@@ -220,6 +221,11 @@ const router = createBrowserRouter([
     {
       path: '/users/:userID',
       element: <PrivateRoute element={<Profile />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/review-applications/:jobID',
+      element: <PrivateRoute element={<ReviewApplications />} />,
       errorElement: <ErrorElement />
     },
 

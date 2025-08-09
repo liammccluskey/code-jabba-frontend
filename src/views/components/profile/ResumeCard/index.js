@@ -9,13 +9,16 @@ import { IconButton } from '../../common/IconButton'
 export const ResumeCard = props => {
     const {
         isEditable,
-        resumeURL=null,
+        resumeURL,
 
         onClickEdit, // () => void
-        onClickViewResume, // () => void
 
         ...rest
     } = props
+
+    const onClickViewResume = () => {
+        window.open(resumeURL, '_blank')
+    }
 
     return (
         <Root className='float-container' {...rest}>
