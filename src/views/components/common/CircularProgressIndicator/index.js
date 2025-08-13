@@ -11,7 +11,7 @@ export const CircularProgressIndicatorComponent = props => {
         size = 100, 
         strokeWidth = 10,
         progressColor = props.theme.tint, 
-        backgroundColor = props.theme.bgc,
+        backgroundColor = props.theme.bc,
     } = props
 
     const radius = (size - strokeWidth) / 2
@@ -45,7 +45,7 @@ export const CircularProgressIndicatorComponent = props => {
                 y="50%"
                 textAnchor="middle"
                 dy=".3em"
-                fontSize={size * 0.2}
+                fontSize={size * 0.25}
                 fill={progressColor}
             >
                 {`${countCompleted} / ${countTotal}`}

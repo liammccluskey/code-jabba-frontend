@@ -64,7 +64,7 @@ export const ProjectCardComponent = props => {
     }
 
     return (
-        <Root className={`float-container ${props.isMobile && 'mobile'}`} {...rest}>
+        <Root className={`of-visible-float-container ${props.isMobile && 'mobile'}`} {...rest}>
             <div className='project-main-header'>
                 <h3>Projects</h3>
                 {isEditable ?

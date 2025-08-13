@@ -56,7 +56,7 @@ export const EducationCardComponent = props => {
     }
 
     return (
-        <Root className={`float-container ${props.isMobile && 'mobile'}`} {...rest}>
+        <Root className={`of-visible-float-container ${props.isMobile && 'mobile'}`} {...rest}>
             <div className='education-main-header'>
                 <h3>Education</h3>
                 {isEditable ?

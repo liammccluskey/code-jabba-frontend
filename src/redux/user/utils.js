@@ -1,6 +1,8 @@
-import {api, stringifyQuery} from '../../networking'
+import { deleteUser as deleteFirebaseUser } from 'firebase/auth'
 
-import { SubscriptionTiers } from './constants'
+import {api, stringifyQuery, getFirebaseErrorMessage} from '../../networking'
+// import { SubscriptionTiers } from './constants' // premium
+import { getFirebaseUser } from './selectors'
 
 // Networking
 
@@ -22,7 +24,7 @@ export const __fetchMongoUserBy_id = async _id => {
     }
 }
 
-export const __postMongoUser = async (firebaseUser, referralCode=undefined, isRecruiter) => {
+export const __postMongoUser = async (firebaseUser, isRecruiter) => {
     const {
         displayName,
         email,
@@ -32,14 +34,11 @@ export const __postMongoUser = async (firebaseUser, referralCode=undefined, isRe
 
     try {
         const res = await api.post('/users', {
-            user: {
-                displayName,
-                email,
-                photoURL,
-                uid,
-                isRecruiter
-            },
-            referralCode,
+            displayName,
+            email,
+            photoURL,
+            uid,
+            isRecruiter
         })
         return res
     } catch (error) {
@@ -80,6 +79,18 @@ export const __deleteMongoUser = async (uid, _id) => {
         return res
     } catch (error) {
         throw(error)
+    }
+}
+
+export const __deleteFirebaseUser = async firebaseUser => {
+
+    if (!firebaseUser) throw Error('No firebase user.')
+
+    try {
+        await deleteFirebaseUser(firebaseUser)
+    } catch (error) {
+        const errorMessage = getFirebaseErrorMessage(error)
+        throw Error(errorMessage)
     }
 }
 

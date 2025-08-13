@@ -117,7 +117,7 @@ const Root = styled.div`
         border: 1px solid clear;
     }
     &.terror {
-        background-color: clear;
+        background-color: transparent;
         color: ${p => p.theme.error};
         border: 1px solid clear;
     }

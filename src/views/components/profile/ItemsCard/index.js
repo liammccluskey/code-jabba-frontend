@@ -5,7 +5,7 @@ import { IconButton } from '../../common/IconButton'
 
 export const ItemsCard = props => {
     const {
-        title, // string
+        title='', // string
         includedItems=[], // [String]
         excludedItems=[], // [String]
         extraItems=[], // [String]
@@ -23,19 +23,22 @@ export const ItemsCard = props => {
     }
 
     return (
-        <Root className='float-container' {...rest}>
-            <div className='items-header'>
-                <h3>{title}</h3>
-                {isEditable ?
-                    <IconButton
-                        icon='bi-pencil'
-                        size='s'
-                        color='tint'
-                        onClick={onClickEdit}
-                    />
-                    : null
-                }
-            </div>
+        <Root className='of-visible-float-container' {...rest}>
+            {title ? 
+                <div className='items-header'>
+                    <h3>{title}</h3>
+                    {isEditable ?
+                        <IconButton
+                            icon='bi-pencil'
+                            size='s'
+                            color='tint'
+                            onClick={onClickEdit}
+                        />
+                        : null
+                    }
+                </div>
+                : null
+            }
             {sortedItems.included.map( item => (
                 <div className='item-container' key={item}>
                     <i className='bi-check-circle-fill included-icon' />
@@ -44,7 +47,7 @@ export const ItemsCard = props => {
             ))}
             {sortedItems.excluded.map( item => (
                 <div className='item-container' key={item}>
-                    <i className='bi-check-circle-fill included-icon' />
+                    <i className='bi-x-circle-fill excluded-icon' />
                     <p>{item}</p>
                 </div>
             ))}

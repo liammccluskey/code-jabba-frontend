@@ -141,28 +141,6 @@ export const DashboardComponent = props => {
         {title: 'Accepted', value: props.candidateApplicationStats.acceptedCount, percentDelta: props.candidateApplicationStats.acceptedPercentDelta},
     ]
 
-    const showRequirementsModal = () => props.addModal(ModalTypes.CONFIRM, {
-        title: props.isRecruiterMode ? 'Job post requirements' : 'Application requirements',
-        message: props.isRecruiterMode ? 'You must complete the todo items before you can post jobs.' : 'You must complete the todo items before you can apply to jobs.',
-        confirmButtonTitle: 'Go to dashboard',
-        onConfirm: onSuccess => {
-            navigate('/dashboard')
-            onSuccess()
-        }
-    })
-
-    const canPerformAction = () => {
-        if (props.isRecruiterMode) {
-            return props.mongoUser.canPostJobs
-        } else {
-            return props.mongoUser.canApplyToJobs
-        }
-    }
-
-    useEffect(() => {
-        !canPerformAction() && showRequirementsModal()
-    }, [])
-
     useEffect(() => {
         props.fetchApplicationsHeatmap()
     }, [props.isRecruiterMode])
@@ -430,8 +408,7 @@ export const DashboardComponent = props => {
     const todoItems = props.isRecruiterMode ?
         [
             [
-                {number: 1, title: 'Complete general information', onClick: onClickEditGeneral, isComplete: props.mongoUser.generalCompleted},
-                {number: 3, title: 'Upload at least 1 education', onClick: onClickEditEducation, isComplete: props.mongoUser.educationCompleted}
+                {number: 1, title: 'Upload at least 1 education', onClick: onClickEditEducation, isComplete: props.mongoUser.educationCompleted}
             ],
             [
                 {number: 2, title: 'Complete socials information', onClick: onClickEditSocials, isComplete: props.mongoUser.socialsCompleted},

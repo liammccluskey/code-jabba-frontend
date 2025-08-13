@@ -12,6 +12,8 @@ export const QuestionsCardComponent = props => {
     const {
         questions=[], // [{title, answer, id}]
         isEditable,
+
+        ...rest
     } = props
 
     const onClickEdit = () => {
@@ -19,7 +21,7 @@ export const QuestionsCardComponent = props => {
     }
 
     return (
-        <Root className={`float-container ${props.isMobile && 'mobile'}`}>
+        <Root className={`of-visible-float-container ${props.isMobile && 'mobile'}`} {...rest}>
             <div className='questions-header'>
                 <h3>Questions</h3>
                 {isEditable ?

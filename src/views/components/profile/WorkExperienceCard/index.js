@@ -61,7 +61,7 @@ export const WorkExperienceCardComponent = props => {
     }
 
     return (
-        <Root className={`float-container ${props.isMobile && 'mobile'}`} {...rest}>
+        <Root className={`of-visible-float-container ${props.isMobile && 'mobile'}`} {...rest}>
             <div className='work-experience-main-header'>
                 <h3>Work Experience</h3>
                 {isEditable ?

@@ -2,52 +2,73 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { CircularProgressIndicator } from '../../common/CircularProgressIndicator'
+import { ItemsCard } from '../../profile/ItemsCard'
 
 export const ApplicationSummaryCard = props => {
     const {
-        totalLanguagesCount,
-        totalSkillsCount,
-        missingLanguagesCount,
-        missingSkillsCount,
-        applicantProfessionalYOE,
-        applicantInternshipCount,
+        displayName,
+        includedLanguages, // [string]
+        excludedLanguages, // [string]
+        includedSkills, // [string]
+        excludedSkills, // [string]
+        applicantProfessionalYOE, // number
+        applicantInternshipCount, // number
 
         ...rest
     } = props
 
     return (
-        <Root className='float-container' {...rest}>
+        <Root className='of-visible-float-container' {...rest}>
             <div className='summary-header'>
                 <h3>Application Summary</h3>
+            </div>
+            <div className='line-item-container'>
+                <label>Name:</label>
+                <p>{displayName}</p>
             </div>
             <div className='line-item-container'>
                 <label>Professional YOE:</label>
                 <p>{applicantProfessionalYOE}</p>
             </div>
-            <div className='line-item-container' style={{marginBottom: 15}}>
+            <div className='line-item-container'>
                 <label>Internship count:</label>
                 <p>{applicantInternshipCount}</p>
             </div>
             <div className='split-section-container'>
-                <div className='match-container'>
+                <div className='match-container' style={{marginRight: 10}}>
                     <label>Languages match:</label>
-                    <CircularProgressIndicator
-                        percentage={80}
-                        size={100}
-                        strokeWidth={10}
-                        countCompleted={totalLanguagesCount - missingLanguagesCount}
-                        countTotal={totalLanguagesCount}
-                    />
+                    <div className='metrics-container'>
+                        <ItemsCard
+                            includedItems={includedLanguages}
+                            excludedItems={excludedLanguages}
+                            isEditable={false}
+                            style={{padding: 0, border: 'none'}}
+                        />
+                        <CircularProgressIndicator
+                            size={75}
+                            strokeWidth={7}
+                            countCompleted={includedLanguages.length}
+                            countTotal={includedLanguages.length + excludedLanguages.length}
+                        />
+                    </div>
                 </div>
+                <div className='match-container-divider' />
                 <div className='match-container'>
                     <label>Skills match:</label>
-                    <CircularProgressIndicator
-                        percentage={50}
-                        size={100}
-                        strokeWidth={10}
-                        countCompleted={totalSkillsCount - missingSkillsCount}
-                        countTotal={totalSkillsCount}
-                    />
+                    <div className='metrics-container'>
+                        <ItemsCard
+                            includedItems={includedSkills}
+                            excludedItems={excludedSkills}
+                            isEditable={false}
+                            style={{padding: 0, border: 'none'}}
+                        />
+                        <CircularProgressIndicator
+                            size={75}
+                            strokeWidth={7}
+                            countCompleted={includedSkills.length}
+                            countTotal={includedSkills.length + excludedSkills.length}
+                        />
+                    </div>
                 </div>
             </div>
         </Root>
@@ -73,6 +94,7 @@ const Root = styled.div`
         align-items: center;
         justify-content: space-between;
         margin-bottom: 7px;
+        width: calc(50% - 15px);
     }
 
     & label {
@@ -89,11 +111,26 @@ const Root = styled.div`
     & .match-container {
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
         justify-content: flex-start;
         flex: 1;
     }
     & .match-container label {
-        margin-bottom: 7px;
+        margin-bottom: 10px;
+    }
+
+    & .metrics-container {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+
+    & .match-container-divider {
+        width: 1px;
+        height: 100%;
+        background-color: ${p => p.theme.bc};
+        margin-right: 20px;
+        margin-left: 20px;
     }
 `

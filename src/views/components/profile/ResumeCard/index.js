@@ -21,7 +21,7 @@ export const ResumeCard = props => {
     }
 
     return (
-        <Root className='float-container' {...rest}>
+        <Root className='of-visible-float-container' {...rest}>
             <div className='resume-header'>
                 <h3>Resume</h3>
                 {isEditable ?

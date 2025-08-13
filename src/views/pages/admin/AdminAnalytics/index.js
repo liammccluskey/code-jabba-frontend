@@ -137,6 +137,7 @@ export const AdminAnalyticsComponent = props => {
                         sortFilters={AllTimeframesSortFilters}
                         onChangeSortFilter={onChangeEventsTimeframe}
                         onChangeSearchText={onChangeEventsSearchText}
+                        paginated={false}
                     />
                 </Container>
             </BodyContainer>

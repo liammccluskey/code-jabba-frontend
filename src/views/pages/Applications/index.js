@@ -181,15 +181,15 @@ export const ApplicationsComponent = props => {
     }
 
     const onClickReviewApplications = () => {
-        // if (props.job && props.job.applicationType !== 'easy-apply') {
-        //     props.addModal(ModalTypes.CONFIRM, {
-        //         title: 'Application review',
-        //         message: "Only jobs whose application type is 'Easy apply' are eligible for application review.",
-        //         confirmButtonTitle: 'Okay',
-        //         onConfirm: onSuccess => onSuccess()
-        //     })
-        // }
-        // else navigate(`/review-applications/${jobID}`)
+        if (props.job && props.job.applicationType !== 'easy-apply') {
+            props.addModal(ModalTypes.CONFIRM, {
+                title: 'Application review',
+                message: "Only jobs whose application type is 'Easy apply' are eligible for application review.",
+                confirmButtonTitle: 'Okay',
+                onConfirm: onSuccess => onSuccess()
+            })
+        }
+        else navigate(`/review-applications/${jobID}`)
 
         navigate(`/review-applications/${jobID}`)
     }

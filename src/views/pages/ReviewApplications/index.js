@@ -29,6 +29,7 @@ import {
     getInternshipCount, 
     getExcludedAndIncludedItems 
 } from './utils'
+import { Questions } from '../../components/job/EditJobCard'
 
 import { PageContainer } from '../../components/common/PageContainer'
 import { MainHeader } from '../../components/headers/MainHeader'
@@ -109,18 +110,37 @@ export const ReviewApplicationsComponent = props => {
         const {candidate} = props.application
         const {job} = props.application
 
-        // console.log(JSON.stringify(
-        //     {candidate, job}
-        // , null, 4))
-
         const languagesInfo = getExcludedAndIncludedItems(candidate.languages, job.languages)
         const skillsInfo = getExcludedAndIncludedItems(candidate.skills, job.skills)
 
-        return {
+        const info = {
             languages: {has: languagesInfo.included, missing: languagesInfo.excluded},
             skills: {has: skillsInfo.included, missing: skillsInfo.excluded},
             yoe: getYOE(candidate.workExperiences),
             internshipCount: getInternshipCount(candidate.workExperiences)
+        }
+
+        return info
+    }, [props.application])
+    const questionsAndAnswers = useMemo(() => {
+        if (!props.application || !props.application.job.questions) return []
+        else {
+            const jobQuestionIDs = {}
+            props.application.job.questions.forEach(qID => jobQuestionIDs[qID] = 1)
+
+            return Questions.filter(q => (q.id in jobQuestionIDs))
+                .map(({id, title, inputType, options}) => {
+                    const question = props.application.candidate.questions.find(q => q.id === id)
+                    return {
+                        id,
+                        title,
+                        answer: question ?
+                            inputType === 'select' ?
+                                options.find(option => option.id === question.answer).title
+                                : question.answer
+                            : 'No answer'
+                    }
+                })
         }
     }, [props.application])
 
@@ -264,12 +284,14 @@ export const ReviewApplicationsComponent = props => {
         ( 
             !props.isRecruiterMode || 
             props.applicationNotFound ||
-            !props.loadingApplication && props.application && props.application.job.recruiter._id !== props.mongoUser._id
+            !props.loadingApplication && 
+                props.application && 
+                props.application.job.recruiter._id !== props.mongoUser._id
         ) ?
             <ErrorElement />
         : <PageContainer>
             <MainHeader />
-            <Subheader title='Review applications' />
+            <Subheader title={`Review applications - ${props.application ? props.application.job.title : ''}`} />
             <FixedBodyContainer
                 className='subheader-without-links'
                 style={{paddingTop: 20, paddingBottom: 0}}
@@ -352,24 +374,68 @@ export const ReviewApplicationsComponent = props => {
                             </div>
                             {!props.loadingApplication && props.application && selectedApplicationID ? 
                                 <div className='application-container'>
+                                    <div className='header-container'>
+                                        <h3>Application</h3>
+                                    </div>
+                                    <ApplicationSummaryCard
+                                        displayName={props.application.candidate.displayName}
+                                        includedLanguages={computedApplicantInformation.languages.has}
+                                        excludedLanguages={computedApplicantInformation.languages.missing}
+                                        includedSkills={computedApplicantInformation.skills.has}
+                                        excludedSkills={computedApplicantInformation.skills.missing}
+                                        applicantProfessionalYOE={computedApplicantInformation.yoe}
+                                        applicantInternshipCount={computedApplicantInformation.internshipCount}
+                                        style={{marginBottom: 30}}
+                                    />
+                                    <ResumeCard 
+                                        isEditable={false}
+                                        resumeURL={props.application.candidate.resumeURL}
+                                        style={{marginBottom: 30}}
+                                    />
                                     <div className='horizontal-section-container'>
-                                        <ApplicationSummaryCard
-                                            totalLanguagesCount={props.application.job.languages.length}
-                                            totalSkillsCount={props.application.job.skills.length}
-                                            missingLanguagesCount={computedApplicantInformation.languages.missing.length}
-                                            missingSkillsCount={computedApplicantInformation.skills.missing.length}
-                                            applicantProfessionalYOE={computedApplicantInformation.yoe}
-                                            applicantInternshipCount={computedApplicantInformation.internshipCount}
+                                        <GeneralCard
+                                            email={props.application.candidate.email}
+                                            phoneNumber={props.application.candidate.phoneNumber}
+                                            address={props.application.candidate.address}
+                                            birthdayDay={props.application.candidate.birthdayDay}
+                                            birthdayMonth={props.application.candidate.birthdayMonth}
+                                            birthdayYear={props.application.candidate.birthdayYear}
+                                            isEditable={false}
+                                            showSensitiveInformation={true}
                                             style={{flex: 1, marginRight: 15}}
                                         />
-                                        <ResumeCard 
+                                        <SocialsCard
+                                            linkedInURL={props.application.candidate.linkedInURL}
+                                            githubURL={props.application.candidate.githubURL}
+                                            leetcodeURL={props.application.candidate.leetcodeURL}
+                                            portfolioURL={props.application.candidate.portfolioURL}
                                             isEditable={false}
-                                            resumeURL={props.application.candidate.resumeURL}
                                             style={{flex: 1, marginLeft: 15}}
                                         />
                                     </div>
-                                    <div className='horizontal-section-container'>
-                                    </div>
+                                    <EducationCard
+                                        educations={props.application.candidate.educations}
+                                        isEditable={false}
+                                        style={{marginBottom: 30, flex: 1}}
+                                    />
+                                    <WorkExperienceCard
+                                        workExperiences={props.application.candidate.workExperiences}
+                                        isEditable={false}
+                                        style={{marginBottom: 30}}
+                                    />
+                                    {props.application.job.questions.length ?
+                                        <QuestionsCard
+                                            questions={questionsAndAnswers}
+                                            isEditable={false}
+                                            style={{marginBottom: 30}}
+                                        />
+                                        : null
+                                    }
+                                    <ProjectCard
+                                        projects={props.application.candidate.projects}
+                                        isEditable={false}
+                                        style={{marginBottom: 50}}
+                                    />
                                 </div>
                                 : selectedApplicationID ? 
                                     <div className='loading-applications-container'>
@@ -484,7 +550,7 @@ const Root = styled.div`
         width: 350px;
         min-width: 350px;
         margin-right: 30px;
-        margin-bottom: 50px;
+        margin-bottom: 30px;
         box-sizing: border-box;
     }
 
@@ -521,9 +587,11 @@ const Root = styled.div`
         flex-direction: column;
         align-items: stretch;
         justify-content: flex-start;
-        min-height: calc(100% - 100px);
-        max-height: calc(100% - 100px);
-        padding-bottom: 20px;
+        min-height: 100%;
+        max-height: 100%;
+        padding-bottom: 30px;
+        box-sizing: border-box;
+        padding-bottom: 0px;
         overflow: scroll;
         flex: 1;
     }
@@ -533,6 +601,11 @@ const Root = styled.div`
         flex-direction: row;
         align-items: stretch;
         justify-content: flex-start;
+        margin-bottom: 30px;
+    }
+
+    & .header-container {
+        margin-bottom: 15px;
     }
 `
 const mapStateToProps = state => ({

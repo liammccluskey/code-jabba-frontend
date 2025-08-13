@@ -91,7 +91,7 @@ const Container = styled.div`
     flex-direction: column;
     align-items: stretch;
 
-    height: 200px;
+    height: auto;
 `
 const mapStateToProps = state => ({
     mongoUser: getMongoUser(state),

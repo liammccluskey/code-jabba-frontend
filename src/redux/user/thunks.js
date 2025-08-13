@@ -1,11 +1,11 @@
-import {updateProfile, updateEmail, signOut, deleteUser as deleteFirebaseUser} from 'firebase/auth'
+import {updateProfile, updateEmail, signOut} from 'firebase/auth'
 import {ref, uploadBytes, getDownloadURL} from 'firebase/storage'
 
 import { SubscriptionTiers } from './constants'
 import * as UserActions from './actions'
 import * as ThemeActions from '../theme'
 import * as UserUtils from './utils'
-import { getFirebaseUser, getIsRecruiterMode, getMongoUser } from './selectors'
+import { getFirebaseUser, getMongoUser } from './selectors'
 import {api, auth, storage, getFirebaseErrorMessage} from '../../networking'
 import { addMessage } from '../communication'
 
@@ -48,21 +48,19 @@ export const fetchThisMongoUser = (
 
 export const postMongoUser = (
     firebaseUser,
-    referralCode=undefined,
+    isRecruiter,
     onSuccess,
     onFailure
-) => async (dispatch, getState) => {
-    const state = getState()
-    const isRecruiter = getIsRecruiterMode(state)
-    
+) => async (dispatch) => {
     try {
-        const res = await UserUtils.__postMongoUser(firebaseUser, referralCode, isRecruiter)
+        const res = await UserUtils.__postMongoUser(firebaseUser, isRecruiter)
         dispatch(addMessage(res.data.message))
         onSuccess()
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
+        UserUtils.__deleteFirebaseUser(firebaseUser)
         onFailure()
     }
 }
@@ -275,12 +273,8 @@ export const deleteUser = onSuccess => async (dispatch, getState) => {
     const firebaseUser = getFirebaseUser()
 
     try {
-        try {
-            await deleteFirebaseUser(firebaseUser)
-        } catch (error) {
-            const errorMessage = getFirebaseErrorMessage(error)
-            throw Error(errorMessage)
-        }
+        await UserUtils.__deleteFirebaseUser(firebaseUser)
+        
         const res = await UserUtils.__deleteMongoUser(firebaseUser.uid, _id)
         dispatch(addMessage(res.data.message))
         dispatch(signOutUser(onSuccess))

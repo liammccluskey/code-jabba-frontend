@@ -389,7 +389,8 @@ export const EditJobCardComponent = props => {
             onConfirm: onSuccess => {
                 navigate('/dashboard')
                 onSuccess()
-            }
+            },
+            onCancel: () => navigate(-1)
         })
     }
 
@@ -491,6 +492,15 @@ export const EditJobCardComponent = props => {
     useEffect(() => {
         setModified(getFormDataModified(formData, job))
     }, [formData])
+
+    useEffect(() => {
+        if (!formData.includeQuestions) {
+            setFormData(curr => ({
+                ...curr,
+                questions: []
+            }))
+        }
+    }, [formData.includeQuestions])
 
     // Utils
 

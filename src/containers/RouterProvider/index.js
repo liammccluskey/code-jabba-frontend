@@ -58,11 +58,6 @@ const router = createBrowserRouter([
       errorElement: <ErrorElement />
     },
     {
-      path: '/register',
-      element: <SignedOutRoute element={<Register />} />,
-      errorElement: <ErrorElement />
-    },
-    {
       path: '/reset',
       element: <SignedOutRoute element={<ResetPassword />} />,
       errorElement: <ErrorElement />

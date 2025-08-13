@@ -4,10 +4,6 @@ const getMonthsBetween = (startMonth, startYear, endMonth, endYear) => {
     const startDate = moment(`${startYear}-${startMonth}`, 'YYYY-M')
     const endDate = moment(`${endYear}-${endMonth}`, 'YYYY-M')
 
-    console.log(JSON.stringify(
-        {monthsbetween: endDate.diff(startDate, 'months')}
-    , null, 4))
-
     return endDate.diff(startDate, 'months')
 }
 
