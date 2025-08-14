@@ -39,11 +39,14 @@ export const fetchApplications = (filters, page, onSuccess = () => {}) => async 
     const applicationsPage = getApplicationsPage(state)
     const applicationsFilters = getApplicationsFilters(state)
 
+    console.log(JSON.stringify(
+        {filters, reduxFilters: applicationsFilters}
+    , null, 4))
+
     if (
         hasLoadedPageResults(page, applications, PageSizes.recruiterApplicationSearch) &&
         deepObjectEqual(filters, applicationsFilters)
     ) {
-        console.log('failed to fetch applications')
         dispatch(ApplicationActions.setApplicationsPage(page))
         onSuccess()
         return
@@ -70,8 +73,6 @@ export const fetchApplications = (filters, page, onSuccess = () => {}) => async 
         dispatch(ApplicationActions.setApplicationsPage(page))
         dispatch(ApplicationActions.setApplicationsFilters(filters))
         onSuccess()
-
-        console.log('did fetch applications')
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
@@ -125,4 +126,28 @@ export const fetchApplication = (applicationID) => async (dispatch, getState) =>
     }
 
     dispatch(ApplicationActions.setLoadingApplication(false))
+}
+
+export const updateApplicationStatus = (applicationID, updatedStatus, onSuccess, onFailure = () => {}) => async (dispatch, getState) => {
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        if (updatedStatus === 'viewed') {
+            dispatch(ApplicationActions.updateApplicationStatusLocally(applicationID, updatedStatus))
+            return
+        }
+
+        const res = await api.patch(`/applications/${applicationID}`, {
+            status: updatedStatus,
+            userID: mongoUser._id
+        })
+        dispatch(addMessage(res.data.message))
+        onSuccess()
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        onFailure()
+    }
 }

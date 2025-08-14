@@ -18,7 +18,8 @@ import {
 
     fetchApplications,
     setApplicationsPage,
-    fetchApplication
+    fetchApplication,
+    updateApplicationStatus
 } from '../../../redux/application'
 import { SortFilters } from '../admin/BugReports'
 import { PageSizes, getPaginatedDataForCurrentPage } from '../../../networking'
@@ -30,6 +31,9 @@ import {
     getExcludedAndIncludedItems 
 } from './utils'
 import { Questions } from '../../components/job/EditJobCard'
+import { getApplicationStatusPillColor } from '../../components/job/ApplicationFeedCard/utils'
+import { capitalizeWords } from '../../../utils'
+import { addMessage } from '../../../redux/communication'
 
 import { PageContainer } from '../../components/common/PageContainer'
 import { MainHeader } from '../../components/headers/MainHeader'
@@ -42,7 +46,6 @@ import { Pill } from '../../components/common/Pill'
 import { Loading } from '../../components/common/Loading'
 import { ApplicationFeedCard } from '../../components/job/ApplicationFeedCard'
 import { Button } from '../../components/common/Button'
-import { ItemsCard } from '../../components/profile/ItemsCard'
 import { GeneralCard } from '../../components/profile/GeneralCard'
 import { SocialsCard } from '../../components/profile/SocialsCard'
 import { EducationCard } from '../../components/profile/EducationCard'
@@ -51,6 +54,7 @@ import { ProjectCard } from '../../components/profile/ProjectCard'
 import { ResumeCard } from '../../components/profile/ResumeCard'
 import { QuestionsCard } from '../../components/profile/QuestionsCard'
 import { ApplicationSummaryCard } from '../../components/job/ApplicationSummaryCard'
+import { PillLabel } from '../../components/common/PillLabel'
 
 export const ReviewApplicationsComponent = props => {
     const {
@@ -68,8 +72,8 @@ export const ReviewApplicationsComponent = props => {
         rejectedPillActive: props.applicationsFilters && props.applicationsFilters.status === 'rejected',
         acceptedPillActive: props.applicationsFilters && props.applicationsFilters.status === 'accepted',
 
-        searchText: props.applicationsFilters && props.applicationsFilters.searchText
-            ? props.applicationsFilters.searchText : '',
+        searchText: props.applicationsFilters && props.applicationsFilters.candidateName
+            ? props.applicationsFilters.candidateName : '',
     })
     const [applicationsSortFilter, setApplicationsSortFilter] = useState(
         props.applicationsFilters ? props.applicationsFilters.sortBy : SortFilters[0].filter
@@ -98,6 +102,7 @@ export const ReviewApplicationsComponent = props => {
     }, [props.applications, props.applicationsPage])
     const [didShowCantReviewApplicationsModal, setDidShowCantReviewApplicationsModal] = useState(false)
     const computedApplicantInformation = useMemo(() => {
+        
         if (!props.application) {
             return {
                 languages: {has: [], missing: []},
@@ -157,7 +162,7 @@ export const ReviewApplicationsComponent = props => {
 
     useEffect(() => {
         selectedApplicationID && props.fetchApplication(selectedApplicationID)
-    }, [selectedApplicationID, props.applications])
+    }, [selectedApplicationID])
 
     useEffect(() => {
         setSelectedApplicationID(applicationsForCurrentPage.length ? 
@@ -184,6 +189,12 @@ export const ReviewApplicationsComponent = props => {
             setDidShowCantReviewApplicationsModal(true)
         }
     }, [props.application])
+
+    useEffect(() => {
+        if (selectedApplicationID && props.application && props.application.status === 'viewed') {
+            props.updateApplicationStatus(selectedApplicationID, 'viewed')
+        } 
+    }, [selectedApplicationID])
 
     // Utils
 
@@ -271,11 +282,39 @@ export const ReviewApplicationsComponent = props => {
     }
 
     const onClickAccept = () => {
+        if (!props.application) {
+            props.addMessage('Please wait for the application to load.')
+            return
+        }
 
+        props.addModal(ModalTypes.UPDATE_APPLICATION_STATUS, {
+            isAccept: true,
+            jobTitle: props.application.job.title,
+            jobCompanyName: props.application.job.company.name,
+            candidateName: props.application.candidate.displayName,
+            recruiterName: props.application.job.recruiter.displayName,
+            onUpdateStatus: (onSuccess, onFailure) => {
+                props.updateApplicationStatus(selectedApplicationID, 'accepted', onSuccess, onFailure)
+            }
+        })
     }
 
     const onClickReject = () => {
+        if (!props.application) {
+            props.addMessage('Please wait for the application to load.')
+            return
+        }
 
+        props.addModal(ModalTypes.UPDATE_APPLICATION_STATUS, {
+            isAccept: false,
+            jobTitle: props.application.job.title,
+            jobCompanyName: props.application.job.company.name,
+            candidateName: props.application.candidate.displayName,
+            recruiterName: props.application.job.recruiter.displayName,
+            onUpdateStatus: (onSuccess, onFailure) => {
+                props.updateApplicationStatus(selectedApplicationID, 'rejected', onSuccess, onFailure)
+            }
+        })
     }
 
     // Render
@@ -375,7 +414,12 @@ export const ReviewApplicationsComponent = props => {
                             {!props.loadingApplication && props.application && selectedApplicationID ? 
                                 <div className='application-container'>
                                     <div className='header-container'>
-                                        <h3>Application</h3>
+                                        <h3 style={{marginRight: 10}}>Application</h3>
+                                        <PillLabel
+                                            title={capitalizeWords(props.application.status)}
+                                            color={getApplicationStatusPillColor(props.application.status)}
+                                            size='l'
+                                        />
                                     </div>
                                     <ApplicationSummaryCard
                                         displayName={props.application.candidate.displayName}
@@ -605,6 +649,10 @@ const Root = styled.div`
     }
 
     & .header-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
         margin-bottom: 15px;
     }
 `
@@ -625,7 +673,9 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     fetchApplication,
     fetchApplications,
     setApplicationsPage,
+    updateApplicationStatus,
     addModal,
+    addMessage,
 }, dispatch)
 
 export const ReviewApplications = connect(mapStateToProps, mapDispatchToProps)(ReviewApplicationsComponent)

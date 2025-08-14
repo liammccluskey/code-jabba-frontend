@@ -13,7 +13,6 @@
   padding: 0px 0px;
   
   font-family: var(--font-family);
-  /* font-family: 'Mulish'; */
 }
 
 body {
@@ -72,6 +71,7 @@ th {
   --duration-animation-medium: 0.5s;
   --duration-animation-long: 2s;
   --font-family: 'Nunito Sans', sans-serif;
+  /* --font-family: 'Mulish'; */
 }
 
 @media only screen and (max-width: 800px) {

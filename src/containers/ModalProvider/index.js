@@ -19,6 +19,7 @@ import { EditProjectModal } from '../../views/components/profile/modals/EditProj
 import { EditQuestionsModal } from '../../views/components/profile/modals/EditQuestionsModal'
 import { JobFiltersModal } from '../../views/components/job/modals/JobFiltersModal'
 import { SaveFilterModal } from '../../views/components/job/modals/SaveFilterModal'
+import { UpdateApplicationStatusModal } from '../../views/components/job/modals/UpdateApplicationStatusModal/index.js'
 
 export const ModalTypes = {
     CONFIRM: 'confirm',
@@ -37,7 +38,7 @@ export const ModalTypes = {
     EDIT_QUESTIONS: 'edit-questions',
     JOB_FILTERS: 'job-filters',
     SAVE_FILTER: 'save-filter',
-
+    UPDATE_APPLICATION_STATUS: 'update-application-status',
 }
 
 export const ModalProviderComponent = props => {
@@ -79,6 +80,8 @@ export const ModalProviderComponent = props => {
                 return <JobFiltersModal {...modalProps} key={modalID} />
             case ModalTypes.SAVE_FILTER:
                 return <SaveFilterModal {...modalProps} key={modalID} />
+            case ModalTypes.UPDATE_APPLICATION_STATUS:
+                return <UpdateApplicationStatusModal {...modalProps} key={modalID} />
             default:
                 return null
         }

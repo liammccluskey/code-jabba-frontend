@@ -49,3 +49,8 @@ export const setApplicationsFilters = filters => ({
     type: Types.setApplicationsFilters,
     value: filters
 })
+
+export const updateApplicationStatusLocally = (applicationID, updatedStatus) => ({
+    type: Types.updateApplicationStatusLocally,
+    value: {applicationID, updatedStatus}
+})

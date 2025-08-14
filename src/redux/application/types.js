@@ -9,4 +9,5 @@ export const ActionTypes = {
     setApplicationStats: 'application/SET_APPLICATION_STATS',
     setLoadingApplicationStats: 'application/SET_LOADING_APPLICATION_STATS',
     setApplicationsFilters: 'application/SET_APPLICATION_FILTERS',
+    updateApplicationStatusLocally: 'application/UPDATE_APPLICATION_STATUS_LOCALLY',
 }

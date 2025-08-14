@@ -2,9 +2,10 @@ import React from 'react'
 import styled from 'styled-components'
 import moment from 'moment'
 
-import { Tooltip } from '../../common/Tooltip'
+import { capitalizeWords } from '../../../../utils'
+import { getApplicationStatusPillColor } from './utils'
+
 import { PillLabel } from '../../common/PillLabel'
-import { PageLink } from '../../common/PageLink'
 
 export const ApplicationFeedCard = props => {
     const {
@@ -18,11 +19,29 @@ export const ApplicationFeedCard = props => {
         ...rest
     } = props
 
+    // Utils
+
+    const getStatusUpdateTimestammp = () => {
+        const statusUpdateFieldName = application.status === 'applied' ?
+            'createdAt'
+            : `${application.status}At`
+
+        return moment(application[statusUpdateFieldName]).fromNow()
+    }
+
     return (
         <Root {...rest} onClick={onClick} className={`oh-dark ${selected && 'selected'}`}>
             <div className='header'>
-                <p>{candidate.displayName}</p>
-                <p className='time-applied-text'>{moment(application.createdAt).fromNow()}</p>
+                <h4>{candidate.displayName}</h4>
+                <PillLabel
+                    title={capitalizeWords(application.status)}
+                    color={getApplicationStatusPillColor(application.status)}
+                    size='m'
+                />
+            </div>
+            <div className='card-row'>
+                <p>{application.candidate.email}</p>
+                <p className='timestamp-text'>{getStatusUpdateTimestammp()}</p>
             </div>
             
         </Root>
@@ -47,10 +66,17 @@ const Root = styled.div`
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
     }
 
-    & .time-applied-text {
+    & .timestamp-text {
         color: ${p => p.theme.textSecondary};
+    }
+
+    & .card-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
     }
 `

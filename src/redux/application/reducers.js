@@ -97,6 +97,14 @@ export const applicationReducer = (state = ApplicationState, action) => {
                 }
             }
         }
+        case Types.updateApplicationStatusLocally:
+            return {
+                ...state,
+                application: {
+                    ...state.application,
+                    status: action.value.updatedStatus,
+                },
+            }
         default:
             return state
     }

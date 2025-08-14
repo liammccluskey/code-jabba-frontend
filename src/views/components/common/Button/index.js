@@ -117,12 +117,12 @@ const Root = styled.div`
         border: 1px solid clear;
     }
     &.terror {
-        background-color: transparent;
+        background-color: clear;
         color: ${p => p.theme.error};
         border: 1px solid clear;
     }
     &.tdanger {
-        background-color: clear;
+        background-color: ${p => p.theme.bgcLight};
         color: ${p => p.theme.brightRed};
         border: 1px solid ${p => p.theme.bc};
     }

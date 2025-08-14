@@ -46,7 +46,7 @@ export const ApplicationSummaryCard = props => {
                         />
                         <CircularProgressIndicator
                             size={75}
-                            strokeWidth={7}
+                            strokeWidth={6}
                             countCompleted={includedLanguages.length}
                             countTotal={includedLanguages.length + excludedLanguages.length}
                         />
@@ -64,7 +64,7 @@ export const ApplicationSummaryCard = props => {
                         />
                         <CircularProgressIndicator
                             size={75}
-                            strokeWidth={7}
+                            strokeWidth={6}
                             countCompleted={includedSkills.length}
                             countTotal={includedSkills.length + excludedSkills.length}
                         />
