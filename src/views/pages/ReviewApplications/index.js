@@ -216,6 +216,29 @@ export const ReviewApplicationsComponent = props => {
         }))
     }
 
+    const showUpdateApplicationStatusModal = updatedStatus => {
+        if (!props.application) {
+            props.addMessage('Please wait for the application to load.')
+            return
+        }
+
+        props.addModal(ModalTypes.UPDATE_APPLICATION_STATUS, {
+            isAccept: updatedStatus === 'accepted',
+            jobTitle: props.application.job.title,
+            jobCompanyName: props.application.job.company.name,
+            candidateName: props.application.candidate.displayName,
+            recruiterName: props.application.job.recruiter.displayName,
+            onUpdateStatus: (onSuccess, onFailure) => {
+                const onUpdateStatusSuccess = () => {
+                    props.fetchApplication(selectedApplicationID)
+                    onSuccess()
+                }
+
+                props.updateApplicationStatus(selectedApplicationID, updatedStatus, onUpdateStatusSuccess, onFailure)
+            }
+        })
+    }
+
     // Direct
 
     const onClickPill = pillID => {
@@ -282,39 +305,11 @@ export const ReviewApplicationsComponent = props => {
     }
 
     const onClickAccept = () => {
-        if (!props.application) {
-            props.addMessage('Please wait for the application to load.')
-            return
-        }
-
-        props.addModal(ModalTypes.UPDATE_APPLICATION_STATUS, {
-            isAccept: true,
-            jobTitle: props.application.job.title,
-            jobCompanyName: props.application.job.company.name,
-            candidateName: props.application.candidate.displayName,
-            recruiterName: props.application.job.recruiter.displayName,
-            onUpdateStatus: (onSuccess, onFailure) => {
-                props.updateApplicationStatus(selectedApplicationID, 'accepted', onSuccess, onFailure)
-            }
-        })
+        showUpdateApplicationStatusModal('accepted')
     }
 
     const onClickReject = () => {
-        if (!props.application) {
-            props.addMessage('Please wait for the application to load.')
-            return
-        }
-
-        props.addModal(ModalTypes.UPDATE_APPLICATION_STATUS, {
-            isAccept: false,
-            jobTitle: props.application.job.title,
-            jobCompanyName: props.application.job.company.name,
-            candidateName: props.application.candidate.displayName,
-            recruiterName: props.application.job.recruiter.displayName,
-            onUpdateStatus: (onSuccess, onFailure) => {
-                props.updateApplicationStatus(selectedApplicationID, 'rejected', onSuccess, onFailure)
-            }
-        })
+        showUpdateApplicationStatusModal('rejected')
     }
 
     // Render

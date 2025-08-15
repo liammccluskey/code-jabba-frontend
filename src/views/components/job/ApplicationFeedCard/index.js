@@ -22,11 +22,7 @@ export const ApplicationFeedCard = props => {
     // Utils
 
     const getStatusUpdateTimestammp = () => {
-        const statusUpdateFieldName = application.status === 'applied' ?
-            'createdAt'
-            : `${application.status}At`
-
-        return moment(application[statusUpdateFieldName]).fromNow()
+        return moment(application.createdAt).fromNow()
     }
 
     return (

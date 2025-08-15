@@ -22,7 +22,7 @@ export const addNotificationsData = data => ({
 
 export const __markNotificationAsRead = notificationID => ({
     type: Types.MARK_NOTIFICATION_AS_READ,
-    notificationID
+    value: notificationID
 })
 
 export const setLoadingNotifications = loading => ({

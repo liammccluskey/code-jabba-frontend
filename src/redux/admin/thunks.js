@@ -71,54 +71,6 @@ export const makeUserSuperAdmin = (adminUserID, onSuccess, onFailure) => async (
     }
 }
 
-export const postAppAnnouncementToAllUsers = (announcementData, onSuccess, onFailure) => async (dispatch, getState) => {
-    const state = getState()
-    const mongoUser = getMongoUser(state)
-
-    try {
-        const res = await api.post(
-            '/admin/notifications/appannouncement',
-            {
-                ...announcementData,
-                creatorName: mongoUser.displayName
-            },
-            AdminUtils.getAdminRequestConfig(mongoUser)
-        )
-        dispatch(addMessage(res.data.message))
-        dispatch(fetchNotifications(1))
-        onSuccess()
-    } catch (error) {
-        const errorMessage = error.response ? error.response.data.message : error.message
-        console.log(errorMessage)
-        dispatch(addMessage(errorMessage, true))
-        onFailure()
-    }
-}
-
-export const postEmailAnnouncementToAllUsers = (announcementData, onSuccess, onFailure) => async (dispatch, getState) => {
-    const state = getState()
-    const mongoUser = getMongoUser(state)
-
-    try {
-        const res = await api.post(
-            '/admin/notifications/emailannouncement',
-            {
-                ...announcementData,
-                creatorName: mongoUser.displayName
-            },
-            AdminUtils.getAdminRequestConfig(mongoUser)
-        )
-        dispatch(addMessage(res.data.message))
-        dispatch(fetchNotifications(1))
-        onSuccess()
-    } catch (error) {
-        const errorMessage = error.response ? error.response.data.message : error.message
-        console.log(errorMessage)
-        dispatch(addMessage(errorMessage, true))
-        onFailure()
-    }
-}
-
 export const createNewAdminUser = (userID, onSuccess, onFailure) => async (dispatch, getState) => {
     const state = getState()
     const mongoUser = getMongoUser(state)

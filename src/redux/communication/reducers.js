@@ -6,7 +6,7 @@ const CommunicationState = {
         loading: false,
         loadingFirstPage: false,
         payload: {
-            notifications: [], // [{{channelID, message, isRead, createdAt}]
+            notifications: [], // [{{channelID(social/general/null), sender(company/null), message, isRead, createdAt}]
             pagesCount: 0,
             canLoadMore: false,
             totalCount: 0,
@@ -16,7 +16,7 @@ const CommunicationState = {
         loading: false,
         loadingFirstPage: false,
         payload: {
-            notifications: [], // [{channelID, message, isRead, createdAt}]
+            notifications: [], // [{{channelID(social/general/null), sender(company/null), message, isRead, createdAt}]
             pagesCount: 0,
             canLoadMore: false,
             totalCount: 0
@@ -28,43 +28,38 @@ export const communicationReducer = (state = CommunicationState, action) => {
 
     switch (action.type) {
         case Types.DELETE_MESSAGE:
-            const messageID = action.value
             return {
                 ...state,
-                messages: state.messages.filter(({id}) => id !== messageID)
+                messages: state.messages.filter(({id}) => id !== action.value)
             }
         case Types.SET_MESSAGES:
-            const messages = action.value
             return {
                 ...state,
-                messages
+                messages: action.value
             }
         case Types.SET_NOTIFICATIONS_DATA:
-            const notificationsData = action.value
             return {
                 ...state,
                 notifications: {
                     ...state.notifications,
-                    payload: notificationsData
+                    payload: action.value
                 }
             }
         case Types.ADD_NOTIFICATIONS_DATA:
-            const newNotificationsData = action.value
             return {
                 ...state,
                 notifications: {
                     ...state.notifications,
                     payload: {
-                        ...newNotificationsData,
+                        ...action.value,
                         notifications: [
                             ...state.notifications.payload.notifications,
-                            ...newNotificationsData.notifications
+                            ...action.value.notifications
                         ]
                     }
                 }
             }
         case Types.MARK_NOTIFICATION_AS_READ:
-            const {notificationID} = action
             return {
                 ...state,
                 notifications: {
@@ -72,7 +67,7 @@ export const communicationReducer = (state = CommunicationState, action) => {
                     payload: {
                         ...state.notifications.payload,
                         notifications: state.notifications.payload.notifications
-                            .map( n => n._id === notificationID ?
+                            .map( n => n._id === action.value ?
                                 { ...n, isRead: true}
                                 : n
                             )

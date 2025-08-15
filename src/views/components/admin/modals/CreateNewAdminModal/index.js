@@ -8,7 +8,7 @@ import {
     getLoadingUsersSearchResults,
     clearUsersSearchResults,
     fetchUsersSearchResults,
-    createNewAdminUser
+    createNewAdminUser,
 } from '../../../../../redux/admin'
 import { Confirm } from '../../../modals/Confirm'
 import { SearchBar } from '../../../common/SearchBar'
@@ -151,7 +151,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
     clearUsersSearchResults,
     fetchUsersSearchResults,
-    createNewAdminUser
+    createNewAdminUser,
 }, dispatch)
 
 export const CreateNewAdminModal = connect(mapStateToProps, mapDispatchToProps)(CreateNewAdminModalComponent)
