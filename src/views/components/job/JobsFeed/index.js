@@ -49,6 +49,9 @@ export const InitialJobFilters = {
 
 export const JobsFeedComponent = props => {
     const {
+        companyID=null,
+        companyName='',
+
         ...rest
     } = props
 
@@ -73,7 +76,7 @@ export const JobsFeedComponent = props => {
 
     useEffect(() => {
         fetchJobsFirstPage(undefined, undefined, undefined, false)
-    }, [jobsSortFilter, filters])
+    }, [jobsSortFilter, filters, companyID])
 
     useEffect(() => {
         selectedJobID && props.fetchJob(selectedJobID)
@@ -89,6 +92,7 @@ export const JobsFeedComponent = props => {
         ...filters,
         ...updatedFilters,
         sortBy: jobsSortFilter,
+        ...(companyID ? {companyID} : {})
     })
 
     const fetchJobsFirstPage = (
@@ -118,10 +122,12 @@ export const JobsFeedComponent = props => {
 
     const getFilterDescriptionText = () => {
         if (selectedSavedFilterID) {
-            return getSelectedFilter(filters, props.savedFilters).title
+            return getSelectedFilter(filters, props.savedFilters).title + 
+                (companyName ? ` & company=${companyName}` : '')
         } else {
             const filtersCount = getFiltersCount()
-            return `${filtersCount} filter${filtersCount == 1 ? '' : 's'} selected`
+            return `${filtersCount} filter${filtersCount == 1 ? '' : 's'} selected` + 
+                (companyName ? ` & company=${companyName}` : '')
         }
     }
 

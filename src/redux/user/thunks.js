@@ -210,7 +210,7 @@ export const patchUserSettings = (
     settingValue,
     onSuccess = () => {},
     onFailure = () => {},
-    suppressMessageFeedback=false
+    suppressMessageFeedback=true
 ) => async (dispatch, getState) => {
     const state = getState()
     const {_id} = getMongoUser(state)

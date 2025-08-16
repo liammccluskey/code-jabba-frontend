@@ -11,11 +11,19 @@ export const ApplicationSummaryCard = props => {
         excludedLanguages, // [string]
         includedSkills, // [string]
         excludedSkills, // [string]
-        applicantProfessionalYOE, // number
+        applicantProfessionalYOE, // {years: number, months: number}
         applicantInternshipCount, // number
 
         ...rest
     } = props
+
+    const getYOEText = () => {
+        const {years, months} = applicantProfessionalYOE
+
+        return months ?
+            `${years} ${years == 1 ? 'year' : 'years'} ${months} ${months == 1 ? 'month' : 'months'}`
+            : `${years} ${years == 1 ? 'year' : 'years'}`
+    }
 
     return (
         <Root className='of-visible-float-container' {...rest}>
@@ -28,7 +36,7 @@ export const ApplicationSummaryCard = props => {
             </div>
             <div className='line-item-container'>
                 <label>Professional YOE:</label>
-                <p>{applicantProfessionalYOE}</p>
+                <p>{getYOEText()}</p>
             </div>
             <div className='line-item-container'>
                 <label>Internship count:</label>

@@ -16,9 +16,7 @@ export const getYOE = workExperiences => {
         }
     })
 
-    const yoe = moe / 12
-
-    return Math.round(yoe * 10) / 10
+    return {years: Math.floor(moe/12), months: moe % 12}
 }
 
 export const getInternshipCount = workExperiences => {

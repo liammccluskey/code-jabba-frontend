@@ -39,10 +39,6 @@ export const fetchApplications = (filters, page, onSuccess = () => {}) => async 
     const applicationsPage = getApplicationsPage(state)
     const applicationsFilters = getApplicationsFilters(state)
 
-    console.log(JSON.stringify(
-        {filters, reduxFilters: applicationsFilters}
-    , null, 4))
-
     if (
         hasLoadedPageResults(page, applications, PageSizes.recruiterApplicationSearch) &&
         deepObjectEqual(filters, applicationsFilters)

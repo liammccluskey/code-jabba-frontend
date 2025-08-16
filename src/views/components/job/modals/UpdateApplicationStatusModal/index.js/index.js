@@ -57,6 +57,7 @@ export const UpdateApplicationStatusModalComponent = props => {
             message={`Are you sure you want to ${isAccept ? 'accept' : 'reject'} this application? This action will notify the applicant by sending them the following email.`}
             confirmButtonTitle={isAccept ? 'Send acceptance' : 'Send rejection'}
             confirmButtonDisabled={updatePending}
+            isDanger={!isAccept}
             onConfirm={onClickUpdateStatus}
             modalID={modalID}
         >

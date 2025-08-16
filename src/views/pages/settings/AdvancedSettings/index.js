@@ -30,15 +30,15 @@ export const AdvancedSettingsComponent = props => {
                 locked: true,
             },
             {
-                path: 'appNotifications.announcementsEnabled',
-                name: 'Announcements',
-                enabled: settings.appNotifications.announcementsEnabled,
-                locked: false,
-            },
-            {
                 path: 'appNotifications.socialEnabled',
                 name: 'Social',
                 enabled: settings.appNotifications.socialEnabled,
+                locked: false,
+            },
+            {
+                path: 'appNotifications.jobUpdatesEnabled',
+                name: 'Job updates',
+                enabled: settings.appNotifications.jobUpdatesEnabled,
                 locked: false,
             },
         ],
@@ -49,14 +49,14 @@ export const AdvancedSettingsComponent = props => {
                 enabled: settings.emailNotifications.generalEnabled,
             },
             {
-                path: 'emailNotifications.announcementsEnabled',
-                name: 'Announcements',
-                enabled: settings.emailNotifications.announcementsEnabled,
-            },
-            {
                 path: 'emailNotifications.socialEnabled',
                 name: 'Social',
                 enabled: settings.emailNotifications.socialEnabled,
+            },
+            {
+                path: 'emailNotifications.jobUpdatesEnabled',
+                name: 'Job updates',
+                enabled: settings.emailNotifications.jobUpdatesEnabled,
             },
         ],
     }

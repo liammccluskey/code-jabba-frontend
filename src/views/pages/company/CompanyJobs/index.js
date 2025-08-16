@@ -12,11 +12,12 @@ import {
     fetchCompany,
 } from '../../../../redux/company'
 import { PageContainer } from '../../../components/common/PageContainer'
-import { BodyContainer } from '../../../components/common/BodyContainer'
+import { FixedBodyContainer } from '../../../components/common/FixedBodyContainer'
 import { MainHeader } from '../../../components/headers/MainHeader'
 import { CompanyHeader } from '../../../components/company/CompanyHeader'
 import { ErrorElement } from '../../ErrorElement'
 import { Loading } from '../../../components/common/Loading'
+import { JobsFeed } from '../../../components/job/JobsFeed'
 
 export const CompanyJobsComponent = props => {
     const {
@@ -39,14 +40,18 @@ export const CompanyJobsComponent = props => {
                 />
                 : null
             }
-            <BodyContainer>
-                {!props.loadingCompany && props.company ?
-                    <Root className={`${props.isMobile && 'mobile'}`}>
-                        
-                    </Root>
+            <FixedBodyContainer 
+                className='subheader-with-links'
+                style={{paddingTop: 20, paddingBottom: 20}}
+            >
+                {!props.loadingCompany && props.company ? 
+                    <JobsFeed
+                        companyID={props.company._id}
+                        companyName={props.company.name}
+                    />
                     : <Loading />
                 }
-            </BodyContainer>
+            </FixedBodyContainer>
         </PageContainer>
     )
 }

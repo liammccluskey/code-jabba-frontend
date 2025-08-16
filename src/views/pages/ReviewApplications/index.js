@@ -107,7 +107,7 @@ export const ReviewApplicationsComponent = props => {
             return {
                 languages: {has: [], missing: []},
                 skills: {has: [], missing: []},
-                yoe: 0,
+                yoe: {years: 0, months: 0},
                 internshipCount: 0
             }
         }
@@ -219,6 +219,9 @@ export const ReviewApplicationsComponent = props => {
     const showUpdateApplicationStatusModal = updatedStatus => {
         if (!props.application) {
             props.addMessage('Please wait for the application to load.')
+            return
+        } else if (props.application.status === updatedStatus) {
+            props.addMessage(`This application has already been marked as ${updatedStatus}.`, true)
             return
         }
 
@@ -412,7 +415,11 @@ export const ReviewApplicationsComponent = props => {
                                         <h3 style={{marginRight: 10}}>Application</h3>
                                         <PillLabel
                                             title={capitalizeWords(props.application.status)}
-                                            color={getApplicationStatusPillColor(props.application.status)}
+                                            color={getApplicationStatusPillColor(
+                                                props.application.status === 'applied' ?
+                                                    'viewed'
+                                                    : props.application.status
+                                            )}
                                             size='l'
                                         />
                                     </div>

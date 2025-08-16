@@ -13,6 +13,6 @@ export const NotificationChannels = {
     jobUpdates: {
         id: 'jobUpdates',
         title: 'Job updates',
-        icon: 'bi-briefcasae',
+        icon: 'bi-briefcase',
     }
 }
