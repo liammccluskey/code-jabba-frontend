@@ -193,6 +193,11 @@ const router = createBrowserRouter([
       element: <PrivateRoute element={<CreateCompany />} />,
       errorElement: <ErrorElement />
     },
+    // {
+    //   path: '/edit-company/:companyID',
+    //   element: <PrivateRoute element={< />} />,
+    //   errorElement: <ErrorElement />
+    // },
     {
       path: '/create-job',
       element: <PrivateRoute element={<CreateJob />} />,

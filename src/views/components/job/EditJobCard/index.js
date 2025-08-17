@@ -383,7 +383,7 @@ export const EditJobCardComponent = props => {
 
     const addCantPostJobsModal = () => {
         props.addModal(ModalTypes.CONFIRM, {
-            title: 'Job post requirements',
+            title: 'Job post - Requirements',
             message: "You can't post jobs until you complete the To Do items on the Dashboard",
             confirmButtonTitle: 'Go to dashboard',
             onConfirm: onSuccess => {

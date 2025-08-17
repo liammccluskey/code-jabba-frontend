@@ -34,6 +34,7 @@ export const InputWithMessageComponent = props => {
         switchID=null,
         labelMessage='',
         wrapLabel=false,
+        errorText='Required field',
     
         onChangeText, // e => void
         onChangeSelectValue, // e => void
@@ -62,7 +63,7 @@ export const InputWithMessageComponent = props => {
                     }
                     {hasError ?
                         <PillLabel
-                            title='Required Field'
+                            title={errorText}
                             size='s'
                             color='red'
                             style={{marginRight: 10}}
