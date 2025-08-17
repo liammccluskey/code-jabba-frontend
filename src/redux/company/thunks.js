@@ -68,3 +68,22 @@ export const searchCompanies = (searchText, page) => async (dispatch, getState) 
 
     dispatch(CompanyActions.setLoadingCompanies(false))
 }
+
+export const updateCompany = (companyID, updatedCompany, onSuccess) => async (dispatch, getState) => {
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        const res = await api.patch(`/companies/${companyID}`, {
+            company: updatedCompany,
+            userID: mongoUser._id
+        })
+
+        dispatch(addMessage(res.data.message))
+        onSuccess()
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+    }
+}

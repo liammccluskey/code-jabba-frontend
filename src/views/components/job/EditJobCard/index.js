@@ -99,7 +99,7 @@ export const Languages = [
 ].sort((a, b) => a.localeCompare(b))
 
 export const Skills = [
-    'React.js',
+    'React',
     'Node.js',
     'MongoDB',
     'Express.js',

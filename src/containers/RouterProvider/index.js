@@ -20,7 +20,7 @@ import { Support } from '../../views/pages/Support'
 import { FAQ } from '../../views/pages/admin/FAQ'
 import { IndividualAdminFAQ } from '../../views/pages/IndividualAdminFAQ'
 import { IndividualFAQ } from '../../views/pages/IndividualFAQ'
-// import { Premium } from '../../views/pages/Premium'
+import { Premium } from '../../views/pages/Premium'
 import { CheckoutPortal } from '../../views/pages/membership/CheckoutPortal'
 import { CheckoutSuccess } from '../../views/pages/membership/CheckoutSuccess'
 import { CheckoutCancel } from '../../views/pages/membership/CheckoutCancel'
@@ -40,6 +40,7 @@ import { Profile } from '../../views/pages/Profile'
 import { AdminAnalytics } from '../../views/pages/admin/AdminAnalytics'
 import { ContactUs } from '../../views/pages/ContactUs'
 import { ReviewApplications } from '../../views/pages/ReviewApplications'
+import { EditCompany } from '../../views/pages/EditCompany'
 
 const router = createBrowserRouter([
     {
@@ -193,11 +194,11 @@ const router = createBrowserRouter([
       element: <PrivateRoute element={<CreateCompany />} />,
       errorElement: <ErrorElement />
     },
-    // {
-    //   path: '/edit-company/:companyID',
-    //   element: <PrivateRoute element={< />} />,
-    //   errorElement: <ErrorElement />
-    // },
+    {
+      path: '/edit-company/:companyID',
+      element: <PrivateRoute element={<EditCompany />} />,
+      errorElement: <ErrorElement />
+    },
     {
       path: '/create-job',
       element: <PrivateRoute element={<CreateJob />} />,

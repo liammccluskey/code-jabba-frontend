@@ -4,41 +4,43 @@ import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 
-import {
-    getJob,
-    getLoadingJob,
-    getJobNotFound,
+import { 
+    getCompany, 
+    getLoadingCompany, 
+    getCompanyNotFound,
 
-    fetchJob
-} from '../../../redux/job'
+    fetchCompany
+} from '../../../redux/company'
 import { PageContainer } from '../../components/common/PageContainer'
 import { BodyContainer } from '../../components/common/BodyContainer'
 import { MainHeader } from '../../components/headers/MainHeader'
 import { Subheader } from '../../components/headers/Subheader'
-import { EditJobCard } from '../../components/job/EditJobCard'
+import { EditCompanyCard } from '../../components/company/EditCompanyCard'
 import { ErrorElement } from '../ErrorElement'
 import { Loading } from '../../components/common/Loading'
 
-export const EditJobComponent = props => {
+export const EditCompanyComponent = props => {
     const {
         
     } = props
-    const {jobID} = useParams()
+    const {companyID} = useParams()
 
     useEffect(() => {
-        props.fetchJob(jobID)
-    }, [jobID])
+        props.fetchCompany(companyID)
+    }, [companyID])
 
-    return ( props.jobNotFound ?
+    return ( props.companyNotFound ?
         <ErrorElement />
         : <PageContainer>
             <MainHeader />
-            <Subheader title='Edit job' />
+            <Subheader 
+                title={!props.loadingCompany && props.company ? `Edit company - ${props.company.name}` : 'Edit company'} 
+            />
             <BodyContainer style={{paddingTop: 0, paddingBottom: 0}}>
-                {!props.loadingJob && props.job ?
-                    <EditJobCard
+                {!props.loadingCompany && props.company ?
+                    <EditCompanyCard
                         isEditMode={true}
-                        job={props.job}
+                        company={props.company}
                         style={{marginTop: 40, marginBottom: 40}}
                     />
                     : <Loading style={{height: 200}} />
@@ -52,13 +54,13 @@ const Root = styled.div`
     
 `
 const mapStateToProps = state => ({
-    job: getJob(state),
-    loadingJob: getLoadingJob(state),
-    jobNotFound: getJobNotFound(state),
+    company: getCompany(state),
+    loadingCompany: getLoadingCompany(state),
+    companyNotFound: getCompanyNotFound(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    fetchJob
+    fetchCompany
 }, dispatch)
 
-export const EditJob = connect(mapStateToProps, mapDispatchToProps)(EditJobComponent)
+export const EditCompany = connect(mapStateToProps, mapDispatchToProps)(EditCompanyComponent)

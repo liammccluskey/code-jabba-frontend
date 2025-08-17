@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
 import { getIsMobile } from '../../../../redux/theme'
-import { postCompany } from '../../../../redux/company'
+import { postCompany, updateCompany } from '../../../../redux/company'
 import { addMessage } from '../../../../redux/communication'
 import { 
     getFormData, 
@@ -81,34 +81,6 @@ export const EditCompanyCardComponent = props => {
 
     // Utils
 
-    const addError = field => {
-        setErrors(curr => ({
-            ...curr,
-            [field]: true
-        }))
-    }
-
-    const isValidForm = () => {
-        let hasError = false
-        if (!formData.name) {
-            props.addMessage('You are missing the company name field.', true)
-            addError('name')
-            hasError = true
-        }
-        if (formData.linkedInURL && !isValidLinkedInCompanyUrl(formData.linkedInURL)) {
-            props.addMessage('Your LinkedIn company page url is invalid.', true)
-            addError('linkedInURL')
-            hasError = true
-        }
-        if (formData.glassDoorURL && !isValidGlassdoorCompanyUrl(formData.glassDoorURL)) {
-            props.addMessage('Your Glassdoor company page url is invalid.', true)
-            addError('glassDoorURL')
-            hasError = true
-        }
-
-        return !hasError
-    }
-
     const addCantCreateCompanyModal = () => {
         props.addModal(ModalTypes.CONFIRM, {
             title: 'Create a company - Requirements',
@@ -135,6 +107,52 @@ export const EditCompanyCardComponent = props => {
         })
     }
 
+    const addError = field => {
+        setErrors(curr => ({
+            ...curr,
+            [field]: true
+        }))
+    }
+
+    const isValidForm = () => {
+        let hasError = false
+        if (!formData.name) {
+            props.addMessage('You are missing the company name field.', true)
+            addError('name')
+            hasError = true
+        }
+        if (formData.linkedInURL && !isValidLinkedInCompanyUrl(formData.linkedInURL)) {
+            props.addMessage('Your LinkedIn company page URL you entered is invalid.', true, true)
+            addError('linkedInURL')
+            hasError = true
+        }
+        if (formData.glassDoorURL && !isValidGlassdoorCompanyUrl(formData.glassDoorURL)) {
+            props.addMessage('Your Glassdoor company page URL you entered is invalid.', true, true)
+            addError('glassDoorURL')
+            hasError = true
+        }
+
+        return !hasError
+    }
+
+    const getCompanyFormData = () => {
+        return isEditMode ? 
+            {
+                ...(modified.name ? {name: formData.name} : {}),
+                ...(modified.headquartersAddress ? {headquartersAddress: formData.headquartersAddress} : {}),
+                ...(modified.description ? {description: formData.description} : {}),
+                ...(modified.linkedInURL ? {linkedInURL: formData.linkedInURL} : {}),
+                ...(modified.glassDoorURL ? {glassDoorURL: formData.glassDoorURL} : {}),
+            }
+            : {
+                name: formData.name,
+                ...(formData.headquartersAddress ? {headquartersAddress: formData.headquartersAddress} : {}),
+                ...(formData.description ? {description: formData.description} : {}),
+                ...(formData.linkedInURL ? {linkedInURL: formData.linkedInURL} : {}),
+                ...(formData.glassDoorURL ? {glassDoorURL: formData.glassDoorURL} : {}),
+            }
+    }
+
     // Direct
 
     const onChangeField = e => {
@@ -159,7 +177,7 @@ export const EditCompanyCardComponent = props => {
             return
         }
 
-        props.postCompany(formData, companyID => navigate(`/companies/${companyID}`))
+        props.postCompany(getCompanyFormData(), companyID => navigate(`/companies/${companyID}`))
     }
 
     const onClickSaveEdits = () => {
@@ -167,7 +185,7 @@ export const EditCompanyCardComponent = props => {
             return
         }
 
-        // props.patchJob(job._id, formData, () => navigate(-1))
+        props.updateCompany(props.company._id, getCompanyFormData(), () => navigate(-1))
     }
 
     const onClickCancel = () => {
@@ -183,6 +201,7 @@ export const EditCompanyCardComponent = props => {
                 text={formData.name}
                 onChangeText={onChangeField}
                 hasError={errors.name}
+                modified={isEditMode && modified.name}
             />
             <InputWithMessage
                 inputType='text'
@@ -191,6 +210,7 @@ export const EditCompanyCardComponent = props => {
                 fieldName='headquartersAddress'
                 onChangeText={onChangeField}
                 optional={true}
+                modified={isEditMode && modified.headquartersAddress}
             />
             <InputWithMessage
                 inputType='textarea'
@@ -199,6 +219,7 @@ export const EditCompanyCardComponent = props => {
                 text={formData.description}
                 onChangeText={onChangeField}
                 optional={true}
+                modified={isEditMode && modified.description}
             />
             <InputWithMessage
                 inputType='text'
@@ -210,6 +231,7 @@ export const EditCompanyCardComponent = props => {
                 errorText='Invalid url'
                 optional={true}
                 placeholder='https://'
+                modified={isEditMode && modified.linkedInURL}
             />
             <InputWithMessage
                 inputType='text'
@@ -221,6 +243,7 @@ export const EditCompanyCardComponent = props => {
                 errorText='Invalid url'
                 optional={true}
                 placeholder='https://'
+                modified={isEditMode && modified.glassDoorURL}
             />
             <div className='buttons-container'>
                 {isEditMode ?
@@ -283,6 +306,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     postCompany,
+    updateCompany,
     addMessage,
     addModal
 }, dispatch)

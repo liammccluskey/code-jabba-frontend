@@ -46,10 +46,16 @@ export const CompanyGeneralComponent = props => {
                     <Root className={`${props.isMobile && 'mobile'}`}>
                         <div className='top-section'>
                             <div className='float-container info-container company-container'>
-                                <label>Headquarters</label>
-                                <p className='sub-section'>{props.company.headquarters}</p>
+                                <label>Headquarters address</label>
+                                {props.company.headquartersAddress ?
+                                    <p className='sub-section'>{props.company.headquartersAddress}</p>
+                                    : <p className='sub-section not-provided-text'>Not provided</p>
+                                }
                                 <label>Description</label>
-                                <p className=''>{props.company.description}</p>
+                                {props.company.description ?
+                                    <p className='description-text'>{props.company.description}</p>
+                                    : <p className='not-provided-text'>Not provided</p>
+                                }
                             </div>
                             <div className='float-container info-container socials-container'>
                                 <h3 className='section-title'>Socials</h3>
@@ -66,7 +72,7 @@ export const CompanyGeneralComponent = props => {
                                                 url={props.company.linkedInURL}
                                                 openInNewTab={true}
                                             />
-                                            : <p>Not provided</p>
+                                            : <p className='not-provided-text'>LinkedIn URL not provided</p>
                                         }
                                     </div>
                                     <div className='social-container'>
@@ -82,7 +88,7 @@ export const CompanyGeneralComponent = props => {
                                                 url={props.company.glassDoorURL}
                                                 openInNewTab={true}
                                             />
-                                            : <p>Not provided</p>
+                                            : <p className='not-provided-text'>Glassdoor URL not provided</p>
                                         }
                                     </div>
                             </div>
@@ -137,7 +143,7 @@ const Root = styled.div`
     }
 
     & .sub-section {
-        margin-bottom: 30px;
+        margin-bottom: 20px;
     }
 
     & .social-container {
@@ -153,6 +159,14 @@ const Root = styled.div`
         width: 30px;
         border-radius: 50%;
         margin-right: 10px;
+    }
+
+    & .not-provided-text {
+        color: ${p => p.theme.textSecondary};
+    }
+
+    & .description-text {
+        white-space: pre-line;
     }
 `
 const mapStateToProps = state => ({
