@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import moment from 'moment'
 
 import {
-    JobTypes,
+    EmploymentTypes,
     SettingTypes,
     PositionTypes,
 } from '../EditJobCard'
@@ -75,7 +75,7 @@ export const JobFeedCard = props => {
                         style={{marginRight: 5}}
                     />
                     <PillLabel
-                        title={JobTypes.find( jobType => jobType.id === job.type).title}
+                        title={EmploymentTypes.find( type => type.id === job.employmentType).title}
                         color='blue'
                         size='m'
                         style={{marginRight: 5}}

@@ -19,7 +19,7 @@ import {
     Months
 } from '../EditEducationModal'
 import { 
-    JobTypes,
+    EmploymentTypes,
     PositionTypes,
     SettingTypes,
     Languages,
@@ -42,7 +42,7 @@ export const EditWorkExperienceModalComponent = props => {
             company: workExperience.company,
             jobTitle: workExperience.jobTitle,
             setting: workExperience.setting,
-            type: workExperience.type, 
+            employmentType: workExperience.employmentType, 
             position: workExperience.position,
             language: '', // temp
             languages: workExperience.languages,
@@ -60,7 +60,7 @@ export const EditWorkExperienceModalComponent = props => {
             company: '',
             jobTitle: '',
             setting: 'on-site',
-            type: 'full-time', 
+            employmentType: 'full-time', 
             position: 'frontend', 
             language: '', // temp
             languages: [],
@@ -181,7 +181,7 @@ export const EditWorkExperienceModalComponent = props => {
             case 'full-time':
                 setFormData(curr => ({
                     ...curr,
-                    type: pillID
+                    employmentType: pillID
                 }))
                 break
             case 'on-site':
@@ -277,14 +277,14 @@ export const EditWorkExperienceModalComponent = props => {
                     fieldName='position'
                 />
                 <InputWithMessage
-                    label='Type'
-                    modified={isEditMode && modified.type}
+                    label='Employment type'
+                    modified={isEditMode && modified.employmentType}
                     style={{marginBottom: 0}}
                 />
                 <div className='pills-row row'>
                     <PillOptions
-                        options={JobTypes}
-                        activeOptionID={formData.type}
+                        options={EmploymentTypes}
+                        activeOptionID={formData.employmentType}
                         onClickOption={onClickPill}
                         className='pill-options'
                     />

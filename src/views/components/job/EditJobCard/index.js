@@ -36,11 +36,11 @@ export const PositionTypes = [
     {id: 'backend', title: 'Backend'},
     {id: 'full-stack', title: 'Full Stack'},
     {id: 'embedded', title: 'Embedded'},
-    {id: 'qa', title: 'Quality Assurance'},
+    {id: 'quality-assurance', title: 'Quality Assurance'},
     {id: 'test', title: 'Test'},
 ]
 
-export const JobTypes = [
+export const EmploymentTypes = [
     {id: 'internship', title: 'Internship'},
     {id: 'part-time', title: 'Part-time'},
     {id: 'contract', title: 'Contract'},
@@ -113,7 +113,7 @@ export const Skills = [
     'Vue.js',
     'jQuery',
     'Ember.js',
-    'Backbone.js',
+    'Backbone',
     'Semantic-UI',
     'Foundation',
     'Preact',
@@ -144,6 +144,9 @@ export const Skills = [
     'Selenium',
     'VSCode',
     'REST APIs',
+    'Backbone',
+    'CI/CD',
+    'GraphQL'
 ].sort((a, b) => a.localeCompare(b))
 
 export const EducationLevels = [
@@ -874,7 +877,7 @@ export const EditJobCardComponent = props => {
             />
             <div className='pills-row row'>
                 <PillOptions
-                    options={JobTypes}
+                    options={EmploymentTypes}
                     activeOptionID={formData.type}
                     onClickOption={onClickPill}
                     className='pill-options'

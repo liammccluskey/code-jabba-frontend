@@ -18,7 +18,7 @@ import {
 import { postApplication } from '../../../../redux/application'
 import { addMessage } from '../../../../redux/communication'
 import {
-    JobTypes,
+    EmploymentTypes,
     SettingTypes,
     PositionTypes,
     ExperienceLevels,
@@ -90,7 +90,13 @@ export const JobCardComponent = props => {
     }
 
     const onClickViewApplications = () => {
+        setOptionsMenuHidden(true)
         navigate(`/applications/${job._id}`)
+
+    }
+
+    const onClickReviewApplications = () => {
+        navigate(`/review-applications/${job._id}`)
     }
 
     const onClickRepost = () => {
@@ -105,6 +111,10 @@ export const JobCardComponent = props => {
     const menuOptions = [
         {title: 'Edit', icon: 'bi-pencil', onClick: onClickEdit},
         {title: 'View applications', icon: 'bi-file-earmark-person', onClick: onClickViewApplications},
+        ...(job.applicationType === 'easy-apply' ?
+            [{title: 'Review applications', icon: 'bi-eye', onClick: onClickReviewApplications}]
+            : []
+        ),
         job.archived ? 
             {title: 'Repost job', icon: 'bi-signpost', onClick: onClickRepost}
             : {title: 'Archive', icon: 'bi-archive', onClick: onClickEditArchived},
@@ -246,7 +256,7 @@ export const JobCardComponent = props => {
                     style={{marginRight: 5}}
                 />
                 <PillLabel
-                    title={JobTypes.find( jobType => jobType.id === job.type).title}
+                    title={EmploymentTypes.find( type => type.id === job.employmentType).title}
                     color='blue'
                     size='m'
                     style={{marginRight: 5}}
@@ -273,10 +283,7 @@ export const JobCardComponent = props => {
                 <PillLabel
                     title={job.minExperienceYears == job.maxExperienceYears ? 
                         ExperienceYears.find(years => years.id == job.minExperienceYears).title + ' years'
-                        : `${ExperienceYears.find(years => years.id == job.minExperienceYears).min}
-                            - 
-                        ${ExperienceYears.find(years => years.id == job.maxExperienceYears).max}
-                            years`
+                        : `${ExperienceYears.find(years => years.id == job.minExperienceYears).min} - ${ExperienceYears.find(years => years.id == job.maxExperienceYears).max} years`
                     }
                     color='yellow'
                     size='m'

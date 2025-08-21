@@ -107,6 +107,11 @@ const Root = styled.div`
         margin-top: 0px !important;
     }
 
+    li {
+        list-style-position: inside;
+        color: ${p => p.theme.textMain};
+    }
+
     /* Properties */
 
     .c-t {

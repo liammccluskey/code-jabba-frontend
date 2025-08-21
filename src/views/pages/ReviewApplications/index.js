@@ -21,6 +21,13 @@ import {
     fetchApplication,
     updateApplicationStatus
 } from '../../../redux/application'
+import { 
+    getJob, 
+    getLoadingJob, 
+    getJobNotFound,
+
+    fetchJob
+} from '../../../redux/job'
 import { SortFilters } from '../admin/BugReports'
 import { PageSizes, getPaginatedDataForCurrentPage } from '../../../networking'
 import { ModalTypes } from '../../../containers/ModalProvider'
@@ -155,6 +162,10 @@ export const ReviewApplicationsComponent = props => {
         {title: 'Rejected', id: 'rejected', active: data.rejectedPillActive},
         {title: 'Accepted', id: 'accepted', active: data.acceptedPillActive},
     ]
+
+    useEffect(() => {
+        props.fetchJob(jobID)
+    }, [jobID])
 
     useEffect(() => {
         fetchApplicationsFirstPage()
@@ -318,17 +329,16 @@ export const ReviewApplicationsComponent = props => {
     // Render
 
     return (
-        ( 
-            !props.isRecruiterMode || 
-            props.applicationNotFound ||
-            !props.loadingApplication && 
-                props.application && 
-                props.application.job.recruiter._id !== props.mongoUser._id
+        (
+            props.jobNotFound ||
+            !props.loadingJob &&
+                props.job &&
+                props.job.recruiter._id !== props.mongoUser._id
         ) ?
             <ErrorElement />
         : <PageContainer>
             <MainHeader />
-            <Subheader title={`Review applications - ${props.application ? props.application.job.title : ''}`} />
+            <Subheader title={`Review applications - ${props.job ? props.job.title : ''}`} />
             <FixedBodyContainer
                 className='subheader-without-links'
                 style={{paddingTop: 20, paddingBottom: 0}}
@@ -669,6 +679,9 @@ const mapStateToProps = state => ({
     isRecruiterMode: getIsRecruiterMode(state),
     mongoUser: getMongoUser(state),
     applicationsFilters: getApplicationsFilters(state),
+    job: getJob(state),
+    loadingJob: getLoadingJob(state),
+    jobNotFound: getJobNotFound(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -676,6 +689,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     fetchApplications,
     setApplicationsPage,
     updateApplicationStatus,
+    fetchJob,
     addModal,
     addMessage,
 }, dispatch)

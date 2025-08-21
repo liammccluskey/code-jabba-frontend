@@ -17,7 +17,6 @@ import {
     postJobFilter,
     deleteSavedJobFilter,
 } from '../../../../redux/job'
-import { SortFilters } from '../../../pages/admin/BugReports'
 import { 
     PageSizes,
     getPaginatedDataForCurrentPage
@@ -37,7 +36,7 @@ import { Tooltip } from '../../common/Tooltip'
 export const InitialJobFilters = {
     settings: [],
     locations: [],
-    types: [],
+    employmentTypes: [],
     positions: [],
     experienceLevels: [],
     experienceYears: [],
@@ -46,6 +45,11 @@ export const InitialJobFilters = {
     includedLanguages: [],
     excludedLanguages: [],
 }
+
+const JobSortFilters = [
+    {title: 'Most Recent', filter: '-postedAt'},
+    {title: 'Least Recent', filter: '+postedAt'}
+]
 
 export const JobsFeedComponent = props => {
     const {
@@ -60,7 +64,7 @@ export const JobsFeedComponent = props => {
     const [jobsPage, setJobsPage] = useState(1)
     const [selectedJobID, setSelectedJobID] = useState('')
     const [filters, setFilters] = useState(InitialJobFilters)
-    const [jobsSortFilter, setJobsSortFilter] = useState(SortFilters[0].filter)
+    const [jobsSortFilter, setJobsSortFilter] = useState(JobSortFilters[0].filter)
     const jobsForCurrentPage = useMemo(() => {
         return props.loadingJobs ? [] :
             getPaginatedDataForCurrentPage(props.jobs, jobsPage, PageSizes.jobSearch)
@@ -252,7 +256,7 @@ export const JobsFeedComponent = props => {
                     onChange={onChangeSortFilter} 
                     className='solid'
                 >
-                    {SortFilters.map(({title, filter}) => (
+                    {JobSortFilters.map(({title, filter}) => (
                         <option value={filter} key={filter}>{title}</option>
                     ))}
                 </select>
@@ -260,7 +264,7 @@ export const JobsFeedComponent = props => {
             {!props.loadingJobs ? 
                 <div className='jobs-feed-container'>
                     <div className='feed-container'>
-                        <div className='jobs-container float-container'>
+                        <div className='jobs-container of-visible-float-container'>
                             {jobsForCurrentPage.map( job => (
                                 <JobFeedCard
                                     job={job}

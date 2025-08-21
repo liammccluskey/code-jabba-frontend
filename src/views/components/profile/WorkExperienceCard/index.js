@@ -12,8 +12,8 @@ import {
 import { getIsMobile } from '../../../../redux/theme'
 import { addModal } from '../../../../redux/modal'
 import { 
-    SettingTypes,  
-    JobTypes,
+    SettingTypes,
+    EmploymentTypes,
     PositionTypes
 } from '../../job/EditJobCard'
 import { ModalTypes } from '../../../../containers/ModalProvider'
@@ -112,7 +112,7 @@ export const WorkExperienceCardComponent = props => {
                             style={{marginRight: 5}}
                         />
                         <PillLabel
-                            title={JobTypes.find( jobType => jobType.id === type).title}
+                            title={EmploymentTypes.find( jobType => jobType.id === type).title}
                             color='green'
                             size='m'
                             style={{marginRight: 5}}

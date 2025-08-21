@@ -1,3 +1,5 @@
+import DOMPurify from 'dompurify'
+
 export const formatSalary = (salary, frequency) => {
     return `$${salary.toLocaleString('en-US')} / ${frequency}`
 }

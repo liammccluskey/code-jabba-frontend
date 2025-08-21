@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { CitiesUSA } from '../../EditJobCard/constants'
 import { 
     SettingTypes,
-    JobTypes,
+    EmploymentTypes,
     PositionTypes,
     ExperienceLevels,
     ExperienceYears,
@@ -80,7 +80,7 @@ export const JobFiltersModalComponent = props => {
         switch (filterName) {
             case 'settings':
             case 'locations':
-            case 'types':
+            case 'employmentTypes':
             case 'positions':
             case 'experienceLevels':
             case 'experienceYears':
@@ -122,7 +122,7 @@ export const JobFiltersModalComponent = props => {
         switch(filterName) {
             case 'settings':
             case 'locations':
-            case 'types':
+            case 'employmentTypes':
             case 'positions':
             case 'experienceLevels':
             case 'experienceYears':
@@ -226,19 +226,19 @@ export const JobFiltersModalComponent = props => {
                 </FilterRow>
                 <FilterRow
                     title='Employment types'
-                    filterName='types'
-                    selectionText={getSelectionText('types')}
-                    filterActive={filters.types.length > 0}
-                    onClickActionButton={() => onClickClearFilter('types')}
+                    filterName='employmentTypes'
+                    selectionText={getSelectionText('employmentTypes')}
+                    filterActive={filters.employmentTypes.length > 0}
+                    onClickActionButton={() => onClickClearFilter('employmentTypes')}
                 >
                     <div className='pills-row row'>
-                        {JobTypes.map(({id, title}) => (
+                        {EmploymentTypes.map(({id, title}) => (
                             <Pill
                                 title={title}
-                                active={filters.types.includes(id)}
+                                active={filters.employmentTypes.includes(id)}
                                 id={id}
                                 onClick={onClickOption}
-                                fieldName='type'
+                                fieldName='employmentType'
                                 className='pill-option'
                             />
                         ))}

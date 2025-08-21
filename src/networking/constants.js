@@ -5,9 +5,14 @@ import {getStorage} from 'firebase/storage'
 
 // APIs
 
-axios.defaults.headers.common['heroku_api_key'] = process.env.REACT_APP_HEROKU_API_KEY
+const API_BASE_URL = {
+    DEV: process.env.REACT_APP_HEROKU_API_BASE_URL_DEV,
+    PROD: process.env.REACT_APP_HEROKU_API_BASE_URL_PROD,
+}[process.env.REACT_APP_PROFILE_ENV]
+
+axios.defaults.headers.common['api_key'] = process.env.REACT_APP_HEROKU_API_KEY
 export const api = axios.create({
-    baseURL: process.env.REACT_APP_HEROKU_API_BASE_URL,
+    baseURL: API_BASE_URL,
 })
 
 export const app = initializeApp({
@@ -32,7 +37,7 @@ export const PageSizes = {
     bugReports: 10,
     faqs: 10,
     companySearch: 20,
-    jobSearch: 2,
+    jobSearch: 10,
     candidateApplicationSearch: 20,
     recruiterApplicationSearch: 20,
 }
