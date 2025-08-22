@@ -8,4 +8,5 @@ export const getJobNotFound = state => state.job.jobNotFound
 export const getJobs = state => state.job.jobs.payload.jobs
 export const getLoadingJobs = state => state.job.jobs.loading
 export const getJobsPagesCount = state => state.job.jobs.payload.pagesCount
+export const getJobsCount = state => state.job.jobs.payload.count
 export const getSavedFilters = state => state.job.savedFilters

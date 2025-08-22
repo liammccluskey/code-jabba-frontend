@@ -146,7 +146,8 @@ export const Skills = [
     'REST APIs',
     'Backbone',
     'CI/CD',
-    'GraphQL'
+    'GraphQL',
+    'PostgreSQL',
 ].sort((a, b) => a.localeCompare(b))
 
 export const EducationLevels = [
@@ -306,7 +307,7 @@ export const EditJobCardComponent = props => {
             company: '',
             companyText: '', // temp
             position: 'frontend',
-            type: 'full-time',
+            employmentType: 'full-time',
             setting: 'on-site',
             experienceLevels: [],
             experienceYears: [],
@@ -581,7 +582,7 @@ export const EditJobCardComponent = props => {
             case 'full-time':
                 setFormData(curr => ({
                     ...curr,
-                    type: pillID
+                    employmentType: pillID
                 }))
                 break
             case 'on-site':
@@ -872,13 +873,13 @@ export const EditJobCardComponent = props => {
             />
             <InputWithMessage
                 label='Employment type'
-                modified={isEditMode && modified.type}
+                modified={isEditMode && modified.employmentType}
                 style={{marginBottom: 0}}
             />
             <div className='pills-row row'>
                 <PillOptions
                     options={EmploymentTypes}
-                    activeOptionID={formData.type}
+                    activeOptionID={formData.employmentType}
                     onClickOption={onClickPill}
                     className='pill-options'
                 />

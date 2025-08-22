@@ -101,6 +101,10 @@ const Root = styled.div`
     border-bottom: 1px solid ${p => p.theme.bc};
     border-left: 3px solid transparent;
 
+    &:last-child {
+        border-bottom: none;
+    }
+
     &.selected {
         border-left: 3px solid ${p => p.theme.tint};
     }

@@ -3,7 +3,7 @@ export const getFormData = job => ({
     company: job.company._id,
     companyText: job.company.name, // temp
     position: job.position,
-    type: job.type,
+    employmentType: job.type,
     setting: job.setting,
     experienceLevels: job.experienceLevels,
     experienceYears: job.experienceYears,
@@ -33,7 +33,7 @@ export const getFormDataModified = (formData, job={}) => ({
     title: job.title !== formData.title,
     company: Object.keys(job).length ? job.company._id !== formData.company : false,
     position: job.position !== formData.position,
-    type: job.type !== formData.type,
+    employmentType: job.type !== formData.employmentType,
     setting: job.setting !== formData.setting,
     experienceLevels: job.experienceLevels !== formData.experienceLevels,
     experienceYears: job.experienceYears !== formData.experienceYears,

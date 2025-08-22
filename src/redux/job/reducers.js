@@ -10,7 +10,8 @@ const JobState = {
         loading: false,
         payload: {
             jobs: [],
-            pagesCount: 0
+            pagesCount: 0,
+            count: 0
         }
     },
     savedFilters: [],
@@ -58,6 +59,7 @@ export const jobReducer = (state = JobState, action) => {
                     ...state.jobs,
                     payload: {
                         pagesCount: action.value.pagesCount,
+                        count: action.value.count,
                         jobs: [...state.jobs.payload.jobs, ...action.value.jobs]
                     }
                 }

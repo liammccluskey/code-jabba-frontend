@@ -9,6 +9,7 @@ import {
     getLoadingJobs,
     getJob,
     getLoadingJob,
+    getJobsCount,
     getSavedFilters,
     
     fetchJobs,
@@ -248,8 +249,11 @@ export const JobsFeedComponent = props => {
                         onClick={() => fetchJobsFirstPage()}
                         priority={2}
                         type='solid'
-                        style={{marginLeft: 15}}
+                        style={{marginLeft: 15, marginRight: 15}}
                     />
+                    <p className='results-count-text'>
+                        {`${props.jobsCount} ${props.jobsCount == 1 ? 'result' : 'results'}`}
+                    </p>
                 </div>
                 <select 
                     value={jobsSortFilter} 
@@ -264,7 +268,7 @@ export const JobsFeedComponent = props => {
             {!props.loadingJobs ? 
                 <div className='jobs-feed-container'>
                     <div className='feed-container'>
-                        <div className='jobs-container of-visible-float-container'>
+                        <div className='jobs-container float-container'>
                             {jobsForCurrentPage.map( job => (
                                 <JobFeedCard
                                     job={job}
@@ -368,7 +372,7 @@ const Root = styled.div`
         flex-direction: column;
         align-items: stretch;
         flex: 1;
-        overflow: scroll;
+        overflow: scroll !important;
         margin-bottom: 20px;
     }
 
@@ -407,6 +411,10 @@ const Root = styled.div`
     & .save-icon:hover {
         background-color: ${p => p.theme.tintTranslucent};
     }
+
+    & .results-count-text {
+        color: ${p => p.theme.textSecondary};
+    }
 `
 const mapStateToProps = state => ({
     jobs: getJobs(state),
@@ -414,6 +422,7 @@ const mapStateToProps = state => ({
     loadingJobs: getLoadingJobs(state),
     job: getJob(state),
     loadingJob: getLoadingJob(state),
+    jobsCount: getJobsCount(state),
     savedFilters: getSavedFilters(state),
 })
 

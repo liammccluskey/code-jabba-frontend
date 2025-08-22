@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
+import ReactMarkdown from 'react-markdown'
 
 import {
     getMongoUser,
@@ -183,9 +184,13 @@ export const JobCardComponent = props => {
                             title='Archived'
                             size='l'
                             color='clear'
+                            style={{marginRight: 10}}
                         />
                         : null
                     }
+                    <p className='applicants-count-text'>
+                        {`${props.job.applicationsCount} ${props.job.applicationsCount == 1 ? 'applicant' : 'applicants'}`}
+                    </p>
                 </div>
                 {props.isRecruiterMode && isJobRecruiter ?
                     <OptionsMenu
@@ -344,15 +349,22 @@ export const JobCardComponent = props => {
                     </div>
                     <div className='about-section'>
                         <h3>About the job</h3>
-                        <p className='description-text'>{job.description}</p>
+                        <ReactMarkdown
+                            children={job.description}
+                            components={{
+                                p: ({ node, ...props }) => (
+                                    <p style={{ whiteSpace: 'pre-wrap' }} {...props} />
+                                )
+                            }}
+                        />
                     </div>
-                    <div className='recruiter-section'>
+                    {/* <div className='recruiter-section'>
                         <h3>Meet the recruiter</h3>
                         <PageLink
                             title={job.recruiter.displayName}
                             url={`/users/${job.recruiter._id}`}
                         />
-                    </div>
+                    </div> */}
                 </div>
                 : null
             }
@@ -456,13 +468,14 @@ const Root = styled.div`
         color: ${p => p.theme.textSecondary};
     }
 
-    & .description-text {
-        white-space: pre-wrap;
-    }
-
     & .apply-button-container {
         display: flex;
         align-items: flex-start;
+    }
+
+    & .applicants-count-text {
+        align-self: center;
+        color: ${p => p.theme.textSecondary};
     }
 `
 const mapStateToProps = state => ({

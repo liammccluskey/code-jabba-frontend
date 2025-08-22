@@ -15,17 +15,19 @@ import {
 } from '../../EditJobCard'
 import { getSavedFilters } from '../../../../../redux/job'
 import { getSelectedFilter } from './utils'
+import { InitialJobFilters } from '../../JobsFeed'
 
 import { Confirm } from '../../../modals/Confirm'
 import { SearchableSelectableInput } from '../../../common/SearchableSelectableInput'
 import { Pill } from '../../../common/Pill'
 import { FilterRow } from '../../FilterRow'
 import { PillLabel } from '../../../common/PillLabel'
+import { Button } from '../../../common/Button'
 
 export const JobFiltersModalComponent = props => {
     const {
         modalID,
-        initialFilters, // [key: []]
+        initialFilters, // {filterKey: []}
         
         onClickApply, // (onSuccess, onFailure, filters) => void
         onClickDeleteFilter, // (filterID, onDeleteSuccess) => void
@@ -145,6 +147,10 @@ export const JobFiltersModalComponent = props => {
         setFilters(savedFilter)
     }
 
+    const onClickClearFilters = () => {
+        setFilters(InitialJobFilters)
+    }
+
     // Render
 
     return (
@@ -185,7 +191,16 @@ export const JobFiltersModalComponent = props => {
                         <p>You have no saved filters</p>
                     </div>
                 }
-                <h4 className='section-title' style={{marginTop: 25}}>Custom filters</h4>
+                <div className='section-header'>
+                    <h4 className='section-title' style={{marginTop: 25}}>Custom filters</h4>
+                    <Button
+                        title='Clear filters'
+                        onClick={onClickClearFilters}
+                        type='danger'
+                        priority={3}
+                        style={{marginRight: 15}}
+                    />
+                </div>
                 <FilterRow
                     title='Settings'
                     filterName='settings'
@@ -397,6 +412,14 @@ const Root = styled.div`
         flex-direction: column;
         align-items: center;
         justify-content: space-around;
+    }
+
+    & .section-header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 15px;
     }
 `
 
