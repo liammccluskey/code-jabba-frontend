@@ -1,20 +1,30 @@
-import React from 'react'
+import React, {useMemo} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { Features } from '../../Premium'
+import { SubscriptionTiers, SubscriptionTiersFormatted } from '../../../../redux/user'
+
 import { PageContainer } from '../../../components/common/PageContainer'
 import { BodyContainer } from '../../../components/common/BodyContainer'
 import { MainHeader } from '../../../components/headers/MainHeader'
 import { Button } from '../../../components/common/Button'
+import { ErrorElement } from '../../ErrorElement'
 
 export const CheckoutCancelComponent = props => {
     const {
         
     } = props
     const navigate = useNavigate()
+    const {subscriptionTier} = useParams()
+    const isValidSubscriptionTier = useMemo(() => {
+        return subscriptionTier === SubscriptionTiers.recruiterPremium
+    })
+
+    const features = Features[subscriptionTier]
+    const subscriptionTierFormatted = SubscriptionTiersFormatted[subscriptionTier]
 
     // Direct
 
@@ -22,16 +32,16 @@ export const CheckoutCancelComponent = props => {
         navigate('/dashboard')
     }
 
-    return (
+    return !isValidSubscriptionTier ? <ErrorElement /> : (
         <PageContainer>
             <MainHeader />
             <BodyContainer>
                 <Container>
                     <div className='body-container float-container'>
                         <h3 className='title'>Go premium at any time</h3>
-                        <p className='message'>With premium you'll get access to the following features.</p>
+                        <p className='message'>With {subscriptionTierFormatted} you'll get access to the following features.</p>
                         <div className='features-container'>
-                            {Features.map( ({title, description, icon}) => (
+                            {features.map( ({title, description, icon}) => (
                                 <div className='feature-container' key={title}>
                                     <div className='icon-container'>
                                         <i className={icon} />

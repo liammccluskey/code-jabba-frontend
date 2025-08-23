@@ -6,14 +6,19 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 
 import { addMessage } from '../../../../redux/communication'
-import { 
-    getIsPremiumUser,
+import { ModalTypes } from '../../../../containers/ModalProvider'
+import { addModal } from '../../../../redux/modal'
+import {
+    getMongoUser,
     getIsRecruiterMode,
+    getIsRecruiterPremiumUser,
 
     SubscriptionPrices,
     SubscriptionTiersFormatted
 } from '../../../../redux/user'
 import { api } from '../../../../networking'
+
+
 import { PageContainer } from '../../../components/common/PageContainer'
 import { BodyContainer } from '../../../components/common/BodyContainer'
 import { MainHeader } from '../../../components/headers/MainHeader'
@@ -25,23 +30,47 @@ export const CheckoutPortalComponent = props => {
         
     } = props
     const navigate = useNavigate()
-    const {subscriptionTier} = useParams()
     
-    const subscriptionTierFormatted = props.isRecruiterMode ? SubscriptionTiersFormatted.recruiterPremium : SubscriptionTiersFormatted.candidatePremium
-    const subscriptionTierPricePerMonth = props.isRecruiterMode ? SubscriptionPrices.recruiterPremium : SubscriptionPrices.candidatePremium
-
+    // const subscriptionTierFormatted = props.isRecruiterMode ? SubscriptionTiersFormatted.recruiterPremium : SubscriptionTiersFormatted.candidatePremium
+    // const subscriptionTierPricePerMonth = props.isRecruiterMode ? SubscriptionPrices.recruiterPremium : SubscriptionPrices.candidatePremium
+    const subscriptionTierFormatted = SubscriptionTiersFormatted.recruiterPremium
+    const subscriptionTierPricePerMonth = SubscriptionPrices.recruiterPremium
+    
     useEffect(() => {
-        if (props.isPremiumUser) {
-            navigate('/dashboard')
-            props.addMessage('You are already a premium user.', false, true)
+        if (props.isRecruiterPremiumUser) {
+            addCantSubscribeModal()
         }
     }, [])
 
+    // Utils
+
+    const addCantSubscribeModal = () => {
+        props.addModal(ModalTypes.CONFIRM, {
+            title: subscriptionTierFormatted,
+            message: `You are already subscribed to ${subscriptionTierFormatted}.`,
+            confirmButtonTitle: 'Okay',
+            onConfirm: onSuccess => {
+                navigate('/dashboard')
+                onSuccess()
+            },
+            onCancel: () => navigate(-1)
+        })
+    }
+
+    // Direct
+
     const onClickPurchase = async () => {
+        if (props.isRecruiterPremiumUser) {
+            addCantSubscribeModal()
+            return
+        }
+
         try {
             const res = await api.post('/membership/create-checkout-session', {
-                subscriptionTier
+                stripeCustomerID: props.mongoUser.stripeCustomerID,
+                userID: props.mongoUser._id
             })
+            
             const {sessionURL} = res.data
             window.location.href = sessionURL
         } catch (error) {
@@ -124,12 +153,14 @@ const Container = styled.div`
     }
 `
 const mapStateToProps = state => ({
-    isPremiumUser: getIsPremiumUser(state),
     isRecruiterMode: getIsRecruiterMode(state),
+    isRecruiterPremiumUser: getIsRecruiterPremiumUser(state),
+    mongoUser: getMongoUser(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    addMessage
+    addMessage,
+    addModal
 }, dispatch)
 
 export const CheckoutPortal = connect(mapStateToProps, mapDispatchToProps)(CheckoutPortalComponent)

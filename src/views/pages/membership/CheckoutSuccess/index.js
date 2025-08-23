@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useMemo} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
@@ -6,14 +6,16 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { addMessage } from '../../../../redux/communication'
 import {
-    updateSubscription,
     fetchThisMongoUser
 } from '../../../../redux/user'
 import { Features } from '../../Premium'
+import { SubscriptionTiers } from '../../../../redux/user'
+
 import { PageContainer } from '../../../components/common/PageContainer'
 import { BodyContainer } from '../../../components/common/BodyContainer'
 import { MainHeader } from '../../../components/headers/MainHeader'
 import { Button } from '../../../components/common/Button'
+import { ErrorElement } from '../../ErrorElement'
 
 export const CheckoutSuccessComponent = props => {
     const {
@@ -21,14 +23,17 @@ export const CheckoutSuccessComponent = props => {
     } = props
     const navigate = useNavigate()
     const {subscriptionTier} = useParams()
+    const isValidSubscriptionTier = useMemo(() => {
+        return subscriptionTier === SubscriptionTiers.recruiterPremium
+    })
+
+    const features = Features[subscriptionTier]
 
     useEffect(() => {
-        props.addMessage('Your subscription may take a minute to activate', false, true)
+        if (!isValidSubscriptionTier) return
+        props.addMessage("Welcome to Recruiter Premium. Your payment may take a up to a minute to process. Please refresh the page when you receive email confirmation of your subscription.", false, true)
         setTimeout(() => {
-            props.updateSubscription(
-                subscriptionTier,
-                () => props.fetchThisMongoUser()
-            )
+            props.fetchThisMongoUser()
         }, 30*1000)
     }, [])
 
@@ -38,7 +43,8 @@ export const CheckoutSuccessComponent = props => {
         navigate('/dashboard')
     }
 
-    return (
+    return !isValidSubscriptionTier ? <ErrorElement />
+    : (
         <PageContainer>
             <MainHeader />
             <BodyContainer>
@@ -47,7 +53,7 @@ export const CheckoutSuccessComponent = props => {
                         <h3 className='title'>Thank you for your purchase</h3>
                         <p className='message'>You now have access to the following features.</p>
                         <div className='features-container'>
-                            {Features.map( ({title, description, icon}) => (
+                            {features.map( ({title, description, icon}) => (
                                 <div className='feature-container' key={title}>
                                     <div className='icon-container'>
                                         <i className={icon} />
@@ -132,7 +138,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    updateSubscription,
     fetchThisMongoUser,
     addMessage
 }, dispatch)

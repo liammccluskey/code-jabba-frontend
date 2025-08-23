@@ -15,10 +15,16 @@ import {
 
     logEvent
 } from '../../../redux/events'
-import { getIsRecruiterMode, setIsRecruiterMode } from '../../../redux/user'
 import { getIsMobile, getIsSemiMobile } from '../../../redux/theme'
 import { setThemeColor, setTintColor } from '../../../redux/theme'
-import { SubscriptionTiersFormatted, SubscriptionPrices } from '../../../redux/user'
+import { 
+    SubscriptionTiersFormatted, 
+    SubscriptionPrices,
+    getIsRecruiterMode,
+
+    setIsRecruiterMode
+} from '../../../redux/user'
+
 import { PageContainer } from '../../components/common/PageContainer'
 import { LandingHeader } from '../../components/headers/LandingHeader'
 import { Button } from '../../components/common/Button'
@@ -26,8 +32,8 @@ import { ValueDeltaSpread } from '../../components/common/ValueDeltaSpread'
 
 const Config = {
     candidate: {
-        heroTitle: 'The job board for software engineers',
-        heroMessage: "Forget job titles. Save hours searching for jobs by searching by coding language, skill, and experience level instead.",
+        heroTitle: 'The job board built for software engineers',
+        heroMessage: "Save hours searching for jobs by searching by coding language, skill, experience level and more instead.",
         whyChooseUs: [
             {
                 imageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_general.png?alt=media&token=727861ea-e064-46ed-9f15-8e386243d39f',
@@ -40,39 +46,39 @@ const Config = {
                 message: "With our site, you can track the statistics of how many of your applications have been viewed, accepted, and rejected.",
             }
         ],
-        pricing: [
-            {
-                title: 'Basic Plan',
-                price: 'Free',
-                formatCurrency: false,
-                features: [
-                    {title: 'Unlimited job applications per day'},
-                    {title: 'Track application stats'},
-                    {title: 'Message recruiters'},
-                    {title: 'Schedule interviews'}
-                ],
-                id: 's'
-            },
-            {
-                title: `${SubscriptionTiersFormatted.candidatePremium} Plan`,
-                price: `${SubscriptionPrices.candidatePremium} / month`,
-                formatCurrency: true,
-                features: [
-                    {title: 'All basic plan benefits'},
-                    {title: 'Unlimited job postings'}
-                ],
-                id: 'm'
-            }
-        ]
+        // pricing: [
+        //     {
+        //         title: 'Basic Plan',
+        //         price: 'Free',
+        //         formatCurrency: false,
+        //         features: [
+        //             {title: 'Unlimited job applications per day'},
+        //             {title: 'Track application stats'},
+        //             {title: 'Message recruiters'},
+        //             {title: 'Schedule interviews'}
+        //         ],
+        //         id: 's'
+        //     },
+        //     {
+        //         title: `${SubscriptionTiersFormatted.candidatePremium} Plan`,
+        //         price: `${SubscriptionPrices.candidatePremium} / month`,
+        //         formatCurrency: true,
+        //         features: [
+        //             {title: 'All basic plan benefits'},
+        //             {title: 'Unlimited job postings'}
+        //         ],
+        //         id: 'm'
+        //     }
+        // ]
     },
     recruiter: {
-        heroTitle: 'The job board for software engineers',
-        heroMessage: "Forget resume parsers. Save hours reviewing candidates by sorting applications by years of experience and skill.",
+        heroTitle: 'The job board built for software engineers',
+        heroMessage: "Cut through the clutter. Post jobs, review applicants, and track your hiring pipeline — all in one place",
         whyChooseUs: [
             {
                 imageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_general.png?alt=media&token=727861ea-e064-46ed-9f15-8e386243d39f',
                 title: 'Easier application review',
-                message: "With our application review process, you'll be able to save hours searching through applications by sorting by years of experience and skill.",
+                message: "With our application review process, you'll be able to save hours searching through applications with our easy to use summary of each applicants skills and years of experience.",
                 icon: 'bi-person-circle'
             },
             {
@@ -87,7 +93,7 @@ const Config = {
                 price: 'Free',
                 formatCurrency: false,
                 features: [
-                    {title: '2 active job posts at a time'},
+                    {title: '1 active job post at a time'},
                     {title: 'Track job post stats'},
                     {title: 'Review applications'}
                 ],
@@ -99,9 +105,7 @@ const Config = {
                 formatCurrency: true,
                 features: [
                     {title: 'All basic plan benefits'},
-                    {title: 'Unlimited job postings'},
-                    {title: 'Message candidates'},
-                    {title: 'Schedule interviews'}
+                    {title: 'Unlimited active job postings'},
                 ],
                 id: 'm'
             }
@@ -201,13 +205,15 @@ export const LandingComponent = props => {
                                     onClick={onClickGetStarted}
                                     style={{marginRight: 15}}
                                 />
-                                {/* feature: pricing*/}
-                                {/* <Button
-                                    title='View pricing'
-                                    type='clear'
-                                    priority={1}
-                                    onClick={onClickViewPricing}
-                                /> */}
+                                {props.isRecruiterMode ?
+                                    <Button
+                                        title='View pricing'
+                                        type='clear'
+                                        priority={1}
+                                        onClick={onClickViewPricing}
+                                    />
+                                    : null
+                                }
                             </div>
                         </div>
                     </div>
@@ -250,53 +256,56 @@ export const LandingComponent = props => {
                         </div>
                     </div>
                 </div>
-                {/* <div className='pricing-container' id='pricing-container'>
-                    <div className='section-header'>
-                        <h1 className='title'>Pricing</h1>
-                        <Button
-                            title='Contact us'
-                            priority={2}
-                            type='solid'
-                            onClick={onClickContactUs}
-                        />
-                    </div>
-                    <div
-                        className='pricing-options-container'
-                        style={{
-                            display: props.isRecruiterMode ? 'grid' : 'flex',
-                            justifyContent: 'space-around'
-                        }}
-                    >
-                        {config.pricing.map(({title, price, formatCurrency, features, id}) => (
-                            <div
-                                className='pricing-option-container float-container'
-                                key={title}
-                                style={{
-                                    maxWidth: props.isRecruiterMode ? 'auto' : 'min(600px, 100%)',
-                                    minWidth: props.isRecruiterMode ? 'auto' : 'min(600px, 100%)'
-                                }}
-                            >
-                                <div className='header'>
-                                    <h3>{title}</h3>
-                                    <h3 className='price'>{`${formatCurrency ? '$' : '' } ${price}`}</h3>
-                                </div>
-                                {features.map( ({title}, i) => (
-                                    <div className={`feature-list-item ${!i && 'bold'}`} key={title}>
-                                        <i className={`bi-check-circle-fill check-icon`} />
+                {props.isRecruiterMode ?
+                    <div className='pricing-container' id='pricing-container'>
+                        <div className='section-header'>
+                            <h1 className='title'>Pricing</h1>
+                            <Button
+                                title='Contact us'
+                                priority={2}
+                                type='solid'
+                                onClick={onClickContactUs}
+                            />
+                        </div>
+                        <div
+                            className='pricing-options-container'
+                            style={{
+                                display: props.isRecruiterMode ? 'grid' : 'flex',
+                                justifyContent: 'space-around'
+                            }}
+                        >
+                            {config.pricing.map(({title, price, formatCurrency, features, id}) => (
+                                <div
+                                    className='pricing-option-container float-container'
+                                    key={title}
+                                    style={{
+                                        maxWidth: props.isRecruiterMode ? 'auto' : 'min(600px, 100%)',
+                                        minWidth: props.isRecruiterMode ? 'auto' : 'min(600px, 100%)'
+                                    }}
+                                >
+                                    <div className='header'>
                                         <h3>{title}</h3>
+                                        <h3 className='price'>{`${formatCurrency ? '$' : '' } ${price}`}</h3>
                                     </div>
-                                ))}
-                                <Button
-                                    title='Get started'
-                                    type='clear'
-                                    priority={1}
-                                    onClick={() => onClickPricingOption(id)}
-                                    style={{marginTop: 15}}
-                                />
-                            </div>
-                        ))}
+                                    {features.map( ({title}, i) => (
+                                        <div className={`feature-list-item ${!i && 'bold'}`} key={title}>
+                                            <i className={`bi-check-circle-fill check-icon`} />
+                                            <h3>{title}</h3>
+                                        </div>
+                                    ))}
+                                    <Button
+                                        title='Get started'
+                                        type='clear'
+                                        priority={1}
+                                        onClick={() => onClickPricingOption(id)}
+                                        style={{marginTop: 15}}
+                                    />
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                </div> */}
+                    : null
+                }
                 <div className='copyright-container'>
                     <p>© {moment().year()} {process.env.REACT_APP_SITE_NAME}. All rights reserved.</p>
                 </div>

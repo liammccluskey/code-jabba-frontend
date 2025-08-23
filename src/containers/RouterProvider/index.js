@@ -147,31 +147,31 @@ const router = createBrowserRouter([
     },
 
     // membership
-    // {
-    //   path: '/membership/premium',
-    //   element: <PrivateRoute element={<Premium />} />,
-    //   errorElement: <ErrorElement />
-    // },
-    // {
-    //   path: '/membership/checkoutportal',
-    //   element: <PrivateRoute element={<CheckoutPortal />} />,
-    //   errorElement: <ErrorElement />
-    // },
-    // {
-    //   path: '/membership/checkoutsuccess/:subscriptionTier',
-    //   element: <PrivateRoute element={<CheckoutSuccess />} />,
-    //   errorElement: <ErrorElement />
-    // },
-    // {
-    //   path: '/membership/checkoutcancel',
-    //   element: <PrivateRoute element={<CheckoutCancel />} />,
-    //   errorElement: <ErrorElement />
-    // },
-    // {
-    //   path: '/membership/cancel',
-    //   element: <PrivateRoute element={<CancelMembership />} />,
-    //   errorElement: <ErrorElement />
-    // },
+    {
+      path: '/membership/premium',
+      element: <PrivateRoute element={<Premium />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/membership/checkout-portal',
+      element: <PrivateRoute element={<CheckoutPortal />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/membership/checkout-success/:subscriptionTier',
+      element: <PrivateRoute element={<CheckoutSuccess />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/membership/checkout-cancel/:subscriptionTier',
+      element: <PrivateRoute element={<CheckoutCancel />} />,
+      errorElement: <ErrorElement />
+    },
+    {
+      path: '/membership/cancel',
+      element: <PrivateRoute element={<CancelMembership />} />,
+      errorElement: <ErrorElement />
+    },
 
     // main
     {

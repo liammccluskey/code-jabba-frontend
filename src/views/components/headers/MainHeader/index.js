@@ -8,8 +8,8 @@ import { getIsMobile, getIsSemiMobile } from '../../../../redux/theme'
 import {
     getMongoUser,
     getHasAdminPrivileges,
-    // getIsPremiumUser,
     getIsRecruiterMode,
+    getIsRecruiterPremiumUser,
 
     setIsRecruiterMode
 } from '../../../../redux/user'
@@ -57,19 +57,18 @@ export const getMainPageLinks = (hasAdminPrivileges, isRecruiterMode) => [
     ),
 ]
 
-export const getMainMenuPageLinks = (isPremiumUser, isRecruiterMode, mongoUser) => [
-    // ...(isPremiumUser ?
-    //     []
-    //     : [
-    //         {
-    //             name: 'Go Premium',
-    //             url: '/membership/premium',
-    //             id: 'premium',
-    //             icon: 'bi-trophy-fill',
-    //             color: 'gold'
-    //         }
-    //     ]
-    // ),
+export const getMainMenuPageLinks = (isRecruiterPremiumUser, isRecruiterMode, mongoUser) => [
+    ...(!isRecruiterPremiumUser && isRecruiterMode ?
+        [
+            {
+                name: 'Go Premium',
+                url: '/membership/premium',
+                id: 'premium',
+                icon: 'bi-trophy-fill',
+                color: 'gold'
+            }
+        ] : []
+    ),
     {
         name: 'Profile',
         url: `/users/${mongoUser._id}`,
@@ -127,7 +126,7 @@ export const MainHeaderComponent = props => {
     useEffect(() => {
         setLoadingPageLinks(true)
         setMainPageLinks(getMainPageLinks(props.hasAdminPrivileges, props.isRecruiterMode))
-        setMainMenuPageLinks(getMainMenuPageLinks(/*props.isPremiumUser*/false, props.isRecruiterMode, props.mongoUser))
+        setMainMenuPageLinks(getMainMenuPageLinks(props.isRecruiterPremiumUser, props.isRecruiterMode, props.mongoUser))
         setLoadingPageLinks(false)
     }, [props.hasAdminPrivileges, props.isCna, props.isRecruiterMode])
 
@@ -246,8 +245,8 @@ const mapStateToProps = state => ({
     isSemiMobile: getIsSemiMobile(state),
     mongoUser: getMongoUser(state),
     hasAdminPrivileges: getHasAdminPrivileges(state),
-    // isPremiumUser: getIsPremiumUser(state),
     isRecruiterMode: getIsRecruiterMode(state),
+    isRecruiterPremiumUser: getIsRecruiterPremiumUser(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
@@ -6,38 +6,42 @@ import { useNavigate } from 'react-router-dom'
 
 import { 
     getIsRecruiterMode,
+    getIsRecruiterPremiumUser,
 
     SubscriptionTiers,
     SubscriptionTiersFormatted,
     SubscriptionPrices
 } from '../../../redux/user'
+import { ModalTypes } from '../../../containers/ModalProvider'
+import { addModal } from '../../../redux/modal'
+
 import { PageContainer } from '../../components/common/PageContainer'
 import { BodyContainer } from '../../components/common/BodyContainer'
 import { MainHeader } from '../../components/headers/MainHeader'
 import { Button } from '../../components/common/Button'
 
 export const Features = {
-    candidatePremium: [
-        {
-            title: 'Free tier items',
-            description: 'With Candidate Premium, you get all the items in the free tier',
-            icon: 'bi-check',
-        },
-        {
-            title: 'Unlimited Job Applications',
-            description: 'With Candidate Premium, you get to submit unlimited applications per day',
-            icon: 'bi-briefcase',
-        },
-    ],
+    // candidatePremium: [
+    //     {
+    //         title: 'Free tier items',
+    //         description: 'With Candidate Premium, you get all the items in the free tier',
+    //         icon: 'bi-check',
+    //     },
+    //     {
+    //         title: 'Unlimited Job Applications',
+    //         description: 'With Candidate Premium, you get to submit unlimited applications per day',
+    //         icon: 'bi-briefcase',
+    //     },
+    // ],
     recruiterPremium: [
         {
             title: 'Free tier items',
-            description: 'With Recruiter Premium, you get all the items in the free tier',
+            description: 'Access to all all the items in the free tier',
             icon: 'bi-check',
         },
         {
-            title: 'Unlimited Job Posts',
-            description: 'With Recruiter Premium, you get to post unlimited job applications per day',
+            title: 'Unlimited Active Job Posts',
+            description: 'Ability to have unlimited active job posts at a time ',
             icon: 'bi-briefcase',
         },
     ]
@@ -49,9 +53,36 @@ export const PremiumComponent = props => {
     } = props
     const navigate = useNavigate()
 
-    const features = props.isRecruiterMode ? Features.recruiterPremium : Features.candidatePremium
-    const subscriptionTierFormatted = props.isRecruiterMode ? SubscriptionTiersFormatted.recruiterPremium : SubscriptionTiersFormatted.candidatePremium
-    const subscriptionTierPricePerMonth = props.isRecruiterMode ? SubscriptionPrices.recruiterPremium : SubscriptionPrices.candidatePremium
+    
+    // const features = props.isRecruiterMode ? Features.recruiterPremium : Features.candidatePremium
+    // const subscriptionTierFormatted = props.isRecruiterMode ? SubscriptionTiersFormatted.recruiterPremium : SubscriptionTiersFormatted.candidatePremium
+    // const subscriptionTierPricePerMonth = props.isRecruiterMode ? SubscriptionPrices.recruiterPremium : SubscriptionPrices.candidatePremium
+    const features = Features.recruiterPremium
+    const subscriptionTierFormatted = SubscriptionTiersFormatted.recruiterPremium
+    const subscriptionTierPricePerMonth = SubscriptionPrices.recruiterPremium
+
+    // Effects
+
+    useEffect(() => {
+        if (props.isRecruiterPremiumUser) {
+            addCantSubscribeModal()
+        }
+    }, [])
+
+    // Utils
+
+    const addCantSubscribeModal = () => {
+        props.addModal(ModalTypes.CONFIRM, {
+            title: subscriptionTierFormatted,
+            message: `You are already subscribed to ${subscriptionTierFormatted}.`,
+            confirmButtonTitle: 'Okay',
+            onConfirm: onSuccess => {
+                navigate('/dashboard')
+                onSuccess()
+            },
+            onCancel: () => navigate(-1)
+        })
+    }
 
     // Direct
 
@@ -77,12 +108,14 @@ export const PremiumComponent = props => {
                             <p className='price-text'>{`$${subscriptionTierPricePerMonth} per month`}</p>
                         </div>
                         <div className='divider' />
-                        <Button
-                            title='Continue'
-                            priority={2}
-                            type='gold'
-                            onClick={onClickContinue}
-                        />
+                        <div className='premium-button-container'>
+                            <Button
+                                title='Continue'
+                                priority={2}
+                                type='gold'
+                                onClick={onClickContinue}
+                            />
+                        </div>
                     </div>
                     <div className='features-container'>
                         {features.map( ({title, description, icon}, i) => (
@@ -145,9 +178,18 @@ const Container = styled.div`
         flex-direction: column;
         align-items: center;
         justify-content: space-around;
+        flex: 1;
     }
     & .premium-price-container label {
         margin-bottom: 20px;
+    }
+
+    & .premium-button-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-around;
+        flex: 1;
     }
 
     & .divider {
@@ -187,10 +229,11 @@ const Container = styled.div`
 `
 const mapStateToProps = state => ({
     isRecruiterMode: getIsRecruiterMode(state),
+    isRecruiterPremiumUser: getIsRecruiterPremiumUser(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    
+    addModal,
 }, dispatch)
 
 export const Premium = connect(mapStateToProps, mapDispatchToProps)(PremiumComponent)

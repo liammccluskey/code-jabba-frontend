@@ -1,6 +1,6 @@
 export const SubscriptionTiers = {
     candidatePremium: 'candidatePremium',
-    recruiterPremiium: 'recruiterPremium',
+    recruiterPremium: 'recruiterPremium',
 }
 
 export const SubscriptionTiersFormatted = {
@@ -9,6 +9,6 @@ export const SubscriptionTiersFormatted = {
 }
 
 export const SubscriptionPrices = {
-    candidatePremium: 10,
-    recruiterPremium: 30
+    candidatePremium: 20,
+    recruiterPremium: 99
 }

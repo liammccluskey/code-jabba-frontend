@@ -65,7 +65,7 @@ export const getIsRecruiterPremiumUser = createSelector(
     ],
     mongoUser => mongoUser && 
         mongoUser.subscription &&
-        mongoUser.subscription.tier === SubscriptionTiers.recruiterPremiium &&
+        mongoUser.subscription.tier === SubscriptionTiers.recruiterPremium &&
         mongoUser.subscription.status === 'active'
 )
 
