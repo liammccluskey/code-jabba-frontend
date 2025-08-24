@@ -5,6 +5,7 @@ import styled from 'styled-components'
 
 import {
     getUser,
+
     patchUserSettings
 } from '../../../../redux/user'
 import { PageContainer } from '../../../components/common/PageContainer'
@@ -41,6 +42,12 @@ export const AdvancedSettingsComponent = props => {
                 enabled: settings.appNotifications.jobUpdatesEnabled,
                 locked: false,
             },
+            {
+                path: 'appNotifications.subscriptionUpdatesEnabled',
+                name: 'Subscription updates',
+                enabled: settings.appNotifications.subscriptionUpdatesEnabled,
+                locked: false,
+            },
         ],
         emailNotifications: [
             {
@@ -57,6 +64,11 @@ export const AdvancedSettingsComponent = props => {
                 path: 'emailNotifications.jobUpdatesEnabled',
                 name: 'Job updates',
                 enabled: settings.emailNotifications.jobUpdatesEnabled,
+            },
+            {
+                path: 'emailNotifications.subscriptionUpdatesEnabled',
+                name: 'Subscription updates',
+                enabled: settings.emailNotifications.subscriptionUpdatesEnabled,
             },
         ],
     }

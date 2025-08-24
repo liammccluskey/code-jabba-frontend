@@ -9,7 +9,7 @@ import {
     fetchThisMongoUser
 } from '../../../../redux/user'
 import { Features } from '../../Premium'
-import { SubscriptionTiers } from '../../../../redux/user'
+import { SubscriptionTiers, SubscriptionTiersFormatted } from '../../../../redux/user'
 
 import { PageContainer } from '../../../components/common/PageContainer'
 import { BodyContainer } from '../../../components/common/BodyContainer'
@@ -28,10 +28,11 @@ export const CheckoutSuccessComponent = props => {
     })
 
     const features = Features[subscriptionTier]
+    const subscriptionTierFormatted = SubscriptionTiersFormatted[subscriptionTier]
 
     useEffect(() => {
         if (!isValidSubscriptionTier) return
-        props.addMessage("Welcome to Recruiter Premium. Your payment may take a up to a minute to process. Please refresh the page when you receive email confirmation of your subscription.", false, true)
+        props.addMessage(`Welcome to ${subscriptionTierFormatted}. Please refresh the page when you receive email confirmation of your subscription.`, false, true)
         setTimeout(() => {
             props.fetchThisMongoUser()
         }, 30*1000)

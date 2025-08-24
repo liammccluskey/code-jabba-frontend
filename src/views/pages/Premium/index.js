@@ -87,7 +87,7 @@ export const PremiumComponent = props => {
     // Direct
 
     const onClickContinue = async () => {
-        navigate('/membership/checkoutportal')
+        navigate('/membership/checkout-portal')
     }
 
     return (

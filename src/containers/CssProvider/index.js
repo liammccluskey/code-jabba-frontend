@@ -31,7 +31,7 @@ const Root = styled.div`
         font-size: 10px;
     }
 
-    p, pre {
+    p, pre, ul {
         font-size: 14px;
         color: ${p => p.theme.textMain};
     }

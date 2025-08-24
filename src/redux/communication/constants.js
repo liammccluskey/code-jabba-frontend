@@ -14,5 +14,10 @@ export const NotificationChannels = {
         id: 'jobUpdates',
         title: 'Job updates',
         icon: 'bi-briefcase',
-    }
+    },
+    subscriptionUpdates: {
+        id: 'subscriptionUpdates',
+        title: 'Subscription updates',
+        icon: 'bi-stripe'
+    },
 }

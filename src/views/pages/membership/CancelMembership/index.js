@@ -1,30 +1,76 @@
-import React from 'react'
+import React, {useMemo, useEffect} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import {
+    getIsRecruiterPremiumUser,
+
     cancelSubscription,
     fetchThisMongoUser
 } from '../../../../redux/user'
 import { ModalTypes } from '../../../../containers/ModalProvider'
 import { addModal } from '../../../../redux/modal'
 import { Features } from '../../Premium'
+import { SubscriptionTiers, SubscriptionTiersFormatted } from '../../../../redux/user'
+
 import { PageContainer } from '../../../components/common/PageContainer'
 import { BodyContainer } from '../../../components/common/BodyContainer'
 import { MainHeader } from '../../../components/headers/MainHeader'
 import { Button } from '../../../components/common/Button'
+import { ErrorElement } from '../../ErrorElement'
 
 export const CancelMembershipComponent = props => {
     const {
         
     } = props
     const navigate = useNavigate()
+    const {subscriptionTier} = useParams()
+    const isValidSubscriptionTier = useMemo(() => {
+        return subscriptionTier === SubscriptionTiers.recruiterPremium
+    }, [subscriptionTier])
+
+    const features = Features[subscriptionTier]
+    const subscriptionTierFormatted = SubscriptionTiersFormatted[subscriptionTier]
+
+    // Effects
+
+    useEffect(() => {
+        if (!getCanCancelSubscription() && isValidSubscriptionTier) {
+            addCantCancelSubscriptionModal()
+        }
+    }, [subscriptionTier, props.isRecruiterPremiumUser])
+
+    // Utils
+
+    const getCanCancelSubscription = () => {
+        switch (subscriptionTier) {
+            case SubscriptionTiers.recruiterPremium:
+                return props.isRecruiterPremiumUser
+        }
+    }
+
+    const addCantCancelSubscriptionModal = () => {
+        props.addModal(ModalTypes.CONFIRM, {
+            title: `Cancel ${subscriptionTierFormatted}`,
+            message: `We can't cancel your subscription as you are not subscribed to ${subscriptionTierFormatted}.`,
+            confirmButtonTitle: 'Okay',
+            onConfirm: onSuccess => {
+                navigate('/dashboard')
+                onSuccess()
+            },
+            onCancel: () => navigate(-1)
+        })
+    }
 
     // Direct
 
     const onClickCancel = async () => {
+        if (!getCanCancelSubscription() && isValidSubscriptionTier) {
+            addCantCancelSubscriptionModal()
+            return
+        }
         props.addModal(ModalTypes.CONFIRM, {
             message: 'Are you sure you want to cancel your Premium subscription?',
             onConfirm: (onSuccess, onFailure) => props.cancelSubscription(
@@ -47,16 +93,16 @@ export const CancelMembershipComponent = props => {
         })
     }
 
-    return (
+    return !isValidSubscriptionTier ? <ErrorElement /> : (
         <PageContainer>
             <MainHeader />
             <BodyContainer>
                 <Container>
                     <div className='body-container float-container'>
-                        <h3 className='title'>Cancel Premium</h3>
-                        <p className='message'>If you cancel premium, you'll lose access to the following features.</p>
+                        <h3 className='title'>Cancel {subscriptionTierFormatted}</h3>
+                        <p className='message'>If you cancel {subscriptionTierFormatted}, you'll lose access to the following features.</p>
                         <div className='features-container'>
-                            {Features.map( ({title, description, icon}) => (
+                            {features.map( ({title, description, icon}) => (
                                 <div className='feature-container' key={title}>
                                     <div className='icon-container'>
                                         <i className={icon} />
@@ -137,7 +183,7 @@ const Container = styled.div`
     }
 `
 const mapStateToProps = state => ({
-    
+    isRecruiterPremiumUser: getIsRecruiterPremiumUser(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

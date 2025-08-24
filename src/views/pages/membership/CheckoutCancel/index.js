@@ -21,7 +21,7 @@ export const CheckoutCancelComponent = props => {
     const {subscriptionTier} = useParams()
     const isValidSubscriptionTier = useMemo(() => {
         return subscriptionTier === SubscriptionTiers.recruiterPremium
-    })
+    }, [subscriptionTier])
 
     const features = Features[subscriptionTier]
     const subscriptionTierFormatted = SubscriptionTiersFormatted[subscriptionTier]

@@ -168,7 +168,7 @@ const router = createBrowserRouter([
       errorElement: <ErrorElement />
     },
     {
-      path: '/membership/cancel',
+      path: '/membership/cancel/:subscriptionTier',
       element: <PrivateRoute element={<CancelMembership />} />,
       errorElement: <ErrorElement />
     },

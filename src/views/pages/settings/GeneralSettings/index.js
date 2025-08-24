@@ -17,6 +17,7 @@ import {
     getIsPremiumUser,
     getIsCandidatePremiumUser,
     getIsRecruiterPremiumUser,
+
     patchUserDisplayName,
     patchUserPhoto,
     patchUserThemeColor,
@@ -49,11 +50,14 @@ export const GeneralSettingsComponent = props => {
     const formInitialValues = {
         membership: {
             memberSince: moment(props.user.createdAt).format('LL'),
-            membership: props.isCandidatePremiumUser ?
-                SubscriptionTiersFormatted.candidatePremium
-                : props.isRecruiterPremiumUser ?
-                    SubscriptionTiersFormatted.recruiterPremium
-                    : 'None'
+            // membership: props.isCandidatePremiumUser ?
+            //     SubscriptionTiersFormatted.candidatePremium
+            //     : props.isRecruiterPremiumUser ?
+            //         SubscriptionTiersFormatted.recruiterPremium
+            //         : 'None'
+            membership: props.isRecruiterPremiumUser ? 
+                SubscriptionTiersFormatted.recruiterPremium
+                : 'None'
         },
         account: {
             email: props.user.email
@@ -83,7 +87,10 @@ export const GeneralSettingsComponent = props => {
     }
 
     const onClickCancelPremium = () => {
-        navigate('/membership/cancel')
+        const cancelMembershipURL = props.isRecruiterPremiumUser ? 
+            '/membership/cancel/recruiterPremium' 
+            : '/dashboard'
+        navigate(cancelMembershipURL)
     }
 
     const onClickResetPassword = async () => {
@@ -149,13 +156,13 @@ export const GeneralSettingsComponent = props => {
                                 <p>{formInitialValues.membership.memberSince}</p>
                             }
                         />
-                        {/* <SettingsRow
-                            title='Memberhsip'
+                        <SettingsRow
+                            title='Subscription'
                             isEditable={false}
                             middleChild={
                                 <p>{formInitialValues.membership.membership}</p>
                             }
-                            rightChild={props.isPremiumUser ?
+                            rightChild={props.isRecruiterPremiumUser ?
                                 <Button
                                     title='Cancel Premium'
                                     priority={2}
@@ -169,7 +176,7 @@ export const GeneralSettingsComponent = props => {
                                     onClick={onClickGoPremium}
                                 />
                             }
-                        /> */}
+                        />
                     </div>
 
                     <h3 className='settings-title'>
