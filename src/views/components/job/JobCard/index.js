@@ -22,13 +22,13 @@ import {
     EmploymentTypes,
     SettingTypes,
     PositionTypes,
-    ExperienceLevels,
-    ExperienceYears,
     VisaSponsorshipOptions
 } from '../EditJobCard'
 import {
     formatSalary,
-    formatSalaryRange
+    formatSalaryRange,
+    getJobExperienceLevel,
+    getJobExperienceYears
 } from './utils'
 import { addModal } from '../../../../redux/modal'
 import { ModalTypes } from '../../../../containers/ModalProvider'
@@ -275,21 +275,13 @@ export const JobCardComponent = props => {
             </div>
             <div className='section-2' >
                 <PillLabel
-                    title={job.minExperienceLevel === job.maxExperienceLevel ? 
-                        ExperienceLevels.find(level => level.id === job.minExperienceLevel).title + ' level'
-                        : `${ExperienceLevels.find(level => level.id === job.minExperienceLevel).title}
-                            - 
-                        ${ExperienceLevels.find(level => level.id === job.maxExperienceLevel).title} level`
-                    }
+                    title={getJobExperienceLevel(job.minExperienceLevel, job.maxExperienceLevel)}
                     color='yellow'
                     size='m'
                     style={{marginRight: 5}}
                 />
                 <PillLabel
-                    title={job.minExperienceYears == job.maxExperienceYears ? 
-                        ExperienceYears.find(years => years.id == job.minExperienceYears).title + ' years'
-                        : `${ExperienceYears.find(years => years.id == job.minExperienceYears).min} - ${ExperienceYears.find(years => years.id == job.maxExperienceYears).max} years`
-                    }
+                    title={getJobExperienceYears(job.minExperienceYears, job.maxExperienceYears)}
                     color='yellow'
                     size='m'
                     style={{marginRight: 5}}
@@ -330,21 +322,27 @@ export const JobCardComponent = props => {
                     <div className='languages-and-skills-section' >
                         <div className='languages-section'>
                             <label>Languages</label>
-                            {sortedJobLanguages.map( language => (
-                                <div key={language} className={`option-container ${userHasLanguage(language) && 'included'}`}>
-                                    <i className={`status-icon ${userHasLanguage(language) ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}`} />
-                                    <p>{language}</p>
-                                </div>
-                            ))}
+                            {sortedJobLanguages.length ? 
+                                sortedJobLanguages.map( language => (
+                                    <div key={language} className={`option-container ${userHasLanguage(language) && 'included'}`}>
+                                        <i className={`status-icon ${userHasLanguage(language) ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}`} />
+                                        <p>{language}</p>
+                                    </div>
+                                ))
+                                : <p className='no-options-text'>No languages listed</p>
+                            }
                         </div>
                         <div className='skills-section'>
                             <label>Skills</label>
-                            {sortedJobSkills.map( skill => (
-                                <div key={skill} className={`option-container ${userHasSkill(skill) && 'included'}`}>
-                                    <i className={`status-icon ${userHasSkill(skill) ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}`} />
-                                    <p>{skill}</p>
-                                </div>
-                            ))}
+                            {sortedJobSkills.length ?
+                                sortedJobSkills.map( skill => (
+                                    <div key={skill} className={`option-container ${userHasSkill(skill) && 'included'}`}>
+                                        <i className={`status-icon ${userHasSkill(skill) ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}`} />
+                                        <p>{skill}</p>
+                                    </div>
+                                ))
+                                :  <p className='no-options-text'>No skills listed</p>
+                            }
                         </div>
                     </div>
                     <div className='about-section'>
@@ -475,6 +473,10 @@ const Root = styled.div`
 
     & .applicants-count-text {
         align-self: center;
+        color: ${p => p.theme.textSecondary};
+    }
+
+    & .no-options-text {
         color: ${p => p.theme.textSecondary};
     }
 `

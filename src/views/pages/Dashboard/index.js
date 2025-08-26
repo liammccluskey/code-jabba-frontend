@@ -109,7 +109,7 @@ export const DashboardComponent = props => {
     const applicationsRows = !props.loadingApplications ?
         getPaginatedDataForCurrentPage(props.applications, applicationsPage, PageSizes.candidateApplicationSearch).map(({job, status, createdAt, archived, _id}) =>({
             id: _id,
-            cells: [job.title, job.company ? job.company.name : 'no name', archived ? 'Archived' : capitalizeWords(status), moment(createdAt).format('ll')]
+            cells: [job ? job.title : 'Job not found', job && job.company ? job.company.name : 'N/A', archived ? 'Archived' : capitalizeWords(status), moment(createdAt).format('ll')]
         })) : []
 
     const companyPills = [

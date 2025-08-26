@@ -7,7 +7,7 @@ import {
     SettingTypes,
     PositionTypes,
 } from '../EditJobCard'
-import { formatSalary, formatSalaryRange } from '../JobCard/utils'
+import { formatSalary, formatSalaryRange, getJobExperienceLevel } from '../JobCard/utils'
 
 import { Tooltip } from '../../common/Tooltip'
 import { PillLabel } from '../../common/PillLabel'
@@ -83,6 +83,12 @@ export const JobFeedCard = props => {
                     <PillLabel
                         title={PositionTypes.find( positionType => positionType.id === job.position).title}
                         color='blue'
+                        size='m'
+                        style={{marginRight: 5}}
+                    />
+                    <PillLabel
+                        title={getJobExperienceLevel(job.minExperienceLevel, job.maxExperienceLevel)}
+                        color='yellow'
                         size='m'
                         style={{marginRight: 5}}
                     />

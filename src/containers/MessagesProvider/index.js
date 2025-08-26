@@ -18,7 +18,7 @@ export const MessagesProviderComponent = props => {
     return (
         <div>
             {children}
-            <Root className='d-flex fd-column jc-flex-end ai-center'>
+            <Root className='messages-provider d-flex fd-column jc-flex-end ai-center'>
                 {props.messages.map(({title, isError, id}) => (
                     <div
                         className={`d-flex jc-flex-start ai-center
@@ -51,16 +51,15 @@ export const MessagesProviderComponent = props => {
 }
 
 const Root = styled.div`
-    height: 100vh;
+    height: calc(100vh - 100px);
     width: 100vw;
     position: fixed;
     top: 0px;
     left: 0px;
     background-color: clear;
     pointer-events: none;
-    padding-bottom: 100px;
-    box-sizing: border-box;
     z-index: 30;
+    padding-bottom: 100px;
 
     & .regular-message,
     & .error-message {

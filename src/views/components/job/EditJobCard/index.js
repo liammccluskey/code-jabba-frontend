@@ -144,7 +144,6 @@ export const Skills = [
     'Selenium',
     'VSCode',
     'REST APIs',
-    'Backbone',
     'CI/CD',
     'GraphQL',
     'PostgreSQL',
