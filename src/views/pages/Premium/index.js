@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useMemo} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { 
     getIsRecruiterMode,
     getIsRecruiterPremiumUser,
+    getIsCandidatePremiumUser,
 
     SubscriptionTiers,
     SubscriptionTiersFormatted,
@@ -21,18 +22,28 @@ import { MainHeader } from '../../components/headers/MainHeader'
 import { Button } from '../../components/common/Button'
 
 export const Features = {
-    // candidatePremium: [
-    //     {
-    //         title: 'Free tier items',
-    //         description: 'With Candidate Premium, you get all the items in the free tier',
-    //         icon: 'bi-check',
-    //     },
-    //     {
-    //         title: 'Unlimited Job Applications',
-    //         description: 'With Candidate Premium, you get to submit unlimited applications per day',
-    //         icon: 'bi-briefcase',
-    //     },
-    // ],
+    candidatePremium: [
+        {
+            title: 'Free tier items',
+            description: 'With Candidate Premium, you get all the items in the free tier',
+            icon: 'bi-check',
+        },
+        {
+            title: 'Unlimited Job Applications',
+            description: 'With Candidate Premium, you get to submit unlimited applications per day',
+            icon: 'bi-briefcase',
+        },
+        {
+            title: 'Unlimited job search filters',
+            description: 'With Candidate Premium, you can apply as many job filters as you want per search',
+            icon: 'bi-search'
+        },
+        {
+            title: 'Save job search filter combinations',
+            description: 'With Candidate Premium, you can save the job search filter combinations you use to easily apply them later',
+            icon: 'bi-star'
+        }
+    ],
     recruiterPremium: [
         {
             title: 'Free tier items',
@@ -52,19 +63,18 @@ export const PremiumComponent = props => {
         
     } = props
     const navigate = useNavigate()
-
+    const subscriptionTier = useMemo(() => {
+        return props.isRecruiterMode ? SubscriptionTiers.recruiterPremium : SubscriptionTiers.candidatePremium
+    }, [props.isRecruiterMode])
     
-    // const features = props.isRecruiterMode ? Features.recruiterPremium : Features.candidatePremium
-    // const subscriptionTierFormatted = props.isRecruiterMode ? SubscriptionTiersFormatted.recruiterPremium : SubscriptionTiersFormatted.candidatePremium
-    // const subscriptionTierPricePerMonth = props.isRecruiterMode ? SubscriptionPrices.recruiterPremium : SubscriptionPrices.candidatePremium
-    const features = Features.recruiterPremium
-    const subscriptionTierFormatted = SubscriptionTiersFormatted.recruiterPremium
-    const subscriptionTierPricePerMonth = SubscriptionPrices.recruiterPremium
+    const features = Features[subscriptionTier]
+    const subscriptionTierFormatted = SubscriptionTiersFormatted[subscriptionTier]
+    const subscriptionTierPricePerMonth = SubscriptionPrices[subscriptionTier]
 
     // Effects
 
     useEffect(() => {
-        if (props.isRecruiterPremiumUser) {
+        if (props.isRecruiterPremiumUser || props.isCandidatePremiumUser) {
             addCantSubscribeModal()
         }
     }, [])
@@ -208,8 +218,10 @@ const Container = styled.div`
         flex-direction: column;
     }
     & .feature-container .icon-container {
-        height: 40px;
-        width: 40px;
+        min-height: 40px;
+        min-width: 40px;
+        max-height: 40px;
+        max-width: 40px;
         border-radius: 50%;
         display: flex;
         justify-content: space-around;
@@ -230,6 +242,7 @@ const Container = styled.div`
 const mapStateToProps = state => ({
     isRecruiterMode: getIsRecruiterMode(state),
     isRecruiterPremiumUser: getIsRecruiterPremiumUser(state),
+    isCandidatePremiumUser: getIsCandidatePremiumUser(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

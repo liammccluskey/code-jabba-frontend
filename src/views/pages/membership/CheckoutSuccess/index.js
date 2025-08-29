@@ -24,8 +24,8 @@ export const CheckoutSuccessComponent = props => {
     const navigate = useNavigate()
     const {subscriptionTier} = useParams()
     const isValidSubscriptionTier = useMemo(() => {
-        return subscriptionTier === SubscriptionTiers.recruiterPremium
-    })
+        return [SubscriptionTiers.recruiterPremium, SubscriptionTiers.candidatePremium].includes(subscriptionTier)
+    }, [subscriptionTier])
 
     const features = Features[subscriptionTier]
     const subscriptionTierFormatted = SubscriptionTiersFormatted[subscriptionTier]
@@ -44,8 +44,7 @@ export const CheckoutSuccessComponent = props => {
         navigate('/dashboard')
     }
 
-    return !isValidSubscriptionTier ? <ErrorElement />
-    : (
+    return !isValidSubscriptionTier ? <ErrorElement /> : (
         <PageContainer>
             <MainHeader />
             <BodyContainer>

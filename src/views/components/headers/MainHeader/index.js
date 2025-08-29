@@ -10,6 +10,7 @@ import {
     getHasAdminPrivileges,
     getIsRecruiterMode,
     getIsRecruiterPremiumUser,
+    getIsCandidatePremiumUser,
 
     setIsRecruiterMode
 } from '../../../../redux/user'
@@ -57,8 +58,8 @@ export const getMainPageLinks = (hasAdminPrivileges, isRecruiterMode) => [
     ),
 ]
 
-export const getMainMenuPageLinks = (isRecruiterPremiumUser, isRecruiterMode, mongoUser) => [
-    ...(!isRecruiterPremiumUser && isRecruiterMode ?
+export const getMainMenuPageLinks = (isPremiumUser, isRecruiterMode, mongoUser) => [
+    ...(!isPremiumUser ?
         [
             {
                 name: 'Go Premium',
@@ -126,9 +127,13 @@ export const MainHeaderComponent = props => {
     useEffect(() => {
         setLoadingPageLinks(true)
         setMainPageLinks(getMainPageLinks(props.hasAdminPrivileges, props.isRecruiterMode))
-        setMainMenuPageLinks(getMainMenuPageLinks(props.isRecruiterPremiumUser, props.isRecruiterMode, props.mongoUser))
+        setMainMenuPageLinks(getMainMenuPageLinks(
+            props.isRecruiterPremiumUser || props.isCandidatePremiumUser,
+            props.isRecruiterMode, 
+            props.mongoUser
+        ))
         setLoadingPageLinks(false)
-    }, [props.hasAdminPrivileges, props.isCna, props.isRecruiterMode])
+    }, [props.hasAdminPrivileges, props.isRecruiterPremiumUser, props.isCandidatePremiumUser, props.isRecruiterMode])
 
     const onClickLogo = () => navigate('/')
 
@@ -247,6 +252,7 @@ const mapStateToProps = state => ({
     hasAdminPrivileges: getHasAdminPrivileges(state),
     isRecruiterMode: getIsRecruiterMode(state),
     isRecruiterPremiumUser: getIsRecruiterPremiumUser(state),
+    isCandidatePremiumUser: getIsCandidatePremiumUser(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

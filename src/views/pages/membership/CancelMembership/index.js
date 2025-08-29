@@ -2,10 +2,12 @@ import React, {useMemo, useEffect} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import {
     getIsRecruiterPremiumUser,
+    getIsCandidatePremiumUser,
+    getIsRecruiterMode,
 
     cancelSubscription,
     fetchThisMongoUser
@@ -19,17 +21,15 @@ import { PageContainer } from '../../../components/common/PageContainer'
 import { BodyContainer } from '../../../components/common/BodyContainer'
 import { MainHeader } from '../../../components/headers/MainHeader'
 import { Button } from '../../../components/common/Button'
-import { ErrorElement } from '../../ErrorElement'
 
 export const CancelMembershipComponent = props => {
     const {
         
     } = props
     const navigate = useNavigate()
-    const {subscriptionTier} = useParams()
-    const isValidSubscriptionTier = useMemo(() => {
-        return subscriptionTier === SubscriptionTiers.recruiterPremium
-    }, [subscriptionTier])
+    const subscriptionTier = useMemo(() => {
+        return props.isRecruiterMode ? SubscriptionTiers.recruiterPremium : SubscriptionTiers.candidatePremium
+    }, [props.isRecruiterMode])
 
     const features = Features[subscriptionTier]
     const subscriptionTierFormatted = SubscriptionTiersFormatted[subscriptionTier]
@@ -37,7 +37,7 @@ export const CancelMembershipComponent = props => {
     // Effects
 
     useEffect(() => {
-        if (!getCanCancelSubscription() && isValidSubscriptionTier) {
+        if (!getCanCancelSubscription()) {
             addCantCancelSubscriptionModal()
         }
     }, [subscriptionTier, props.isRecruiterPremiumUser])
@@ -48,6 +48,8 @@ export const CancelMembershipComponent = props => {
         switch (subscriptionTier) {
             case SubscriptionTiers.recruiterPremium:
                 return props.isRecruiterPremiumUser
+            case SubscriptionTiers.candidatePremium:
+                return props.isCandidatePremiumUser
         }
     }
 
@@ -67,7 +69,7 @@ export const CancelMembershipComponent = props => {
     // Direct
 
     const onClickCancel = async () => {
-        if (!getCanCancelSubscription() && isValidSubscriptionTier) {
+        if (!getCanCancelSubscription()) {
             addCantCancelSubscriptionModal()
             return
         }
@@ -93,7 +95,7 @@ export const CancelMembershipComponent = props => {
         })
     }
 
-    return !isValidSubscriptionTier ? <ErrorElement /> : (
+    return (
         <PageContainer>
             <MainHeader />
             <BodyContainer>
@@ -167,8 +169,8 @@ const Container = styled.div`
         display: flex;
         justify-content: space-around;
         align-items: center;
-        height: 40px;
-        width: 40px;
+        min-height: 40px;
+        min-width: 40px;
         border-radius: 50%;
         background-color: ${p => p.theme.tintTranslucent};
         margin-right: 15px;
@@ -184,6 +186,8 @@ const Container = styled.div`
 `
 const mapStateToProps = state => ({
     isRecruiterPremiumUser: getIsRecruiterPremiumUser(state),
+    isCandidatePremiumUser: getIsCandidatePremiumUser(state),
+    isRecruiterMode: getIsRecruiterMode(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

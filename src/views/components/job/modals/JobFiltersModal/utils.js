@@ -32,7 +32,7 @@ export const deepObjectEqual = (obj1, obj2) => {
     return true
 }
 
-export const removeMiscFilterKeys = (filter) => {
+const removeMiscFilterKeys = (filter) => {
     const updatedFilter = {...filter}
 
     const excludedFilterKeys = ['_id', 'title', 'user', 'createdAt', 'updatedAt', '__v', 'asMongoFilter', 'sortBy']
@@ -41,6 +41,13 @@ export const removeMiscFilterKeys = (filter) => {
     })
 
     return updatedFilter
+}
+
+export const getFiltersCount = filters => {
+    const strippedCurrentFilter = removeMiscFilterKeys(filters, true)
+    return Object.entries(strippedCurrentFilter)
+        .filter(([key, value]) => value.length > 0)
+        .length
 }
 
 export const getSelectedFilter = (currentFilter, filters) => {

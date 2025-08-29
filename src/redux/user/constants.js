@@ -9,6 +9,6 @@ export const SubscriptionTiersFormatted = {
 }
 
 export const SubscriptionPrices = {
-    candidatePremium: 20,
+    candidatePremium: 9.99,
     recruiterPremium: 99
 }

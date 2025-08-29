@@ -2,6 +2,7 @@ import React, {useState, useEffect, useMemo} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
+import { useNavigate } from 'react-router-dom'
 
 import {
     getJobs,
@@ -25,7 +26,9 @@ import {
 import { ModalTypes } from '../../../../containers/ModalProvider'
 import { addModal } from '../../../../redux/modal'
 import { addMessage } from '../../../../redux/communication'
-import { getSelectedFilter, removeMiscFilterKeys } from '../modals/JobFiltersModal/utils'
+import { getSelectedFilter, getFiltersCount } from '../modals/JobFiltersModal/utils'
+import { getIsCandidatePremiumUser } from '../../../../redux/user'
+import { SubscriptionTiersFormatted } from '../../../../redux/user'
 
 import {JobCard} from '../JobCard'
 import { Paginator } from '../../common/Paginator'
@@ -59,6 +62,7 @@ export const JobsFeedComponent = props => {
 
         ...rest
     } = props
+    const navigate = useNavigate()
 
     // State
 
@@ -118,19 +122,12 @@ export const JobsFeedComponent = props => {
         updateFilters && setFilters(updatedFilters)
     }
 
-    const getFiltersCount = () => {
-        const strippedCurrentFilter = removeMiscFilterKeys(filters, true)
-        return Object.entries(strippedCurrentFilter)
-            .filter(([key, value]) => value.length > 0)
-            .length
-    }
-
     const getFilterDescriptionText = () => {
         if (selectedSavedFilterID) {
             return getSelectedFilter(filters, props.savedFilters).title + 
                 (companyName ? ` & company=${companyName}` : '')
         } else {
-            const filtersCount = getFiltersCount()
+            const filtersCount = getFiltersCount(filters)
             return `${filtersCount} filter${filtersCount == 1 ? '' : 's'} selected` + 
                 (companyName ? ` & company=${companyName}` : '')
         }
@@ -153,11 +150,24 @@ export const JobsFeedComponent = props => {
         })
     }
 
+    const addCantSaveFiltersModal = () => {
+        props.addModal(ModalTypes.CONFIRM, {
+            title: "Can't save filters",
+            message: `If you want to save filter combinations you must upgrade to ${SubscriptionTiersFormatted.candidatePremium}`,
+            confirmButtonTitle: 'Go premium',
+            onConfirm: onSuccess => {
+                navigate('/membership/premium')
+                onSuccess()
+            },
+        })
+    }
+
     // Direct
 
     const onClickAddFilters = () => {
         props.addModal(ModalTypes.JOB_FILTERS, {
             initialFilters: filters,
+            navigateToPremiumPage: () => navigate('/membership/premium'),
             onClickApply: onClickApplyFilters,
             onClickDeleteFilter: (filterID, updateFilters) => addDeleteFilterModal(filterID, updateFilters, false)
         })
@@ -190,7 +200,11 @@ export const JobsFeedComponent = props => {
     }
 
     const onClickSaveFilter = () => {
-        if (!getFiltersCount()) {
+        if (!props.isCandidatePremiumUser) {
+            addCantSaveFiltersModal()
+            return
+        }
+        if (!getFiltersCount(filters)) {
             props.addMessage('You must apply at least one filter to save it', true)
             return
         }
@@ -424,6 +438,7 @@ const mapStateToProps = state => ({
     loadingJob: getLoadingJob(state),
     jobsCount: getJobsCount(state),
     savedFilters: getSavedFilters(state),
+    isCandidatePremiumUser: getIsCandidatePremiumUser(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

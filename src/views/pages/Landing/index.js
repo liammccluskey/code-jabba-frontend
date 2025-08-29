@@ -33,12 +33,12 @@ import { ValueDeltaSpread } from '../../components/common/ValueDeltaSpread'
 const Config = {
     candidate: {
         heroTitle: 'The job board built for software engineers',
-        heroMessage: "Save hours searching for jobs by searching by coding language, skill, experience level and more instead.",
+        heroMessage: "Save hours searching for jobs by searching by coding language, skill, experience level and more.",
         whyChooseUs: [
             {
                 imageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_general.png?alt=media&token=727861ea-e064-46ed-9f15-8e386243d39f',
-                title: 'Easier job search',
-                message: "With our search search filters, you can save time in your job search by searching for jobs by coding language, skill, and experience level.",
+                title: 'Faster job search',
+                message: "With our job search search filters, you can save time in your job search by searching for jobs by coding language, skill, experience level, salary and more",
             },
             {
                 imageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_general.png?alt=media&token=727861ea-e064-46ed-9f15-8e386243d39f',
@@ -46,39 +46,40 @@ const Config = {
                 message: "With our site, you can track the statistics of how many of your applications have been viewed, accepted, and rejected.",
             }
         ],
-        // pricing: [
-        //     {
-        //         title: 'Basic Plan',
-        //         price: 'Free',
-        //         formatCurrency: false,
-        //         features: [
-        //             {title: 'Unlimited job applications per day'},
-        //             {title: 'Track application stats'},
-        //             {title: 'Message recruiters'},
-        //             {title: 'Schedule interviews'}
-        //         ],
-        //         id: 's'
-        //     },
-        //     {
-        //         title: `${SubscriptionTiersFormatted.candidatePremium} Plan`,
-        //         price: `${SubscriptionPrices.candidatePremium} / month`,
-        //         formatCurrency: true,
-        //         features: [
-        //             {title: 'All basic plan benefits'},
-        //             {title: 'Unlimited job postings'}
-        //         ],
-        //         id: 'm'
-        //     }
-        // ]
+        pricing: [
+            {
+                title: 'Basic Plan',
+                price: 'Free',
+                formatCurrency: false,
+                features: [
+                    {title: '3 job applications per day'},
+                    {title: 'Complex job search filters'},
+                    {title: 'Track application stats'},
+                ],
+                id: 's'
+            },
+            {
+                title: `${SubscriptionTiersFormatted.candidatePremium} Plan`,
+                price: `${SubscriptionPrices.candidatePremium} / month`,
+                formatCurrency: true,
+                features: [
+                    {title: 'All basic plan benefits'},
+                    {title: 'Unlimited applications per day'},
+                    {title: 'Unlimited job search filters'},
+                    {title: 'Save job search filter combinations'}
+                ],
+                id: 'm'
+            }
+        ]
     },
     recruiter: {
         heroTitle: 'The job board built for software engineers',
-        heroMessage: "Cut through the clutter. Post jobs, review applicants, and track your hiring pipeline — all in one place",
+        heroMessage: "Cut through the clutter. Post jobs, review applicants, and track your hiring pipeline - all in one place",
         whyChooseUs: [
             {
                 imageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_general.png?alt=media&token=727861ea-e064-46ed-9f15-8e386243d39f',
                 title: 'Easier application review',
-                message: "With our application review process, you'll be able to save hours searching through applications with our easy to use summary of each applicants skills and years of experience.",
+                message: "With our application review process, you'll be able to save time searching through applications with our easy to use summary of each applicants skills and years of experience.",
                 icon: 'bi-person-circle'
             },
             {
@@ -205,15 +206,12 @@ export const LandingComponent = props => {
                                     onClick={onClickGetStarted}
                                     style={{marginRight: 15}}
                                 />
-                                {props.isRecruiterMode ?
-                                    <Button
-                                        title='View pricing'
-                                        type='clear'
-                                        priority={1}
-                                        onClick={onClickViewPricing}
-                                    />
-                                    : null
-                                }
+                                <Button
+                                    title='View pricing'
+                                    type='clear'
+                                    priority={1}
+                                    onClick={onClickViewPricing}
+                                />
                             </div>
                         </div>
                     </div>
@@ -256,56 +254,43 @@ export const LandingComponent = props => {
                         </div>
                     </div>
                 </div>
-                {props.isRecruiterMode ?
-                    <div className='pricing-container' id='pricing-container'>
-                        <div className='section-header'>
-                            <h1 className='title'>Pricing</h1>
-                            <Button
-                                title='Contact us'
-                                priority={2}
-                                type='solid'
-                                onClick={onClickContactUs}
-                            />
-                        </div>
-                        <div
-                            className='pricing-options-container'
-                            style={{
-                                display: props.isRecruiterMode ? 'grid' : 'flex',
-                                justifyContent: 'space-around'
-                            }}
-                        >
-                            {config.pricing.map(({title, price, formatCurrency, features, id}) => (
-                                <div
-                                    className='pricing-option-container float-container'
-                                    key={title}
-                                    style={{
-                                        maxWidth: props.isRecruiterMode ? 'auto' : 'min(600px, 100%)',
-                                        minWidth: props.isRecruiterMode ? 'auto' : 'min(600px, 100%)'
-                                    }}
-                                >
-                                    <div className='header'>
-                                        <h3>{title}</h3>
-                                        <h3 className='price'>{`${formatCurrency ? '$' : '' } ${price}`}</h3>
-                                    </div>
-                                    {features.map( ({title}, i) => (
-                                        <div className={`feature-list-item ${!i && 'bold'}`} key={title}>
-                                            <i className={`bi-check-circle-fill check-icon`} />
-                                            <h3>{title}</h3>
-                                        </div>
-                                    ))}
-                                    <Button
-                                        title='Get started'
-                                        type='clear'
-                                        priority={1}
-                                        onClick={() => onClickPricingOption(id)}
-                                        style={{marginTop: 15}}
-                                    />
-                                </div>
-                            ))}
-                        </div>
+                <div className='pricing-container' id='pricing-container'>
+                    <div className='section-header'>
+                        <h1 className='title'>Pricing</h1>
+                        <Button
+                            title='Contact us'
+                            priority={2}
+                            type='solid'
+                            onClick={onClickContactUs}
+                        />
                     </div>
-                    : null
-                }
+                    <div className='pricing-options-container'>
+                        {config.pricing.map(({title, price, formatCurrency, features, id}) => (
+                            <div
+                                className='pricing-option-container float-container'
+                                key={title}
+                            >
+                                <div className='header'>
+                                    <h3>{title}</h3>
+                                    <h3 className='price'>{`${formatCurrency ? '$' : '' } ${price}`}</h3>
+                                </div>
+                                {features.map( ({title}, i) => (
+                                    <div className={`feature-list-item ${!i && 'bold'}`} key={title}>
+                                        <i className={`bi-check-circle-fill check-icon`} />
+                                        <h3>{title}</h3>
+                                    </div>
+                                ))}
+                                <Button
+                                    title='Get started'
+                                    type='clear'
+                                    priority={1}
+                                    onClick={() => onClickPricingOption(id)}
+                                    style={{marginTop: 15}}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </div>
                 <div className='copyright-container'>
                     <p>© {moment().year()} {process.env.REACT_APP_SITE_NAME}. All rights reserved.</p>
                 </div>
@@ -501,17 +486,15 @@ const Container = styled.div`
     }
 
     & .pricing-options-container {
+        display: flex;
+        justify-content: space-around;
+    }
+    &.semi-mobile .pricing-options-container,
+    &.mobile .pricing-options-container {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
     }
-    @media only screen and (max-width: 1000px) {
-        & .pricing-options-container {
-            grid-template-columns: 1fr;
-        }
-        & .pricing-option-container {
-            margin-bottom: 30px !important;
-        }
-    }
+
     & .pricing-option-container {
         display: flex;
         flex-direction: column;
@@ -522,6 +505,15 @@ const Container = styled.div`
         flex: 1;
         box-sizing: border-box;
         margin: 0px 15px;
+        border-width: 2px;
+        maxWidth: min(600px, 100%);
+        minWidth: min(600px, 100%);
+    }
+    &.semi-mobile .pricing-option-container,
+    &.mobile .pricing-option-container {
+        margin-bottom: 30px !important;
+        maxWidth: auto;
+        minWidth: auto;
     }
 
     & .pricing-option-container .header {

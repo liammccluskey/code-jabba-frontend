@@ -14,8 +14,12 @@ import {
     Skills,
 } from '../../EditJobCard'
 import { getSavedFilters } from '../../../../../redux/job'
-import { getSelectedFilter } from './utils'
+import { getFiltersCount, getSelectedFilter } from './utils'
 import { InitialJobFilters } from '../../JobsFeed'
+import { getIsCandidatePremiumUser } from '../../../../../redux/user'
+import { ModalTypes } from '../../../../../containers/ModalProvider'
+import { addModal } from '../../../../../redux/modal'
+import { SubscriptionTiersFormatted } from '../../../../../redux/user'
 
 import { Confirm } from '../../../modals/Confirm'
 import { SearchableSelectableInput } from '../../../common/SearchableSelectableInput'
@@ -31,6 +35,7 @@ export const JobFiltersModalComponent = props => {
         
         onClickApply, // (onSuccess, onFailure, filters) => void
         onClickDeleteFilter, // (filterID, onDeleteSuccess) => void
+        navigateToPremiumPage, // () => void
     } = props
 
     // State
@@ -97,6 +102,18 @@ export const JobFiltersModalComponent = props => {
         }
     }
 
+    const showCantAddMoreFiltersModal = () => {
+        props.addModal(ModalTypes.CONFIRM, {
+            title: 'Reached filter count limit',
+            message: `You are limited to 3 filters at a time on the free plan. Upgrade to ${SubscriptionTiersFormatted.candidatePremium} to apply unlimited filters.`,
+            confirmButtonTitle: 'Go premium',
+            onConfirm: onSuccess => {
+                navigateToPremiumPage()
+                onSuccess()
+            }
+        })
+    }
+
     // Direct
 
     const onChangeField = e => {
@@ -111,13 +128,23 @@ export const JobFiltersModalComponent = props => {
     const onClickOption = (option, fieldName) => {
         const filterName = fieldName + 's'
 
-        setFilters( curr => ({
-            ...curr,
-            [filterName]: curr[filterName].includes(option) ?
-                curr[filterName].filter(item => item !== option)
-                : [...curr[filterName], option]
-            ,
-        }))
+        setFilters( curr => {
+            const updatedFilters = {
+                ...curr,
+                [filterName]: curr[filterName].includes(option) ?
+                    curr[filterName].filter(item => item !== option)
+                    : [...curr[filterName], option]
+                ,
+            }
+            const updatedFilterCount = getFiltersCount(updatedFilters)
+
+            if (updatedFilterCount <= 3) {
+                return updatedFilters
+            } else {
+                showCantAddMoreFiltersModal()
+                return curr
+            }
+        })
     }
 
     const onClickClearFilter = (filterName) => {
@@ -142,7 +169,7 @@ export const JobFiltersModalComponent = props => {
         }
     }
 
-    const onClickApplyFilter = (filterID) => {
+    const onClickApplySavedFilter = (filterID) => {
         const savedFilter = props.savedFilters.find(filter => filter._id === filterID)
         setFilters(savedFilter)
     }
@@ -171,7 +198,7 @@ export const JobFiltersModalComponent = props => {
                             actionButtonTitle='Apply'
                             dangerButtonTitle='Delete'
                             onlyShowButtonsOnHover={true}
-                            onClickActionButton={() => onClickApplyFilter(_id)}
+                            onClickActionButton={() => onClickApplySavedFilter(_id)}
                             onClickDangerButton={() => onClickDeleteFilter(_id)}
                             titleRightChild={_id === selectedSavedFilterID ?
                                 <PillLabel
@@ -425,10 +452,11 @@ const Root = styled.div`
 
 const mapStateToProps = state => ({
     savedFilters: getSavedFilters(state),
+    isCandidatePremiumUser: getIsCandidatePremiumUser(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-
+    addModal
 }, dispatch)
 
 export const JobFiltersModal = connect(mapStateToProps, mapDispatchToProps)(JobFiltersModalComponent)
