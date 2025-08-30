@@ -147,3 +147,22 @@ export const updateApplicationStatus = (applicationID, updatedStatus, onSuccess,
         onFailure()
     }
 }
+
+export const fetchDailyApplicationCount = () => async (dispatch, getState) => {
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    const queryString = stringifyQuery({
+        userID: mongoUser._id
+    })
+
+    try {
+        const res = await api.get(`/applications/daily-count` + queryString)
+
+        dispatch(ApplicationActions.setDailyApplicationCount(res.data))
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+    }
+}

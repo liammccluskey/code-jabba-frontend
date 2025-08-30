@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useMemo} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
@@ -16,7 +16,12 @@ import {
     fetchJob,
     repostJob,
 } from '../../../../redux/job'
-import { postApplication } from '../../../../redux/application'
+import { 
+    getDailyApplicationCount,
+
+    postApplication,
+    fetchDailyApplicationCount,
+} from '../../../../redux/application'
 import { addMessage } from '../../../../redux/communication'
 import {
     EmploymentTypes,
@@ -50,10 +55,16 @@ export const JobCardComponent = props => {
         ...rest
     } = props
     const navigate = useNavigate()
+
+    // State
+
     const [isJobRecruiter, setIsJobRecruiter] = useState(false)
     const [optionsMenuHidden, setOptionsMenuHidden] = useState(true)
     const [expanded, setExpanded] = useState(!hideable)
     const [loadingPostApplication, setLoadingPostApplication] = useState(false)
+    const canApplyToJobs = useMemo(() => {
+        return props.isCandidatePremiumUser || (props.dailyApplicationCount < 3)
+    }, [props.dailyApplicationCount, props.isCandidatePremiumUser])
 
     const sortedJobLanguages = !props.loadingJob && job ?
         [...job.languages].sort((a, b) => a.localeCompare(b))
@@ -71,8 +82,27 @@ export const JobCardComponent = props => {
     }
 
     useEffect(() => {
-        job && setIsJobRecruiter(props.mongoUser._id === job.recruiter._id)
-    }, [job])
+        if (job) {
+            setIsJobRecruiter(props.mongoUser._id === job.recruiter._id)
+            !props.isCandidatePremiumUser && props.fetchDailyApplicationCount()
+        }
+    }, [job, props.isCandidatePremiumUser])
+
+    // Utils
+
+    const showApplicationLimitReachedModal = () => {
+        props.addModal(ModalTypes.CONFIRM, {
+            title: 'Application limit reached',
+            message: 'Users on the free plan are limited to 3 applications per day. Upgrade to premium for unlimited applications.',
+            confirmButtonTitle: 'Go premium',
+            onConfirm: onSuccess => {
+                navigate('/membership/premium')
+                onSuccess()
+            }
+        })
+    }
+
+    // Direct
 
     const onClickEdit = () => {
         navigate(`/edit-job/${job._id}`)
@@ -122,6 +152,11 @@ export const JobCardComponent = props => {
     ]
 
     const onClickApply = () => {
+        if (!canApplyToJobs) {
+            showApplicationLimitReachedModal()
+            return
+        }
+        
         const postApplication = (onSuccess, onFailure) => {
             setLoadingPostApplication(true)
             props.postApplication(
@@ -485,6 +520,7 @@ const mapStateToProps = state => ({
     mongoUser: getMongoUser(state),
     isRecruiterMode: getIsRecruiterMode(state),
     isCandidatePremiumUser: getIsCandidatePremiumUser(state),
+    dailyApplicationCount: getDailyApplicationCount(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -492,6 +528,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     fetchJob,
     postApplication,
     repostJob,
+    fetchDailyApplicationCount,
     addMessage,
     addModal
 }, dispatch)

@@ -24,6 +24,7 @@ const ApplicationState = {
         rejectedPercentDelta: 0,
         acceptedPercentDelta: 0,
     },
+    dailyApplicationCount: 0,
 }
 
 export const applicationReducer = (state = ApplicationState, action) => {
@@ -104,6 +105,11 @@ export const applicationReducer = (state = ApplicationState, action) => {
                     ...state.application,
                     status: action.value.updatedStatus,
                 },
+            }
+        case Types.setDailyApplicationCount:
+            return {
+                ...state,
+                dailyApplicationCount: action.value
             }
         default:
             return state

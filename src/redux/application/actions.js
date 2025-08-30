@@ -54,3 +54,8 @@ export const updateApplicationStatusLocally = (applicationID, updatedStatus) => 
     type: Types.updateApplicationStatusLocally,
     value: {applicationID, updatedStatus}
 })
+
+export const setDailyApplicationCount = count => ({
+    type: Types.setDailyApplicationCount,
+    value: count
+})
