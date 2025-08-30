@@ -11,7 +11,13 @@ import {
     fetchProfileUser
 } from '../../../../../redux/user'
 import { addMessage } from '../../../../../redux/communication'
-import { getFormDataModifed } from './utils'
+import { 
+    getFormDataModifed,
+    isValidLinkedInURL,
+    isValidGitHubURL,
+    isValidLeetCodeURL
+} from './utils'
+
 import { Confirm } from '../../../modals/Confirm'
 import { InputWithMessage } from '../../../common/InputWithMessage'
 
@@ -48,18 +54,28 @@ export const EditSocialsModalComponent = props => {
 
         if (!formData.linkedInURL) {
             updateError('linkedInURL', true)
+            props.addMessage('LinkedIn URL is a required field.', true)
+            hasErrors = true
+        } else if (!isValidLinkedInURL(formData.linkedInURL)) {
+            props.addMessage('The LinkedIn URL you entered is invalid.', true)
+            hasErrors = true
+        } else if (formData.githubURL && !isValidGitHubURL(formData.githubURL)) {
+            props.addMessage('The Github URL you entered is invalid.', true)
+            hasErrors = true
+        } else if (formData.leetcodeURL && !isValidLeetCodeURL(formData.leetcodeURL)) {
+            props.addMessage('The Leetcode URL you entered is invalid.', true)
             hasErrors = true
         }
+
         return hasErrors
     }
 
     // Direct
 
     const onClickSave = (onSuccess, onFailure) => {
-        const hasErrors = validateForm(true)
+        const hasErrors = validateForm()
 
         if (hasErrors) {
-            props.addMessage('You are missing one or more required fields.', true)
             onFailure()
             return
         }

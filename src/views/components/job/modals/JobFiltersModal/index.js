@@ -18,7 +18,7 @@ import { getFiltersCount, getSelectedFilter } from './utils'
 import { InitialJobFilters } from '../../JobsFeed'
 import { getIsCandidatePremiumUser } from '../../../../../redux/user'
 import { ModalTypes } from '../../../../../containers/ModalProvider'
-import { addModal } from '../../../../../redux/modal'
+import { addModal, removeModal } from '../../../../../redux/modal'
 import { SubscriptionTiersFormatted } from '../../../../../redux/user'
 
 import { Confirm } from '../../../modals/Confirm'
@@ -109,6 +109,7 @@ export const JobFiltersModalComponent = props => {
             confirmButtonTitle: 'Go premium',
             onConfirm: onSuccess => {
                 navigateToPremiumPage()
+                props.removeModal(modalID)
                 onSuccess()
             }
         })
@@ -456,7 +457,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    addModal
+    addModal,
+    removeModal,
 }, dispatch)
 
 export const JobFiltersModal = connect(mapStateToProps, mapDispatchToProps)(JobFiltersModalComponent)

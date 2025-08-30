@@ -19,6 +19,11 @@ export const modalReducer = (state = ModalState, action) => {
                 ...state,
                 stack: state.stack.filter(({id}) => id !== action.modalID)
             }
+        case Types.CLOSE_ALL_MODALS:
+            return {
+                ...state,
+                stack: []
+            }
         default:
             return state
     }

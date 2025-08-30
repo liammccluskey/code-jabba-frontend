@@ -9,3 +9,7 @@ export const removeModal = modalID => ({
     type: Types.REMOVE_MODAL,
     modalID: modalID || 'null'
 })
+
+export const closeAllModals = () => ({
+    type: Types.CLOSE_ALL_MODALS,
+})
