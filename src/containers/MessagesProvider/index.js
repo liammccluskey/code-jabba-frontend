@@ -16,12 +16,12 @@ export const MessagesProviderComponent = props => {
     }
 
     return (
-        <div>
+        <Container>
             {children}
             <Root className='messages-provider d-flex fd-column jc-flex-end ai-center'>
                 {props.messages.map(({title, isError, id}) => (
                     <div
-                        className={`d-flex jc-flex-start ai-center
+                        className={`message-container 
                             ${isError ? 'error-message' : 'regular-message'}
                             animation-slide-up
                         `}
@@ -46,9 +46,16 @@ export const MessagesProviderComponent = props => {
                     </div>
                 ))}
             </Root>
-        </div>
+        </Container>
     )
 }
+
+const Container = styled.div`
+    height: 100vh;
+    width: 100vw;
+    background-color: transparent;
+    overflow: hidden;
+`
 
 const Root = styled.div`
     height: calc(100vh - 100px);
@@ -56,10 +63,16 @@ const Root = styled.div`
     position: fixed;
     top: 0px;
     left: 0px;
-    background-color: clear;
+    background-color: transparent;
     pointer-events: none;
     z-index: 30;
     padding-bottom: 100px;
+
+    & .message-container {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
 
     & .regular-message,
     & .error-message {

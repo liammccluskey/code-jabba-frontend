@@ -14,7 +14,11 @@ import {
     Skills,
 } from '../../EditJobCard'
 import { getSavedFilters } from '../../../../../redux/job'
-import { getFiltersCount, getSelectedFilter } from './utils'
+import { 
+    getFiltersCount, 
+    getSelectedFilter,
+    formatCurrency
+} from './utils'
 import { InitialJobFilters } from '../../JobsFeed'
 import { getIsCandidatePremiumUser } from '../../../../../redux/user'
 import { ModalTypes } from '../../../../../containers/ModalProvider'
@@ -81,8 +85,7 @@ export const JobFiltersModalComponent = props => {
     
         return JSON.stringify(obj)
     }
-      
-
+    
     const getSelectionText = filterName => {
         switch (filterName) {
             case 'settings':
@@ -97,6 +100,8 @@ export const JobFiltersModalComponent = props => {
             case 'excludedLanguages':
             case 'excludedSkills':
                 return filters[filterName].length ? `${filters[filterName].length} selected` : 'none'
+            case 'salaryMin':
+                return filters.salaryMin == '0' ? 'none' : `$ ${formatCurrency(filters.salaryMin)}`
             default:
                 break
         }
@@ -139,7 +144,7 @@ export const JobFiltersModalComponent = props => {
             }
             const updatedFilterCount = getFiltersCount(updatedFilters)
 
-            if (updatedFilterCount <= 3) {
+            if (updatedFilterCount <= 3 || props.isCandidatePremiumUser) {
                 return updatedFilters
             } else {
                 showCantAddMoreFiltersModal()
@@ -165,6 +170,12 @@ export const JobFiltersModalComponent = props => {
                     [filterName]: []
                 }))
                 break
+            case 'salaryMin':
+                setFilters(curr => ({
+                    ...curr,
+                    salaryMin: InitialJobFilters.salaryMin
+                }))
+                break
             default:
                 break
         }
@@ -179,6 +190,39 @@ export const JobFiltersModalComponent = props => {
         setFilters(InitialJobFilters)
     }
 
+    const onClickGoPremium = () => {
+        props.removeModal(modalID)
+        navigateToPremiumPage()
+    }
+
+    const onChangeSalary = e => {
+        const {name, value} = e.target
+
+        if (value.length === 0) {
+            setFilters(curr => ({
+                ...curr,
+                salaryMin: '0'
+            }))
+            return
+        }
+
+        const chars = [...value]
+        let validatedValue = ''
+        for (let i = 0; i < chars.length; i++) {
+            const char = chars[i]
+            if (!isNaN(parseInt(char, 10))) {
+                validatedValue += char
+            }
+        }
+
+        const validatedNumber = Number(validatedValue).toString()
+
+        setFilters(curr => ({
+            ...curr,
+            salaryMin: validatedNumber
+        }))
+    }
+
     // Render
 
     return (
@@ -190,7 +234,17 @@ export const JobFiltersModalComponent = props => {
             onConfirmExtraArg={{updatedFilters: filters, savedFilterID: selectedSavedFilterID}}
         >
             <Root ref={containerRef}>
-                <h4 className='section-title'>Saved filters</h4>
+                <div className='saved-filters-section-header'>
+                    <h4 className='saved-filters-section-title'>Saved filters</h4>
+                    {props.isCandidatePremiumUser ? null :
+                        <PillLabel
+                            title={`${SubscriptionTiersFormatted.candidatePremium} feature`}
+                            color='clear'
+                            size='m'
+                            style={{marginLeft: 10}}
+                        />
+                    }
+                </div>
                 {props.savedFilters.length ? 
                     props.savedFilters.map(({title, _id, ...filter}) => (
                         <FilterRow
@@ -210,6 +264,7 @@ export const JobFiltersModalComponent = props => {
                                 />
                                 : null
                             }
+                            isExpandable={true}
                             key={_id}
                         >
                             <pre>Filter: {prettyPrintObject(filter.asMongoFilter)}</pre>
@@ -218,6 +273,15 @@ export const JobFiltersModalComponent = props => {
                     : <div className='no-saved-filters-container'>
                         <p>You have no saved filters</p>
                     </div>
+                }
+                {props.isCandidatePremiumUser ? null :
+                    <Button 
+                        title='Go premium'
+                        priority={3}
+                        type='clear'
+                        onClick={onClickGoPremium}
+                        style={{alignSelf: 'center', marginTop: 10}}
+                    />
                 }
                 <div className='section-header'>
                     <h4 className='section-title' style={{marginTop: 25}}>Custom filters</h4>
@@ -415,6 +479,23 @@ export const JobFiltersModalComponent = props => {
                         className='row'
                     />
                 </FilterRow>
+                <FilterRow
+                    title='Minium yearly salary (USD)'
+                    filterName='salaryMin'
+                    selectionText={getSelectionText('salaryMin')}
+                    filterActive={![0, '0'].includes(filters.salaryMin)}
+                    onClickActionButton={() => onClickClearFilter('salaryMin')}
+                >
+                    <div className='salary-min-container'>
+                        <input
+                            className='salary-input-container'
+                            value={filters.salaryMin}
+                            onChange={onChangeSalary}
+                        />
+                        <p style={{marginLeft: 10}}><strong>per year</strong></p>
+                    </div>
+
+                </FilterRow>
             </Root>
         </Confirm>
     )
@@ -429,6 +510,18 @@ const Root = styled.div`
     overflow: scroll;
     max-height: 500px;
     padding-top: 15px;
+
+    & .saved-filters-section-header {
+        margin-bottom: 20px;
+        margin-left: 15px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    & .saved-filters-section-title {
+        color: ${p => p.theme.tint};
+    }
 
     & .section-title {
         margin-bottom: 20px;
@@ -448,6 +541,12 @@ const Root = styled.div`
         align-items: center;
         justify-content: space-between;
         margin-top: 15px;
+    }
+
+    & .salary-min-container {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
     }
 `
 

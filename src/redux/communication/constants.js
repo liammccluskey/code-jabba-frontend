@@ -18,6 +18,6 @@ export const NotificationChannels = {
     subscriptionUpdates: {
         id: 'subscriptionUpdates',
         title: 'Subscription updates',
-        icon: 'bi-stripe'
+        icon: 'bi-credit-card'
     },
 }

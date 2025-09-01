@@ -319,7 +319,7 @@ export const cancelSubscription = (onSuccess, onFailure) => async (dispatch, get
             userID: mongoUser._id
         })
 
-        dispatch(addMessage(res.data.message))
+        dispatch(addMessage(res.data.message, false, true))
         onSuccess()
     } catch (error) {
         const errorMessage = error.response ?

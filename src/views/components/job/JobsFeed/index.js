@@ -29,6 +29,7 @@ import { addMessage } from '../../../../redux/communication'
 import { getSelectedFilter, getFiltersCount } from '../modals/JobFiltersModal/utils'
 import { getIsCandidatePremiumUser } from '../../../../redux/user'
 import { SubscriptionTiersFormatted } from '../../../../redux/user'
+import { formatNumber, formatUnit } from '../../../../utils'
 
 import {JobCard} from '../JobCard'
 import { Paginator } from '../../common/Paginator'
@@ -48,6 +49,7 @@ export const InitialJobFilters = {
     excludedSkills: [],
     includedLanguages: [],
     excludedLanguages: [],
+    salaryMin: '0',
 }
 
 const JobSortFilters = [
@@ -128,7 +130,7 @@ export const JobsFeedComponent = props => {
                 (companyName ? ` & company=${companyName}` : '')
         } else {
             const filtersCount = getFiltersCount(filters)
-            return `${filtersCount} filter${filtersCount == 1 ? '' : 's'} selected` + 
+            return `${filtersCount} ${formatUnit('filter', filtersCount)} selected` + 
                 (companyName ? ` & company=${companyName}` : '')
         }
     }
@@ -266,7 +268,7 @@ export const JobsFeedComponent = props => {
                         style={{marginLeft: 15, marginRight: 15}}
                     />
                     <p className='results-count-text'>
-                        {`${props.jobsCount} ${props.jobsCount == 1 ? 'result' : 'results'}`}
+                        {`${formatNumber(props.jobsCount)} ${formatUnit('result', props.jobsCount)}`}
                     </p>
                 </div>
                 <select 
@@ -353,6 +355,7 @@ const Root = styled.div`
         padding: 10px;
         border: 1px solid ${p => p.theme.bc};
         border-radius: 5px;
+        max-height: 63px;
     }
 
     & .filter-text {

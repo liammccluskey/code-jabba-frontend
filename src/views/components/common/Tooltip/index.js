@@ -25,6 +25,7 @@ const Root = styled.div`
     justify-content: space-around;
     align-items: flex-start;
     cursor: pointer;
+    position: relative;
 
     &:hover .tooltip-text {
         visibility: visible;

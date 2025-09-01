@@ -272,7 +272,10 @@ export const LandingComponent = props => {
                             >
                                 <div className='header'>
                                     <h3>{title}</h3>
-                                    <h3 className='price'>{`${formatCurrency ? '$' : '' } ${price}`}</h3>
+                                    <div className='price-container'>
+                                        <h3 className='price'>{`${formatCurrency ? '$' : '' } ${price}`}</h3>
+                                        {price === 'Free' ? null : <h3 className='tax-text'> + tax</h3>}
+                                    </div>
                                 </div>
                                 {features.map( ({title}, i) => (
                                     <div className={`feature-list-item ${!i && 'bold'}`} key={title}>
@@ -528,6 +531,16 @@ const Container = styled.div`
     }
     & .pricing-option-container .header h3 {
         font-weight: 700;
+    }
+    & .pricing-option-container .price-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+    }
+    & .price-container .tax-text {
+        color: ${p => p.theme.textSecondary};
+        margin-left: 5px;
     }
 
     & .feature-list-item {

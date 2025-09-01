@@ -46,8 +46,25 @@ const removeMiscFilterKeys = (filter) => {
 export const getFiltersCount = filters => {
     const strippedCurrentFilter = removeMiscFilterKeys(filters, true)
     return Object.entries(strippedCurrentFilter)
-        .filter(([key, value]) => value.length > 0)
-        .length
+        .filter(([key, value]) => {
+            switch(key) {
+                case 'settings':
+                case 'locations':
+                case 'employmentTypes':
+                case 'positions':
+                case 'experienceLevels':
+                case 'experienceYears':
+                case 'includedLanguages':
+                case 'excludedLanguages':
+                case 'includedSkills':
+                case 'excludedSkills':
+                    return value.length > 0
+                case 'salaryMin':
+                    return ![0, '0'].includes(value)
+                default:
+                    return false
+            }
+        }).length
 }
 
 export const getSelectedFilter = (currentFilter, filters) => {
@@ -56,8 +73,22 @@ export const getSelectedFilter = (currentFilter, filters) => {
         const strippedFilterA = removeMiscFilterKeys(filter)
         const strippedFilterB = removeMiscFilterKeys(currentFilter)
 
-        if (deepObjectEqual(strippedFilterA, strippedFilterB)) return filter
+        const salaryMinA = Number(strippedFilterA.salaryMin)
+        const salaryMinB = Number(strippedFilterB.salaryMin)
+
+        const minSalariesMatch = salaryMinA == salaryMinB
+
+        delete strippedFilterA.salaryMin
+        delete strippedFilterB.salaryMin
+
+        const objectsMatch = deepObjectEqual(strippedFilterA, strippedFilterB)
+
+        if (minSalariesMatch && objectsMatch) return filter
     }
 
     return undefined
+}
+
+export const formatCurrency = value => {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }

@@ -550,7 +550,7 @@ export const DashboardComponent = props => {
                                 />
                             </div>
                         </div>
-                        <div className='section-header '>
+                        <div className='section-header' style={{marginTop: 30}}>
                             <h3>Job posts metrics</h3>
                             <select
                                 value={data.recruiterApplicationTimeframe}

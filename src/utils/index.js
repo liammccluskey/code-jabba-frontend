@@ -4,7 +4,7 @@ export const capitalizeWords = words => {
         .join(' ')
 }
 
-export let formatNumber = n => {
+export const formatNumber = n => {
     /*
         - Convert a number like 12345 to 123.5K
     */

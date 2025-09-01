@@ -110,7 +110,7 @@ export const PremiumComponent = props => {
                 <Container>
                     <h2>Ready to go Premium?</h2>
                     <div className='d-flex ai-center'>
-                        <p>{`With ${subscriptionTierFormatted} you'll get access to the following features.`}</p>
+                        <p>With <strong>{subscriptionTierFormatted}</strong> you'll get access to the following features.</p>
                     </div>
                     <div className='premium-container float-container'>
                         <div className='premium-price-container'>

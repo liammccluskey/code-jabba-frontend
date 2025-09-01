@@ -14,6 +14,7 @@ export const FilterRow = props => {
         dangerButtonTitle='', // string
         onlyShowButtonsOnHover=false, // bool
         titleRightChild=undefined, // Node
+        isExpandable=true, // bool
         children, // [Node]
 
         onClickActionButton, // () => void
@@ -33,9 +34,15 @@ export const FilterRow = props => {
         onClickDangerButton()
     }
 
+    const onClickRow = () => {
+        if (isExpandable) {
+            setExpanded(curr => !curr)
+        }
+    }
+
     return (
         <Root {...rest}>
-            <div className='collapsible-row oh-dark' onClick={() => setExpanded(curr => !curr)}>
+            <div className='collapsible-row oh-dark' onClick={onClickRow}>
                 <div className='title-container'>
                     <p>{title}</p>
                     {titleRightChild}
@@ -72,7 +79,7 @@ export const FilterRow = props => {
                         />
                         : null
                     }
-                    {filterActive && selectionText?
+                    {filterActive && selectionText ?
                         <div className='seperator' />
                         : null
                     }
@@ -80,9 +87,10 @@ export const FilterRow = props => {
                         <p className='selection-text'>{selectionText}</p>
                         : null
                     }
-                    {expanded ?
-                        <i className='bi-chevron-up expand-arrow' />
-                        : <i className='bi-chevron-down expand-arrow' />
+                    {!isExpandable ? null : 
+                        expanded ?
+                            <i className='bi-chevron-up expand-arrow' />
+                            : <i className='bi-chevron-down expand-arrow' />
                     }
                 </div>
             </div>
@@ -156,8 +164,7 @@ const Root = styled.div`
     & .selection-text {
         color: ${p => p.theme.tint};
         margin-right: 10px;
-        min-width: 65px;
-        text-align: right;
+        text-align: center;
     }
     & .seperator {
         height: 15px;

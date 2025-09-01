@@ -50,14 +50,11 @@ export const GeneralSettingsComponent = props => {
     const formInitialValues = {
         membership: {
             memberSince: moment(props.user.createdAt).format('LL'),
-            // membership: props.isCandidatePremiumUser ?
-            //     SubscriptionTiersFormatted.candidatePremium
-            //     : props.isRecruiterPremiumUser ?
-            //         SubscriptionTiersFormatted.recruiterPremium
-            //         : 'None'
-            membership: props.isRecruiterPremiumUser ? 
-                SubscriptionTiersFormatted.recruiterPremium
-                : 'None'
+            membership: props.isCandidatePremiumUser ?
+                SubscriptionTiersFormatted.candidatePremium
+                : props.isRecruiterPremiumUser ?
+                    SubscriptionTiersFormatted.recruiterPremium
+                    : 'None'
         },
         account: {
             email: props.user.email
@@ -87,8 +84,8 @@ export const GeneralSettingsComponent = props => {
     }
 
     const onClickCancelPremium = () => {
-        const cancelMembershipURL = props.isRecruiterPremiumUser ? 
-            '/membership/cancel/recruiterPremium' 
+        const cancelMembershipURL = props.isRecruiterPremiumUser || props.isCandidatePremiumUser ? 
+            '/membership/cancel' 
             : '/dashboard'
         navigate(cancelMembershipURL)
     }
@@ -162,7 +159,7 @@ export const GeneralSettingsComponent = props => {
                             middleChild={
                                 <p>{formInitialValues.membership.membership}</p>
                             }
-                            rightChild={props.isRecruiterPremiumUser ?
+                            rightChild={props.isRecruiterPremiumUser || props.isCandidatePremiumUser ?
                                 <Button
                                     title='Cancel Premium'
                                     priority={2}

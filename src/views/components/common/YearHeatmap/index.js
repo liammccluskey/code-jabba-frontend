@@ -135,7 +135,10 @@ export const YearHeatmapComponent = props => {
                     <Tooltip 
                         key={idx} 
                         title={`${getFormattedValue(day)} on ${day.format('LL')}`}
-                        style={{gridRow: 2 + day.day(), gridColumn: 2 + day.diff(moment().startOf('year').startOf('week'), 'weeks'),}}
+                        style={{
+                            gridRow: 2 + day.day(), 
+                            gridColumn: 2 + day.diff(moment().startOf('year').startOf('week'), 'weeks')
+                        }}
                     >
                         <div
                             style={{

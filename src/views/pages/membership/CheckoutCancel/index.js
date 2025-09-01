@@ -39,7 +39,7 @@ export const CheckoutCancelComponent = props => {
                 <Container>
                     <div className='body-container float-container'>
                         <h3 className='title'>Go premium at any time</h3>
-                        <p className='message'>With {subscriptionTierFormatted} you'll get access to the following features.</p>
+                        <p className='message'>With <strong>{subscriptionTierFormatted}</strong> you'll get access to the following features.</p>
                         <div className='features-container'>
                             {features.map( ({title, description, icon}) => (
                                 <div className='feature-container' key={title}>
@@ -106,8 +106,10 @@ const Container = styled.div`
         display: flex;
         justify-content: space-around;
         align-items: center;
-        height: 40px;
-        width: 40px;
+        min-height: 40px;
+        min-width: 40px;
+        max-height: 40px;
+        max-width: 40px;
         border-radius: 50%;
         background-color: ${p => p.theme.tintTranslucent};
         margin-right: 15px;
