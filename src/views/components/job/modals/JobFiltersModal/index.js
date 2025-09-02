@@ -35,6 +35,7 @@ import { Pill } from '../../../common/Pill'
 import { FilterRow } from '../../FilterRow'
 import { PillLabel } from '../../../common/PillLabel'
 import { Button } from '../../../common/Button'
+import { Tooltip } from '../../../common/Tooltip'
 
 export const FreeTierMaxFilterCount = 3
 
@@ -95,8 +96,8 @@ export const JobFiltersModalComponent = props => {
     const getSelectionText = filterName => {
         switch (filterName) {
             case 'datePosted':
-                if (filters.datePosted) return DatePostedOptionsDict[filters.datePosted]
-                else return 'Anytime'
+                if (filters.datePosted === 'anytime') return 'any'
+                else return DatePostedOptionsDict[filters.datePosted]
             case 'settings':
             case 'locations':
             case 'employmentTypes':
@@ -185,7 +186,7 @@ export const JobFiltersModalComponent = props => {
             case 'datePosted':
                 setFilters(curr => ({
                     ...curr,
-                    datePosted: '',
+                    datePosted: 'anytime',
                 }))
                 break
             case 'settings':
@@ -330,7 +331,7 @@ export const JobFiltersModalComponent = props => {
                     title='Date posted'
                     filterName='datePosted'
                     selectionText={getSelectionText('datePosted')}
-                    filterActive={filters.datePosted !== ''}
+                    filterActive={filters.datePosted !== 'anytime'}
                     onClickActionButton={() => onClickClearFilter('datePosted')}
 
                 >
@@ -470,6 +471,11 @@ export const JobFiltersModalComponent = props => {
                     selectionText={getSelectionText('includedLanguages')}
                     filterActive={filters.includedLanguages.length > 0}
                     onClickActionButton={() => onClickClearFilter('includedLanguages')}
+                    titleRightChild={
+                        <Tooltip title={`Jobs must include at least one`}>
+                            <i className='bi-question-circle help-icon' />
+                        </Tooltip>
+                    }
                 >
                     <SearchableSelectableInput
                         options={Languages}
@@ -504,6 +510,11 @@ export const JobFiltersModalComponent = props => {
                     selectionText={getSelectionText('includedSkills')}
                     filterActive={filters.includedSkills.length > 0}
                     onClickActionButton={() => onClickClearFilter('includedSkills')}
+                    titleRightChild={
+                        <Tooltip title={`Jobs must include at least one`}>
+                            <i className='bi-question-circle help-icon' />
+                        </Tooltip>
+                    }
                 >
                     <SearchableSelectableInput
                         options={Skills}
@@ -600,6 +611,12 @@ const Root = styled.div`
         display: flex;
         justify-content: flex-start;
         align-items: center;
+    }
+
+    & .help-icon {
+        font-size: 17px;
+        color: ${p => p.theme.textSecondary};
+        margin-left: 10px;
     }
 `
 

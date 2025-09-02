@@ -49,7 +49,7 @@ export const getFiltersCount = filters => {
         .filter(([key, value]) => {
             switch(key) {
                 case 'datePosted':
-                    return value !== ''
+                    return value !== 'anytime'
                 case 'settings':
                 case 'locations':
                 case 'employmentTypes':

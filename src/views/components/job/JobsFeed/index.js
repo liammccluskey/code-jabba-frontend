@@ -50,7 +50,7 @@ export const DatePostedOptionsDict = {
 }
 
 export const InitialJobFilters = {
-    datePosted: '', // '' | past-day | past-week | past
+    datePosted: 'anytime', // anytime | past-day | past-week | past-month
     settings: [],
     locations: [],
     employmentTypes: [],
@@ -149,9 +149,9 @@ export const JobsFeedComponent = props => {
 
     const addDeleteFilterModal = (filterID, updateFilters=false, showSuccessMessage=true) => {
         props.addModal(ModalTypes.CONFIRM, {
-            title: 'Unsave filter',
-            message: 'Are you sure you want to unsave this filter?',
-            confirmButtonTitle: 'Unsave',
+            title: 'Delete filter',
+            message: 'Are you sure you want to delete this filter?',
+            confirmButtonTitle: 'Delete',
             isDanger: true,
             onConfirm: (onSuccess, onFailure) => {
                 const onDeleteSuccess = () => {
@@ -263,7 +263,7 @@ export const JobsFeedComponent = props => {
                             {getFilterDescriptionText()}
                         </p>
                         <Tooltip
-                            title={selectedSavedFilterID ? 'Unsave this filter' : 'Save this filter'}
+                            title={selectedSavedFilterID ? 'Delete this filter' : 'Save this filter'}
                         >
                             <i 
                                 className={selectedSavedFilterID ? 'bi-star-fill save-icon' : 'bi-star save-icon'} 
