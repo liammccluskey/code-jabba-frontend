@@ -38,7 +38,19 @@ import { JobFeedCard } from '../JobFeedCard'
 import { Button } from '../../common/Button'
 import { Tooltip } from '../../common/Tooltip'
 
+export const DatePostedOptions = [
+    {id: 'past-day', title: 'Past day'},
+    {id: 'past-week', title: 'Past week'},
+    {id: 'past-month', title: 'Past month'},
+]
+export const DatePostedOptionsDict = {
+    ['past-day']: 'Past day',
+    ['past-week']: 'Past week',
+    ['past-month']: 'Past month',
+}
+
 export const InitialJobFilters = {
+    datePosted: '', // '' | past-day | past-week | past
     settings: [],
     locations: [],
     employmentTypes: [],

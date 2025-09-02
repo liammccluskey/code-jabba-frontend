@@ -19,7 +19,11 @@ import {
     getSelectedFilter,
     formatCurrency
 } from './utils'
-import { InitialJobFilters } from '../../JobsFeed'
+import { 
+    InitialJobFilters, 
+    DatePostedOptions,
+    DatePostedOptionsDict
+} from '../../JobsFeed'
 import { getIsCandidatePremiumUser } from '../../../../../redux/user'
 import { ModalTypes } from '../../../../../containers/ModalProvider'
 import { addModal, removeModal } from '../../../../../redux/modal'
@@ -31,6 +35,8 @@ import { Pill } from '../../../common/Pill'
 import { FilterRow } from '../../FilterRow'
 import { PillLabel } from '../../../common/PillLabel'
 import { Button } from '../../../common/Button'
+
+export const FreeTierMaxFilterCount = 3
 
 export const JobFiltersModalComponent = props => {
     const {
@@ -88,6 +94,9 @@ export const JobFiltersModalComponent = props => {
     
     const getSelectionText = filterName => {
         switch (filterName) {
+            case 'datePosted':
+                if (filters.datePosted) return DatePostedOptionsDict[filters.datePosted]
+                else return 'Anytime'
             case 'settings':
             case 'locations':
             case 'employmentTypes':
@@ -144,7 +153,25 @@ export const JobFiltersModalComponent = props => {
             }
             const updatedFilterCount = getFiltersCount(updatedFilters)
 
-            if (updatedFilterCount <= 3 || props.isCandidatePremiumUser) {
+            if (updatedFilterCount <= FreeTierMaxFilterCount || props.isCandidatePremiumUser) {
+                return updatedFilters
+            } else {
+                showCantAddMoreFiltersModal()
+                return curr
+            }
+        })
+    }
+
+    const onClickDatePostedOption = (option) => {
+        setFilters(curr => {
+            const updatedFilters = {
+                ...curr,
+                datePosted: curr.datePosted === option ? '' : option
+            }
+
+            const updatedFilterCount = getFiltersCount(updatedFilters)
+
+            if (updatedFilterCount <= FreeTierMaxFilterCount || props.isCandidatePremiumUser) {
                 return updatedFilters
             } else {
                 showCantAddMoreFiltersModal()
@@ -155,6 +182,12 @@ export const JobFiltersModalComponent = props => {
 
     const onClickClearFilter = (filterName) => {
         switch(filterName) {
+            case 'datePosted':
+                setFilters(curr => ({
+                    ...curr,
+                    datePosted: '',
+                }))
+                break
             case 'settings':
             case 'locations':
             case 'employmentTypes':
@@ -239,7 +272,7 @@ export const JobFiltersModalComponent = props => {
                     {props.isCandidatePremiumUser ? null :
                         <PillLabel
                             title={`${SubscriptionTiersFormatted.candidatePremium} feature`}
-                            color='clear'
+                            color='yellow'
                             size='m'
                             style={{marginLeft: 10}}
                         />
@@ -293,6 +326,26 @@ export const JobFiltersModalComponent = props => {
                         style={{marginRight: 15}}
                     />
                 </div>
+                <FilterRow
+                    title='Date posted'
+                    filterName='datePosted'
+                    selectionText={getSelectionText('datePosted')}
+                    filterActive={filters.datePosted !== ''}
+                    onClickActionButton={() => onClickClearFilter('datePosted')}
+
+                >
+                    <div className='pills-row row'>
+                        {DatePostedOptions.map(({id, title}) => (
+                            <Pill
+                                title={title}
+                                active={filters.datePosted === id}
+                                id={id}
+                                onClick={onClickDatePostedOption}
+                                className='pill-option'
+                            />
+                        ))}
+                    </div>
+                </FilterRow>
                 <FilterRow
                     title='Settings'
                     filterName='settings'

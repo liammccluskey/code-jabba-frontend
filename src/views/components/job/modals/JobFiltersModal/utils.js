@@ -48,6 +48,8 @@ export const getFiltersCount = filters => {
     return Object.entries(strippedCurrentFilter)
         .filter(([key, value]) => {
             switch(key) {
+                case 'datePosted':
+                    return value !== ''
                 case 'settings':
                 case 'locations':
                 case 'employmentTypes':
