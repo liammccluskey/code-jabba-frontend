@@ -49,6 +49,15 @@ export const DatePostedOptionsDict = {
     ['past-month']: 'Past month',
 }
 
+export const SecurityClearanceOptions = [
+    {id: 'clearance-required', title: 'Required'},
+    {id: 'clearance-not-required', title: 'Not required'}
+]
+export const SecurityClearanceOptionsDict = {
+    ['clearance-required']: 'Required',
+    ['clearance-not-required']: 'Not required',
+}
+
 export const InitialJobFilters = {
     datePosted: 'anytime', // anytime | past-day | past-week | past-month
     settings: [],
@@ -62,6 +71,8 @@ export const InitialJobFilters = {
     includedLanguages: [],
     excludedLanguages: [],
     salaryMin: '0',
+    sponsorsVisa: [],
+    requiresClearance: 'any', // any | yes | no
 }
 
 const JobSortFilters = [

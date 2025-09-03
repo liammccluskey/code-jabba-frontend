@@ -226,7 +226,6 @@ export const RegisterComponent = props => {
                     <ActionLink
                         title='Sign In'
                         onClick={onClickHaveAnAccount}
-                        style={{marginTop: 5}}
                     />
                 </div>
             </BodyContainer>

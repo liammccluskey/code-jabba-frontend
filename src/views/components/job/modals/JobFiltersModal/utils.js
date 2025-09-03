@@ -50,6 +50,8 @@ export const getFiltersCount = filters => {
             switch(key) {
                 case 'datePosted':
                     return value !== 'anytime'
+                case 'requiresClearance':
+                    return value !== 'any'
                 case 'settings':
                 case 'locations':
                 case 'employmentTypes':
@@ -60,6 +62,7 @@ export const getFiltersCount = filters => {
                 case 'excludedLanguages':
                 case 'includedSkills':
                 case 'excludedSkills':
+                case 'sponsorsVisa':
                     return value.length > 0
                 case 'salaryMin':
                     return ![0, '0'].includes(value)

@@ -32,7 +32,7 @@ import { ValueDeltaSpread } from '../../components/common/ValueDeltaSpread'
 
 const Config = {
     candidate: {
-        heroTitle: 'The job board built for software engineers',
+        heroTitle: 'The job board for software engineers',
         heroMessage: "Save hours searching for jobs by searching by coding language, skill, experience level and more.",
         whyChooseUs: [
             {
@@ -73,7 +73,7 @@ const Config = {
         ]
     },
     recruiter: {
-        heroTitle: 'The job board built for software engineers',
+        heroTitle: 'The job board for software engineers',
         heroMessage: "Cut through the clutter. Post jobs, review applicants, and track your hiring pipeline - all in one place",
         whyChooseUs: [
             {
@@ -508,7 +508,7 @@ const Container = styled.div`
         flex: 1;
         box-sizing: border-box;
         margin: 0px 15px;
-        border-width: 2px;
+        border-width: 2px !important;
         maxWidth: min(600px, 100%);
         minWidth: min(600px, 100%);
     }

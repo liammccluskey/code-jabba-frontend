@@ -80,7 +80,6 @@ export const ResetPasswordComponent = props => {
                     <ActionLink
                         title='Sign Up'
                         onClick={onClickDontHaveAnAccount}
-                        style={{marginTop: 5}}
                     />
                 </div>
             </BodyContainer>

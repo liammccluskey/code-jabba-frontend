@@ -12,6 +12,7 @@ import {
     ExperienceYears,
     Languages,
     Skills,
+    VisaSponsorshipOptions,
 } from '../../EditJobCard'
 import { getSavedFilters } from '../../../../../redux/job'
 import { 
@@ -22,7 +23,9 @@ import {
 import { 
     InitialJobFilters, 
     DatePostedOptions,
-    DatePostedOptionsDict
+    DatePostedOptionsDict,
+    SecurityClearanceOptions,
+    SecurityClearanceOptionsDict,
 } from '../../JobsFeed'
 import { getIsCandidatePremiumUser } from '../../../../../redux/user'
 import { ModalTypes } from '../../../../../containers/ModalProvider'
@@ -98,6 +101,9 @@ export const JobFiltersModalComponent = props => {
             case 'datePosted':
                 if (filters.datePosted === 'anytime') return 'any'
                 else return DatePostedOptionsDict[filters.datePosted]
+            case 'requiresClearance':
+                if (filters.requiresClearance === 'any') return 'any'
+                else return SecurityClearanceOptionsDict[filters.requiresClearance]
             case 'settings':
             case 'locations':
             case 'employmentTypes':
@@ -106,6 +112,7 @@ export const JobFiltersModalComponent = props => {
             case 'experienceYears':
             case 'includedLanguages':
             case 'includedSkills':
+            case 'sponsorsVisa':
                 return filters[filterName].length ? `${filters[filterName].length} selected` : 'any'
             case 'excludedLanguages':
             case 'excludedSkills':
@@ -142,7 +149,9 @@ export const JobFiltersModalComponent = props => {
     }
 
     const onClickOption = (option, fieldName) => {
-        const filterName = fieldName + 's'
+        let filterName
+        if (fieldName === 'sponsorsVisa') filterName = fieldName
+        else filterName = fieldName + 's'
 
         setFilters( curr => {
             const updatedFilters = {
@@ -167,7 +176,25 @@ export const JobFiltersModalComponent = props => {
         setFilters(curr => {
             const updatedFilters = {
                 ...curr,
-                datePosted: curr.datePosted === option ? '' : option
+                datePosted: curr.datePosted === option ? 'anytime' : option
+            }
+
+            const updatedFilterCount = getFiltersCount(updatedFilters)
+
+            if (updatedFilterCount <= FreeTierMaxFilterCount || props.isCandidatePremiumUser) {
+                return updatedFilters
+            } else {
+                showCantAddMoreFiltersModal()
+                return curr
+            }
+        })
+    }
+
+    const onClickRequiresClearanceOption = (option) => {
+        setFilters(curr => {
+            const updatedFilters = {
+                ...curr,
+                requiresClearance: curr.requiresClearance === option ? 'any' : option
             }
 
             const updatedFilterCount = getFiltersCount(updatedFilters)
@@ -189,6 +216,12 @@ export const JobFiltersModalComponent = props => {
                     datePosted: 'anytime',
                 }))
                 break
+            case 'requiresClearance':
+                setFilters(curr => ({
+                    ...curr,
+                    requiresClearance: 'any'
+                }))
+                break
             case 'settings':
             case 'locations':
             case 'employmentTypes':
@@ -199,6 +232,7 @@ export const JobFiltersModalComponent = props => {
             case 'excludedLanguages':
             case 'includedSkills':
             case 'excludedSkills':
+            case 'sponsorsVisa':
                 setFilters(curr => ({
                     ...curr,
                     [filterName]: []
@@ -558,7 +592,46 @@ export const JobFiltersModalComponent = props => {
                         />
                         <p style={{marginLeft: 10}}><strong>per year</strong></p>
                     </div>
+                </FilterRow>
+                <FilterRow
+                    title='Sponsors visa'
+                    filterName='sponsorsVisa'
+                    selectionText={getSelectionText('sponsorsVisa')}
+                    filterActive={filters.sponsorsVisa.length > 0}
+                    onClickActionButton={() => onClickClearFilter('sponsorsVisa')}
 
+                >
+                    <div className='pills-row row'>
+                        {VisaSponsorshipOptions.map(({id, title}) => (
+                            <Pill
+                                title={title}
+                                active={filters.sponsorsVisa.includes(id)}
+                                id={id}
+                                onClick={onClickOption}
+                                fieldName='sponsorsVisa'
+                                className='pill-option'
+                            />
+                        ))}
+                    </div>
+                </FilterRow>
+                <FilterRow
+                    title='Security clearance'
+                    filterName='requiresClearance'
+                    selectionText={getSelectionText('requiresClearance')}
+                    filterActive={filters.requiresClearance !== 'any'}
+                    onClickActionButton={() => onClickClearFilter('requiresClearance')}
+                >
+                    <div className='pills-row row'>
+                        {SecurityClearanceOptions.map(({id, title}) => (
+                            <Pill
+                                title={title}
+                                active={filters.requiresClearance === id}
+                                id={id}
+                                onClick={onClickRequiresClearanceOption}
+                                className='pill-option'
+                            />
+                        ))}
+                    </div>
                 </FilterRow>
             </Root>
         </Confirm>
