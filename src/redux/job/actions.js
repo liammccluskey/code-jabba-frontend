@@ -44,3 +44,13 @@ export const setSavedFilters = filters => ({
     type: Types.setSavedFilters,
     value: filters
 })
+
+export const setLoadingPostJob = loading => ({
+    type: Types.setLoadingPostJob,
+    value: loading
+})
+
+export const setRecruiterCanPostJobs = canPostJobs => ({
+    type: Types.setRecruiterCanPostJobs,
+    value: canPostJobs
+})

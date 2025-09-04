@@ -52,6 +52,7 @@ export const fetchJob = (jobID) => async (dispatch, getState) => {
 }
 
 export const postJob = (formData, onSuccess) => async (dispatch, getState) => {
+    dispatch(JobActions.setLoadingPostJob(true))
     const state = getState()
     const mongoUser = getMongoUser(state)
 
@@ -64,8 +65,12 @@ export const postJob = (formData, onSuccess) => async (dispatch, getState) => {
         dispatch(addMessage(res.data.message))
         onSuccess(res.data.jobID)
     } catch (error) {
-        
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true, true))
     }
+
+    dispatch(JobActions.setLoadingPostJob(false))
 }
 
 export const patchJob = (jobID, updatedFields, onSuccess) => async (dispatch, getState) => {
@@ -193,5 +198,21 @@ export const deleteSavedJobFilter = (filterID, onSuccess, onFailure, showSuccess
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
         onFailure()
+    }
+}
+
+export const fetchRecruiterCanPostJobs = () => async (dispatch, getState) => {
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        const res = await api.get(`/jobs/recruiter-can-post-jobs/${mongoUser._id}`)
+
+        dispatch(JobActions.setRecruiterCanPostJobs(res.data))
+    } catch (error) {
+        const errorMessage = error.response ? 
+            error.response?.data?.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
     }
 }

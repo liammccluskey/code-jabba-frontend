@@ -8,4 +8,6 @@ export const ActionTypes = {
     addJobs: 'job/ADD_JOBS',
     setLoadingJobs: 'job/SET_LOADING_JOBS',
     setSavedFilters: 'job/SET_SAVED_FILTERS',
+    setLoadingPostJob: 'job/SET_LOADING_POST_JOB',
+    setRecruiterCanPostJobs: 'job/SET_RECRUITER_CAN_POST_JOBS',
 }

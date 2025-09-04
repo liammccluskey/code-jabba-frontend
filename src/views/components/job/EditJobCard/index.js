@@ -6,15 +6,22 @@ import { useNavigate } from 'react-router-dom'
 
 import { CitiesUSA } from './constants'
 import { getIsMobile } from '../../../../redux/theme'
-import { getMongoUser } from '../../../../redux/user'
+import { 
+    getMongoUser,
+
+    setIsRecruiterMode
+} from '../../../../redux/user'
 import {
     getCompanySearchResults,
     getLoadingCompanySearchResults,
+    getLoadingPostJob,
+    getRecruiterCanPostJobs,
 
     searchCompanies,
     postJob,
     patchJob,
     repostJob,
+    fetchRecruiterCanPostJobs,
 } from '../../../../redux/job'
 import { addMessage } from '../../../../redux/communication'
 import { addModal } from '../../../../redux/modal'
@@ -23,6 +30,7 @@ import {
     getFormData,
     getFormDataModified
 } from './utils'
+
 import { Pill } from '../../common/Pill'
 import { InputWithMessage } from '../../common/InputWithMessage'
 import { PillOptions } from '../../common/PillOptions'
@@ -30,6 +38,7 @@ import { SearchableInput } from '../../common/SearchableInput'
 import { Button } from '../../common/Button'
 import { SearchableSelectableInput } from '../../common/SearchableSelectableInput'
 import { Tooltip } from '../../common/Tooltip'
+import { PendingMessage } from '../../common/PendingMessage'
 
 export const PositionTypes = [
     {id: 'frontend', title: 'Frontend'},
@@ -397,6 +406,20 @@ export const EditJobCardComponent = props => {
         })
     }
 
+    const addReachedJobCountLimit = () => {
+        props.addModal(ModalTypes.CONFIRM, {
+            title: 'Reached active job post limit',
+            message: "You already have one active job post. Upgrade to Recruiter Premium to post unlimited jobs.",
+            confirmButtonTitle: 'Go premium',
+            onConfirm: onSuccess => {
+                props.setIsRecruiterMode(true)
+                navigate('/membership/premium')
+                onSuccess()
+            },
+            onCancel: () => navigate(-1)
+        })
+    }
+
     // For test
     // useEffect(() => {
     //     setFormData({
@@ -504,6 +527,14 @@ export const EditJobCardComponent = props => {
             }))
         }
     }, [formData.includeQuestions])
+
+    useEffect(() => {
+        props.fetchRecruiterCanPostJobs()
+    }, [])
+
+    useEffect(() => {
+        if (!props.recruiterCanPostJobs) addReachedJobCountLimit()
+    }, [props.recruiterCanPostJobs])
 
     // Utils
 
@@ -1156,6 +1187,10 @@ export const EditJobCardComponent = props => {
                 modified={isEditMode && modified.archive}
             />
             <div className='buttons-container'>
+                {props.loadingPostJob ?
+                    <PendingMessage style={{marginRight: 10}} />
+                    : null
+                }
                 {isEditMode ?
                     <Button
                         title='Cancel'
@@ -1178,6 +1213,7 @@ export const EditJobCardComponent = props => {
                         priority={1}
                         type='solid'
                         onClick={onClickSubmit}
+                        disabled={props.loadingPostJob}
                     />
                 }
             </div>
@@ -1245,6 +1281,7 @@ const Root = styled.div`
         display: flex;
         align-items: center;
         align-self: flex-end;
+
     }
 `
 const mapStateToProps = state => ({
@@ -1252,6 +1289,8 @@ const mapStateToProps = state => ({
     mongoUser: getMongoUser(state),
     companySearchResults: getCompanySearchResults(state),
     loadingCompanySearchResults: getLoadingCompanySearchResults(state),
+    loadingPostJob: getLoadingPostJob(state),
+    recruiterCanPostJobs: getRecruiterCanPostJobs(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -1260,6 +1299,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     postJob,
     patchJob,
     repostJob,
+    fetchRecruiterCanPostJobs,
+    setIsRecruiterMode,
     addModal
 }, dispatch)
 

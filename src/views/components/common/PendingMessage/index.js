@@ -5,6 +5,7 @@ export const PendingMessage = props => {
     const {
         message='Operation in progress',
         clear, // boolean
+        
         ...rest
     } = props
 

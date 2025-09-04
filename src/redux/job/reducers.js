@@ -15,6 +15,8 @@ const JobState = {
         }
     },
     savedFilters: [],
+    loadingPostJob: false,
+    recruiterCanPostJobs: true,
 }
 
 export const jobReducer = (state = JobState, action) => {
@@ -77,6 +79,17 @@ export const jobReducer = (state = JobState, action) => {
                 ...state,
                 savedFilters: action.value
             }
+        case Types.setLoadingPostJob: 
+            return {
+                ...state,
+                loadingPostJob: action.value
+            }
+        case Types.setRecruiterCanPostJobs: {
+            return {
+                ...state,
+                recruiterCanPostJobs: action.value
+            }
+        }
         default:
             return state
     }

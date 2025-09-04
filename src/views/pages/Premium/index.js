@@ -9,6 +9,8 @@ import {
     getIsRecruiterPremiumUser,
     getIsCandidatePremiumUser,
 
+    setIsRecruiterMode,
+
     SubscriptionTiers,
     SubscriptionTiersFormatted,
     SubscriptionPrices
@@ -74,10 +76,16 @@ export const PremiumComponent = props => {
     // Effects
 
     useEffect(() => {
-        if (props.isRecruiterPremiumUser || props.isCandidatePremiumUser) {
+        if (props.isRecruiterPremiumUser && props.isRecruiterMode ||
+            props.isCandidatePremiumUser && !props.isRecruiterMode
+        ) {
             addCantSubscribeModal()
+        } else if (props.isRecruiterPremiumUser && !props.isRecruiterMode ||
+            props.isCandidatePremiumUser && props.isRecruiterMode
+        ) {
+            addAlreadySubsribedModal()
         }
-    }, [])
+    }, [props.isRecruiterMode, props.isRecruiterPremiumUser, props.isCandidatePremiumUser])
 
     // Utils
 
@@ -88,6 +96,28 @@ export const PremiumComponent = props => {
             confirmButtonTitle: 'Okay',
             onConfirm: onSuccess => {
                 navigate('/dashboard')
+                onSuccess()
+            },
+            onCancel: () => navigate(-1)
+        })
+    }
+
+    const addAlreadySubsribedModal = () => {
+        let activeSubscription
+        if (props.isRecruiterPremiumUser) activeSubscription = SubscriptionTiersFormatted.recruiterPremium
+        else if (props.isCandidatePremiumUser) activeSubscription = SubscriptionTiersFormatted.candidatePremium
+        else return
+
+        const desiredSubscription = props.isRecruiterMode ?
+            SubscriptionTiersFormatted.recruiterPremium : SubscriptionTiersFormatted.candidatePremium
+
+        props.addModal(ModalTypes.CONFIRM, {
+            title: `Already subscribed to ${activeSubscription}`,
+            message: `If you wish to subscribe to ${desiredSubscription} you must first cancel your active subscription in Settings.`,
+            confirmButtonTitle: 'Cancel current subscription',
+            onConfirm: onSuccess => {
+                props.setIsRecruiterMode(!props.isRecruiterMode)
+                navigate('/membership/cancel')
                 onSuccess()
             },
             onCancel: () => navigate(-1)
@@ -246,6 +276,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
+    setIsRecruiterMode,
     addModal,
 }, dispatch)
 
