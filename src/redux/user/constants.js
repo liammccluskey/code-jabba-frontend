@@ -10,5 +10,5 @@ export const SubscriptionTiersFormatted = {
 
 export const SubscriptionPrices = {
     candidatePremium: 9.99,
-    recruiterPremium: 99
+    recruiterPremium: 49
 }

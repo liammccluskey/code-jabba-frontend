@@ -533,7 +533,7 @@ export const EditJobCardComponent = props => {
     }, [])
 
     useEffect(() => {
-        if (!props.recruiterCanPostJobs) addReachedJobCountLimit()
+        if (!props.recruiterCanPostJobs && !isEditMode) addReachedJobCountLimit()
     }, [props.recruiterCanPostJobs])
 
     // Utils
