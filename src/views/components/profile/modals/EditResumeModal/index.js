@@ -13,15 +13,32 @@ import {
 import { addMessage } from '../../../../../redux/communication'
 import { Confirm } from '../../../modals/Confirm'
 
+const InvalidFileTypeMessage = 'Invalid file type. We only accept PDFs for resume files.'
+
 export const EditResumeModalComponent = props => {
     const {
         modalID
     } = props
-    const [imageFile, setImageFile] = useState(null)
+    const [resumeFile, setResumeFile] = useState(null)
+
+    // Utils
+
+    const isValidResumeFile = file => {
+        if (!file) return false
+
+        return file.type === 'application/pdf'
+    }
+
+    // Direct
 
     const onClickSave = (onSuccess, onFailure) => {
-        if (!imageFile) {
+        if (!resumeFile) {
             props.addMessage('You need to upload a pdf.', true)
+            onFailure()
+            return
+        } else if (!isValidResumeFile(resumeFile)) {
+            props.addMessage(InvalidFileTypeMessage, true, true)
+            onFailure()
             return
         }
 
@@ -30,28 +47,31 @@ export const EditResumeModalComponent = props => {
             props.fetchThisMongoUser(undefined, onSuccess, onFailure)
         }
 
-        props.patchUserResume(imageFile, onSaveSuccess, onFailure)
+        props.patchUserResume(resumeFile, onSaveSuccess, onFailure)
     }
 
-    const onChangeImageFile = e => {
+    const onChangeResumeFile = e => {
         if (!e.target.files[0]) return
+        else if (!isValidResumeFile(e.target.files[0])) {
+            props.addMessage(InvalidFileTypeMessage, true, true)
+            return
+        }
 
-        setImageFile(e.target.files[0])
+        setResumeFile(e.target.files[0])
     }
 
     return (
         <Confirm
             title='Edit Resume'
             confirmButtonTitle='Save'
-            confirmButtonDisabled={!imageFile}
+            confirmButtonDisabled={!resumeFile}
             onConfirm={onClickSave}
             modalID={modalID}
         >
             <label>Resume</label>
             <input
                 type='file'
-                accept='pdf'
-                onChange={onChangeImageFile}
+                onChange={onChangeResumeFile}
             />
         </Confirm>
     )

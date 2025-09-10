@@ -236,19 +236,19 @@ export const patchUserSettings = (
     }
 }
 
-export const patchUserThemeColor = (themeColor, onSuccess = () => {}) => async (dispatch, getState) => {
+export const patchUserThemeColor = (themeColor, onSuccess = () => {}, onFailure = () => {}) => async (dispatch, getState) => {
     dispatch(ThemeActions.setThemeColor(themeColor))
-    dispatch(patchUserSettings('theme.themeColor', themeColor, onSuccess, undefined, true))
+    dispatch(patchUserSettings('theme.themeColor', themeColor, onSuccess, onFailure, true))
 }
 
-export const patchUserTintColor = (tintColor, onSuccess = () => {}) => async (dispatch, getState) => {
+export const patchUserTintColor = (tintColor, onSuccess = () => {}, onFailure = () => {}) => async (dispatch, getState) => {
     const onPatchSuccess = () => {
         onSuccess()
         dispatch(addMessage('Changes saved.'))
     }
     
     dispatch(ThemeActions.setTintColor(tintColor))
-    dispatch(patchUserSettings('theme.tintColor', tintColor, onPatchSuccess, undefined, true))
+    dispatch(patchUserSettings('theme.tintColor', tintColor, onPatchSuccess, onFailure, true))
 }
 
 export const signOutUser = onSuccess => async (dispatch, getState) => {

@@ -51,12 +51,13 @@ export const getIsLoggedIn = createSelector(
 
 export const getIsCandidatePremiumUser = createSelector(
     [
-        getMongoUser
+        getMongoUser,
     ],
     mongoUser => mongoUser && 
         mongoUser.subscription && 
         mongoUser.subscription.tier === SubscriptionTiers.candidatePremium &&
         mongoUser.subscription.status === 'active'
+
 )
 
 export const getIsRecruiterPremiumUser = createSelector(

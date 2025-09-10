@@ -333,7 +333,10 @@ export const ReviewApplicationsComponent = props => {
             props.jobNotFound ||
             !props.loadingJob &&
                 props.job &&
-                props.job.recruiter._id !== props.mongoUser._id
+                props.job.recruiter._id !== props.mongoUser._id ||
+            !props.loadingJob &&
+                props.job &&
+                props.job.applicationType !== 'easy-apply'
         ) ?
             <ErrorElement />
         : <PageContainer>

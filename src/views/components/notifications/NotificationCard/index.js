@@ -35,7 +35,7 @@ export const NotificationCard = props => {
                 : <div className='unread-mark' />
             }
             {channel.photoURL ?
-                <img className='notification-photo' src={channel.photoURL || '/images/logo.png'} />
+                <img className='notification-photo' src={channel.photoURL || '/images/logo.svg'} />
                 : null      
             }
             {channel.icon ?
@@ -96,7 +96,6 @@ const Root = styled.div`
         width: 35px;
         min-height: 35px;
         min-width: 35px;
-        // border-radius: 50%;
         margin-right: 15px;
     }
 

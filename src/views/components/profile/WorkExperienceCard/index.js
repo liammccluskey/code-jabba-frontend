@@ -80,7 +80,7 @@ export const WorkExperienceCardComponent = props => {
                 </div>
                 : null
             }
-            {workExperiences.map( ({company, jobTitle, setting, type, position, description, languages, skills, startMonth, startYear, endMonth, endYear, isCurrent, id}) => (
+            {workExperiences.map( ({company, jobTitle, setting, employmentType, position, description, languages, skills, startMonth, startYear, endMonth, endYear, isCurrent, id}) => (
                 <div key={id} className='work-experience-container'>
                     <div className='work-experience-header'>
                         <h4>{jobTitle}</h4>
@@ -112,7 +112,7 @@ export const WorkExperienceCardComponent = props => {
                             style={{marginRight: 5}}
                         />
                         <PillLabel
-                            title={EmploymentTypes.find( jobType => jobType.id === type).title}
+                            title={EmploymentTypes.find( jobType => jobType.id === employmentType).title}
                             color='green'
                             size='m'
                             style={{marginRight: 5}}

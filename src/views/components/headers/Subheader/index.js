@@ -85,12 +85,16 @@ const Root = styled.div`
     }
 
     & .header-image {
-        height: 60px;
-        width: 60px;
+        min-height: 60px;
+        min-width: 60px;
+        max-height: 60px;
+        max-width: 60px;
         border-radius: 50%;
         border: 3px solid ${p => p.theme.bc};
         margin-right: 15px;
         margin-bottom: 10px;
+        object-fit: cover;
+        object-position: center;
     }
 
     & .header-icon-container {

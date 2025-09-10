@@ -3,7 +3,7 @@ export const NotificationChannels = {
     general: {
         id: 'general',
         title: process.env.REACT_APP_SITE_NAME,
-        photoURL: '/images/logo.png'
+        photoURL: '/images/logo.svg'
     },
     social: {
         id: 'social',

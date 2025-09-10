@@ -71,7 +71,7 @@ export const LandingHeaderComponent = props => {
                 style={{cursor: 'pointer'}}
             >
                 <img className='logo-icon'
-                    src='/images/logo.png'
+                    src='/images/logo.svg'
                     height={35}
                     width={35}
                 />
@@ -152,7 +152,6 @@ const Root = styled.div`
     }
 
     & .logo-icon {
-        // border-radius: 50%;
         margin-right: 15px;
     }
 

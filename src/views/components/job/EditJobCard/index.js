@@ -104,7 +104,8 @@ export const Languages = [
     'Golang',
     'Perl',
     'Rust',
-    'R'
+    'R',
+    'Matlab',
 ].sort((a, b) => a.localeCompare(b))
 
 export const Skills = [

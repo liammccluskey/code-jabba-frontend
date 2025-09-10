@@ -190,8 +190,6 @@ export const ApplicationsComponent = props => {
             })
         }
         else navigate(`/review-applications/${jobID}`)
-
-        navigate(`/review-applications/${jobID}`)
     }
 
     const onClickDecrementApplicationsPage = () => {

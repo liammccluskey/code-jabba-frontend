@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import moment from 'moment'
 import { sendPasswordResetEmail } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
+import imageCompression from 'browser-image-compression'
 
 import { auth, getFirebaseErrorMessage } from '../../../../networking'
 import { PageContainer } from '../../../components/common/PageContainer'
@@ -25,7 +26,8 @@ import {
     deleteUser,
     fetchThisMongoUser,
     updateSubscription,
-    cancelSubscription
+    cancelSubscription,
+    setIsRecruiterMode
 } from '../../../../redux/user'
 import { addModal } from '../../../../redux/modal'
 import { ModalTypes } from '../../../../containers/ModalProvider'
@@ -40,6 +42,9 @@ import { addMessage } from '../../../../redux/communication'
 import { SettingsRow } from '../../../components/settings/SettingsRow'
 import { Button } from '../../../components/common/Button'
 import { UserIcon } from '../../../components/common/UserIcon'
+
+const ProfileIconMaxSizeMB = 1 * 1024 * 1024 // 1 mb
+const ProfileIconMaxSizeB = 1024 * 1024
 
 export const GeneralSettingsComponent = props => {
     const {
@@ -84,6 +89,9 @@ export const GeneralSettingsComponent = props => {
     }
 
     const onClickCancelPremium = () => {
+        if (props.isRecruiterPremiumUser) props.setIsRecruiterMode(true)
+        else if (props.isCandidatePremiumUser) props.setIsRecruiterMode(false)
+        
         const cancelMembershipURL = props.isRecruiterPremiumUser || props.isCandidatePremiumUser ? 
             '/membership/cancel' 
             : '/dashboard'
@@ -121,18 +129,52 @@ export const GeneralSettingsComponent = props => {
         props.patchUserDisplayName(val, onSuccess)
     }
 
-    const submitThemeColor = (val, onSuccess) => {
+    const submitThemeColor = (val, onSuccess, onFailure) => {
         if (val == props.themeColor) return
-        props.patchUserThemeColor(val, onSuccess)
+        props.patchUserThemeColor(val, onSuccess, onFailure)
     }
 
-    const submitTintColor = (val, onSuccess) => {
+    const submitTintColor = (val, onSuccess, onFailure) => {
         if (val == props.tintColor) return
-        props.patchUserTintColor(val, onSuccess)
+        props.patchUserTintColor(val, onSuccess, onFailure)
     }
 
-    const submitProfilePhoto = (file, onSuccess) => {
-        props.patchUserPhoto(file, onSuccess)
+    const submitProfilePhoto = async (file, onSuccess, onFailure) => {
+        if (!file) {
+            onFailure()
+            return
+        }
+
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png']
+
+        if (!allowedTypes.includes(file.type)) {
+            props.addMessage('Invalid file type. We only accept images of type JPG, JPEG, or PNG', true, true)
+            onFailure()
+            return
+        }
+
+        let compressedFile
+        try {
+            const options = {
+                maxSizeMB: ProfileIconMaxSizeMB,
+                maxWidthOrHeight: 512,
+                useWebWorker: true,
+                alwaysKeepResolution: true,
+            }
+    
+            compressedFile = await imageCompression(file, options)
+    
+            if (compressedFile.size > ProfileIconMaxSizeB) {
+                props.addMessage('File to large. The maximum size image you can upload is 1 MB', true, true)
+                onFailure()
+                return
+            }
+    
+        } catch (err) {
+            props.addMessage('An error occurred while processing your photo. Please try again later', true)
+        }
+
+        props.patchUserPhoto(compressedFile, onSuccess, onFailure)
     }
 
 
@@ -307,6 +349,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     deleteUser,
     updateSubscription,
     cancelSubscription,
+    setIsRecruiterMode,
     addMessage,
     addModal,
 }, dispatch)

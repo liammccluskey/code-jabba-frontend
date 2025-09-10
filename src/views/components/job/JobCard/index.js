@@ -37,6 +37,7 @@ import {
 } from './utils'
 import { addModal } from '../../../../redux/modal'
 import { ModalTypes } from '../../../../containers/ModalProvider'
+import { formatUnit, formatNumber } from '../../../../utils'
 
 import { OptionsMenu } from '../../menus/OptionsMenu'
 import { PageLink } from '../../common/PageLink'
@@ -49,6 +50,7 @@ export const JobCardComponent = props => {
     const {
         job,
         hideable=false,
+        candidateDidApply=false,
 
         onJobUpdate = () => {}, // () => {}
 
@@ -205,7 +207,7 @@ export const JobCardComponent = props => {
             <div className='job-header'>
                 <div className='left-job-header'>
                     <h3 className='title'>{job.title}</h3>
-                    {job.applied ?
+                    {job.applied || candidateDidApply ?
                         <PillLabel
                             title='Applied'
                             size='l'
@@ -223,9 +225,12 @@ export const JobCardComponent = props => {
                         />
                         : null
                     }
-                    <p className='applicants-count-text'>
-                        {`${props.job.applicationsCount} ${props.job.applicationsCount == 1 ? 'applicant' : 'applicants'}`}
-                    </p>
+                    {props.job.applicationsCount != undefined ?
+                        <p className='applicants-count-text'>
+                            {`${formatNumber(props.job.applicationsCount)} ${formatUnit('applicant', props.job.applicationsCount)}`}
+                        </p>
+                        : null
+                    }
                 </div>
                 {props.isRecruiterMode && isJobRecruiter ?
                     <OptionsMenu
@@ -233,7 +238,7 @@ export const JobCardComponent = props => {
                         setMenuHidden={setOptionsMenuHidden}
                         options={menuOptions}
                     />
-                    : !props.isRecruiterMode && !job.applied ?
+                    : !props.isRecruiterMode && !job.applied && !candidateDidApply ?
                         <div className='apply-button-container'>
                             <Button
                                 title={job.applicationType === 'easy-apply' ? 'Easy apply' : 'Apply'}

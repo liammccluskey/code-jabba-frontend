@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Code Jabba",
+  "name": "Code Jabba",
   "icons": [
     {
       "src": "favicon.ico",
@@ -8,15 +8,10 @@
       "type": "image/x-icon"
     },
     {
-      "src": "/images/logo.png",
-      "type": "image/png",
+      "src": "/images/logo.svg",
+      "type": "image/svg",
       "sizes": "500x500"
     },
-    {
-      "src": "/images/logo.png",
-      "type": "image/png",
-      "sizes": "500x500"
-    }
   ],
   "start_url": ".",
   "display": "standalone",

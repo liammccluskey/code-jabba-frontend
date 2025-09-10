@@ -16,7 +16,7 @@ export const SettingsRow = props => {
         rightChild=null,
         // isLastRow=false,
 
-        onSubmit,   // (val, onSuccess, closeForm=true) => void
+        onSubmit,   // (val, onSuccess, onFailure) => void
 
         ...rest
     } = props
@@ -35,10 +35,14 @@ export const SettingsRow = props => {
 
     const submitForm = (val, closeForm=true) => {
         setLoadingUpdate(true)
-        onSubmit(val, () => {
-            setLoadingUpdate(false)
-            closeForm && setIsEditing(false)
-        })
+        onSubmit(
+            val, 
+            () => {
+                setLoadingUpdate(false)
+                closeForm && setIsEditing(false)
+            },
+            () => setLoadingUpdate(false)
+        )
     }
     
     const openEditForm = () => setIsEditing(true)

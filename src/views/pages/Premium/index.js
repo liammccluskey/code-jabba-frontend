@@ -57,6 +57,11 @@ export const Features = {
             description: 'Ability to have unlimited active job posts at a time ',
             icon: 'bi-briefcase',
         },
+        {
+            title: 'Unlimited applicantions per job',
+            description: 'Ability to receive unlimited applications per job post',
+            icon: 'bi-people'
+        }
     ]
 }
 

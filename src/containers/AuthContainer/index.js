@@ -48,21 +48,21 @@ export const AuthContainerComponent = props => {
                 props.firebaseUser ?
                     <Container>
                         <div className='content-container'>
-                            <img className='logo-icon' src='/images/logo.png' />
+                            <img className='logo-icon' src='/images/logo.svg' />
                             <PendingMessage message='Loading page' />
                         </div>
                     </Container>
                     : 
                     <Container>
                         <div className='content-container'>
-                            <img className='logo-icon' src='/images/logo.png' />
+                            <img className='logo-icon' src='/images/logo.svg' />
                             <PendingMessage message='Logging you in' />
                         </div>
                     </Container>
             : props.loadingLogout ?
                 <Container>
                     <div className='content-container'>
-                        <img className='logo-icon' src='/images/logo.png' />
+                        <img className='logo-icon' src='/images/logo.svg' />
                         <PendingMessage message='Logging you out' />
                     </div>
                 </Container>
@@ -92,7 +92,6 @@ const Container = styled.div`
         height: 100px;
         width: 100px;
         margin-bottom: 30px;
-        border-radius: 50%;
     }
 `
 
