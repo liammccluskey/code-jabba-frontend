@@ -10,10 +10,11 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 
 import { fetchThisMongoUser } from '../../../redux/user'
-import * as Constants from './constants'
 import {auth, getFirebaseErrorMessage} from '../../../networking'
 import { addMessage } from '../../../redux/communication'
 import { setThemeColor, setTintColor } from '../../../redux/theme'
+import { GoogleIconURL } from './constants'
+
 import { BodyContainer } from '../../components/common/BodyContainer'
 import { PageContainer } from '../../components/common/PageContainer'
 import { LandingHeader } from '../../components/headers/LandingHeader'
@@ -118,7 +119,7 @@ export const LoginComponent = props => {
                         type='clear'
                         priority={2}
                         onClick={onClickContinueWithGoogle}
-                        imageURL={Constants.GOOGLE_ICON_URL}
+                        imageURL={GoogleIconURL}
                         imageSize={18}
                         title='Continue with Google'
                     />

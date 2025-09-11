@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import {
     signInWithPopup,
     createUserWithEmailAndPassword,
@@ -13,10 +13,10 @@ import {
     fetchThisMongoUser, 
     getIsRecruiterMode
 } from '../../../redux/user'
-import * as Constants from '../Login/constants'
 import {auth, getFirebaseErrorMessage} from '../../../networking'
 import { setThemeColor, setTintColor } from '../../../redux/theme'
 import { addMessage } from '../../../redux/communication'
+import { GoogleIconURL } from '../Login/constants'
 
 import { BodyContainer } from '../../components/common/BodyContainer'
 import { PageContainer } from '../../components/common/PageContainer'
@@ -213,7 +213,7 @@ export const RegisterComponent = props => {
                         type='clear'
                         priority={2}
                         onClick={onClickContinueWithGoogle}
-                        imageURL={Constants.GOOGLE_ICON_URL}
+                        imageURL={GoogleIconURL}
                         imageSize={18}
                         title='Continue with Google'
                         disabled={loadingRegister}

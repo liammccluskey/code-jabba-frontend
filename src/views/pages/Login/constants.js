@@ -1,1 +1,1 @@
-export const GOOGLE_ICON_URL = 'https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg'
+export const GoogleIconURL = 'https://firebasestorage.googleapis.com/v0/b/code-jabba.appspot.com/o/misc%2Fgoogle_icon.svg?alt=media&token=0fd23b59-4c85-4bf4-9ebb-800d90494a35'
