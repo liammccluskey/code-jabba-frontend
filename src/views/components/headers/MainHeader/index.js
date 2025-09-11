@@ -12,7 +12,8 @@ import {
     getIsRecruiterPremiumUser,
     getIsCandidatePremiumUser,
 
-    setIsRecruiterMode
+    fetchThisMongoUser,
+    patchUser
 } from '../../../../redux/user'
 import { MainMenu } from '../MainMenu'
 import { LinksMenu } from '../LinksMenu'
@@ -138,7 +139,12 @@ export const MainHeaderComponent = props => {
     const onClickLogo = () => navigate('/')
 
     const onClickSwitchModePill = () => {
-        props.setIsRecruiterMode(!props.isRecruiterMode)
+        const onPatchSuccess = () => {
+            props.fetchThisMongoUser(undefined, undefined, undefined, true)
+        }
+
+        props.patchUser({isRecruiter: !props.isRecruiterMode}, onPatchSuccess)
+
     }
 
     return (
@@ -255,7 +261,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    setIsRecruiterMode
+    patchUser,
+    fetchThisMongoUser,
 }, dispatch)
 
 export const MainHeader = connect(mapStateToProps, mapDispatchToProps)(MainHeaderComponent)

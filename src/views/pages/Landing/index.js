@@ -24,6 +24,7 @@ import {
 
     setIsRecruiterMode
 } from '../../../redux/user'
+import { formatNumber } from '../../../utils'
 
 import { PageContainer } from '../../components/common/PageContainer'
 import { LandingHeader } from '../../components/headers/LandingHeader'
@@ -32,18 +33,22 @@ import { ValueDeltaSpread } from '../../components/common/ValueDeltaSpread'
 
 const Config = {
     candidate: {
-        heroTitle: 'The job board for software engineers',
         heroMessage: "Save hours searching for jobs by searching by coding language, skill, experience level and more.",
         whyChooseUs: [
             {
-                imageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_general.png?alt=media&token=727861ea-e064-46ed-9f15-8e386243d39f',
                 title: 'Faster job search',
-                message: "With our job search search filters, you can save time in your job search by searching for jobs by coding language, skill, experience level, salary and more",
+                message: "With our job search search filters, you can save time in your job search by searching for jobs by coding language, skill, experience level, salary and more.",
+                imageSrc: require('../../../assets/candidate_choice_filters.png')
             },
             {
-                imageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_general.png?alt=media&token=727861ea-e064-46ed-9f15-8e386243d39f',
+                title: 'New jobs daily',
+                message: 'In addition to the jobs posted by recruiters, we post up to 300 new jobs per day across over 30 different US tech cities.',
+                imageSrc: require('../../../assets/candidate_choice_cities.png')
+            },
+            {
                 title: 'Application Stats',
                 message: "With our site, you can track the statistics of how many of your applications have been viewed, accepted, and rejected.",
+                imageSrc: require('../../../assets/candidate_choice_stats.png')
             }
         ],
         pricing: [
@@ -73,19 +78,22 @@ const Config = {
         ]
     },
     recruiter: {
-        heroTitle: 'The job board for software engineers',
         heroMessage: "Cut through the clutter. Post jobs, review applicants, and track your hiring pipeline - all in one place",
         whyChooseUs: [
             {
-                imageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_general.png?alt=media&token=727861ea-e064-46ed-9f15-8e386243d39f',
                 title: 'Easier application review',
                 message: "With our application review process, you'll be able to save time searching through applications with our easy to use summary of each applicants skills and years of experience.",
-                icon: 'bi-person-circle'
+                imageSrc: require('../../../assets/recruiter_choice_application_review.png')
             },
             {
-                imageURL: 'https://firebasestorage.googleapis.com/v0/b/template-project-7b481.appspot.com/o/landing%2Fadmin_general.png?alt=media&token=727861ea-e064-46ed-9f15-8e386243d39f',
+                title: 'Simple communication with candidates',
+                message: 'With our hiring pipeline, you can easily send acceptance and rejection emails to applications by clicking a single button.',
+                imageSrc: require('../../../assets/recruiter_choice_communication.png')
+            },
+            {
                 title: 'Application stats',
                 message: "With our site, you can track the number of applications you receive, view, reject and accept.",
+                imageSrc: require('../../../assets/recruiter_choice_stats.png')
             }
         ],
         pricing: [
@@ -120,22 +128,24 @@ export const LandingComponent = props => {
     const config = Config[userMode]
     const [selectedWhyChooseUsOptionID, setSelectedWhyChooseUsOptionID] = useState(0)
 
-    // const siteStatsValues = props.isMobile ?
-    //     [
-    //         {title: 'Applications submitted', value: props.siteStats.applicationsCount},
-    //         {title: 'Active job posts', value: props.siteStats.jobsCount},
-    //     ]
-    //     : [
-    //         {title: 'Applications submitted', value: props.siteStats.applicationsCount},
-    //         {title: 'Active job posts', value: props.siteStats.jobsCount},
-    //         {title: 'Candidates', value: props.siteStats.candidatesCount},
-    //         {title: 'Recruiters', value: props.siteStats.recruitersCount},
-    //     ]
+    let siteStatsValues = props.isMobile ?
+        [
+            {title: 'Applications submitted', value: props.siteStats.applicationsCount},
+            {title: 'Active job posts', value: props.siteStats.jobsCount},
+        ]
+        : [
+            {title: 'Applications submitted', value: props.siteStats.applicationsCount},
+            {title: 'Active job posts', value: props.siteStats.jobsCount},
+            {title: 'Candidates', value: props.siteStats.candidatesCount},
+            {title: 'Recruiters', value: props.siteStats.recruitersCount},
+        ]
+    siteStatsValues = siteStatsValues.map( ({title, value}) => ({title, value: formatNumber(value)}))
+
 
     useEffect(() => {
         props.setThemeColor(0)
         props.setTintColor(0)
-        // props.fetchLandingStats()
+        props.fetchLandingStats()
         
         props.logEvent(Events.landingPageVisit)
     }, [])
@@ -150,7 +160,7 @@ export const LandingComponent = props => {
     }
 
     const onClickWhyChooseUsOption = optionID => {
-        setSelectedWhyChooseUsOptionID(optionID)
+        setSelectedWhyChooseUsOptionID(Math.min(config.whyChooseUs.length - 1, optionID))
     }
 
     const onClickPricingOption = optionID => {
@@ -196,7 +206,7 @@ export const LandingComponent = props => {
                 <div className='hero-container'>
                     <div className='hero-message-container'>
                         <div className='d-flex fd-column ai-flex-start'>
-                            <h1 className='hero-title'>{config.heroTitle}</h1>
+                            <h1 className='hero-title'>The <strong>job board</strong> for <strong>software engineers</strong></h1>
                             <h3 className='hero-message'>{config.heroMessage}</h3>
                             <div className='d-flex jc-flex-start ai-center'>
                                 <Button
@@ -215,27 +225,37 @@ export const LandingComponent = props => {
                             </div>
                         </div>
                     </div>
-                    <img className='hero-image' src={props.isRecruiterMode ? require('../../../assets/recruiter_dashboard.png') : require('../../../assets/candidate_dashboard.png')} />
-                </div>
-                {/* <div className='stats-container'>
-                    <ValueDeltaSpread
-                        values={siteStatsValues}
-                        showDelta={false}
-                        className='float-container value-delta-spread'
+                    <img 
+                        className='hero-image' 
+                        src={props.isRecruiterMode ? 
+                            require('../../../assets/recruiter_hero_image.png') 
+                            : require('../../../assets/candidate_hero_image.png')
+                        }
                     />
-                </div> */}
+                </div>
+                <div className='white-to-blue-gradient'>
+                    <div className='stats-container'>
+                        <ValueDeltaSpread
+                            values={siteStatsValues}
+                            showDelta={false}
+                            className='float-container value-delta-spread'
+                        />
+                    </div>
+                </div>
                 <div className='why-choose-us-container'>
                     <h1 className='section-title'>Why Choose Us</h1>
                     <div className='why-choose-us-options-container'>
                         <div className='why-choose-us-grid-container'>
-                            <div className='why-choose-us-image-container'>
+                            <div 
+                                className='why-choose-us-image-container'
+                                style={props.isSemiMobile || props.isMobile ? 
+                                    {display: 'none'}
+                                    : {}
+                                }
+                            >
                                 <img
                                     className='why-choose-us-image'
-                                    src={config.whyChooseUs[selectedWhyChooseUsOptionID].imageURL}
-                                    style={{
-                                        marginBottom: props.isSemiMobile && selectedWhyChooseUsOptionID !== 1 ? -300 : 0,
-                                        borderWidth: selectedWhyChooseUsOptionID === 1 ? 0 : 5,
-                                    }}
+                                    src={config.whyChooseUs[selectedWhyChooseUsOptionID].imageSrc}
                         
                                 />
                             </div>
@@ -245,6 +265,9 @@ export const LandingComponent = props => {
                                         onClick={() => onClickWhyChooseUsOption(i)}
                                         className={`why-choose-us-option-container ${i == selectedWhyChooseUsOptionID && 'selected'}`}
                                         key={title}
+                                        style={props.isSemiMobile || props.isMobile ?
+                                            {marginBottom: 20} : {}
+                                        }
                                     >
                                         <h2 className='title'>{title}</h2>
                                         <h3 className='message'>{message}</h3>
@@ -254,6 +277,7 @@ export const LandingComponent = props => {
                         </div>
                     </div>
                 </div>
+                <div className='blue-to-white-gradient' />
                 <div className='pricing-container' id='pricing-container'>
                     <div className='section-header'>
                         <h1 className='title'>Pricing</h1>
@@ -366,6 +390,10 @@ const Container = styled.div`
     & .hero-title {
         margin-bottom: 20px;
     }
+    & strong {
+        color: ${p => p.theme.tint} !important;
+        font-weight: 700;
+    }
     & .hero-message {
         margin-bottom: 30px;
         line-height: 160%;
@@ -387,7 +415,7 @@ const Container = styled.div`
         justify-content: space-around;
         align-items: center;
         height: 300px;
-        background-color: ${p => p.theme.bgcLight};
+        width: min(1000px, 95vw);
     }
 
     & .value-delta-spread {
@@ -405,7 +433,7 @@ const Container = styled.div`
         align-items: stretch;
         padding: 50px;
         background-color: ${p => p.theme.tint};
-        border-bottom: 1px solid black;
+        // border-bottom: 1px solid black;
     }
     &.semi-mobile .why-choose-us-container {
         padding: 30px;
@@ -440,7 +468,7 @@ const Container = styled.div`
     }
     & .why-choose-us-image {
         max-height: 550px;
-        border: 5px solid ${p => p.theme.bc};
+        // border: 5px solid ${p => p.theme.bc};
         border-radius: 20px;
         max-width: 500px;
     }
@@ -454,9 +482,11 @@ const Container = styled.div`
         border-radius: 20px;
         box-sizing: border-box;
         background-color: ${p => p.theme.tint};
+        border: 2px solid ${p => p.theme.fontPrimary};
     }
     & .why-choose-us-option-container.selected {
         background-color: ${p => p.theme.bgcLight};
+        border-color: ${p => p.theme.bgcLight};
     }
     & .why-choose-us-option-container .title {
         margin-bottom: 15px;
@@ -570,6 +600,22 @@ const Container = styled.div`
 
     & .check-icon {
         margin-right: 30px;
+    }
+
+    & .white-to-blue-gradient {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-around;
+        width: 100%;
+        height: 200px;
+        background: linear-gradient(to bottom, ${p => p.theme.bgcLight}, ${p => p.theme.tint});
+    }
+
+    & .blue-to-white-gradient {
+        width: 100%;
+        height: 100px;
+        background: linear-gradient(to bottom, ${p => p.theme.tint}, ${p => p.theme.bgcLight});
     }
 `
 

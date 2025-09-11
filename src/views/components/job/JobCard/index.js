@@ -181,7 +181,7 @@ export const JobCardComponent = props => {
                 props.addModal(ModalTypes.CONFIRM, {
                     title: 'Application',
                     message: 'Are you sure you want to apply to this job?',
-                    confirmButtonTitle: 'Yes',
+                    confirmButtonTitle: 'Yes, send my application',
                     onConfirm: (onSuccess, onFailure) => postApplication(onSuccess, onFailure)
                 })
             } else {

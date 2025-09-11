@@ -10,8 +10,8 @@ const getMonthsBetween = (startMonth, startYear, endMonth, endYear) => {
 export const getYOE = workExperiences => {
     let moe = 0
 
-    workExperiences.forEach(({type, startMonth, startYear, endMonth, endYear}) => {
-        if (type === 'full-time' || type === 'contract') {
+    workExperiences.forEach(({employmentType, startMonth, startYear, endMonth, endYear}) => {
+        if (employmentType === 'full-time' || employmentType === 'contract') {
             moe += getMonthsBetween(startMonth, startYear, endMonth, endYear)
         }
     })
@@ -22,8 +22,8 @@ export const getYOE = workExperiences => {
 export const getInternshipCount = workExperiences => {
     let count = 0
 
-    workExperiences.forEach(({type}) => {
-        if (type === 'internship') {
+    workExperiences.forEach(({employmentType}) => {
+        if (employmentType === 'internship') {
             count ++
         }
     })

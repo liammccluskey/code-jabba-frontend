@@ -11,6 +11,11 @@ const LandingState = {
 
 export const landingReducer = (state = LandingState, action) => {
     switch (action.type) {
+        case Types.SET_STATS: 
+            return {
+                ...state,
+                stats: action.value
+            }
         default:
             return state
     }

@@ -384,7 +384,7 @@ export const ReviewApplicationsComponent = props => {
                                     <Button
                                         title='Accept application'
                                         priority={2}
-                                        type='clear'
+                                        type='success'
                                         onClick={onClickAccept}
                                         style={{marginRight: 10}}
                                     />
