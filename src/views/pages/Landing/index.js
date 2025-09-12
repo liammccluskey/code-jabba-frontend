@@ -128,24 +128,24 @@ export const LandingComponent = props => {
     const config = Config[userMode]
     const [selectedWhyChooseUsOptionID, setSelectedWhyChooseUsOptionID] = useState(0)
 
-    let siteStatsValues = props.isMobile ?
-        [
-            {title: 'Applications submitted', value: props.siteStats.applicationsCount},
-            {title: 'Active job posts', value: props.siteStats.jobsCount},
-        ]
-        : [
-            {title: 'Applications submitted', value: props.siteStats.applicationsCount},
-            {title: 'Active job posts', value: props.siteStats.jobsCount},
-            {title: 'Candidates', value: props.siteStats.candidatesCount},
-            {title: 'Recruiters', value: props.siteStats.recruitersCount},
-        ]
-    siteStatsValues = siteStatsValues.map( ({title, value}) => ({title, value: formatNumber(value)}))
+    // let siteStatsValues = props.isMobile ?
+    //     [
+    //         {title: 'Applications submitted', value: props.siteStats.applicationsCount},
+    //         {title: 'Active job posts', value: props.siteStats.jobsCount},
+    //     ]
+    //     : [
+    //         {title: 'Applications submitted', value: props.siteStats.applicationsCount},
+    //         {title: 'Active job posts', value: props.siteStats.jobsCount},
+    //         {title: 'Candidates', value: props.siteStats.candidatesCount},
+    //         {title: 'Recruiters', value: props.siteStats.recruitersCount},
+    //     ]
+    // siteStatsValues = siteStatsValues.map( ({title, value}) => ({title, value: formatNumber(value)}))
 
 
     useEffect(() => {
         props.setThemeColor(0)
         props.setTintColor(0)
-        props.fetchLandingStats()
+        // props.fetchLandingStats()
         
         props.logEvent(Events.landingPageVisit)
     }, [])
@@ -233,7 +233,7 @@ export const LandingComponent = props => {
                         }
                     />
                 </div>
-                <div className='white-to-blue-gradient'>
+                {/* <div className='white-to-blue-gradient'>
                     <div className='stats-container'>
                         <ValueDeltaSpread
                             values={siteStatsValues}
@@ -241,7 +241,7 @@ export const LandingComponent = props => {
                             className='float-container value-delta-spread'
                         />
                     </div>
-                </div>
+                </div> */}
                 <div className='why-choose-us-container'>
                     <h1 className='section-title'>Why Choose Us</h1>
                     <div className='why-choose-us-options-container'>
@@ -277,7 +277,7 @@ export const LandingComponent = props => {
                         </div>
                     </div>
                 </div>
-                <div className='blue-to-white-gradient' />
+                {/* <div className='blue-to-white-gradient' /> */}
                 <div className='pricing-container' id='pricing-container'>
                     <div className='section-header'>
                         <h1 className='title'>Pricing</h1>
@@ -433,7 +433,6 @@ const Container = styled.div`
         align-items: stretch;
         padding: 50px;
         background-color: ${p => p.theme.tint};
-        // border-bottom: 1px solid black;
     }
     &.semi-mobile .why-choose-us-container {
         padding: 30px;
