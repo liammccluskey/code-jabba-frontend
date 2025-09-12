@@ -76,8 +76,7 @@ export const LoginComponent = props => {
             <LandingHeader showButtons={false} />
             <BodyContainer className='ai-center bgc-tt'>
                 <LoginCard className='d-flex fd-column ai-stretch'>
-                    <h3>Sign in to your account</h3>
-                    <br /><br />
+                    <h3 style={{marginBottom: 20}}>Sign in to your account</h3>
                     <form onSubmit={onClickSubmit} className='d-flex jc-flex-start ai-stretch fd-column'>
                         <label>
                             Email
@@ -87,8 +86,8 @@ export const LoginComponent = props => {
                             onChange={onChangeEmail}
                             type="email"
                             required
+                            style={{marginBottom: 15}}
                         />
-                        <br />
                         <label>
                             Password
                         </label>
@@ -101,20 +100,21 @@ export const LoginComponent = props => {
                         <ActionLink
                             title='Forgot Password?'
                             onClick={onClickForgotPassword}
-                            style={{marginTop: 5}}
+                            style={{marginTop: 5, marginBottom: 20}}
                         />
-                        <br /><br />
                         <Button
                             type='solid'
                             priority={2}
                             onClick={onClickSubmit}
                             title='Submit'
                             isSubmitButton={true}
+                            style={{marginBottom: 20}}
                         />
                     </form>
-                    <br />
-                    <h4 className='as-center'>or</h4>
-                    <br />
+                    <h4 
+                        className='as-center'
+                        style={{marginBottom: 20}}
+                    >or</h4>
                     <Button
                         type='clear'
                         priority={2}

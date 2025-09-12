@@ -160,38 +160,36 @@ export const RegisterComponent = props => {
             <LandingHeader showButtons={false} />
             <BodyContainer className='ai-center bgc-tt'>
                 <LoginCard className='d-flex fd-column ai-stretch'>
-                    <h3>Create your account</h3>
-                    <br /><br />
+                    <h3 style={{marginBottom: 20}}>Create your account</h3>
                     <form onSubmit={onClickSubmit} className='d-flex jc-flex-start ai-stretch fd-column'>
                         <label>Email</label>
                         <input
                             value={email}
                             onChange={onChangeEmail}
                             type="text"
+                            style={{marginBottom: 15}}
                         />
-                        <br />
                         <label>Full name </label>
                         <input
                             value={name}
                             onChange={onChangeName}
                             type="text"
+                            style={{marginBottom: 15}}
                         />
-                        <br />
                         <label>I am a</label>
                         <PillOptions
                             options={UserTypes}
                             activeOptionID={isRecruiter ? 'recruiter' : 'candidate'}
                             onClickOption={() => setIsRecruiter(curr => !curr)}
-                            style={{alignSelf: 'flex-start'}}
+                            style={{alignSelf: 'flex-start', marginBottom: 15}}
                         />
-                        <br />
                         <label>Password</label>
                         <input
                             value={password}
                             onChange={onChangePassword}
                             type="password"
+                            style={{marginBottom: 15}}
                         />
-                        <br />
                         {loadingRegister ? 
                             <PendingMessage message='Loading registration' style={{alignSelf: 'center' }}/>
                             : null
@@ -204,11 +202,10 @@ export const RegisterComponent = props => {
                             title='Submit'
                             isSubmitButton={true}
                             disabled={loadingRegister}
+                            style={{marginBottom: 15}}
                         />
                     </form>
-                    <br />
-                    <h4 className='as-center'>or</h4>
-                    <br/>
+                    <h4 style={{marginBottom: 20}} className='as-center'>or</h4>
                     <Button
                         type='clear'
                         priority={2}
