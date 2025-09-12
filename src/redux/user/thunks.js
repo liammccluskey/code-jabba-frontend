@@ -60,7 +60,9 @@ export const postMongoUser = (
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
-        UserUtils.__deleteFirebaseUser(firebaseUser)
+        if (error.response && error.response.status != 409) {
+            UserUtils.__deleteFirebaseUser(firebaseUser)
+        }
         onFailure()
     }
 }
