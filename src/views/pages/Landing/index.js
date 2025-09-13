@@ -70,7 +70,7 @@ const Config = {
                 features: [
                     {title: 'All basic plan benefits'},
                     {title: 'Unlimited applications per day'},
-                    {title: 'Unlimited job search filters'},
+                    // {title: 'Unlimited job search filters'},
                     {title: 'Save job search filter combinations'}
                 ],
                 id: 'm'

@@ -35,11 +35,11 @@ export const Features = {
             description: 'With Candidate Premium, you get to submit unlimited applications per day',
             icon: 'bi-briefcase',
         },
-        {
-            title: 'Unlimited job search filters',
-            description: 'With Candidate Premium, you can apply as many job filters as you want per search',
-            icon: 'bi-search'
-        },
+        // {
+        //     title: 'Unlimited job search filters',
+        //     description: 'With Candidate Premium, you can apply as many job filters as you want per search',
+        //     icon: 'bi-search'
+        // },
         {
             title: 'Save job search filter combinations',
             description: 'With Candidate Premium, you can save the job search filter combinations you use to easily apply them later',
