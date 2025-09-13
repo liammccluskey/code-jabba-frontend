@@ -40,7 +40,7 @@ import { PillLabel } from '../../../common/PillLabel'
 import { Button } from '../../../common/Button'
 import { Tooltip } from '../../../common/Tooltip'
 
-export const FreeTierMaxFilterCount = 3
+export const FreeTierMaxFilterCount = 20
 
 export const JobFiltersModalComponent = props => {
     const {
