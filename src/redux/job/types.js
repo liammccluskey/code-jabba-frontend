@@ -10,4 +10,5 @@ export const ActionTypes = {
     setSavedFilters: 'job/SET_SAVED_FILTERS',
     setLoadingPostJob: 'job/SET_LOADING_POST_JOB',
     setRecruiterCanPostJobs: 'job/SET_RECRUITER_CAN_POST_JOBS',
+    setDailyJobPostViewCount: 'job/SET_DAILY_JOB_POST_VIEW_COUNT',
 }

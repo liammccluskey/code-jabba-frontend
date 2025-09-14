@@ -54,3 +54,8 @@ export const setRecruiterCanPostJobs = canPostJobs => ({
     type: Types.setRecruiterCanPostJobs,
     value: canPostJobs
 })
+
+export const setDailyJobPostViewCount = count => ({
+    type: Types.setDailyJobPostViewCount,
+    value: count
+})

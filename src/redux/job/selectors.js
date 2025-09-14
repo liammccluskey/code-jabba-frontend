@@ -12,3 +12,4 @@ export const getJobsCount = state => state.job.jobs.payload.count
 export const getSavedFilters = state => state.job.savedFilters
 export const getLoadingPostJob = state => state.job.loadingPostJob
 export const getRecruiterCanPostJobs = state => state.job.recruiterCanPostJobs
+export const getDailyJobPostViewCount = state => state.job.dailyJobPostViewCount

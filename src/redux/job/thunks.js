@@ -216,3 +216,51 @@ export const fetchRecruiterCanPostJobs = () => async (dispatch, getState) => {
         dispatch(addMessage(errorMessage, true))
     }
 }
+
+export const fetchDailyJobPostViewCount = () => async (dispatch, getState) => {
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        const res = await api.get(`/job-post-views/daily-applied-count/${mongoUser._id}`)
+
+        dispatch(JobActions.setDailyJobPostViewCount(res.data))
+    } catch (error) {
+        const errorMessage = error.response ? 
+            error.response?.data?.message : error.message
+        console.log(errorMessage)
+    }
+}
+
+export const postJobPostView = (jobID) => async (dispatch, getState) => {
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        const res = await api.post('/job-post-views', {
+            userID: mongoUser._id,
+            jobID
+        })
+    } catch (error) {
+        const errorMessage = error.response ? 
+            error.response?.data?.message : error.message
+        console.log(errorMessage)
+    }
+}
+
+// sent when candidate clicks 'Apply' : sets didClickApply to true
+export const patchJobPostView = (jobID) => async (dispatch, getState) => {
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        const res = await api.patch('/job-post-views/did-click-apply', {
+            userID: mongoUser._id,
+            jobID
+        })
+    } catch (error) {
+        const errorMessage = error.response ? 
+            error.response?.data?.message : error.message
+        console.log(errorMessage)
+    }
+}

@@ -12,9 +12,14 @@ import {
 } from '../../../../redux/user'
 import { getIsMobile } from '../../../../redux/theme'
 import {
+    getDailyJobPostViewCount,
+
     patchJob,
     fetchJob,
     repostJob,
+    fetchDailyJobPostViewCount,
+    postJobPostView,
+    patchJobPostView,
 } from '../../../../redux/job'
 import { 
     getDailyApplicationCount,
@@ -46,6 +51,8 @@ import { Tooltip } from '../../common/Tooltip'
 import { Button } from '../../common/Button'
 import { PendingMessage } from '../../common/PendingMessage'
 
+export const MaxApplicationsPerDay = 3
+
 export const JobCardComponent = props => {
     const {
         job,
@@ -65,8 +72,10 @@ export const JobCardComponent = props => {
     const [expanded, setExpanded] = useState(!hideable)
     const [loadingPostApplication, setLoadingPostApplication] = useState(false)
     const canApplyToJobs = useMemo(() => {
-        return props.isCandidatePremiumUser || (props.dailyApplicationCount < 3)
-    }, [props.dailyApplicationCount, props.isCandidatePremiumUser])
+        return props.isCandidatePremiumUser || 
+            (props.dailyApplicationCount < MaxApplicationsPerDay) &&
+            (props.dailyJobPostViewCount < MaxApplicationsPerDay)
+    }, [props.dailyApplicationCount, props.dailyJobPostViewCount, props.isCandidatePremiumUser])
 
     const sortedJobLanguages = !props.loadingJob && job ?
         [...job.languages].sort((a, b) => a.localeCompare(b))
@@ -85,8 +94,17 @@ export const JobCardComponent = props => {
 
     useEffect(() => {
         if (job) {
+            props.postJobPostView(job._id)
+        }
+    }, [job])
+
+    useEffect(() => {
+        if (job) {
             setIsJobRecruiter(props.mongoUser._id === job.recruiter._id)
-            !props.isCandidatePremiumUser && props.fetchDailyApplicationCount()
+            if (!props.isCandidatePremiumUser) {
+                props.fetchDailyApplicationCount()
+                props.fetchDailyJobPostViewCount()
+            }
         }
     }, [job, props.isCandidatePremiumUser])
 
@@ -95,7 +113,7 @@ export const JobCardComponent = props => {
     const showApplicationLimitReachedModal = () => {
         props.addModal(ModalTypes.CONFIRM, {
             title: 'Application limit reached',
-            message: 'Users on the free plan are limited to 3 applications per day. Upgrade to premium for unlimited applications.',
+            message: `Users on the free plan are limited to ${MaxApplicationsPerDay} applications per day. Upgrade to premium for unlimited applications.`,
             confirmButtonTitle: 'Go premium',
             onConfirm: onSuccess => {
                 navigate('/membership/premium')
@@ -182,7 +200,13 @@ export const JobCardComponent = props => {
                     title: 'Application',
                     message: 'Are you sure you want to apply to this job?',
                     confirmButtonTitle: 'Yes, send my application',
-                    onConfirm: (onSuccess, onFailure) => postApplication(onSuccess, onFailure)
+                    onConfirm: (onSuccess, onFailure) => {
+                        const onPostApplicationSuccess = () => {
+                            props.patchJobPostView(job._id)
+                            onSuccess()
+                        }
+                        postApplication(onPostApplicationSuccess, onFailure)
+                    }
                 })
             } else {
                 props.addMessage('You must complete the To Do items on the dashboard before you can apply to jobs', true, true)
@@ -196,6 +220,7 @@ export const JobCardComponent = props => {
                 onConfirm: (onSuccess, onFailure) => postApplication(onSuccess, onFailure)
             })
             job.applicationType === 'custom' && window.open(job.applicationURL, '_blank')
+            props.patchJobPostView(job._id)
         }
     }
 
@@ -526,6 +551,7 @@ const mapStateToProps = state => ({
     isRecruiterMode: getIsRecruiterMode(state),
     isCandidatePremiumUser: getIsCandidatePremiumUser(state),
     dailyApplicationCount: getDailyApplicationCount(state),
+    dailyJobPostViewCount: getDailyJobPostViewCount(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -534,6 +560,9 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     postApplication,
     repostJob,
     fetchDailyApplicationCount,
+    fetchDailyJobPostViewCount,
+    postJobPostView,
+    patchJobPostView,
     addMessage,
     addModal
 }, dispatch)

@@ -17,6 +17,7 @@ const JobState = {
     savedFilters: [],
     loadingPostJob: false,
     recruiterCanPostJobs: true,
+    dailyJobPostViewCount: 0,
 }
 
 export const jobReducer = (state = JobState, action) => {
@@ -84,12 +85,16 @@ export const jobReducer = (state = JobState, action) => {
                 ...state,
                 loadingPostJob: action.value
             }
-        case Types.setRecruiterCanPostJobs: {
+        case Types.setRecruiterCanPostJobs:
             return {
                 ...state,
                 recruiterCanPostJobs: action.value
             }
-        }
+        case Types.setDailyJobPostViewCount:
+            return {
+                ...state,
+                dailyJobPostViewCount: action.value
+            }
         default:
             return state
     }
