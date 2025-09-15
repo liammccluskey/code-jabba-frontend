@@ -25,6 +25,7 @@ import {
     setIsRecruiterMode
 } from '../../../redux/user'
 import { formatNumber } from '../../../utils'
+import { MaxApplicationsPerDay } from '../../components/job/JobCard'
 
 import { PageContainer } from '../../components/common/PageContainer'
 import { LandingHeader } from '../../components/headers/LandingHeader'
@@ -57,7 +58,7 @@ const Config = {
                 price: 'Free',
                 formatCurrency: false,
                 features: [
-                    {title: '3 job applications per day'},
+                    {title: `${MaxApplicationsPerDay} job applications per day`},
                     {title: 'Complex job search filters'},
                     {title: 'Track application stats'},
                 ],
@@ -215,12 +216,6 @@ export const LandingComponent = props => {
                                     priority={1}
                                     onClick={onClickGetStarted}
                                     style={{marginRight: 15}}
-                                />
-                                <Button
-                                    title='View pricing'
-                                    type='clear'
-                                    priority={1}
-                                    onClick={onClickViewPricing}
                                 />
                             </div>
                         </div>

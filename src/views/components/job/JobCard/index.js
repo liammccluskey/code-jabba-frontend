@@ -51,7 +51,7 @@ import { Tooltip } from '../../common/Tooltip'
 import { Button } from '../../common/Button'
 import { PendingMessage } from '../../common/PendingMessage'
 
-export const MaxApplicationsPerDay = 3
+export const MaxApplicationsPerDay = 5
 
 export const JobCardComponent = props => {
     const {
