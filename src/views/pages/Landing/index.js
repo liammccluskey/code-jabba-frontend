@@ -211,7 +211,7 @@ export const LandingComponent = props => {
                             <h3 className='hero-message'>{config.heroMessage}</h3>
                             <div className='d-flex jc-flex-start ai-center'>
                                 <Button
-                                    title='Get started'
+                                    title='Get started free'
                                     type='solid'
                                     priority={1}
                                     onClick={onClickGetStarted}
