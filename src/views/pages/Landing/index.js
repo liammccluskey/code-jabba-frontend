@@ -180,28 +180,29 @@ export const LandingComponent = props => {
         props.setIsRecruiterMode(false)
     }
 
-    return (props.isRecruiterMode === null ?
-        <FullscreenContainer>
-            <div className='mode-container'>
-                <h1 className='mode-title'>I am a</h1>
-                <div className='mode-buttons-container'>
-                    <Button
-                        title='Candidate'
-                        type='solid'
-                        priority={1}
-                        onClick={onClickIsCandidate}
-                        style={{marginRight: 20}}
-                    />
-                    <Button
-                        title='Recruiter'
-                        type='clear'
-                        priority={1}
-                        onClick={onClickIsRecruiter}
-                    />
-                </div>
-            </div>
-        </FullscreenContainer>
-        : <PageContainer>
+    return (
+        // props.isRecruiterMode === null ?
+        // <FullscreenContainer>
+        //     <div className='mode-container'>
+        //         <h1 className='mode-title'>I am a</h1>
+        //         <div className='mode-buttons-container'>
+        //             <Button
+        //                 title='Candidate'
+        //                 type='solid'
+        //                 priority={1}
+        //                 onClick={onClickIsCandidate}
+        //                 style={{marginRight: 20}}
+        //             />
+        //             <Button
+        //                 title='Recruiter'
+        //                 type='clear'
+        //                 priority={1}
+        //                 onClick={onClickIsRecruiter}
+        //             />
+        //         </div>
+        //     </div>
+        // </FullscreenContainer> : 
+        <PageContainer>
             <LandingHeader showButtons={true} />
             <Container className={`${props.isMobile && 'mobile'} ${props.isSemiMobile && 'semi-mobile'}`}>
                 <div className='hero-container'>
