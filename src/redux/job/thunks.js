@@ -121,10 +121,14 @@ export const fetchJobs = (filters, page, onSuccess) => async (dispatch, getState
 
     dispatch(JobActions.setLoadingJobs(true))
 
+    const filtersCopy = {...filters}
+    const unwantedKeys = ['title', 'createdAt', 'updatedAt', '__v', 'asMongoFilter']
+    unwantedKeys.forEach( key => { delete filtersCopy[key] })
+
     const queryString = stringifyQuery({
         userID: mongoUser._id,
         page,
-        ...filters,
+        ...filtersCopy,
     })
 
     try {
@@ -244,7 +248,7 @@ export const postJobPostView = (jobID) => async (dispatch, getState) => {
     } catch (error) {
         const errorMessage = error.response ? 
             error.response?.data?.message : error.message
-        console.log(errorMessage)
+        // console.log(errorMessage)
     }
 }
 

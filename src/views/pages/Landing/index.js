@@ -32,9 +32,14 @@ import { LandingHeader } from '../../components/headers/LandingHeader'
 import { Button } from '../../components/common/Button'
 import { ValueDeltaSpread } from '../../components/common/ValueDeltaSpread'
 
+const CandidateHeroMessages = {
+    a: 'Save hours searching for jobs by searching by coding language, skill, experience level and more.',
+    b: 'Stop wasting time scrolling LinkedIn. Find SWE jobs that match your exact skills & salary expectations in seconds.'
+}
+
 const Config = {
     candidate: {
-        heroMessage: "Save hours searching for jobs by searching by coding language, skill, experience level and more.",
+        heroMessage: CandidateHeroMessages.b,
         whyChooseUs: [
             {
                 title: 'Faster job search',
@@ -59,7 +64,7 @@ const Config = {
                 formatCurrency: false,
                 features: [
                     {title: `${MaxApplicationsPerDay} job applications per day`},
-                    {title: 'Complex job search filters'},
+                    {title: '10+ job search filters'},
                     {title: 'Track application stats'},
                 ],
                 id: 's'
@@ -129,24 +134,17 @@ export const LandingComponent = props => {
     const config = Config[userMode]
     const [selectedWhyChooseUsOptionID, setSelectedWhyChooseUsOptionID] = useState(0)
 
-    // let siteStatsValues = props.isMobile ?
-    //     [
-    //         {title: 'Applications submitted', value: props.siteStats.applicationsCount},
-    //         {title: 'Active job posts', value: props.siteStats.jobsCount},
-    //     ]
-    //     : [
-    //         {title: 'Applications submitted', value: props.siteStats.applicationsCount},
-    //         {title: 'Active job posts', value: props.siteStats.jobsCount},
-    //         {title: 'Candidates', value: props.siteStats.candidatesCount},
-    //         {title: 'Recruiters', value: props.siteStats.recruitersCount},
-    //     ]
-    // siteStatsValues = siteStatsValues.map( ({title, value}) => ({title, value: formatNumber(value)}))
+    let siteStatsValues = [
+        {title: 'Total active job posts', value: props.siteStats.totalActiveJobsCount},
+        {title: 'Jobs posted today', value: props.siteStats.jobsPostedTodayCount},
+    ]
+    siteStatsValues = siteStatsValues.map( ({title, value}) => ({title, value: formatNumber(value)}))
 
 
     useEffect(() => {
         props.setThemeColor(0)
         props.setTintColor(0)
-        // props.fetchLandingStats()
+        props.fetchLandingStats()
         
         props.logEvent(Events.landingPageVisit)
     }, [])
@@ -229,7 +227,7 @@ export const LandingComponent = props => {
                         }
                     />
                 </div>
-                {/* <div className='white-to-blue-gradient'>
+                <div className='white-to-blue-gradient'>
                     <div className='stats-container'>
                         <ValueDeltaSpread
                             values={siteStatsValues}
@@ -237,7 +235,7 @@ export const LandingComponent = props => {
                             className='float-container value-delta-spread'
                         />
                     </div>
-                </div> */}
+                </div>
                 <div className='why-choose-us-container'>
                     <h1 className='section-title'>Why Choose Us</h1>
                     <div className='why-choose-us-options-container'>

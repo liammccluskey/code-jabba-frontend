@@ -1,11 +1,20 @@
 import { FirebaseErrors } from "./constants"
 
+const encodeSpecialCharacters = value => {
+    if (typeof value !== 'string') return value
+
+    let ret = value.replace(/#/g, '%23')
+    ret = ret.replace(/\+/g, '%2B')
+
+    return ret
+}
+
 export const stringifyQuery = queryParams => {
     return '?' + Object
         .entries(queryParams)
         .map( ([key, value]) => Array.isArray(value) ?
-            value.map(item => `${key}[]=${item}`).join('&')
-            : `${key}=${value}`
+            value.map(item => `${key}[]=${encodeSpecialCharacters(item)}`).join('&')
+            : `${key}=${encodeSpecialCharacters(value)}`
         )
         .filter(item => item.length > 0)
         .join('&')
