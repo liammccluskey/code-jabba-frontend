@@ -56,6 +56,7 @@ import { SearchableTable } from '../../components/common/SearchableTable'
 import { Loading } from '../../components/common/Loading'
 import { ValueDeltaSpread } from '../../components/common/ValueDeltaSpread'
 import { YearHeatmap } from '../../components/common/YearHeatmap'
+import { Tooltip } from '../../components/common/Tooltip'
 
 export const Timeframes = ['Week', 'Month', 'Year']
 const JobsSortFilters = SortFilters
@@ -454,8 +455,11 @@ export const DashboardComponent = props => {
                 {props.isRecruiterMode ?
                     <Root className={`${props.isMobile && 'mobile'} ${props.isSemiMobile && 'semi-mobile'}`}>
                         {!props.mongoUser.canPostJobs ?
-                            <div className='section-header'>
-                                <h3>To do</h3>
+                            <div className='section-header' style={{justifyContent: 'flex-start'}}>
+                                <h3>To do - Complete your profile</h3>
+                                <Tooltip title={`These items are required before you can post jobs.`} style={{marginLeft: 10}}>
+                                    <i className='bi-question-circle help-icon' />
+                                </Tooltip>
                             </div>
                             : null
                         }
@@ -589,8 +593,11 @@ export const DashboardComponent = props => {
                     </Root>
                     : <Root className={`${props.isMobile && 'mobile'} ${props.isSemiMobile && 'semi-mobile'}`}>
                         {!props.mongoUser.canApplyToJobs ?
-                            <div className='section-header'>
-                                <h3>To do</h3>
+                            <div className='section-header' style={{justifyContent: 'flex-start'}}>
+                                <h3>To do - Complete your profile</h3>
+                                <Tooltip title={`You can still apply to jobs before completing this items.`} style={{marginLeft: 10}}>
+                                    <i className='bi-question-circle help-icon' />
+                                </Tooltip>
                             </div>
                             : null
                         }
@@ -796,6 +803,11 @@ const Root = styled.div`
         align-items: stretch;
         padding: 30px;
         margin-bottom: 50px;
+    }
+
+    & .help-icon {
+        font-size: 17px;
+        color: ${p => p.theme.textSecondary};
     }
 `
 

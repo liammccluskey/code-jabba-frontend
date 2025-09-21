@@ -128,6 +128,8 @@ const Config = {
     }
 }
 
+const BookADemoURL = 'https://calendly.com/liammccluskey-codejabba/30min'
+
 export const LandingComponent = props => {
     const navigate = useNavigate()
     const userMode = props.isRecruiterMode ? 'recruiter' : 'candidate'
@@ -153,9 +155,8 @@ export const LandingComponent = props => {
         navigate('/register')
     }
 
-    const onClickViewPricing = () => {
-        const pricingElement = document.getElementById('pricing-container')
-        pricingElement.scrollIntoView()
+    const onClickBookADemo = () => {
+        window.open(BookADemoURL, '_blank')
     }
 
     const onClickWhyChooseUsOption = optionID => {
@@ -215,6 +216,12 @@ export const LandingComponent = props => {
                                     priority={1}
                                     onClick={onClickGetStarted}
                                     style={{marginRight: 15}}
+                                />
+                                <Button
+                                    title='Book a demo'
+                                    type='clear'
+                                    priority={1}
+                                    onClick={onClickBookADemo}
                                 />
                             </div>
                         </div>
