@@ -424,9 +424,8 @@ const Root = styled.div`
         flex-direction: column;
         justify-content: flex-start;
         align-items: stretch;
-        width: min(500px, 75vw);
         max-height: 90vh;
-        overflow: visible;
+        overflow: scroll;
         background-color: ${p => p.theme.bgcLight};
         border: 1px solid ${p => p.theme.bc};
         border-radius: var(--br-container);

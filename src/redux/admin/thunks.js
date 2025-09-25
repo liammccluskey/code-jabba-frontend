@@ -153,7 +153,7 @@ export const fetchBugReports = (filters, searchText, page) => async (dispatch, g
 
     const queryString = stringifyQuery({
         ...filters,
-        projectName: searchText,
+        title: searchText,
         page
     })
 
