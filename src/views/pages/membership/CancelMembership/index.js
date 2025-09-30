@@ -89,7 +89,7 @@ export const CancelMembershipComponent = props => {
                 () => {
                     props.fetchThisMongoUser()
                     onFailure()
-                }
+                },
             ),
             isDanger: true
         })

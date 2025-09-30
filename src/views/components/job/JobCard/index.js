@@ -43,6 +43,7 @@ import {
 import { addModal } from '../../../../redux/modal'
 import { ModalTypes } from '../../../../containers/ModalProvider'
 import { formatUnit, formatNumber } from '../../../../utils'
+import { logEventFB, Events } from '../../../../redux/events'
 
 import { OptionsMenu } from '../../menus/OptionsMenu'
 import { PageLink } from '../../common/PageLink'
@@ -95,6 +96,7 @@ export const JobCardComponent = props => {
     useEffect(() => {
         if (job) {
             props.postJobPostView(job._id)
+            logEventFB(Events.viewJobPost)
         }
     }, [job])
 

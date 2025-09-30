@@ -281,10 +281,10 @@ export const BugReportComponent = props => {
                                     />
                                 </div>
                                 <label>Description</label>
-                                <p>{props.bugReport.description}</p>
+                                <p className='multiline-text'>{props.bugReport.description}</p>
                                 <label>Notes</label>
                                 {props.bugReport.notes ?
-                                    <p>{props.bugReport.notes}</p>
+                                    <p className='multiline-text'>{props.bugReport.notes}</p>
                                     : <Button
                                         title='Add Notes'
                                         type='clear'
@@ -402,6 +402,10 @@ const Container = styled.div`
         display: flex;
         justify-content: flex-end;
         align-items: center;
+    }
+
+    & .multiline-text {
+        white-space: pre-line;
     }
 `
 const mapStateToProps = state => ({

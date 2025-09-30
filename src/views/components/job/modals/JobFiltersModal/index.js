@@ -644,8 +644,6 @@ const Root = styled.div`
     align-items: stretch;
     border: 1px solid ${p => p.theme.bc};
     border-radius: 15px;
-    overflow: scroll;
-    max-height: 500px;
     padding-top: 15px;
 
     & .saved-filters-section-header {

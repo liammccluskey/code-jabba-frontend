@@ -7,7 +7,6 @@ import moment from 'moment'
 import { 
     getMongoUser,
 
-    patchUserEmail,
     patchUser,
     fetchThisMongoUser,
     fetchProfileUser
@@ -240,7 +239,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    patchUserEmail,
     patchUser,
     fetchThisMongoUser,
     fetchProfileUser,

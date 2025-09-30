@@ -25,7 +25,6 @@ import {
     patchUserTintColor,
     deleteUser,
     fetchThisMongoUser,
-    updateSubscription,
     cancelSubscription,
     setIsRecruiterMode
 } from '../../../../redux/user'
@@ -347,7 +346,6 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     patchUserTintColor,
     patchUserPhoto,
     deleteUser,
-    updateSubscription,
     cancelSubscription,
     setIsRecruiterMode,
     addMessage,

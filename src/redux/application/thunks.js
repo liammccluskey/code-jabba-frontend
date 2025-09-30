@@ -4,7 +4,7 @@ import { getMongoUser } from '../user'
 import { addMessage } from '../communication'
 import { getApplications, getApplicationsFilters, getApplicationsPage } from './selectors'
 import { deepObjectEqual } from '../../views/components/job/modals/JobFiltersModal/utils'
-import { getJob } from '../job'
+import { logEventFB, Events } from '../events'
 
 export const fetchApplicationStats = (timeframe, jobID) => async (dispatch, getState) => {
     dispatch(ApplicationActions.setLoadingApplicationStats(true))
@@ -92,6 +92,8 @@ export const postApplication = (jobID, recruiterID, onSuccess, onFailure) => asy
 
         dispatch(addMessage(res.data.message))
         onSuccess()
+
+        logEventFB(Events.sendApplication)
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)

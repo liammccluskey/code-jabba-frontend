@@ -24,9 +24,8 @@ export const JobsComponent = (props) => {
     return (
         <PageContainer>
             <MainHeader />
-            <Subheader title='Jobs' />
             <FixedBodyContainer 
-                className='subheader-without-links'
+                className='no-subheader'
                 style={{paddingTop: 20, paddingBottom: 20}}
             >
                 <JobsFeed />

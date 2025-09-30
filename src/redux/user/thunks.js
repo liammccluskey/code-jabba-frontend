@@ -1,13 +1,19 @@
 import {updateProfile, updateEmail, signOut} from 'firebase/auth'
 import {ref, uploadBytes, getDownloadURL} from 'firebase/storage'
 
-import { SubscriptionTiers } from './constants'
 import * as UserActions from './actions'
 import * as ThemeActions from '../theme'
 import * as UserUtils from './utils'
-import { getFirebaseUser, getMongoUser } from './selectors'
+import { 
+    getFirebaseUser, 
+    getIsCandidatePremiumUser, 
+    getIsRecruiterMode, 
+    getIsRecruiterPremiumUser, 
+    getMongoUser 
+} from './selectors'
 import {api, auth, storage, getFirebaseErrorMessage} from '../../networking'
 import { addMessage } from '../communication'
+import { logEventFB, Events } from '../events'
 
 export const fetchThisMongoUser = (
     firebaseUser=getFirebaseUser(),
@@ -56,6 +62,9 @@ export const postMongoUser = (
         const res = await UserUtils.__postMongoUser(firebaseUser, isRecruiter)
         dispatch(addMessage(res.data.message))
         onSuccess()
+
+        const eventID = isRecruiter ? Events.recruiterCreateAccount : Events.candidateCreateAccount 
+        logEventFB(eventID)
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
@@ -132,40 +141,40 @@ export const patchUserDisplayName = (
     }
 }
 
-export const patchUserEmail = (
-    email,
-    onSuccess = () => {},
-    onFailure = () => {}
-) => async (dispatch, getState) => {
-    const state = getState()
-    const {_id} = getMongoUser(state)
-    const firebaseUser = getFirebaseUser()
+// export const patchUserEmail = (
+//     email,
+//     onSuccess = () => {},
+//     onFailure = () => {}
+// ) => async (dispatch, getState) => {
+//     const state = getState()
+//     const {_id} = getMongoUser(state)
+//     const firebaseUser = getFirebaseUser()
 
-    try {
-        try {
-            await updateEmail(firebaseUser, email)
-        } catch (error) {
-            const errorMessage = getFirebaseErrorMessage(error)
-            throw Error(errorMessage)
-        }
-        const res = await UserUtils.__patchMongoUser({email}, _id)
-        dispatch(fetchThisMongoUser(
-            firebaseUser,
-            () => {
-                dispatch(addMessage(res.data.message))
-                onSuccess()
-            },
-            onFailure
-        ))
-    } catch (error) {
-        const errorMessage = error.response ?
-            error.response.data.message
-            : error.message
-        console.log(errorMessage)
-        dispatch(addMessage(errorMessage, true))
-        onFailure()
-    }
-}
+//     try {
+//         try {
+//             await updateEmail(firebaseUser, email)
+//         } catch (error) {
+//             const errorMessage = getFirebaseErrorMessage(error)
+//             throw Error(errorMessage)
+//         }
+//         const res = await UserUtils.__patchMongoUser({email}, _id)
+//         dispatch(fetchThisMongoUser(
+//             firebaseUser,
+//             () => {
+//                 dispatch(addMessage(res.data.message))
+//                 onSuccess()
+//             },
+//             onFailure
+//         ))
+//     } catch (error) {
+//         const errorMessage = error.response ?
+//             error.response.data.message
+//             : error.message
+//         console.log(errorMessage)
+//         dispatch(addMessage(errorMessage, true))
+//         onFailure()
+//     }
+// }
 
 export const patchUserPhoto = (
     photoFile,
@@ -274,47 +283,32 @@ export const deleteUser = onSuccess => async (dispatch, getState) => {
     const {_id} = getMongoUser(state)
     const firebaseUser = getFirebaseUser()
 
+    const isRecruiterMode = getIsRecruiterMode(state)
+
     try {
         await UserUtils.__deleteFirebaseUser(firebaseUser)
         
         const res = await UserUtils.__deleteMongoUser(firebaseUser.uid, _id)
         dispatch(addMessage(res.data.message))
         dispatch(signOutUser(onSuccess))
+
+        const eventID = isRecruiterMode ? Events.recruiterDeleteAccount : Events.candidateDeleteAccount
+        logEventFB(eventID)
     } catch (error) {
         const errorMessage = error.response ?
             error.response.data.message
             : error.message
         console.log(errorMessage)
         dispatch(addMessage(errorMessage, true))
-    }
-}
-
-export const updateSubscription = (subscriptionTier, onSuccess = () => {}, onFailure = () => {}) => async (dispatch, getState) => {
-    const state = getState()
-    const mongoUser = getMongoUser(state)
-
-    try {
-        const res = await api.patch('/membership/update-subscription', {
-            userID: mongoUser._id,
-            userEmail: mongoUser.email,
-            subscriptionTier: SubscriptionTiers[subscriptionTier]
-        })
-
-        dispatch(addMessage(res.data.message))
-        onSuccess()
-    } catch (error) {
-        const errorMessage = error.response ?
-            error.response.data.message
-            : error.message
-        console.log(errorMessage)
-        dispatch(addMessage(errorMessage, true))
-        onFailure()
     }
 }
 
 export const cancelSubscription = (onSuccess, onFailure) => async (dispatch, getState) => {
     const state = getState()
     const mongoUser = getMongoUser(state)
+
+    const isCandidatePremiumUser = getIsCandidatePremiumUser(state)
+    const isRecruiterPremiumUser = getIsRecruiterPremiumUser(state)
 
     try {
         const res = await api.patch('/membership/cancel-subscription', {
@@ -323,6 +317,14 @@ export const cancelSubscription = (onSuccess, onFailure) => async (dispatch, get
 
         dispatch(addMessage(res.data.message, false, true))
         onSuccess()
+
+        const eventID = isCandidatePremiumUser ? 
+            Events.candidatePremiumCancel 
+            : isRecruiterPremiumUser ? 
+                Events.recruiterPremiumCancel
+                : Events.cancelPremiumInvalidStateError
+
+        logEventFB(eventID)
     } catch (error) {
         const errorMessage = error.response ?
             error.response.data.message

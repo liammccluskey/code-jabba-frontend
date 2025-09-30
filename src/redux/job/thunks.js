@@ -4,6 +4,7 @@ import { addMessage } from '../communication'
 import { stringifyQuery, PageSizes } from '../../networking'
 import { getMongoUser } from '../user'
 import { getJobs } from './selectors'
+import { logEventFB, Events } from '../events'
 
 export const searchCompanies = companySearch => async (dispatch) => {
     dispatch(JobActions.setLoadingCompanySearchResults(true))
@@ -64,6 +65,8 @@ export const postJob = (formData, onSuccess) => async (dispatch, getState) => {
 
         dispatch(addMessage(res.data.message))
         onSuccess(res.data.jobID)
+
+        logEventFB(Events.createJob)
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)
@@ -103,6 +106,8 @@ export const repostJob = (jobID, onSuccess) => async (dispatch, getState) => {
 
         dispatch(addMessage(res.data.message))
         onSuccess()
+
+        logEventFB(Events.repostJob)
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)

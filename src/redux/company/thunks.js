@@ -3,6 +3,7 @@ import {api, stringifyQuery, PageSizes} from '../../networking'
 import { addMessage } from '../communication'
 import { getMongoUser } from '../user'
 import { getCompanies } from './selectors'
+import { logEventFB, Events } from '../events'
 
 export const fetchCompany = (companyID) => async (dispatch, getState) => {
     dispatch(CompanyActions.setLoadingCompany(true))
@@ -33,6 +34,8 @@ export const postCompany = (company, onSuccess) => async (dispatch, getState) =>
 
         dispatch(addMessage(res.data.message))
         onSuccess(res.data.companyID)
+
+        logEventFB(Events.createCompany)
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message
         console.log(errorMessage)

@@ -19,6 +19,7 @@ import {
     SubscriptionTiers,
 } from '../../../../redux/user'
 import { api } from '../../../../networking'
+import { logEventFB, Events } from '../../../../redux/events'
 
 import { PageContainer } from '../../../components/common/PageContainer'
 import { BodyContainer } from '../../../components/common/BodyContainer'
@@ -84,6 +85,11 @@ export const CheckoutPortalComponent = props => {
             
             const {sessionURL} = res.data
             window.location.href = sessionURL
+
+            const eventID = subscriptionTier === SubscriptionTiers.candidatePremium ?
+                Events.candidatePremiumSignup
+                : Events.recruiterPremiumSignup
+            logEventFB(eventID)
         } catch (error) {
             const errorMessage = error.message
             console.log(errorMessage)
