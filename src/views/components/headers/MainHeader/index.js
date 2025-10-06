@@ -28,18 +28,24 @@ export const getMainPageLinks = (hasAdminPrivileges, isRecruiterMode) => [
         id: 'dashboard',
         icon: 'bi-house'
     },
-    ...( isRecruiterMode ? [
+    // ...( isRecruiterMode ? [
 
-        ]
-        : [
-            {
-                name: 'Jobs',
-                url: '/jobs-feed',
-                id: 'jobs-feed',
-                icon: 'bi-briefcase'
-            },
-        ]
-    ),
+    //     ]
+    //     : [
+    //         {
+    //             name: 'Jobs',
+    //             url: '/jobs-feed',
+    //             id: 'jobs-feed',
+    //             icon: 'bi-briefcase'
+    //         },
+    //     ]
+    // ),
+    {
+        name: 'Jobs',
+        url: '/jobs-feed',
+        id: 'jobs-feed',
+        icon: 'bi-briefcase'
+    },
     {
         name: 'Companies',
         url: '/companies',

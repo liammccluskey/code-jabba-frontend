@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
-import { getIsLoggedIn } from '../../redux/user'
+import { getIsLoggedIn, getIsRecruiterMode } from '../../redux/user'
 
 export const SignedOutRouteComponent = props => {
     const {
@@ -13,7 +13,8 @@ export const SignedOutRouteComponent = props => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        props.isLoggedIn && navigate('/dashboard')
+        const initialRoute = props.isRecruiterMode ? '/dashboard' : '/jobs-feed'
+        props.isLoggedIn && navigate(initialRoute)
     }, [props.isLoggedIn])
 
     return !props.isLoggedIn ?
@@ -26,6 +27,7 @@ const Root = styled.div`
 `
 const mapStateToProps = state => ({
     isLoggedIn: getIsLoggedIn(state),
+    isRecruiterMode: getIsRecruiterMode(state),
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
