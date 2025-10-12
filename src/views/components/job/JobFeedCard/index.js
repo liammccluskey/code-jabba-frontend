@@ -37,7 +37,7 @@ export const JobFeedCard = props => {
                         openInNewTab={true}
                     />
                     <p style={{marginRight: 5, marginLeft: 5}}>-</p>
-                    <p>{job.location || 'Remote'}</p>
+                    <p>{job.setting == 'remote' ? 'Remote' : job.location}</p>
                 </div>
                 <div className='section-2'>
                     {job.salaryType === 'range' ?
