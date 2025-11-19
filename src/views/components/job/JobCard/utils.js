@@ -1,15 +1,17 @@
 import { ExperienceLevels, ExperienceYears } from "../EditJobCard"
 
 export const formatSalary = (salary, frequency) => {
-    return `$${salary.toLocaleString('en-US')} / ${frequency}`
+
+    return salary ? `$${salary.toLocaleString('en-US')} / ${frequency}` : 'Salary not provided'
 }
 
 export const formatSalaryRange = (salaryMin, salaryMax, frequency) => {
-    return `
+    return salaryMin && salaryMax && frequency ? `
     $${salaryMin.toLocaleString('en-US')} / ${frequency}
      - 
     $${salaryMax.toLocaleString('en-US')} / ${frequency}
     `
+    : 'Salary not provided'
 }
 
 export const getJobExperienceLevel = (jobMinExperienceLevel, jobMaxExperienceLevel) => {
