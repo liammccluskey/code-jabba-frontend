@@ -43,7 +43,7 @@ const Config = {
         whyChooseUs: [
             {
                 title: 'Faster job search',
-                message: "With our job search search filters, you can save time in your job search by searching for jobs by coding language, skill, experience level, salary and more.",
+                message: "With our 10+ job search search filters, you can save time in your job search by searching for jobs by coding language, skill, experience level, salary and more.",
                 imageSrc: require('../../../assets/candidate_choice_filters.png')
             },
             {
@@ -128,7 +128,7 @@ const Config = {
     }
 }
 
-const BookADemoURL = 'https://calendly.com/liammccluskey-codejabba/30min'
+const YoutubeDemoURL = 'https://www.youtube.com/watch?v=E6pN3168xJI'
 
 export const LandingComponent = props => {
     const navigate = useNavigate()
@@ -155,8 +155,8 @@ export const LandingComponent = props => {
         navigate('/register')
     }
 
-    const onClickBookADemo = () => {
-        window.open(BookADemoURL, '_blank')
+    const onClickWatchDemo = () => {
+        window.open(YoutubeDemoURL, '_blank')
     }
 
     const onClickWhyChooseUsOption = optionID => {
@@ -218,10 +218,10 @@ export const LandingComponent = props => {
                                     style={{marginRight: 15}}
                                 />
                                 <Button
-                                    title='Book a demo'
+                                    title='Watch demo'
                                     type='clear'
                                     priority={1}
-                                    onClick={onClickBookADemo}
+                                    onClick={onClickWatchDemo}
                                 />
                             </div>
                         </div>
