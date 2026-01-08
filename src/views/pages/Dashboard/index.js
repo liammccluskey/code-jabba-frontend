@@ -683,7 +683,7 @@ export const DashboardComponent = props => {
                         {props.isMobile ? null
                             : props.loadingCandidateApplicationsHeatmap ?
                                 <Loading style={{height: 50}} />
-                                : <div className='float-container heatmap-container'>
+                                : <div className='of-visible-float-container heatmap-container'>
                                     <p>
                                         {`You have submitted ${formatNumber(props.candidateApplicationsHeatmap.count)} applications this year`}
                                     </p>

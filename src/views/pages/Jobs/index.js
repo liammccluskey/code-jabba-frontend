@@ -8,13 +8,14 @@ import {
     getJobsPagesCount,
     fetchJobs,
 } from '../../../redux/job'
-import { SortFilters } from '../admin/BugReports'
 
 import { PageContainer } from '../../components/common/PageContainer'
 import { FixedBodyContainer } from '../../components/common/FixedBodyContainer'
 import { MainHeader } from '../../components/headers/MainHeader'
-import { Subheader } from '../../components/headers/Subheader'
 import { JobsFeed } from '../../components/job/JobsFeed'
+import { ErrorLabel } from '../../components/common/ErrorLabel'
+
+const JobLinkErrorNotice = 'NOTICE - If you receive an error ( ex. 403 Forbidden ) when opening links to jobs we recommend using Code Jabba in an incognito window'
 
 export const JobsComponent = (props) => {
     const {
@@ -28,15 +29,13 @@ export const JobsComponent = (props) => {
                 className='no-subheader'
                 style={{paddingTop: 20, paddingBottom: 20}}
             >
+                <ErrorLabel errorText={JobLinkErrorNotice} />
                 <JobsFeed />
             </FixedBodyContainer>
         </PageContainer>
     )
 }
 
-const Root = styled.div`
-
-`
 const mapStateToProps = state => ({
     jobs: getJobs(state),
     jobsPagesCount: getJobsPagesCount(state),
