@@ -52,7 +52,7 @@ import { Tooltip } from '../../common/Tooltip'
 import { Button } from '../../common/Button'
 import { PendingMessage } from '../../common/PendingMessage'
 
-export const MaxApplicationsPerDay = 5
+export const MaxApplicationsPerDay = 10
 
 export const JobCardComponent = props => {
     const {
@@ -74,8 +74,9 @@ export const JobCardComponent = props => {
     const [loadingPostApplication, setLoadingPostApplication] = useState(false)
     const canApplyToJobs = useMemo(() => {
         return props.isCandidatePremiumUser || 
-            (props.dailyApplicationCount < MaxApplicationsPerDay) &&
-            (props.dailyJobPostViewCount < MaxApplicationsPerDay)
+            // (props.dailyApplicationCount < MaxApplicationsPerDay) &&
+            // (props.dailyJobPostViewCount < MaxApplicationsPerDay)
+            (props.dailyApplicationCount < MaxApplicationsPerDay)
     }, [props.dailyApplicationCount, props.dailyJobPostViewCount, props.isCandidatePremiumUser])
 
     const sortedJobLanguages = !props.loadingJob && job ?

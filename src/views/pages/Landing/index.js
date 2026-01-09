@@ -34,7 +34,7 @@ import { ValueDeltaSpread } from '../../components/common/ValueDeltaSpread'
 
 const CandidateHeroMessages = {
     a: 'Save hours searching for jobs by searching by coding language, skill, experience level and more.',
-    b: 'Stop wasting time scrolling LinkedIn. Find SWE jobs that match your exact skills & salary expectations in seconds.'
+    b: 'Stop wasting time reading long job descriptions. Find SWE jobs that match your exact skills & salary expectations in seconds.'
 }
 
 const Config = {
@@ -76,7 +76,6 @@ const Config = {
                 features: [
                     {title: 'All basic plan benefits'},
                     {title: 'Unlimited applications per day'},
-                    // {title: 'Unlimited job search filters'},
                     {title: 'Save job search filter combinations'}
                 ],
                 id: 'm'
@@ -84,7 +83,7 @@ const Config = {
         ]
     },
     recruiter: {
-        heroMessage: "Cut through the clutter. Post jobs, review applicants, and track your hiring pipeline - all in one place",
+        heroMessage: "Cut through the clutter. Post jobs, review applicants, and track your hiring pipeline - all in one place.",
         whyChooseUs: [
             {
                 title: 'Easier application review',
@@ -516,6 +515,7 @@ const Container = styled.div`
         display: flex;
         justify-content: space-between;
         margin-bottom: 30px;
+        align-items: center;
     }
 
     & .pricing-options-container {
