@@ -578,7 +578,7 @@ export const DashboardComponent = props => {
                         {props.isMobile ? null
                             : props.loadingRecruiterApplicationsHeatmap ?
                                 <Loading style={{height: 50}} />
-                                : <div className='float-container heatmap-container'>
+                                : <div className='of-visible-float-container heatmap-container'>
                                     <p>
                                         {`You have received ${formatNumber(props.recruiterApplicationsHeatmap.count)} applications this year`}
                                     </p>
@@ -595,7 +595,7 @@ export const DashboardComponent = props => {
                         {!props.mongoUser.canApplyToJobs ?
                             <div className='section-header' style={{justifyContent: 'flex-start'}}>
                                 <h3>To do - Complete your profile</h3>
-                                <Tooltip title={`You can still apply to jobs before completing this items.`} style={{marginLeft: 10}}>
+                                <Tooltip title={`You can still apply to jobs before completing these items.`} style={{marginLeft: 10}}>
                                     <i className='bi-question-circle help-icon' />
                                 </Tooltip>
                             </div>

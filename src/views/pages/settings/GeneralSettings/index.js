@@ -51,14 +51,24 @@ export const GeneralSettingsComponent = props => {
     } = props
     const navigate = useNavigate()
 
+    // Utils
+
+    const getMembershipText = () => {
+        const membershipType = props.isCandidatePremiumUser ?
+            SubscriptionTiersFormatted.candidatePremium
+            : props.isRecruiterPremiumUser ?
+                SubscriptionTiersFormatted.recruiterPremium
+                : 'None'
+        if (props.user.subscription && props.user.subscription.isLifetime)
+            return `Lifetime ${membershipType}`
+        else
+            return membershipType
+    }
+
     const formInitialValues = {
         membership: {
             memberSince: moment(props.user.createdAt).format('LL'),
-            membership: props.isCandidatePremiumUser ?
-                SubscriptionTiersFormatted.candidatePremium
-                : props.isRecruiterPremiumUser ?
-                    SubscriptionTiersFormatted.recruiterPremium
-                    : 'None'
+            membership: getMembershipText()
         },
         account: {
             email: props.user.email
@@ -83,11 +93,18 @@ export const GeneralSettingsComponent = props => {
         }
     }
 
+    // Direct
+
     const onClickGoPremium = () => {
         navigate('/membership/premium')
     }
 
     const onClickCancelPremium = () => {
+        if (props.user.subscription.isLifetime) {
+            props.addMessage('You cannot cancel a lifetime subscription.', true)
+            return
+        }
+
         if (props.isRecruiterPremiumUser) props.setIsRecruiterMode(true)
         else if (props.isCandidatePremiumUser) props.setIsRecruiterMode(false)
         

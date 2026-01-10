@@ -489,3 +489,27 @@ export const fetchEvents = timeframe => async (dispatch, getState) => {
 
     dispatch(AdminActions.setLoadingEvents(false))
 }
+
+export const giveFreeLifetimePremium = (userEmail, subscriptionTier, onSuccess, onFailure) => async (dispatch, getState) => {
+    const state = getState()
+    const mongoUser = getMongoUser(state)
+
+    try {
+        const res = await api.post(
+            '/admin/users/give-free-lifetime-premium',
+            {
+                userEmail,
+                subscriptionTier
+            },
+            AdminUtils.getAdminRequestConfig(mongoUser),
+        )
+        
+        dispatch(addMessage(res.data.message))
+        onSuccess()
+    }  catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message
+        console.log(errorMessage)
+        dispatch(addMessage(errorMessage, true))
+        onFailure()
+    }
+}

@@ -15,7 +15,7 @@ import { MainHeader } from '../../components/headers/MainHeader'
 import { JobsFeed } from '../../components/job/JobsFeed'
 import { ErrorLabel } from '../../components/common/ErrorLabel'
 
-const JobLinkErrorNotice = 'NOTICE - If you receive an error ( ex. 403 Forbidden ) when opening links to jobs we recommend using Code Jabba in an incognito window'
+const JobLinkErrorNotice = 'NOTICE - If you receive an error ( ex. 403 Forbidden ) when opening links to jobs we recommend using Code Jabba in an Incognito / Private window'
 
 export const JobsComponent = (props) => {
     const {

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
@@ -12,7 +12,9 @@ import {
     fetchAdminUsers,
     makeUserSuperAdmin,
     removeAdminUser,
+    giveFreeLifetimePremium
 } from '../../../../redux/admin'
+import { SubscriptionTiers, SubscriptionTiersFormatted } from '../../../../redux/user'
 import { getIsMobile } from '../../../../redux/theme'
 import { addModal } from '../../../../redux/modal'
 import { ModalTypes } from '../../../../containers/ModalProvider'
@@ -28,6 +30,9 @@ export const AdminGeneralComponent = props => {
     const {
         
     } = props
+
+    const [email, setEmail] = useState('')
+    const [subscriptionTier, setSubscriptionTier] = useState(SubscriptionTiers.candidatePremium)
 
     useEffect(() => {
         props.fetchAdminUsers()
@@ -58,6 +63,27 @@ export const AdminGeneralComponent = props => {
         props.addModal(ModalTypes.CREATE_NEW_ADMIN)
     }
 
+    const onClickGiveLifetimePremium = () => {
+        if (!email) {
+            props.addMessage('You must specify the email of the user you are giving lifetime premium to.', true)
+            return
+        }
+        props.addModal(ModalTypes.CONFIRM, {
+            title: 'Give free lifetime premium',
+            message: `Are you sure you want to give free lifetime premium to user with email { ${email} }?`,
+            confirmButtonTitle: 'Yes',
+            onConfirm: (onSuccess, onFailure) => {
+                const onGivePremiumSuccess = () => {
+                    onSuccess()
+                    setEmail('')
+                }
+                
+                props.giveFreeLifetimePremium(email, subscriptionTier, onGivePremiumSuccess, onFailure)
+            },
+            closeModalOnConfirmFailure: true,
+        })
+    }
+
     return (
         <PageContainer>
             <MainHeader />
@@ -86,6 +112,50 @@ export const AdminGeneralComponent = props => {
                             />
                         ))}
                     </div>
+                    <div className='section-header-container'>
+                        <h3>Actions</h3>
+                    </div>
+                    <div className='actions-container float-container'>
+                        <div className='action-row-container'>
+                            <h4 className='action-title'>
+                                Give user free lifetime premium
+                            </h4>
+                            <div className='action-item-container'>
+                                <div className='inputs-container'>
+                                    <div className='input-container'>
+                                        <label>User email</label>
+                                        <input 
+                                            type='text'
+                                            value={email}
+                                            onChange={e => setEmail(e.target.value)} 
+                                            style={{width: 300, marginRight: 10}}
+                                        />
+                                    </div>
+                                    <div className='input-container'>
+                                        <label>Subscription tier</label>
+                                        <select
+                                            value={subscriptionTier}
+                                            onChange={e => setSubscriptionTier(e.target.value)}
+                                        >
+                                            <option value={SubscriptionTiers.candidatePremium} key={SubscriptionTiers.candidatePremium}>
+                                                {SubscriptionTiersFormatted.candidatePremium}
+                                            </option>
+                                            <option value={SubscriptionTiers.recruiterPremium} key={SubscriptionTiers.recruiterPremium}>
+                                                {SubscriptionTiersFormatted.recruiterPremium}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <Button
+                                    title='Give premium'
+                                    type='clear'
+                                    priority={3}
+                                    onClick={onClickGiveLifetimePremium}
+                                    icon='bi-plus'
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </Container>
             </BodyContainer>
         </PageContainer>
@@ -112,6 +182,40 @@ const Container = styled.div`
         align-items: stretch;
         margin-bottom: 60px;
     }
+
+    & .actions-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+    }
+
+    & .action-row-container {
+        padding: 15px;
+    }
+
+    & .action-item-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+
+    & .input-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+
+    & .inputs-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+    }
 `
 
 const mapStateToProps = state => ({
@@ -125,6 +229,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     fetchAdminUsers,
     makeUserSuperAdmin,
     removeAdminUser,
+    giveFreeLifetimePremium,
     addModal,
     addMessage
 }, dispatch)
