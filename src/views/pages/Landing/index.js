@@ -146,8 +146,14 @@ export const LandingComponent = props => {
         props.setThemeColor(0)
         props.setTintColor(0)
         props.fetchLandingStats()
+
+        const isLocalhost =
+            window.location.hostname === 'localhost' ||
+            window.location.hostname === '127.0.0.1' ||
+            window.location.hostname === '[::1]'
+
         
-        props.logEvent(Events.landingPageVisit)
+        if (!isLocalhost) props.logEvent(Events.landingPageVisit)
     }, [])
 
     const onClickGetStarted = () => {
