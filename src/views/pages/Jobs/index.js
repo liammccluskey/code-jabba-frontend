@@ -29,7 +29,7 @@ export const JobsComponent = (props) => {
                 className='no-subheader'
                 style={{paddingTop: 20, paddingBottom: 20}}
             >
-                <ErrorLabel errorText={JobLinkErrorNotice} />
+                <ErrorLabel errorText={JobLinkErrorNotice} color='yellow'/>
                 <JobsFeed />
             </FixedBodyContainer>
         </PageContainer>

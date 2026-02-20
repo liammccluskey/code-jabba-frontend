@@ -6,7 +6,7 @@ export const IconButton = props => {
         icon,
         size, // 's' | 'm' | 'l'
         showHoverOutline=true,
-        color='', // 'tint' | 'white' | 'error'
+        color='', // 'tint' | 'white' | 'error' | yellow
 
         onClick,
 
@@ -37,6 +37,9 @@ const Root = styled.div`
     &.hover-outline.error:hover {
         background-color: ${p => p.theme.errorTranslucent};
     }
+    &.hover-outline.yellow:hover {
+        background-color: ${p => p.theme.yellowTranslucent};
+    }
 
     &.white .icon {
         color: white;
@@ -46,6 +49,9 @@ const Root = styled.div`
     }
     &.error .icon {
         color: ${p => p.theme.error};
+    }
+    &.yellow .icon {
+        color: ${p => p.theme.textYellow}
     }
 
     &.s {

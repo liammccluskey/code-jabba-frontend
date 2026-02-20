@@ -6,6 +6,8 @@ import { IconButton } from '../IconButton'
 export const ErrorLabel = props => {
     const {
         errorText, // string
+
+        color='red', // red | yellow
     } = props
 
     const [noticeVisible, setNoticeVisible] = useState(true)
@@ -13,12 +15,12 @@ export const ErrorLabel = props => {
     const onClickCloseNotice = () => setNoticeVisible(false)
 
     return (noticeVisible ? 
-        <Root className='notice-label'>
-            <p className='notice-text'>{errorText}</p>
+        <Root className={`notice-label ${color}`}>
+            <p className={`notice-text ${color}`}>{errorText}</p>
             <IconButton
                 icon='bi-x'
                 size='m'
-                color='error'
+                color='yellow'
                 onClick={onClickCloseNotice}
             />
         </Root>
@@ -40,8 +42,17 @@ const Root = styled.div`
         color: ${p => p.theme.error};
     }
 
-    & .notice-label i {
-        color: ${p => p.theme.error};
-        font-size: 30px;
+    // & .notice-label i {
+    //     color: ${p => p.theme.error};
+    //     font-size: 30px;
+    // }
+
+    &.yellow {
+        border: 1px solid ${p => p.theme.textYellow};
+        background-color: ${p => p.theme.yellowTranslucent};
+    }
+
+    &.yellow .notice-text {
+        color: ${p => p.theme.textYellow};
     }
 `
